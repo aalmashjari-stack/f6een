@@ -2,7 +2,8 @@ import { useState } from 'react'
 import type { GameState } from '../game/session'
 import { leader, playerStats } from '../game/session'
 import type { Action } from '../game/reducer'
-import stickerUrl from '../../assets/sahsahli-sticker-gold.svg'
+// النسخة الشفافة للاستخدام داخل التطبيق. الأصل بلوحته الزرقاء يبقى للمتاجر والطباعة.
+import stickerUrl from '../../assets/sahsahli-sticker-gold-transparent.svg'
 
 /**
  * الختام — الشاشة ٨. الفائز، النتيجة، أفضل لاعب، سطر لكل لاعب.
@@ -71,7 +72,7 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
 
       <style>{`
         .end { overflow:auto; align-items:center; text-align:center; }
-        .brand img { height:clamp(60px,10vh,110px); }
+        .brand img { width:min(56%, 420px); height:auto; max-height:14vh; object-fit:contain; }
         .winner { display:flex; flex-direction:column; gap:6px; align-items:center; }
         .w-eyebrow { color:var(--text-2); font-weight:700; font-size:clamp(15px,2vw,20px); }
         .w-title { color:var(--gold); font-weight:800; font-size:clamp(40px,8vw,84px); line-height:1.05; }

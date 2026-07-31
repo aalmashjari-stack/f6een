@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { SetupInput } from '../game/session'
 import type { TeamId } from '../game/types'
-import stickerUrl from '../../assets/sahsahli-sticker-gold.svg'
+// النسخة الشفافة للاستخدام داخل التطبيق. الأصل بلوحته الزرقاء يبقى للمتاجر والطباعة.
+import stickerUrl from '../../assets/sahsahli-sticker-gold-transparent.svg'
 
 const MIN = 2
 const MAX = 6
@@ -140,8 +141,10 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
       <style>{`
         .setup { overflow:auto; }
         .brand { display:flex; justify-content:center; flex:none; }
+        /* القياس بالعرض لا بالارتفاع: النسبة عريضة (٤٫٢٥:١) بعد قصّ اللوحة،
+           فربطه بالارتفاع يتجاوز عرض الشاشة على التابلت الطولي. */
         .brand img {
-          height:clamp(120px, 22vh, 260px);
+          width:min(74%, 660px); height:auto; max-height:26vh; object-fit:contain;
           filter:drop-shadow(0 10px 30px rgba(0,0,0,.4));
           animation:brand-in .7s var(--ease-spring) both;
         }
