@@ -5,5 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: './',
-  server: { host: true },
+  // strictPort: المنفذ ثابت لا يزحف. الذاكرة المحلية (الجلسة المحفوظة و used_question_ids)
+  // مربوطة بالأصل origin، فلو تغيّر المنفذ ضاع سجلّ الأسئلة المستخدمة وعادت تتكرّر.
+  // إن كان ٥١٧٣ مشغولاً يفشل الخادم بوضوح بدل أن ينتقل بصمت لمنفذ آخر.
+  server: { host: true, port: 5173, strictPort: true },
 })
