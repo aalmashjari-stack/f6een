@@ -1,0 +1,114 @@
+/* الهوية البصرية — القسم ١١ من SPEC.md. الألوان معتمدة، لا تُغيَّر. */
+:root {
+  --night: #0F2C42;   /* أزرق ليل الغوص — الخلفية الأساسية */
+  --gold: #FFBD59;    /* ذهبي — الأهم، صاحب الدور، الإجابة المكشوفة */
+  --cream: #F5EFE3;   /* كريمي — النص الأساسي والفريق الثاني */
+  --coral: #E4674A;   /* مرجاني — المؤشر، الخطر والوقت والخطأ */
+
+  --surface: #1B3E56;   /* سطح مرتفع */
+  --surface-2: #234C68; /* قسم عجلة متناوب */
+  --border: #2A4A63;    /* إطار خافت */
+  --text-2: #8AA3B8;    /* نص ثانوي */
+  --text-3: #5E7D96;    /* نص خافت جداً */
+  --spent: #2A3138;     /* قسم عجلة مستهلك */
+  --spent-text: #5A6570;/* نص على المستهلك */
+  --on-gold: #412402;   /* النص فوق الذهبي */
+  --on-coral: #4A1B0C;  /* النص فوق المرجاني */
+
+  --r-lg: 28px;
+  --r-md: 18px;
+  --r-sm: 12px;
+
+  font-family: "SF Arabic", "Geeza Pro", system-ui, "Segoe UI", Tahoma, sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body, #root { height: 100%; }
+
+body {
+  background: var(--night);
+  color: var(--cream);
+  overflow: hidden;
+  /* منع اختيار النص لتجربة لمس نظيفة على التابلت */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* حاوية الشاشة: تملأ كامل المساحة وتتمركز */
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(16px, 3vw, 40px);
+  gap: clamp(12px, 2vh, 24px);
+}
+
+/* شريط النتيجة العلوي المشترك */
+.scorebar {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex: none;
+}
+.scorebar .team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.scorebar .team.lead { border-color: var(--gold); }
+.scorebar .team .name { font-size: clamp(15px, 2vw, 20px); font-weight: 700; color: var(--text-2); }
+.scorebar .team.lead .name { color: var(--gold); }
+.scorebar .team .pts { font-size: clamp(22px, 3.4vw, 34px); font-weight: 800; font-variant-numeric: tabular-nums; }
+.scorebar .mid { display: flex; align-items: center; color: var(--text-3); font-size: 13px; font-weight: 700; }
+
+/* الزر الأساسي الكبير — الفعل الواحد الظاهر */
+.action {
+  flex: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 800;
+  border-radius: var(--r-lg);
+  padding: clamp(18px, 3vh, 30px) 28px;
+  font-size: clamp(20px, 3vw, 30px);
+  background: var(--gold);
+  color: var(--on-gold);
+  transition: transform .08s ease, filter .15s ease;
+  line-height: 1.3;
+}
+.action:active { transform: scale(.985); filter: brightness(.95); }
+.action:disabled { opacity: .4; cursor: default; }
+.action.sub { background: transparent; padding: 12px; font-size: clamp(14px, 1.8vw, 17px); font-weight: 700; color: var(--text-2); }
+.action.sub:active { filter: none; }
+.action.ghost { background: transparent; color: var(--cream); border: 2px solid var(--border); }
+.action.coral { background: var(--coral); color: var(--on-coral); }
+
+.action-note { text-align: center; color: var(--text-3); font-size: clamp(12px, 1.6vw, 15px); margin-top: -6px; }
+
+/* عناوين ونصوص عامة */
+.eyebrow { color: var(--text-2); font-size: clamp(13px, 1.8vw, 17px); font-weight: 700; letter-spacing: .5px; }
+.center { text-align: center; }
+.grow { flex: 1; min-height: 0; }
+.stack { display: flex; flex-direction: column; }
+.row { display: flex; }
+.between { display: flex; align-items: center; justify-content: space-between; }
+.gap-s { gap: 8px; }
+.gap-m { gap: 16px; }
+.gap-l { gap: 28px; }
+.center-all { display: flex; align-items: center; justify-content: center; }
+.fade { opacity: .55; }
+.tabular { font-variant-numeric: tabular-nums; }
