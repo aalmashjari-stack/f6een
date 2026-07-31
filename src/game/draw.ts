@@ -25,12 +25,14 @@ export function drawOne(category: string, level: Level, used: Set<string>): Ques
 }
 
 /**
- * سحب مسبق لطابور الحق ما تلحق — القرار المعماري: 40 احتياطاً عند إنشاء الجلسة.
- * من مخزون سهل + متوسط كاملاً بلا تصنيف (القسم ٦/٨).
+ * سحب مسبق لطابور الحق ما تلحق — القرار المعماري: 40 احتياطاً عند إنشاء الجلسة
+ * لتعمل المرحلة كاملة بلا إنترنت. من مخزون سهل + متوسط بلا تصنيف (القسم ٦/٨).
+ *
+ * لا يضيف المعرّفات إلى `used`: الطابور احتياطي، ويُستهلك منه ١٠–١٤ سؤالاً فقط.
+ * الحرق يقع عند العرض الفعلي (انظر S3_JUDGE) — وإلا احترق ٤٠ سؤالاً في الجلسة
+ * بدل ١٢، فينكمش أفق «٤٢ جلسة بلا تكرار» في القسم ١٢ إلى نحو ١٢ جلسة.
  */
 export function drawStage3Queue(count: number, used: Set<string>): Question[] {
   const pool = poolByLevels(['سهل', 'متوسط']).filter((q) => !used.has(q.id))
-  const chosen = shuffle(pool).slice(0, count)
-  for (const q of chosen) used.add(q.id)
-  return chosen
+  return shuffle(pool).slice(0, count)
 }

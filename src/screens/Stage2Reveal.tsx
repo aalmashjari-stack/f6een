@@ -4,7 +4,7 @@ import type { Mark, TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 
 const CYCLE: Record<Mark, Mark> = { صمت: 'صح', صح: 'غلط', غلط: 'صمت' }
-const PTS: Record<Mark, string> = { صمت: '٠', صح: '+٢٠', غلط: '−١٠' }
+const PTS: Record<Mark, string> = { صمت: '0', صح: '+20', غلط: '−10' }
 
 /**
  * تنقيط راس براس — الشاشة ٥. بطاقة كل لاعب زر يدوّر حالته: صمت ← صح ← غلط.
@@ -20,7 +20,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <ScoreBar teams={state.teams} label={`راس براس · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       <div className="reveal-q center fade">{q.question}</div>
-      <div className="reveal-a center">
+      <div className="reveal-a">
         <span className="a-label">الإجابة</span>
         <span className="a-text">{q.answer}</span>
       </div>
@@ -50,10 +50,6 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       </button>
 
       <style>{`
-        .reveal-q { font-size:clamp(15px,2vw,20px); font-weight:600; }
-        .reveal-a { display:flex; flex-direction:column; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(16px,2.5vh,28px); }
-        .a-label { color:var(--text-2); font-weight:700; font-size:15px; }
-        .a-text { color:var(--gold); font-weight:800; font-size:clamp(26px,4.4vw,46px); line-height:1.3; text-align:center; }
         .mark-cards { display:flex; gap:16px; }
         .mcard { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border-radius:var(--r-lg); cursor:pointer; font-family:inherit; transition:transform .08s ease; border:2px solid var(--border); background:var(--surface); color:var(--cream); }
         .mcard:active { transform:scale(.98); }

@@ -30,7 +30,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           <div className="s3-ready">
             <div className="s3r-eyebrow">الحق ما تلحق</div>
             <div className="s3r-team">دور {team.name}</div>
-            <div className="s3r-note">٣٠ ثانية · الساعة لا تتوقف بعد الضغط</div>
+            <div className="s3r-note">30 ثانية · الساعة لا تتوقف بعد الضغط</div>
           </div>
         </div>
         <button className="action coral" onClick={() => setStarted(true)}>
@@ -69,7 +69,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
       ) : (
         <div className="s3-verdicts">
           <button className="v correct" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'correct' })}>
-            ✓<span className="v-pts">+٥</span>
+            ✓<span className="v-pts">+5</span>
           </button>
           <button className="v wrong" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'wrong' })}>
             ✗
@@ -94,9 +94,14 @@ function Stage3Styles() {
         .s3r-eyebrow { color:var(--coral); font-weight:800; font-size:clamp(16px,2.2vw,22px); }
         .s3r-team { color:var(--cream); font-weight:800; font-size:clamp(34px,6vw,64px); }
         .s3r-note { color:var(--text-2); font-size:clamp(15px,2vw,20px); }
-        .s3-q { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(20px,4vh,44px); }
+        .s3-q {
+          background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
+          border:1px solid var(--border);
+          border-radius:clamp(30px, 6vh, 64px);
+          padding:clamp(22px,4vh,48px) clamp(28px,5vw,64px);
+          box-shadow:var(--lift);
+        }
         .s3-inner { display:flex; flex-direction:column; gap:20px; align-items:center; }
-        .q-text { font-size:clamp(24px,4.6vw,48px); font-weight:800; line-height:1.5; text-align:center; }
         .s3-answer { font-size:clamp(20px,3vw,32px); font-weight:800; color:var(--gold); text-align:center; }
         .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
         .s3-verdicts { display:flex; gap:14px; align-items:stretch; }

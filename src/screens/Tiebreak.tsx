@@ -59,9 +59,7 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
       )}
 
       <style>{`
-        .q-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(20px,4vh,44px); }
         .s3-inner { display:flex; flex-direction:column; gap:20px; align-items:center; }
-        .q-text { font-size:clamp(24px,4.6vw,48px); font-weight:800; line-height:1.5; text-align:center; }
         .s3-answer { font-size:clamp(20px,3vw,32px); font-weight:800; color:var(--gold); text-align:center; }
         .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
         .tb-picks { display:flex; gap:14px; }

@@ -1,5 +1,3 @@
-import { ar } from '../util/num'
-
 /**
  * المؤقت: حلقة تفرغ والرقم في وسطها.
  * coral=true في الحق ما تلحق فقط (العداء مع الوقت) — القسم ١٠.
@@ -38,12 +36,16 @@ export function Timer({
         />
       </svg>
       <span className="secs tabular" style={{ color }}>
-        {ar(secs)}
+        {secs}
       </span>
 
       <style>{`
-        /* الحلقة تتقلّص عند ضيق المساحة بدل أن تطرد ما تحتها */
-        .ring-timer { position:relative; display:grid; place-items:center; aspect-ratio:1; min-height:0; }
+        /* align-self:center إلزامي — بدونه يمدّد الأب عرض الحلقة فتنفجر خارج الشاشة.
+           والتقلّص عند ضيق المساحة بدل أن تطرد ما تحتها. */
+        .ring-timer {
+          position:relative; display:grid; place-items:center;
+          align-self:center; aspect-ratio:1; min-height:0;
+        }
         .ring-timer.md { flex:0 1 auto; height:clamp(120px,20vh,200px); max-height:100%; }
         .ring-timer.lg { flex:0 1 auto; height:min(32vh, 40vw, 320px); max-height:100%; }
         .ring-timer svg { width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }

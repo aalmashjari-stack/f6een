@@ -59,7 +59,7 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
           بلّغ عن سؤال
         </button>
         <span className="foot-sep">·</span>
-        <span className="foot-balance">لديك ٣ ألعاب</span>
+        <span className="foot-balance">لديك 3 ألعاب</span>
       </div>
 
       {reportOpen && (

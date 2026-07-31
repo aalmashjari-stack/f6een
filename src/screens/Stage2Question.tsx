@@ -43,8 +43,6 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         .s2-versus { display:flex; align-items:center; justify-content:center; gap:clamp(12px,3vw,32px); }
         .s2-versus .p { font-size:clamp(20px,3vw,32px); font-weight:800; }
         .s2-versus .vs { color:var(--coral); font-weight:800; font-size:clamp(16px,2vw,22px); }
-        .q-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(20px,4vh,44px); }
-        .q-text { font-size:clamp(24px,4.4vw,46px); font-weight:800; line-height:1.5; text-align:center; }
       `}</style>
     </div>
   )

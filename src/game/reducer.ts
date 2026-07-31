@@ -176,7 +176,13 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (!state) return state
       let s = state
       if (action.verdict === 'correct') s = addScore(s, s.s3Team, STAGE3_POINTS)
-      // pass و wrong: صفر، لكن السؤال يُحرق (يتقدّم المؤشر). المعرّف مُضاف مسبقاً في الطابور.
+      // السؤال ظهر على الشاشة فيُحرق الآن — بما فيه المُمرَّر (القسم ٨).
+      // الحرق هنا لا عند سحب الطابور، حتى لا يحترق الاحتياطي الذي لم يُعرض.
+      const shown = s.s3Queue[s.s3Pos]
+      if (shown) {
+        s.usedQuestionIds.add(shown.id)
+        persistUsedIds(s.usedQuestionIds)
+      }
       return { ...s, s3Pos: s.s3Pos + 1, s3Revealed: false }
     }
 

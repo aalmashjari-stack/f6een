@@ -1,6 +1,5 @@
 import type { Team } from '../game/types'
 import { leader } from '../game/session'
-import { ar } from '../util/num'
 
 export function ScoreBar({ teams, label }: { teams: [Team, Team]; label?: string }) {
   const lead = leader(teams)
@@ -12,7 +11,7 @@ export function ScoreBar({ teams, label }: { teams: [Team, Team]; label?: string
           <div key={t.id} className={'team' + (lead === i ? ' lead' : '')}>
             <span className="name">{t.name}</span>
             <span className="pts-disc">
-              <span className="pts tabular">{ar(t.score)}</span>
+              <span className="pts tabular">{t.score}</span>
             </span>
           </div>
         )

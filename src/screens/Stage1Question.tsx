@@ -6,7 +6,6 @@ import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
-import { ar } from '../util/num'
 
 type Step = 'consult' | 'rival'
 
@@ -26,7 +25,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`سؤال ${ar(state.s1Index + 1)} / ${ar(STAGE1_QUESTIONS)}`} />
+      <ScoreBar teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} />
 
       <div className="eyebrow center">
         الجولة الجماعية · {state.currentCategory} · {q.level}
