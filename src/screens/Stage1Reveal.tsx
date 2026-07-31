@@ -19,20 +19,20 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <ScoreBar teams={state.teams} />
 
       <div className="reveal-q center fade">{q.question}</div>
-      <div className="reveal-a center">
+      <div className="reveal-a">
         <span className="a-label">الإجابة</span>
         <span className="a-text">{q.answer}</span>
       </div>
 
       <div className="eyebrow center">من أصاب؟</div>
 
-      <div className="pick-cards grow">
-        <button className="pick owner" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'owner' })}>
+      <div className="pick-discs grow">
+        <button className="disc owner" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'owner' })}>
           <span className="pk-role">صاحب الدور</span>
           <span className="pk-name">{state.teams[owner].name}</span>
           <span className="pk-pts">+١٠</span>
         </button>
-        <button className="pick rival" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'rival' })}>
+        <button className="disc rival" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'rival' })}>
           <span className="pk-role">الفريق الآخر</span>
           <span className="pk-name">{state.teams[rival].name}</span>
           <span className="pk-pts">+١٠</span>
@@ -44,18 +44,27 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       </button>
 
       <style>{`
-        .reveal-q { font-size:clamp(15px,2vw,20px); font-weight:600; }
-        .reveal-a { display:flex; flex-direction:column; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(18px,3vh,32px); }
-        .a-label { color:var(--text-2); font-weight:700; font-size:15px; }
-        .a-text { color:var(--gold); font-weight:800; font-size:clamp(30px,5vw,52px); line-height:1.3; text-align:center; }
-        .pick-cards { display:flex; gap:16px; }
-        .pick { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border-radius:var(--r-lg); cursor:pointer; font-family:inherit; border:2px solid var(--border); background:var(--surface); color:var(--cream); transition:transform .08s ease, border-color .15s; }
-        .pick:active { transform:scale(.98); }
-        .pick.owner { border-color:var(--gold); }
-        .pick.rival { border-color:var(--cream); }
-        .pk-role { font-size:15px; color:var(--text-2); font-weight:700; }
-        .pk-name { font-size:clamp(22px,3.2vw,34px); font-weight:800; }
-        .pk-pts { font-size:clamp(20px,2.6vw,28px); font-weight:800; color:var(--gold); }
+        .pick-discs { display:flex; gap:clamp(16px,4vw,48px); align-items:center; justify-content:center; min-height:0; }
+        .disc {
+          aspect-ratio:1;
+          height:min(100%, 34vh, 300px);
+          border-radius:50%;
+          display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+          padding:6%;
+          cursor:pointer; font-family:inherit;
+          background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
+          border:3px solid var(--border);
+          color:var(--cream);
+          box-shadow:var(--lift);
+          transition:transform .18s var(--ease-spring), box-shadow .25s ease;
+          animation:pop-in .45s var(--ease-spring) both;
+        }
+        .disc:active { transform:scale(.96); }
+        .disc.owner { border-color:var(--gold); box-shadow:var(--lift), var(--glow-gold); animation-delay:.05s; }
+        .disc.rival { border-color:var(--cream); animation-delay:.12s; }
+        .pk-role { font-size:clamp(12px,1.5vw,15px); color:var(--text-2); font-weight:700; }
+        .pk-name { font-size:clamp(18px,2.8vw,32px); font-weight:800; line-height:1.25; text-align:center; }
+        .pk-pts { font-size:clamp(18px,2.4vw,28px); font-weight:800; color:var(--gold); }
       `}</style>
     </div>
   )
