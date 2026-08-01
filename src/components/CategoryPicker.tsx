@@ -6,7 +6,7 @@ import { CATEGORIES } from '../game/bank'
  *
  * يحفظ قواعد القسم ٧ كما هي:
  * - المستهلَك يبقى ظاهراً باهتاً لا يختفي (شفافية، ومنع تهمة التلاعب).
- * - الاختيار نهائي بلا إعادة.
+ * - السحبة نهائية بلا إعادة.
  * - الانتقال للسؤال تلقائي بعد الاستقرار، بلا ضغطة وبلا شاشة وسيطة.
  *
  * سبب استبدال القرص: نص التصنيفات في القطاعات السفلية كان مقلوباً وصعب القراءة،
@@ -104,14 +104,23 @@ export function CategoryPicker({
       </div>
 
       <div className="stack gap-s">
-        <button className="action" onClick={start} disabled={running || landed !== null || available.length === 0}>
-          {landed ? landed : running ? '…' : 'اختر التصنيف'}
+        <button
+          className={'action' + (landed ? ' landed' : '')}
+          onClick={start}
+          disabled={running || landed !== null || available.length === 0}
+        >
+          {landed ? landed : running ? '…' : 'صحصح'}
         </button>
-        <div className="action-note">الاختيار نهائي — بلا إعادة</div>
+        {/* لا لفظ يوحي بأن الحكم هو من يختار — التطبيق يسحب، ولا سلطة تقديرية للحكم (المبدأ ٣). */}
+        <div className="action-note">السحبة نهائية — بلا إعادة</div>
       </div>
 
       <style>{`
         .picker { flex:1; min-height:0; display:flex; flex-direction:column; gap:clamp(10px,1.8vh,18px); }
+
+        /* الزر يحمل اسم التصنيف لحظة الاستقرار — وهي أهم لحظة في الشاشة،
+           فلا يجوز أن يرثها بهتانُ الزر المعطَّل. */
+        .action.landed:disabled { opacity:1; filter:none; box-shadow:var(--lift), var(--glow-gold); }
         .comb-wrap { display:flex; align-items:center; justify-content:center; min-height:0; }
 
         .comb {
@@ -126,12 +135,16 @@ export function CategoryPicker({
         /* إزاحة الصف الأوسط بنصف خلية */
         .comb-row.offset { margin-inline-start: calc(var(--hw) * 0.5 + var(--gap) * 0.5); }
 
+        /* الصفوف متداخلة رأسياً، فالسداسي المكبَّر يُغطّى بالصف الذي تحته
+           ما لم يُرفع فوقه — تظهر قمّته مقصوصة كأنها عطب. */
         .hex {
+          position:relative;
           width:var(--hw); height:var(--hh);
           display:grid; place-items:center;
           transition:transform .2s var(--ease-spring), filter .25s ease;
           filter:drop-shadow(0 8px 18px rgba(0,0,0,.3));
         }
+        .hex.cursor, .hex.landed { z-index:2; }
         /* الوجه المقصوص سداسياً — الحدود لا تعمل مع clip-path فالحالة تُقرأ من اللون والحجم والتوهّج */
         .hex-face {
           width:100%; height:100%;
@@ -139,12 +152,13 @@ export function CategoryPicker({
           padding:0 18%;
           clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
           background:linear-gradient(160deg, var(--surface-2), var(--surface) 68%);
-          transition:background .25s ease;
+          /* أقصر من أسرع قفزة للضوء (٤٨ms) وإلا لم يبلغ لونَه كاملاً فبدا باهتاً */
+          transition:background .07s linear;
         }
         .hex-name {
           font-size:clamp(13px, 1.75vw, 21px);
           font-weight:800; text-align:center; line-height:1.35; color:var(--cream);
-          transition:color .25s ease;
+          transition:color .07s linear;
         }
 
         /* المستهلَك: ظاهر لكن باهت — لا يختفي */
@@ -152,9 +166,11 @@ export function CategoryPicker({
         .hex.spent .hex-face { background:var(--spent); }
         .hex.spent .hex-name { color:var(--spent-text); }
 
-        /* الضوء المارّ */
-        .hex.cursor { transform:scale(1.07); filter:drop-shadow(0 0 16px rgba(245,239,227,.5)); }
-        .hex.cursor .hex-face { background:linear-gradient(160deg, #2E5E7E, var(--surface-2) 70%); }
+        /* الضوء المارّ — يجب أن يُتابَع من آخر المجلس، فالفرق عن الخلية الساكنة
+           لون كامل لا درجة أفتح بقليل. */
+        .hex.cursor { transform:scale(1.09); filter:drop-shadow(0 0 30px rgba(245,239,227,.75)); }
+        .hex.cursor .hex-face { background:var(--cream); }
+        .hex.cursor .hex-name { color:var(--night); }
 
         /* الاستقرار */
         .hex.landed {

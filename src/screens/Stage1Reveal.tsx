@@ -30,12 +30,12 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         <button className="disc owner" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'owner' })}>
           <span className="pk-role">صاحب الدور</span>
           <span className="pk-name">{state.teams[owner].name}</span>
-          <span className="pk-pts">+10</span>
+          <span className="pk-pts tabular">+10</span>
         </button>
         <button className="disc rival" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'rival' })}>
           <span className="pk-role">الفريق الآخر</span>
           <span className="pk-name">{state.teams[rival].name}</span>
-          <span className="pk-pts">+10</span>
+          <span className="pk-pts tabular">+10</span>
         </button>
       </div>
 

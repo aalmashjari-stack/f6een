@@ -2,8 +2,16 @@ import { useState } from 'react'
 import type { GameState } from '../game/session'
 import { leader, playerStats } from '../game/session'
 import type { Action } from '../game/reducer'
-// النسخة الشفافة للاستخدام داخل التطبيق. الأصل بلوحته الزرقاء يبقى للمتاجر والطباعة.
-import stickerUrl from '../../assets/sahsahli-sticker-gold-transparent.svg'
+// نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
+import stickerUrl from '../../assets/sahsahli-sticker-hero.svg'
+
+/** تمييز العدد العربي: ١ مفرد، ٢ مثنّى، ٣–١٠ جمع، ١١ فأكثر مفرد منصوب. */
+function correctAnswers(n: number) {
+  if (n === 1) return 'إجابة صحيحة واحدة'
+  if (n === 2) return 'إجابتان صحيحتان'
+  if (n <= 10) return `${n} إجابات صحيحة`
+  return `${n} إجابة صحيحة`
+}
 
 /**
  * الختام — الشاشة ٨. الفائز، النتيجة، أفضل لاعب، سطر لكل لاعب.
@@ -30,14 +38,15 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
             <span className="w-title">{state.teams[win].name}</span>
           </>
         )}
-        <div className="final-score tabular">
-          {state.teams[0].score} — {state.teams[1].score}
+        <div className="final-score">
+          <span className="tabular">{state.teams[0].score}</span> —{' '}
+          <span className="tabular">{state.teams[1].score}</span>
         </div>
       </div>
 
       {best && (
         <div className="best">
-          أفضل لاعب: <b>{best.player.name}</b> · {best.correct} إجابات صحيحة
+          أفضل لاعب: <b>{best.player.name}</b> · {correctAnswers(best.correct)}
         </div>
       )}
 
@@ -46,7 +55,9 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
           <div key={s.player.id} className="stat-row">
             <span className="sr-name">{s.player.name}</span>
             <span className="sr-team">{state.teams[s.teamId].name}</span>
-            <span className="sr-correct tabular">صح: {s.correct}</span>
+            <span className="sr-correct">
+              صح: <span className="tabular">{s.correct}</span>
+            </span>
           </div>
         ))}
       </div>

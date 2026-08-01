@@ -69,7 +69,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
       ) : (
         <div className="s3-verdicts">
           <button className="v correct" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'correct' })}>
-            ✓<span className="v-pts">+5</span>
+            ✓<span className="v-pts tabular">+5</span>
           </button>
           <button className="v wrong" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'wrong' })}>
             ✗
@@ -102,7 +102,8 @@ function Stage3Styles() {
           box-shadow:var(--lift);
         }
         .s3-inner { display:flex; flex-direction:column; gap:20px; align-items:center; }
-        .s3-answer { font-size:clamp(20px,3vw,32px); font-weight:800; color:var(--gold); text-align:center; }
+        /* أكبر من السؤال: الساعة لا تتوقف، والحكم يقرأ الإجابة في لمحة لا في قراءة. */
+        .s3-answer { font-size:clamp(30px,5vw,54px); font-weight:800; color:var(--gold); text-align:center; line-height:1.25; }
         .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
         .s3-verdicts { display:flex; gap:14px; align-items:stretch; }
         .v { border:none; cursor:pointer; font-family:inherit; font-weight:800; border-radius:var(--r-lg); display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .08s ease; }

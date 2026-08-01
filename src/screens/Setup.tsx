@@ -1,14 +1,47 @@
 import { useState } from 'react'
 import type { SetupInput } from '../game/session'
 import type { TeamId } from '../game/types'
-// النسخة الشفافة للاستخدام داخل التطبيق. الأصل بلوحته الزرقاء يبقى للمتاجر والطباعة.
-import stickerUrl from '../../assets/sahsahli-sticker-gold-transparent.svg'
+// نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
+import stickerUrl from '../../assets/sahsahli-sticker-hero.svg'
 
 const MIN = 2
 const MAX = 6
 
 /** أسماء بديلة تُستخدم فقط إن ترك الحقل فارغاً — الحقول تبدأ فارغة بنصّ إرشادي. */
 const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
+
+/**
+ * خلفية الهيرو: خلية نحل سداسية باهتة خلف الشعار.
+ * الشكل مأخوذ من شاشة سحب التصنيف عمداً — أول ما تراه العين هو شكل اللعبة نفسه.
+ * الألوان من الهوية وحدها (القسم ١١)، والقناع يذيبها نحو الحواف حتى لا تنافس النص.
+ */
+function HeroComb() {
+  // سداسي مدبّب الرأس بعرض ٦٠ وارتفاع ٦٠×١٫١٥٤٧ — نفس نسبة السداسي في CategoryPicker
+  return (
+    <svg className="hero-comb" aria-hidden="true">
+      <defs>
+        <pattern id="hero-hex" width="60" height="103.92" patternUnits="userSpaceOnUse">
+          <g fill="none" stroke="var(--text-3)" strokeWidth="1.5">
+            <path d="M30 0 L60 17.32 L60 51.96 L30 69.28 L0 51.96 L0 17.32 Z" />
+            <path d="M0 51.96 L30 69.28 L30 103.92 L0 121.24 L-30 103.92 L-30 69.28 Z" />
+            <path d="M60 51.96 L90 69.28 L90 103.92 L60 121.24 L30 103.92 L30 69.28 Z" />
+          </g>
+        </pattern>
+        {/* تدرّج رأسي لا شعاعي: الشعار يحتلّ المركز، فأي بؤرة هناك تُطفأ تحته
+            ولا يبقى من النسيج إلا أركانه — فيُقرأ تشويشاً لا خلفية. */}
+        <linearGradient id="hero-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fff" stopOpacity=".34" />
+          <stop offset="62%" stopColor="#fff" stopOpacity=".17" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        <mask id="hero-mask">
+          <rect width="100%" height="100%" fill="url(#hero-fade)" />
+        </mask>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#hero-hex)" mask="url(#hero-mask)" />
+    </svg>
+  )
+}
 
 export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   const [names, setNames] = useState<[string, string]>(['', ''])
@@ -77,11 +110,15 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
 
   return (
     <div className="screen setup">
-      <div className="brand">
+      <div className="hero">
+        <HeroComb />
         <img src={stickerUrl} alt="صحصحلي" />
       </div>
 
-      <div className="teams-grid">
+      {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
+          في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
+      <div className="setup-body">
+        <div className="teams-grid">
         {[0, 1].map((ti) => {
           const team = ti as TeamId
           return (
@@ -129,21 +166,48 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         )}
       </div>
 
-      <div className="stack gap-s">
+      <div className="stack gap-s setup-actions">
         <button className="action ghost" onClick={toss} disabled={tossing}>
           {starter !== null ? 'إعادة القرعة' : 'قرعة البدء'}
         </button>
         <button className="action" disabled={starter === null} onClick={start}>
           ابدأ اللعبة
         </button>
+        </div>
       </div>
 
       <style>{`
         .setup { overflow:auto; }
-        .brand { display:flex; justify-content:center; flex:none; }
+
+        /* الهيرو يبتلع حشوة .screen ليلامس حافّتي الشاشة وأعلاها،
+           وينتهي بانحناء سفلي فيقرأ كمنصّة يقف عليها الشعار لا كشريط. */
+        .hero {
+          position:relative; flex:none;
+          margin:calc(-1 * clamp(16px,3vw,40px)) calc(-1 * clamp(16px,3vw,40px)) 0;
+          padding:clamp(26px,5.5vh,60px) clamp(16px,3vw,40px) clamp(22px,4vh,46px);
+          display:flex; justify-content:center;
+          border-radius:0 0 clamp(34px,6vw,76px) clamp(34px,6vw,76px);
+          overflow:hidden;
+          background:
+            radial-gradient(72% 108% at 50% -8%, rgba(255,189,89,.17), transparent 70%),
+            radial-gradient(44% 74% at 86% 14%, rgba(228,103,74,.14), transparent 70%),
+            linear-gradient(180deg, rgba(27,62,86,.85), rgba(27,62,86,0));
+        }
+        .hero-comb { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+
+        .setup-body {
+          flex:1; min-height:0;
+          display:flex; flex-direction:column;
+          gap:clamp(12px, 2vh, 24px);
+        }
+        /* الزرّان عند الحافّة السفلى كما في كل شاشات اللعب — يبتلعان فراغ
+           التابلت الطولي بدل أن يتركاه معلّقاً تحتهما. */
+        .setup-actions { margin-top:auto; }
+
         /* القياس بالعرض لا بالارتفاع: النسبة عريضة (٤٫٢٥:١) بعد قصّ اللوحة،
            فربطه بالارتفاع يتجاوز عرض الشاشة على التابلت الطولي. */
-        .brand img {
+        .hero img {
+          position:relative; z-index:1;
           width:min(74%, 660px); height:auto; max-height:26vh; object-fit:contain;
           filter:drop-shadow(0 10px 30px rgba(0,0,0,.4));
           animation:brand-in .7s var(--ease-spring) both;
@@ -197,6 +261,13 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .toss-hint { color:var(--text-3); }
 
         @media (max-width:640px){ .teams-grid{ grid-template-columns:1fr; } }
+
+        /* شاشة قصيرة (١٠٢٤×٦٠٠ مثلاً): الهيرو يتقلّص حتى يبقى زر «ابدأ اللعبة»
+           فوق الحافّة — الفعل الأساسي لا يجوز أن يسقط تحت الطيّة. */
+        @media (max-height:700px) {
+          .hero { padding-top:clamp(14px,2.6vh,22px); padding-bottom:clamp(12px,2.2vh,20px); }
+          .hero img { width:min(56%, 430px); max-height:13vh; }
+        }
       `}</style>
     </div>
   )
