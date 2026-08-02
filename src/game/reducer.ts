@@ -194,8 +194,19 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         return { ...state, s3Team: nextTeam, s3Done: done, s3Revealed: false }
       }
       // انتهى الفريقان → تعادل؟ فاصل تعادل : ختام
+      // يمرّ بالفاصل أولاً: القفز المباشر إلى سؤال حاسم بلا إنذار يفاجئ المتسابقين
+      // ولا يعرفون أنهم في سؤال فاصل ولا ما قواعده.
       if (state.teams[0].score === state.teams[1].score) {
-        return { ...state, s3Done: done, currentCategory: null, currentQuestion: null, spentCategories: [], s3Revealed: false, phase: 'tiebreak' }
+        return {
+          ...state,
+          s3Done: done,
+          currentCategory: null,
+          currentQuestion: null,
+          spentCategories: [],
+          s3Revealed: false,
+          intervalNext: 'tiebreak',
+          phase: 'interval',
+        }
       }
       return { ...state, s3Done: done, phase: 'endgame' }
     }

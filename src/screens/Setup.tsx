@@ -10,38 +10,8 @@ const MAX = 6
 /** أسماء بديلة تُستخدم فقط إن ترك الحقل فارغاً — الحقول تبدأ فارغة بنصّ إرشادي. */
 const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
 
-/**
- * خلفية الهيرو: خلية نحل سداسية باهتة خلف الشعار.
- * الشكل مأخوذ من شاشة سحب التصنيف عمداً — أول ما تراه العين هو شكل اللعبة نفسه.
- * الألوان من الهوية وحدها (القسم ١١)، والقناع يذيبها نحو الحواف حتى لا تنافس النص.
- */
-function HeroComb() {
-  // سداسي مدبّب الرأس بعرض ٦٠ وارتفاع ٦٠×١٫١٥٤٧ — نفس نسبة السداسي في CategoryPicker
-  return (
-    <svg className="hero-comb" aria-hidden="true">
-      <defs>
-        <pattern id="hero-hex" width="60" height="103.92" patternUnits="userSpaceOnUse">
-          <g fill="none" stroke="var(--text-3)" strokeWidth="1.5">
-            <path d="M30 0 L60 17.32 L60 51.96 L30 69.28 L0 51.96 L0 17.32 Z" />
-            <path d="M0 51.96 L30 69.28 L30 103.92 L0 121.24 L-30 103.92 L-30 69.28 Z" />
-            <path d="M60 51.96 L90 69.28 L90 103.92 L60 121.24 L30 103.92 L30 69.28 Z" />
-          </g>
-        </pattern>
-        {/* تدرّج رأسي لا شعاعي: الشعار يحتلّ المركز، فأي بؤرة هناك تُطفأ تحته
-            ولا يبقى من النسيج إلا أركانه — فيُقرأ تشويشاً لا خلفية. */}
-        <linearGradient id="hero-fade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fff" stopOpacity=".34" />
-          <stop offset="62%" stopColor="#fff" stopOpacity=".17" />
-          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-        </linearGradient>
-        <mask id="hero-mask">
-          <rect width="100%" height="100%" fill="url(#hero-fade)" />
-        </mask>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#hero-hex)" mask="url(#hero-mask)" />
-    </svg>
-  )
-}
+/* خلية النحل خلف الشعار انتقلت إلى `body::after` في theme.css فصارت خلف كل الشاشات.
+   إبقاؤها هنا أيضاً كان يضاعف النسيج تحت الشعار ويزحمه. */
 
 export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   const [names, setNames] = useState<[string, string]>(['', ''])
@@ -111,7 +81,6 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   return (
     <div className="screen setup">
       <div className="hero">
-        <HeroComb />
         <img src={stickerUrl} alt="صحصحلي" />
       </div>
 
@@ -193,7 +162,6 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             radial-gradient(44% 74% at 86% 14%, rgba(228,103,74,.14), transparent 70%),
             linear-gradient(180deg, rgba(27,62,86,.85), rgba(27,62,86,0));
         }
-        .hero-comb { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 
         .setup-body {
           flex:1; min-height:0;
