@@ -3,6 +3,7 @@ import { drawOne } from './draw'
 import {
   GameState,
   SetupInput,
+  StageKey,
   STAGE1_POINTS,
   STAGE1_QUESTIONS,
   STAGE2_CORRECT,
@@ -26,17 +27,20 @@ export type Action =
   | { t: 'S2_SET_MARK'; who: 0 | 1; mark: Mark }
   | { t: 'S2_NEXT_ROUND' }
   | { t: 'S3_REVEAL' }
-  | { t: 'S3_JUDGE'; verdict: 'correct' | 'pass' | 'wrong' }
+  | { t: 'S3_JUDGE'; verdict: 'correct' | 'wrong' }
   | { t: 'S3_END_TURN' } // انتهت الثلاثون ثانية
   | { t: 'TIEBREAK_SPIN'; category: string }
   | { t: 'TIEBREAK_PICK'; team: TeamId | 'none' }
   | { t: 'REPORT_QUESTION'; id: string }
   | { t: 'NEW_GAME' }
 
-const addScore = (s: GameState, team: TeamId, delta: number): GameState => {
+/** كل نقطة تُسجَّل مرّتين: في مجموع الفريق، وفي عمود مرحلتها لشاشة الختام. */
+const addScore = (s: GameState, team: TeamId, delta: number, stage: StageKey): GameState => {
   const teams = [...s.teams] as GameState['teams']
   teams[team] = { ...teams[team], score: teams[team].score + delta }
-  return { ...s, teams }
+  const bucket = [...s.stagePoints[stage]] as [number, number]
+  bucket[team] += delta
+  return { ...s, teams, stagePoints: { ...s.stagePoints, [stage]: bucket } }
 }
 
 export function reducer(state: GameState | null, action: Action): GameState | null {
@@ -79,8 +83,8 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       const owner = stage1Owner(state.s1Index, state.startingTeam)
       const rival = (1 - owner) as TeamId
       let s = state
-      if (action.outcome === 'owner') s = addScore(s, owner, STAGE1_POINTS)
-      else if (action.outcome === 'rival') s = addScore(s, rival, STAGE1_POINTS)
+      if (action.outcome === 'owner') s = addScore(s, owner, STAGE1_POINTS, 's1')
+      else if (action.outcome === 'rival') s = addScore(s, rival, STAGE1_POINTS, 's1')
 
       const nextIndex = s.s1Index + 1
       if (nextIndex < STAGE1_QUESTIONS) {
@@ -127,6 +131,14 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (!state) return state
       const marks = [...state.s2Marks] as [Mark, Mark]
       marks[action.who] = action.mark
+      /* لاعب واحد على الأكثر يحمل علامة في الجولة (القسم ٥): من بادر أولاً هو صاحب
+         الإجابة وحده — إن أصاب أخذ +20، وإن أخطأ خُصم منه وانتهت الجولة ولم يرثها خصمه.
+         الشاشة كانت تسمح بتعليم الاثنين فتُخالف القاعدة بضغطتين.
+         آخر ضغطة تفوز: الحكم صحّح نفسه، فيُفرَّغ الآخر بدل حجب الضغطة بلا تفسير. */
+      if (action.mark !== 'صمت') {
+        const other = (1 - action.who) as 0 | 1
+        marks[other] = 'صمت'
+      }
       return { ...state, s2Marks: marks }
     }
 
@@ -136,19 +148,21 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       // تطبيق النقاط والإحصاء
       let s = state
       const correctByPlayer = { ...s.correctByPlayer }
+      const wrongByPlayer = { ...s.wrongByPlayer }
       for (const who of [0, 1] as const) {
         const teamId = who as TeamId
         const mark = s.s2Marks[who]
         const playerIdx = sel[who]
         const player = s.teams[teamId].players[playerIdx]
         if (mark === 'صح') {
-          s = addScore(s, teamId, STAGE2_CORRECT)
+          s = addScore(s, teamId, STAGE2_CORRECT, 's2')
           correctByPlayer[player.id] = (correctByPlayer[player.id] ?? 0) + 1
         } else if (mark === 'غلط') {
-          s = addScore(s, teamId, STAGE2_WRONG)
+          s = addScore(s, teamId, STAGE2_WRONG, 's2')
+          wrongByPlayer[player.id] = (wrongByPlayer[player.id] ?? 0) + 1
         }
       }
-      s = { ...s, correctByPlayer }
+      s = { ...s, correctByPlayer, wrongByPlayer }
 
       const nextIndex = s.s2Index + 1
       if (nextIndex < s.s2Rounds) {
@@ -175,8 +189,11 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     case 'S3_JUDGE': {
       if (!state) return state
       let s = state
-      if (action.verdict === 'correct') s = addScore(s, s.s3Team, STAGE3_POINTS)
-      // السؤال ظهر على الشاشة فيُحرق الآن — بما فيه المُمرَّر (القسم ٨).
+      if (action.verdict === 'correct') s = addScore(s, s.s3Team, STAGE3_POINTS, 's3')
+      const counts = [...s.s3Counts[action.verdict]] as [number, number]
+      counts[s.s3Team] += 1
+      s = { ...s, s3Counts: { ...s.s3Counts, [action.verdict]: counts } }
+      // السؤال ظهر على الشاشة فيُحرق الآن، أصيب أم لا (القسم ٨).
       // الحرق هنا لا عند سحب الطابور، حتى لا يحترق الاحتياطي الذي لم يُعرض.
       const shown = s.s3Queue[s.s3Pos]
       if (shown) {
@@ -222,7 +239,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     case 'TIEBREAK_PICK': {
       if (!state) return state
       let s = state
-      if (action.team !== 'none') s = addScore(s, action.team, TIEBREAK_POINTS)
+      if (action.team !== 'none') s = addScore(s, action.team, TIEBREAK_POINTS, 'tie')
       // إن بقي التعادل (لا أحد أصاب) نعيد سؤالاً صعباً آخر
       if (s.teams[0].score === s.teams[1].score) {
         return { ...s, currentQuestion: null, currentCategory: null, s3Revealed: false, phase: 'tiebreak' }

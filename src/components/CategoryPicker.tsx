@@ -109,7 +109,9 @@ export function CategoryPicker({
           onClick={start}
           disabled={running || landed !== null || available.length === 0}
         >
-          {landed ? landed : running ? '…' : 'صحصح'}
+          {/* «ابدأ» في المرحلتين معاً: لفظ واحد لفعل واحد. الحكم يشغّل ثلاث مراحل،
+              واختلاف اللفظ بين شاشتين متطابقتين يجعله يتردّد قبل الضغط. */}
+          {landed ? landed : running ? '…' : 'ابدأ'}
         </button>
         {/* لا لفظ يوحي بأن الحكم هو من يختار — التطبيق يسحب، ولا سلطة تقديرية للحكم (المبدأ ٣). */}
         <div className="action-note">السحبة نهائية — بلا إعادة</div>

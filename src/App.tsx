@@ -17,8 +17,14 @@ import { Endgame } from './screens/Endgame'
 const SAVE_KEY = 'sahsahli.session'
 const RESUME_WINDOW_MS = 24 * 60 * 60 * 1000
 
+/* يُرفع كلما تغيّر شكل الحالة المحفوظة. جلسة حُفظت بنسخة أقدم تنقصها حقول
+   تعتمد عليها النسخة الحالية، فاستئنافها يُسقط التطبيق في منتصف اللعب.
+   الأسلم أن تُطرح ويُستأنف من الإعداد — وهذا لا يكلّف لعبة لأن الخصم عند الإنشاء. */
+const SAVE_VERSION = 2
+
 interface Saved {
   savedAt: number
+  version?: number
   state: Omit<GameState, 'usedQuestionIds'> & { usedQuestionIds: string[] }
 }
 
@@ -27,6 +33,10 @@ function loadSession(): GameState | null {
     const raw = localStorage.getItem(SAVE_KEY)
     if (!raw) return null
     const saved = JSON.parse(raw) as Saved
+    if (saved.version !== SAVE_VERSION) {
+      localStorage.removeItem(SAVE_KEY)
+      return null
+    }
     if (Date.now() - saved.savedAt > RESUME_WINDOW_MS) {
       localStorage.removeItem(SAVE_KEY)
       return null
@@ -46,6 +56,7 @@ function saveSession(state: GameState | null) {
     }
     const payload: Saved = {
       savedAt: Date.now(),
+      version: SAVE_VERSION,
       state: { ...state, usedQuestionIds: [...state.usedQuestionIds] },
     }
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload))

@@ -65,8 +65,15 @@ export interface GameState {
 
   /* إحصاء */
   correctByPlayer: Record<string, number>
+  wrongByPlayer: Record<string, number>
+  /** نقاط كل فريق موزّعة على المراحل — عمود الختام: أين كُسبت اللعبة وأين خُسرت. */
+  stagePoints: Record<StageKey, [number, number]>
+  /** الحق ما تلحق: عدد الأسئلة بكل نتيجة لكل فريق (صحيحة · خاطئة). */
+  s3Counts: Record<'correct' | 'wrong', [number, number]>
   reportedQuestionIds: string[]
 }
+
+export type StageKey = 's1' | 's2' | 's3' | 'tie'
 
 export interface SetupInput {
   teamNames: [string, string]
@@ -91,7 +98,12 @@ export function createSession(input: SetupInput): GameState {
   const s3Queue = drawStage3Queue(STAGE3_QUEUE_SIZE, used)
 
   const correctByPlayer: Record<string, number> = {}
-  for (const t of teams) for (const p of t.players) correctByPlayer[p.id] = 0
+  const wrongByPlayer: Record<string, number> = {}
+  for (const t of teams)
+    for (const p of t.players) {
+      correctByPlayer[p.id] = 0
+      wrongByPlayer[p.id] = 0
+    }
 
   return {
     phase: 'stage1-wheel',
@@ -114,6 +126,9 @@ export function createSession(input: SetupInput): GameState {
     s3Done: [],
     intervalNext: 'stage2-selection',
     correctByPlayer,
+    wrongByPlayer,
+    stagePoints: { s1: [0, 0], s2: [0, 0], s3: [0, 0], tie: [0, 0] },
+    s3Counts: { correct: [0, 0], wrong: [0, 0] },
     reportedQuestionIds: [],
   }
 }
@@ -148,11 +163,19 @@ export interface PlayerStat {
   player: Player
   teamId: TeamId
   correct: number
+  wrong: number
 }
 
+/** إحصاء اللاعب الفردي يأتي كلّه من راس براس — وهي المرحلة الوحيدة التي يُنقَّط فيها لاعب بعينه. */
 export function playerStats(state: GameState): PlayerStat[] {
   const stats: PlayerStat[] = []
   for (const t of state.teams)
-    for (const p of t.players) stats.push({ player: p, teamId: t.id, correct: state.correctByPlayer[p.id] ?? 0 })
+    for (const p of t.players)
+      stats.push({
+        player: p,
+        teamId: t.id,
+        correct: state.correctByPlayer[p.id] ?? 0,
+        wrong: state.wrongByPlayer[p.id] ?? 0,
+      })
   return stats
 }

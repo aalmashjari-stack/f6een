@@ -9,7 +9,7 @@ import { useCountdown } from '../components/useCountdown'
 /**
  * الحق ما تلحق — الشاشة ٦. المؤقت مرجاني (العداء مع الوقت).
  * الساعة لا تتوقف أبداً؛ الكشف والحكم يُحسبان منها. الكشف بضغطة الحكم قبل الحكم (القرار ٧).
- * ✓ +٥ · تمرير · ✗ — الكل يحرق السؤال ويتقدّم.
+ * زرّان: ✓ +٥ · ✗ — كلاهما يحرق السؤال ويتقدّم.
  */
 export function Stage3({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   // مفتاح الدور يجبر إعادة تركيب الساعة عند تبدّل الفريق
@@ -30,7 +30,12 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           <div className="s3-ready">
             <div className="s3r-eyebrow">الحق ما تلحق</div>
             <div className="s3r-team">دور {team.name}</div>
-            <div className="s3r-note">30 ثانية · الساعة لا تتوقف بعد الضغط</div>
+            {/* القاعدة تحت اسم المرحلة لا في الفاصل وحده: الفريق الثاني يصل هذه الشاشة
+                بعد دور خصمه كاملاً، وقد نسي ما قيل في الفاصل قبل دقيقة. */}
+            <div className="s3r-rules">
+              <span className="s3r-rule">30 ثانية دون توقف لكل فريق</span>
+              <span className="s3r-rule gold">+5 نقاط لكل إجابة صحيحة</span>
+            </div>
           </div>
         </div>
         <button className="action coral" onClick={() => setStarted(true)}>
@@ -67,15 +72,14 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           اكشف الإجابة
         </button>
       ) : (
+        /* حُذف زر «تمرير»: أثره وأثر ✗ واحد — يحرق السؤال ويتقدّم بلا نقطة.
+           زر ثالث بلا نتيجة مختلفة يسرق وقتاً من ساعة لا تتوقف. */
         <div className="s3-verdicts">
           <button className="v correct" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'correct' })}>
             ✓<span className="v-pts tabular">+5</span>
           </button>
           <button className="v wrong" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'wrong' })}>
             ✗
-          </button>
-          <button className="v pass" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'pass' })}>
-            تمرير
           </button>
         </div>
       )}
@@ -93,7 +97,14 @@ function Stage3Styles() {
         .s3-ready { text-align:center; display:flex; flex-direction:column; gap:12px; }
         .s3r-eyebrow { color:var(--coral); font-weight:800; font-size:clamp(16px,2.2vw,22px); }
         .s3r-team { color:var(--cream); font-weight:800; font-size:clamp(34px,6vw,64px); }
-        .s3r-note { color:var(--text-2); font-size:clamp(15px,2vw,20px); }
+        .s3r-note { color:var(--text-3); font-size:clamp(14px,1.7vw,18px); }
+        .s3r-rules { display:flex; flex-wrap:wrap; gap:clamp(8px,1.4vw,14px); justify-content:center; margin-top:4px; }
+        .s3r-rule {
+          background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm);
+          padding:clamp(8px,1.4vh,14px) clamp(14px,2vw,22px);
+          color:var(--cream); font-weight:700; font-size:clamp(16px,2.2vw,24px);
+        }
+        .s3r-rule.gold { color:var(--gold); border-color:var(--gold); }
         .s3-q {
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
           border:1px solid var(--border);
@@ -108,10 +119,9 @@ function Stage3Styles() {
         .s3-verdicts { display:flex; gap:14px; align-items:stretch; }
         .v { border:none; cursor:pointer; font-family:inherit; font-weight:800; border-radius:var(--r-lg); display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .08s ease; }
         .v:active { transform:scale(.97); }
-        .v.correct { flex:2; background:var(--gold); color:var(--on-gold); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
+        .v.correct { flex:1; background:var(--gold); color:var(--on-gold); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
         .v.correct .v-pts { font-size:.5em; }
-        .v.wrong { flex:2; background:var(--coral); color:var(--on-coral); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
-        .v.pass { flex:1; background:transparent; border:2px solid var(--border); color:var(--text-2); font-size:clamp(16px,2vw,20px); opacity:.75; }
+        .v.wrong { flex:1; background:var(--coral); color:var(--on-coral); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
       `}</style>
   )
 }
