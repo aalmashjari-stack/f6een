@@ -130,9 +130,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           </div>
         ) : tossing ? (
           <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
-        ) : (
-          <div className="toss-hint">اضغط للقرعة لتحديد الفريق البادئ</div>
-        )}
+        ) : null}
       </div>
 
       <div className="stack gap-s setup-actions">
@@ -223,10 +221,11 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .pill:active { transform:scale(.9); }
         .pill:disabled { opacity:.3; }
 
+        /* الخانة تبقى محجوزة وإن كانت فارغة: نتيجة القرعة تحلّ محلّها لاحقاً،
+           وبلا حجزها يقفز الزرّان تحتها لحظة ظهورها. */
         .toss { text-align:center; min-height:32px; flex:none; }
         .toss-result { font-size:clamp(18px,2.6vw,26px); font-weight:700; }
         .toss-result b { color:var(--gold); }
-        .toss-hint { color:var(--text-3); }
 
         @media (max-width:640px){ .teams-grid{ grid-template-columns:1fr; } }
 
