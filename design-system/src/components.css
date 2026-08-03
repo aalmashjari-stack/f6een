@@ -1,0 +1,459 @@
+/* أنماط مكوّنات صحصحلي — منقولة من التطبيق نفسه لا مُعاد تأليفها.
+   كل الأصناف مسبوقة بـ sh- : وكيل التصميم يبني صفحات كاملة، وأسماء مثل
+   .action أو .grow تصطدم بأنماطه هو. */
+
+/* ===================== الشاشة والخلفية ===================== */
+.sh-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: clamp(16px, 3vw, 40px);
+  gap: clamp(12px, 2vh, 24px);
+  font-family: var(--sh-font);
+  color: var(--sh-cream);
+  background: var(--sh-night);
+  animation: sh-screen-in .42s var(--sh-ease-spring) both;
+}
+@keyframes sh-screen-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* توهّجات ناعمة تتنفّس ببطء خلف كل شيء — خافتة عمداً حتى لا تنافس النص */
+.sh-screen::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 42% at 18% 22%, rgba(255, 189, 89, .13), transparent 70%),
+    radial-gradient(34% 40% at 84% 74%, rgba(228, 103, 74, .12), transparent 70%),
+    radial-gradient(46% 46% at 62% 12%, rgba(35, 76, 104, .5), transparent 72%);
+}
+/* نسيج خلية النحل: يجعل الشاشات تُقرأ كعالم واحد لا كشاشات متفرّقة.
+   محجوب من الأعلى والأسفل لأن النص يعيش في الوسط. */
+.sh-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='103.92'%3E%3Cg fill='none' stroke='%235E7D96' stroke-width='1.5' stroke-opacity='.18'%3E%3Cpath d='M30 0 L60 17.32 L60 51.96 L30 69.28 L0 51.96 L0 17.32 Z'/%3E%3Cpath d='M0 51.96 L30 69.28 L30 103.92 L0 121.24 L-30 103.92 L-30 69.28 Z'/%3E%3Cpath d='M60 51.96 L90 69.28 L90 103.92 L60 121.24 L30 103.92 L30 69.28 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 90px 155.88px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 26%, #000 66%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 26%, #000 66%, transparent);
+}
+.sh-screen > * { position: relative; z-index: 1; }
+
+/* ===================== الأزرار ===================== */
+.sh-btn {
+  flex: none;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sh-font);
+  font-weight: 800;
+  border-radius: var(--sh-r-pill);
+  padding: clamp(18px, 3vh, 30px) 34px;
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1.3;
+  background: linear-gradient(150deg, #FFCE7B, var(--sh-gold) 55%, #F0A93F);
+  color: var(--sh-on-gold);
+  box-shadow: var(--sh-lift), var(--sh-glow-gold);
+  transition: transform .14s var(--sh-ease-spring), box-shadow .25s ease, filter .2s ease;
+}
+.sh-btn:active { transform: scale(.975) translateY(1px); box-shadow: 0 6px 16px rgba(0,0,0,.3); }
+.sh-btn:disabled { opacity: .35; cursor: default; box-shadow: none; filter: saturate(.5); }
+
+/* لمعة تمرّ على الزر الأساسي — إشارة حياة خفيفة */
+.sh-btn--primary::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.34), transparent);
+  transform: skewX(-18deg);
+  animation: sh-sheen 4.5s ease-in-out infinite;
+}
+.sh-btn:disabled::after { display: none; }
+@keyframes sh-sheen {
+  0%, 62%   { inset-inline-start: -55%; }
+  92%, 100% { inset-inline-start: 115%; }
+}
+
+/* مرجاني: للمراحل التي فيها عداء مع الوقت وحدها */
+.sh-btn--coral {
+  background: linear-gradient(150deg, #F0836A, var(--sh-coral) 55%, #C9502F);
+  color: var(--sh-on-coral);
+  box-shadow: var(--sh-lift), var(--sh-glow-coral);
+}
+/* شبح: فعل ثانوي بجانب فعل أساسي */
+.sh-btn--ghost {
+  background: rgba(27, 62, 86, .5);
+  color: var(--sh-cream);
+  border: 2px solid var(--sh-border);
+  box-shadow: none;
+  backdrop-filter: blur(6px);
+}
+/* تابع: خيار ثالث بحجم النص لا بحجم الزر */
+.sh-btn--sub {
+  background: transparent;
+  box-shadow: none;
+  padding: 12px;
+  font-size: clamp(14px, 1.8vw, 17px);
+  font-weight: 700;
+  color: var(--sh-text-2);
+}
+.sh-btn--sub:active { filter: none; box-shadow: none; }
+
+.sh-action-note {
+  text-align: center;
+  color: var(--sh-text-3);
+  font-size: clamp(12px, 1.6vw, 15px);
+  font-family: var(--sh-font);
+}
+
+/* ===================== نصوص عامة ===================== */
+.sh-eyebrow {
+  color: var(--sh-text-2);
+  font-family: var(--sh-font);
+  font-size: clamp(13px, 1.8vw, 17px);
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-align: center;
+}
+/* عزل اتجاهي إلزامي: بلا isolate تقفز إشارة الجمع أو الطرح لآخر الرقم في RTL
+   فتُقرأ «10+» بدل «+10»، والنقاط قد تنزل تحت الصفر. */
+.sh-num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+
+/* ===================== شريط النتيجة ===================== */
+.sh-scorebar { display: flex; align-items: stretch; gap: 12px; flex: none; font-family: var(--sh-font); }
+.sh-scorebar__team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px 10px 24px;
+  border-radius: var(--sh-r-pill);
+  background: linear-gradient(160deg, var(--sh-surface), rgba(27, 62, 86, .55));
+  border: 1px solid var(--sh-border);
+  transition: border-color .35s ease, box-shadow .35s ease, transform .35s var(--sh-ease-spring);
+}
+.sh-scorebar__team--lead {
+  border-color: var(--sh-gold);
+  box-shadow: var(--sh-glow-gold);
+  transform: translateY(-2px);
+}
+.sh-scorebar__name { font-size: clamp(15px, 2vw, 20px); font-weight: 700; color: var(--sh-text-2); }
+.sh-scorebar__team--lead .sh-scorebar__name { color: var(--sh-gold); }
+.sh-scorebar__disc {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: clamp(46px, 6.2vh, 64px);
+  height: clamp(46px, 6.2vh, 64px);
+  border-radius: 50%;
+  background: rgba(15, 44, 66, .75);
+  border: 1px solid var(--sh-border);
+}
+.sh-scorebar__team--lead .sh-scorebar__disc { background: var(--sh-gold); border-color: var(--sh-gold); }
+.sh-scorebar__pts { font-size: clamp(18px, 2.6vw, 27px); font-weight: 800; }
+.sh-scorebar__team--lead .sh-scorebar__pts { color: var(--sh-on-gold); }
+.sh-scorebar__mid {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(8px, 1.6vw, 22px);
+  white-space: nowrap;
+  color: var(--sh-text-2);
+  font-size: clamp(13px, 1.6vw, 17px);
+  font-weight: 700;
+}
+@media (max-width: 620px) {
+  .sh-scorebar { flex-wrap: wrap; }
+  .sh-scorebar__team { flex: 1 1 0; min-width: 0; padding: 8px 8px 8px 14px; gap: 8px; }
+  /* الاسم وحده يتقلّص — القرص والرقم يبقيان لأنهما المقروءان عن بُعد */
+  .sh-scorebar__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sh-scorebar__mid { order: 3; width: 100%; justify-content: center; padding: 2px 0 0; white-space: normal; }
+}
+
+/* ===================== المؤقّت ===================== */
+.sh-timer {
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  aspect-ratio: 1;
+  min-height: 0;
+  font-family: var(--sh-font);
+}
+.sh-timer--md { height: clamp(120px, 20vh, 200px); }
+.sh-timer--lg { height: min(32vh, 40vw, 320px); }
+.sh-timer svg { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+.sh-timer__track { fill: none; stroke: var(--sh-border); stroke-width: 8; opacity: .55; }
+.sh-timer__fill {
+  fill: none; stroke-width: 8; stroke-linecap: round;
+  transition: stroke-dashoffset .12s linear;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+.sh-timer__secs {
+  position: absolute; font-weight: 800; line-height: 1;
+  font-size: clamp(34px, 9.5vh, 104px);
+}
+/* آخر خمس ثوانٍ: الرقم ينبض والحلقة تخفت — يُرى من آخر المجلس */
+.sh-timer--low .sh-timer__secs { animation: sh-tick 1s ease-in-out infinite; }
+.sh-timer--low .sh-timer__fill { animation: sh-pulse-ring 1s ease-in-out infinite; }
+@keyframes sh-tick { 0%,100% { transform: scale(1); } 22% { transform: scale(1.13); } }
+@keyframes sh-pulse-ring { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+
+/* ===================== بطاقة السؤال والإجابة ===================== */
+/* انحناء كبير جداً يكسر شكل المستطيل */
+.sh-question {
+  background: linear-gradient(165deg, var(--sh-surface-2), var(--sh-surface) 60%);
+  border: 1px solid var(--sh-border);
+  border-radius: clamp(30px, 6vh, 64px);
+  padding: clamp(22px, 4vh, 48px) clamp(28px, 5vw, 64px);
+  box-shadow: var(--sh-lift);
+  font-family: var(--sh-font);
+  animation: sh-pop-in .45s var(--sh-ease-spring) both;
+}
+.sh-question__text {
+  font-size: clamp(24px, 4.4vw, 46px);
+  font-weight: 800; line-height: 1.5; text-align: center;
+  color: var(--sh-cream);
+}
+@keyframes sh-pop-in {
+  from { opacity: 0; transform: scale(.965) translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* الكشف ذروة السؤال: الإجابة أكبر عنصر، والإطار ذهبي متوهّج */
+.sh-answer {
+  position: relative;
+  overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: linear-gradient(165deg, var(--sh-surface-2), var(--sh-surface) 60%);
+  border: 1px solid var(--sh-gold);
+  border-radius: clamp(30px, 6vh, 64px);
+  padding: clamp(20px, 3.4vh, 38px) clamp(28px, 5vw, 64px);
+  box-shadow: var(--sh-lift), var(--sh-glow-gold);
+  font-family: var(--sh-font);
+  animation: sh-pop-in .45s var(--sh-ease-spring) both;
+}
+.sh-answer__label { color: var(--sh-text-2); font-weight: 700; font-size: 15px; }
+.sh-answer__text {
+  color: var(--sh-gold); font-weight: 800;
+  font-size: clamp(30px, 5vw, 52px); line-height: 1.3; text-align: center;
+}
+/* السؤال ينكمش ويبهت عند الكشف لكنه يبقى — الجمهور يحتاجه ليفهم الإجابة */
+.sh-answer__question {
+  font-size: clamp(15px, 2vw, 20px); font-weight: 600;
+  color: var(--sh-cream); opacity: .55; text-align: center;
+  font-family: var(--sh-font);
+}
+
+/* ===================== الخلية السداسية ===================== */
+.sh-hexgrid {
+  --sh-hex-w: min(23vw, 20vh, 210px);
+  --sh-hex-h: calc(var(--sh-hex-w) * 1.1547);
+  --sh-hex-gap: clamp(6px, 1vw, 14px);
+  display: flex; flex-direction: column; align-items: center;
+  font-family: var(--sh-font);
+}
+.sh-hexgrid__row { display: flex; gap: var(--sh-hex-gap); }
+/* تداخل رأسي بمقدار ربع الارتفاع ليشتبك الصفّان كخلية نحل */
+.sh-hexgrid__row + .sh-hexgrid__row { margin-top: calc(var(--sh-hex-h) * -0.25 + var(--sh-hex-gap) * 0.5); }
+.sh-hexgrid__row--offset { margin-inline-start: calc(var(--sh-hex-w) * 0.5 + var(--sh-hex-gap) * 0.5); }
+
+/* الصفوف متداخلة رأسياً، فالسداسي المكبَّر يُغطّى بما تحته ما لم يُرفع فوقه */
+/* المقاسان لهما بديل على الخلية نفسها: الشبكة تمرّرهما بالوراثة، لكن الخلية
+   المفردة خارج الشبكة كانت تنهار إلى شريط بلا ارتفاع. */
+.sh-hex {
+  position: relative;
+  width: var(--sh-hex-w, min(23vw, 20vh, 210px));
+  height: var(--sh-hex-h, calc(var(--sh-hex-w, min(23vw, 20vh, 210px)) * 1.1547));
+  display: grid; place-items: center;
+  transition: transform .2s var(--sh-ease-spring), filter .25s ease;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.3));
+}
+.sh-hex--active, .sh-hex--landed { z-index: 2; }
+/* الحدود لا تعمل مع clip-path، فالحالة تُقرأ من اللون والحجم والتوهّج */
+.sh-hex__face {
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  padding: 0 18%;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(160deg, var(--sh-surface-2), var(--sh-surface) 68%);
+  transition: background .07s linear;
+}
+.sh-hex__label {
+  font-size: clamp(13px, 1.75vw, 21px);
+  font-weight: 800; text-align: center; line-height: 1.35;
+  color: var(--sh-cream);
+  transition: color .07s linear;
+}
+/* المستهلَك ظاهر لا مخفي: الإخفاء يفتح باب الاتهام بالتلاعب */
+.sh-hex--spent { filter: none; opacity: .55; }
+.sh-hex--spent .sh-hex__face { background: var(--sh-spent); }
+.sh-hex--spent .sh-hex__label { color: var(--sh-spent-text); }
+/* الضوء المارّ: الفرق عن الساكن لون كامل لا درجة أفتح بقليل */
+.sh-hex--active { transform: scale(1.09); filter: drop-shadow(0 0 30px rgba(245,239,227,.75)); }
+.sh-hex--active .sh-hex__face { background: var(--sh-cream); }
+.sh-hex--active .sh-hex__label { color: var(--sh-night); }
+/* الاستقرار */
+.sh-hex--landed { transform: scale(1.12); filter: drop-shadow(0 0 26px rgba(255,189,89,.65)); }
+.sh-hex--landed .sh-hex__face { background: linear-gradient(160deg, #FFCE7B, var(--sh-gold) 60%, #F0A93F); }
+.sh-hex--landed .sh-hex__label { color: var(--sh-on-gold); }
+
+/* ===================== الشرائح ===================== */
+.sh-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid var(--sh-border); border-radius: var(--sh-r-pill);
+  padding: 4px 12px;
+  color: var(--sh-text-2);
+  font-family: var(--sh-font);
+  font-size: clamp(12px, 1.6vw, 15px); font-weight: 700; white-space: nowrap;
+}
+.sh-chip__count { font-size: 1.15em; font-weight: 800; }
+.sh-chip--gold { color: var(--sh-gold); border-color: rgba(255,189,89,.45); }
+.sh-chip--coral { color: var(--sh-coral); border-color: rgba(228,103,74,.45); }
+
+/* ===================== صفّ إحصائي ===================== */
+.sh-statrow {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px;
+  background: var(--sh-surface); border: 1px solid var(--sh-border);
+  border-radius: var(--sh-r-md);
+  padding: clamp(9px, 1.4vh, 14px) clamp(12px, 2vw, 20px);
+  font-family: var(--sh-font);
+}
+.sh-statrow__label { color: var(--sh-text-2); font-size: clamp(14px, 1.9vw, 19px); font-weight: 700; white-space: nowrap; }
+.sh-statrow__num { font-size: clamp(19px, 2.6vw, 30px); font-weight: 800; color: var(--sh-text-2); text-align: center; }
+/* الأعلى وحده ذهبي — الفرق يُقرأ بلمحة بلا مقارنة رقمين */
+.sh-statrow__num--up { color: var(--sh-gold); }
+.sh-statrow--head { background: transparent; border-color: transparent; padding-bottom: 0; }
+.sh-statrow--head .sh-statrow__num { font-size: clamp(13px, 1.7vw, 17px); font-weight: 700; }
+.sh-statrow--total { border-color: var(--sh-gold); background: transparent; }
+.sh-statrow--total .sh-statrow__num { color: var(--sh-gold); font-size: clamp(22px, 3.2vw, 36px); }
+
+/* ===================== صندوق الحكم ===================== */
+/* الخياران ظاهران معاً: البطاقة التي تدوّر حالتها تُخفي «غلط» خلف ضغطتين */
+.sh-choice {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: clamp(10px, 1.8vh, 20px) 6px;
+  border-radius: var(--sh-r-md); border: 2px solid var(--sh-border);
+  background: transparent; color: var(--sh-text-2);
+  font-family: var(--sh-font); cursor: pointer;
+  transition: transform .08s ease, background .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease;
+}
+.sh-choice:active { transform: scale(.97); }
+.sh-choice__label { font-size: clamp(12px, 1.5vw, 18px); font-weight: 700; }
+.sh-choice__pts { font-size: clamp(20px, 2.8vw, 34px); font-weight: 800; }
+/* المختار يمتلئ وغير المختار يخفت — الفرق لون كامل لا درجة أفتح */
+.sh-choice--gold.sh-choice--on { background: var(--sh-gold); border-color: var(--sh-gold); color: var(--sh-on-gold); }
+.sh-choice--coral.sh-choice--on { background: rgba(228,103,74,.16); border-color: var(--sh-coral); color: var(--sh-coral); }
+.sh-choice--dim { opacity: .4; }
+
+/* ===================== بطاقة لاعب ===================== */
+.sh-playercard {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(8px, 1.6vh, 18px);
+  padding: clamp(12px, 2.2vh, 26px);
+  border-radius: var(--sh-r-lg); border: 2px solid var(--sh-border);
+  background: var(--sh-surface); color: var(--sh-cream);
+  font-family: var(--sh-font);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.sh-playercard--gold { border-color: var(--sh-gold); box-shadow: var(--sh-glow-gold); }
+.sh-playercard--coral { border-color: var(--sh-coral); box-shadow: var(--sh-glow-coral); }
+.sh-playercard__team { font-size: clamp(13px, 1.7vw, 18px); font-weight: 700; color: var(--sh-text-2); }
+.sh-playercard__name {
+  font-size: clamp(24px, 3.6vw, 44px); font-weight: 800; line-height: 1.15;
+  text-align: center; overflow-wrap: anywhere;
+}
+.sh-playercard__choices { display: flex; gap: clamp(8px, 1.2vw, 14px); width: 100%; }
+
+/* ===================== المواجهة ===================== */
+.sh-versus {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; gap: clamp(12px, 3vw, 48px);
+  font-family: var(--sh-font);
+}
+.sh-versus__slot { flex: 1 1 0; min-width: 0; display: flex; justify-content: center; }
+.sh-versus__name {
+  display: block; text-align: center; line-height: 1.15;
+  overflow-wrap: anywhere;
+  font-size: clamp(30px, 6vw, 68px); font-weight: 800; color: var(--sh-cream);
+}
+.sh-versus--settled .sh-versus__name { color: var(--sh-gold); text-shadow: 0 0 34px rgba(255,189,89,.5); }
+.sh-versus__word { color: var(--sh-coral); font-weight: 800; font-size: clamp(22px, 3.4vw, 40px); flex: none; }
+
+/* ===================== بطاقة الفاصل ===================== */
+.sh-interval {
+  max-width: 760px; text-align: center;
+  background: var(--sh-surface); border: 1px solid var(--sh-border);
+  border-radius: var(--sh-r-lg);
+  padding: clamp(28px, 6vh, 60px);
+  display: flex; flex-direction: column; gap: 16px;
+  font-family: var(--sh-font);
+}
+.sh-interval__eyebrow { color: var(--sh-text-2); font-weight: 700; font-size: clamp(14px, 1.8vw, 18px); }
+.sh-interval__title {
+  color: var(--sh-gold); font-weight: 800; font-size: clamp(38px, 7vw, 72px); line-height: 1.1;
+  text-shadow: 0 0 40px rgba(255,189,89,.35);
+}
+.sh-interval__rule { color: var(--sh-cream); font-size: clamp(17px, 2.4vw, 24px); line-height: 1.7; font-weight: 600; }
+/* المرجاني لغة التوتّر في هذه اللعبة — للحظة المعلّقة بسؤال واحد */
+.sh-interval--coral { border-color: var(--sh-coral); box-shadow: var(--sh-glow-coral); }
+.sh-interval--coral .sh-interval__title { color: var(--sh-coral); text-shadow: 0 0 40px rgba(228,103,74,.4); }
+
+/* ===================== بطاقة إعداد الفريق ===================== */
+.sh-teamcard {
+  background: linear-gradient(160deg, var(--sh-surface-2), var(--sh-surface) 70%);
+  border: 1px solid var(--sh-border);
+  border-radius: var(--sh-r-lg);
+  padding: clamp(14px, 2.4vh, 26px);
+  display: flex; flex-direction: column; gap: 12px;
+  font-family: var(--sh-font);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+.sh-teamcard--starter { border-color: var(--sh-gold); box-shadow: var(--sh-glow-gold); }
+.sh-teamcard__name {
+  text-align: center; font-size: clamp(17px, 2.4vw, 24px); font-weight: 800;
+  color: var(--sh-gold); padding-bottom: 10px;
+  border-bottom: 1px solid var(--sh-border);
+}
+.sh-teamcard__players { display: flex; flex-direction: column; gap: 8px; }
+.sh-teamcard__player {
+  text-align: center; font-size: clamp(15px, 2vw, 19px); font-weight: 600;
+  color: var(--sh-cream);
+  background: rgba(15, 44, 66, .5);
+  border: 1px solid var(--sh-border);
+  border-radius: var(--sh-r-pill);
+  padding: 10px 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-screen, .sh-question, .sh-answer, .sh-btn--primary::after,
+  .sh-timer--low .sh-timer__secs, .sh-timer--low .sh-timer__fill {
+    animation: none !important;
+  }
+}
+
+/* ===================== الصفحة ===================== */
+/* النظام مظلم بالكامل (color-scheme: dark) ولا نسخة فاتحة له: كل سطح وكل
+   حالة «مستهلَك» و«باهت» محسوبة على ليل الغوص. على خلفية بيضاء تنقلب
+   الشفافيات فيظهر المستهلَك فضّياً بدل الرمادي الداكن.
+   لذلك الصفحة نفسها جزء من النظام لا بيئة يستضيفه — كما في التطبيق. */
+body {
+  background: var(--sh-night);
+  color: var(--sh-cream);
+  font-family: var(--sh-font);
+  color-scheme: dark;
+}

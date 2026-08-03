@@ -1,0 +1,36 @@
+/* Cairo — خط عربي حرّ برخصة SIL Open Font License 1.1.
+   اختير لأنه يحمل وزن ٨٠٠ الذي يعتمد عليه تصميم صحصحلي بكثافة (العناوين،
+   الأرقام، أسماء اللاعبين)؛ وخطوط عربية حرّة كثيرة تقف عند ٧٠٠ فيصطنع
+   المتصفّح الوزن الأثقل ويخرج مشوّهاً.
+
+   خطّا أبل (SF Arabic ثم Geeza Pro) يبقيان أول سلسلة الخطوط: على الماك
+   والآيفون — وهما جهاز اللعب الفعلي — يظهر النظام بخطّه الأصلي، وCairo
+   يمسك ما دونهما فتُقرأ التصاميم بنفس الشكل على ويندوز ولينكس. */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./cairo-arabic-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./cairo-arabic-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./cairo-arabic-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('./cairo-arabic-800-normal.woff2') format('woff2');
+}

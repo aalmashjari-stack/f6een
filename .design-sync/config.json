@@ -1,0 +1,46 @@
+{
+  "projectId": "5e10f7fb-659c-4fbf-a2a2-b235dc71380b",
+  "shape": "package",
+  "pkg": "@sahsahli/ui",
+  "globalName": "SahsahliUI",
+  "buildCmd": "npm run build --prefix design-system",
+  "cssEntry": "dist/ds.css",
+  "tokensGlob": "dist/tokens.css",
+  "extraFonts": [
+    "fonts/cairo.css"
+  ],
+  "runtimeFontPrefixes": [
+    "SF Arabic",
+    "Geeza Pro"
+  ],
+  "overrides": {
+    "ChoiceBox": {
+      "cardMode": "column"
+    },
+    "HexCell": {
+      "cardMode": "column"
+    },
+    "HexGrid": {
+      "cardMode": "column"
+    },
+    "PlayerCard": {
+      "cardMode": "column"
+    },
+    "ScoreBar": {
+      "cardMode": "column"
+    },
+    "Screen": {
+      "cardMode": "column"
+    },
+    "StatRow": {
+      "cardMode": "column"
+    },
+    "TeamSetupCard": {
+      "cardMode": "column"
+    },
+    "VersusPair": {
+      "cardMode": "column"
+    }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}

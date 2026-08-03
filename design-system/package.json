@@ -1,0 +1,37 @@
+{
+  "name": "@sahsahli/ui",
+  "version": "0.1.0",
+  "description": "نظام تصميم صحصحلي — الهوية والمكوّنات المشتركة",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "esbuild": "^0.28.1",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@fontsource/cairo": "^5.3.0"
+  }
+}
