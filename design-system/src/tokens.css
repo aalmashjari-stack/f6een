@@ -30,8 +30,13 @@
   --sh-lift: 0 18px 40px rgba(0, 0, 0, .34);
 
   /* ——— الحركة ——— */
+  /* @kind easing */
   --sh-ease-spring: cubic-bezier(.22, 1.4, .36, 1);
 
-  /* ——— الخط ——— */
-  --sh-font: "SF Arabic", "Geeza Pro", "Cairo", system-ui, "Segoe UI", Tahoma, sans-serif;
+  /* ——— الخط ———
+     Cairo أولاً لا SF Arabic: النظام يشحن Cairo ولا يشحن خطوط أبل (لا يجوز
+     توزيعها). وضْع خط غير مشحون في أول السلسلة يجعل التصاميم تُقرأ بشكل على
+     الماك وبشكل آخر على أي جهاز — وهذا أسوأ من فقد خط أبل.
+     اللعبة نفسها (src/theme.css) تبقى على SF Arabic؛ هذا نظام التصميم وحده. */
+  --sh-font: "Cairo", system-ui, "Segoe UI", Tahoma, sans-serif;
 }

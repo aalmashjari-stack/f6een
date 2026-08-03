@@ -259,8 +259,13 @@
 
 /* ===================== الخلية السداسية ===================== */
 .sh-hexgrid {
+  /* مقاسات قابلة للضبط من خارج المكوّن: مرّر --sh-hex-w وحده ويُشتقّ الباقي.
+     الأنواع مصرَّح بها لأن قيمها دوالّ لا تُستنتَج منها كأطوال. */
+  /* @kind size */
   --sh-hex-w: min(23vw, 20vh, 210px);
+  /* @kind size */
   --sh-hex-h: calc(var(--sh-hex-w) * 1.1547);
+  /* @kind space */
   --sh-hex-gap: clamp(6px, 1vw, 14px);
   display: flex; flex-direction: column; align-items: center;
   font-family: var(--sh-font);

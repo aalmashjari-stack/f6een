@@ -9,10 +9,6 @@
   "extraFonts": [
     "fonts/cairo.css"
   ],
-  "runtimeFontPrefixes": [
-    "SF Arabic",
-    "Geeza Pro"
-  ],
   "overrides": {
     "ChoiceBox": {
       "cardMode": "column"
