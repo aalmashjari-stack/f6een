@@ -12,7 +12,6 @@ import {
   STAGE3_POINTS,
   TIEBREAK_POINTS,
   createSession,
-  persistUsedIds,
   stage1Level,
   stage1Owner,
 } from './session'
@@ -49,11 +48,18 @@ const guardedFamilies = (s: GameState): Set<string> => {
   return fams
 }
 
-/** يسجّل قالب سؤال عُرض للتوّ. */
-const withFamily = (s: GameState, q: Question): GameState => {
+/**
+ * يحرق سؤالاً عُرض للتوّ: معرّفه وقالبه.
+ * بمجموعة جديدة لا بتعديل القديمة — المحرك نقيّ، والحفظ في التخزين أثرٌ
+ * جانبي يقع في App عند تغيّر الحالة، لا هنا.
+ */
+const burn = (s: GameState, q: Question): GameState => {
+  const usedQuestionIds = new Set(s.usedQuestionIds)
+  usedQuestionIds.add(q.id)
   const fam = familyOf(q)
-  if (fam === null || s.spentFamilies.includes(fam)) return s
-  return { ...s, spentFamilies: [...s.spentFamilies, fam] }
+  const spentFamilies =
+    fam === null || s.spentFamilies.includes(fam) ? s.spentFamilies : [...s.spentFamilies, fam]
+  return { ...s, usedQuestionIds, spentFamilies }
 }
 
 /** كل نقطة تُسجَّل مرّتين: في مجموع الفريق، وفي عمود مرحلتها لشاشة الختام. */
@@ -85,9 +91,8 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         pendingS3Ids(state),
         guardedFamilies(state),
       )
-      persistUsedIds(state.usedQuestionIds)
       return {
-        ...withFamily(state, q),
+        ...burn(state, q),
         currentCategory: action.category,
         currentQuestion: q,
         spentCategories: [...state.spentCategories, action.category],
@@ -224,11 +229,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       // السؤال ظهر على الشاشة فيُحرق الآن، أصيب أم لا (القسم ٨).
       // الحرق هنا لا عند سحب الطابور، حتى لا يحترق الاحتياطي الذي لم يُعرض.
       const shown = s.s3Queue[s.s3Pos]
-      if (shown) {
-        s.usedQuestionIds.add(shown.id)
-        persistUsedIds(s.usedQuestionIds)
-        s = withFamily(s, shown)
-      }
+      if (shown) s = burn(s, shown)
       return { ...s, s3Pos: s.s3Pos + 1, s3Revealed: false }
     }
 
@@ -267,9 +268,8 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         pendingS3Ids(state),
         guardedFamilies(state),
       )
-      persistUsedIds(state.usedQuestionIds)
       return {
-        ...withFamily(state, q),
+        ...burn(state, q),
         currentCategory: action.category,
         currentQuestion: q,
         s3Revealed: false,

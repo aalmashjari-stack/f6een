@@ -3,6 +3,8 @@ dist/
 .DS_Store
 *.local
 .vite/
+# ناتج بناء لا مصدر — يتغيّر مع كل `npm run build` فيلوّث كل commit بسطر لا معنى له
+tsconfig.tsbuildinfo
 
 # design-sync
 .ds-sync/

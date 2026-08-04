@@ -14,7 +14,10 @@ export function shuffle<T>(arr: T[]): T[] {
  * خوارزمية السحب — القسم ٨.
  * pool = أسئلة (التصنيف، المستوى) ناقص المستخدمة. إن نفد، نرجع لأقدم مستخدم.
  * في النسخة الحالية "الأقدم استخداماً" مبسّط: أي سؤال من الخلية (لأننا لا نحفظ ترتيب الاستخدام بعد).
- * تُضاف المعرّفات المسحوبة إلى used فوراً.
+ *
+ * لا يمسّ `used`: الحرق مسؤولية المحرك، يعيده في حالة جديدة. لو أضاف السحبُ
+ * المعرّفَ هنا لاحترق سؤالٌ لم يُعرض كلما استُدعي المحرك مرّتين على الحالة
+ * نفسها — وهو ما يفعله StrictMode في التطوير للكشف عن الآثار الجانبية.
  *
  * `reserved` = معرّفات محجوزة لطابور الحق ما تلحق. الطابور يُسحب عند إنشاء الجلسة
  * ولا يُضاف إلى used (يحترق عند العرض فقط)، فبدون استثنائه هنا قد تُسحب منه ورقة
@@ -40,9 +43,7 @@ export function drawOne(
     return fam === null || !spentFamilies.has(fam)
   })
   const pool = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : cell
-  const pick = pool[Math.floor(Math.random() * pool.length)]
-  used.add(pick.id)
-  return pick
+  return pool[Math.floor(Math.random() * pool.length)]
 }
 
 /**

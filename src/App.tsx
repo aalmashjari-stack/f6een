@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from 'react'
 import type { GameState } from './game/session'
+import { persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
 import { Setup } from './screens/Setup'
 import { WheelScreen } from './screens/WheelScreen'
@@ -71,6 +72,13 @@ export default function App() {
   useEffect(() => {
     saveSession(state)
   }, [state])
+
+  /* ذاكرة الأسئلة عبر الجلسات — سجلّ مستقلّ عن لقطة الاستئناف، ولا يُمحى بانتهاء اللعبة.
+     مربوط بالمجموعة وحدها لا بالحالة كلها: وإلا أُعيدت كتابة مئات المعرّفات مع كل ضغطة. */
+  const used = state?.usedQuestionIds
+  useEffect(() => {
+    if (used) persistUsedIds(used)
+  }, [used])
 
   if (!state) return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
 
