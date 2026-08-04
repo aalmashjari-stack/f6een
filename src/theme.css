@@ -1,7 +1,11 @@
 /* الهوية البصرية — القسم ١١ من SPEC.md. الألوان معتمدة، لا تُغيَّر.
-   التدرّجات والتوهّجات مشتقّة من نفس الألوان، بلا إدخال أي لون جديد. */
+   التدرّجات والتوهّجات مشتقّة من نفس الألوان. الاستثناء الوحيد المعتمد:
+   --night-deep أرضية المسرح، أُقرّت في ٤ أغسطس ٢٠٢٦ من لوحات claude.ai/design. */
 :root {
   --night: #0F2C42;   /* أزرق ليل الغوص — الخلفية الأساسية */
+  /* أرضية أعمق من الليل — اعتُمدت في ٤ أغسطس ٢٠٢٦ من لوحات claude.ai/design:
+     المسرح أغمق درجةً من الأسطح فيقفز كل ما فوقه خطوة للأمام. */
+  --night-deep: #0B2233;
   --gold: #FFBD59;    /* ذهبي — الأهم، صاحب الدور، الإجابة المكشوفة */
   --cream: #F5EFE3;   /* كريمي — النص الأساسي والفريق الثاني */
   --coral: #E4674A;   /* مرجاني — المؤشر، الخطر والوقت والخطأ */
@@ -37,7 +41,7 @@
 html, body, #root { height: 100%; }
 
 body {
-  background: var(--night);
+  background: var(--night-deep);
   color: var(--cream);
   overflow: hidden;
   -webkit-user-select: none;
@@ -45,51 +49,61 @@ body {
   touch-action: manipulation;
 }
 
-/* خلفية حيّة: توهّجات ناعمة تتنفّس ببطء خلف كل شيء.
-   خافتة عمداً حتى لا تنافس النص — الوضوح شرط تشغيل. */
+/* المسرح — اللغة المعتمدة من لوحات claude.ai/design في ٤ أغسطس ٢٠٢٦،
+   بدل نسيج خلية النحل: بقعة ضوء مركزية على أرضية أعمق، فالوسط — حيث يعيش
+   النص — أفتح من الأطراف، والوضوح شرط تشغيل.
+   حركة «التنفّس» البطيئة أُبقيت من الخلفية السابقة: اللعبة حيّة لا لوحة ساكنة. */
 body::before {
   content: '';
   position: fixed;
-  inset: -25%;
+  inset: -10%;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(38% 42% at 18% 22%, rgba(255, 189, 89, .13), transparent 70%),
-    radial-gradient(34% 40% at 84% 74%, rgba(228, 103, 74, .12), transparent 70%),
-    radial-gradient(46% 46% at 62% 12%, rgba(35, 76, 104, .5), transparent 72%);
+    radial-gradient(90% 70% at 50% 52%, rgba(35, 76, 104, .85) 0%, rgba(15, 44, 66, .55) 45%, rgba(11, 34, 51, 0) 78%),
+    radial-gradient(60% 45% at 50% 50%, rgba(255, 189, 89, .14) 0%, rgba(255, 189, 89, 0) 70%),
+    radial-gradient(50% 40% at 8% 100%, rgba(228, 103, 74, .13) 0%, rgba(228, 103, 74, 0) 75%);
   animation: drift 22s ease-in-out infinite alternate;
 }
 
 @keyframes drift {
   from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(2.5%, -2%, 0) scale(1.08); }
+  to   { transform: translate3d(1.5%, -1%, 0) scale(1.05); }
 }
 
-/* نسيج خلية النحل خلف كل الشاشات — نفس شكل شاشة السحب وشاشة الإعداد،
-   حتى تُقرأ اللعبة كعالم واحد لا كشاشات متفرّقة.
-   خافت جداً ومحجوب من الأعلى والأسفل: النص يعيش في الوسط، والوضوح شرط تشغيل. */
+/* نسيج خطوط مائلة متقاطعة — خافت جداً، ومحجوب بقناع دائري فلا يظهر إلا
+   حول الوسط حيث الضوء، ويذوب في الأطراف. */
 body::after {
   content: '';
   position: fixed;
-  inset: 0;
+  inset: -10%;
   z-index: 0;
   pointer-events: none;
-  opacity: .5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='103.92'%3E%3Cg fill='none' stroke='%235E7D96' stroke-width='1.5' stroke-opacity='.18'%3E%3Cpath d='M30 0 L60 17.32 L60 51.96 L30 69.28 L0 51.96 L0 17.32 Z'/%3E%3Cpath d='M0 51.96 L30 69.28 L30 103.92 L0 121.24 L-30 103.92 L-30 69.28 Z'/%3E%3Cpath d='M60 51.96 L90 69.28 L90 103.92 L60 121.24 L30 103.92 L30 69.28 Z'/%3E%3C/g%3E%3C/svg%3E");
-  /* المقاس ثابت لا مرن: مسافة الدوران محسوبة على ارتفاع البلاطة،
-     وأي تغيّر في المقاس يجعل الدورة تقفز عند إعادتها. */
-  background-size: 90px 155.88px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 26%, #000 66%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 26%, #000 66%, transparent);
-  animation: comb-drift 90s linear infinite;
-}
-
-@keyframes comb-drift {
-  from { background-position: 0 0; }
-  to   { background-position: 0 -623.52px; } /* أربع بلاطات — دورة بلا قفزة */
+  background:
+    repeating-linear-gradient(45deg, rgba(245, 239, 227, .055) 0 1px, rgba(245, 239, 227, 0) 1px 78px),
+    repeating-linear-gradient(-45deg, rgba(245, 239, 227, .055) 0 1px, rgba(245, 239, 227, 0) 1px 78px);
+  -webkit-mask-image: radial-gradient(65% 60% at 50% 52%, #000 0%, rgba(0, 0, 0, .35) 58%, transparent 82%);
+  mask-image: radial-gradient(65% 60% at 50% 52%, #000 0%, rgba(0, 0, 0, .35) 58%, transparent 82%);
 }
 
 #root { display: flex; flex-direction: column; position: relative; z-index: 1; }
+
+/* الإطار المعيّن: مربع مُدار ٤٥° بحدّ ذهبي خافت يؤطّر مركز الشاشة —
+   إيماءة الزخرفة الإسلامية في اللوحات المعتمدة. خلف المحتوى وفوق المسرح. */
+#root::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: min(64vh, 64vw);
+  height: min(64vh, 64vw);
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: 1px solid rgba(255, 189, 89, .16);
+  border-radius: min(5vh, 5vw);
+  box-shadow: 0 0 120px rgba(255, 189, 89, .07) inset;
+  pointer-events: none;
+}
 
 /* حاوية الشاشة */
 .screen {
