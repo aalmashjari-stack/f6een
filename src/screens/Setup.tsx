@@ -11,8 +11,8 @@ const MAX = 6
 /** أسماء بديلة تُستخدم فقط إن ترك الحقل فارغاً — الحقول تبدأ فارغة بنصّ إرشادي. */
 const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
 
-/* خلية النحل خلف الشعار انتقلت إلى `body::after` في theme.css فصارت خلف كل الشاشات.
-   إبقاؤها هنا أيضاً كان يضاعف النسيج تحت الشعار ويزحمه. */
+/* نسيج الخلفية يعيش في `body::after` بـ theme.css فيشمل كل الشاشات.
+   تكراره هنا كان يضاعفه تحت الشعار ويزحمه. */
 
 export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   const [names, setNames] = useState<[string, string]>(['', ''])

@@ -88,22 +88,8 @@ body::after {
 
 #root { display: flex; flex-direction: column; position: relative; z-index: 1; }
 
-/* الإطار المعيّن: مربع مُدار ٤٥° بحدّ ذهبي خافت يؤطّر مركز الشاشة —
-   إيماءة الزخرفة الإسلامية في اللوحات المعتمدة. خلف المحتوى وفوق المسرح. */
-#root::before {
-  content: '';
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: -1;
-  width: min(64vh, 64vw);
-  height: min(64vh, 64vw);
-  transform: translate(-50%, -50%) rotate(45deg);
-  border: 1px solid rgba(255, 189, 89, .16);
-  border-radius: min(5vh, 5vw);
-  box-shadow: 0 0 120px rgba(255, 189, 89, .07) inset;
-  pointer-events: none;
-}
+/* حُذف الإطار المعيّن الذهبي في ٥ أغسطس ٢٠٢٦ بقرار علي: كان يزحم لوحة
+   التصنيفات — أطرافه تمرّ خلف السداسيات فتُقرأ كخطوط غريبة عليها. */
 
 /* حاوية الشاشة */
 .screen {

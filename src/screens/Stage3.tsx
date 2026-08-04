@@ -30,12 +30,9 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           <div className="s3-ready">
             <div className="s3r-eyebrow">الحق ما تلحق</div>
             <div className="s3r-team">دور {team.name}</div>
-            {/* القاعدة تحت اسم المرحلة لا في الفاصل وحده: الفريق الثاني يصل هذه الشاشة
-                بعد دور خصمه كاملاً، وقد نسي ما قيل في الفاصل قبل دقيقة. */}
-            <div className="s3r-rules">
-              <span className="s3r-rule">30 ثانية دون توقف لكل فريق</span>
-              <span className="s3r-rule gold">+5 نقاط لكل إجابة صحيحة</span>
-            </div>
+            {/* حُذفت رقاقتا القاعدة في ٥ أغسطس ٢٠٢٦ بقرار علي: الفاصل قبل هذه
+                الشاشة يقول النصّ نفسه حرفياً (Interval.tsx)، فتكراره بعده بثانية
+                زحمةٌ لا تذكير. */}
           </div>
         </div>
         <button className="action coral" onClick={() => setStarted(true)}>
@@ -98,13 +95,6 @@ function Stage3Styles() {
         .s3r-eyebrow { color:var(--coral); font-weight:800; font-size:clamp(16px,2.2vw,22px); }
         .s3r-team { color:var(--cream); font-weight:800; font-size:clamp(34px,6vw,64px); }
         .s3r-note { color:var(--text-3); font-size:clamp(14px,1.7vw,18px); }
-        .s3r-rules { display:flex; flex-wrap:wrap; gap:clamp(8px,1.4vw,14px); justify-content:center; margin-top:4px; }
-        .s3r-rule {
-          background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm);
-          padding:clamp(8px,1.4vh,14px) clamp(14px,2vw,22px);
-          color:var(--cream); font-weight:700; font-size:clamp(16px,2.2vw,24px);
-        }
-        .s3r-rule.gold { color:var(--gold); border-color:var(--gold); }
         .s3-q {
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
           border:1px solid var(--border);

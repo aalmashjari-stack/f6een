@@ -82,11 +82,18 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
       <style>{`
         .mark-cards { display:flex; gap:16px; }
+
+        /* ارتفاع البطاقة هو ما يتبقّى من الشاشة، أما مقاسات ما فيها فكانت محسوبة
+           على العرض وحده (vw) — فعلى شاشة عريضة قصيرة يتضخّم المحتوى ولا تكبر
+           البطاقة، فيخرج المربعان من الحاشية ويلتصقان بالإطار. وعلى البطاقة
+           المختارة يصير الذهبي على الذهبي كتلة واحدة فلا يُقرأ أين المربع.
+           الحل: كل مقاس رأسيّ يأخذ أصغر القيمتين — نصيبه من العرض ونصيبه من
+           الارتفاع (min(…vw, …vh)) — فيضمر مع الشاشة القصيرة قبل أن يفيض. */
         .mcard {
-          flex:1; min-width:0;
+          flex:1; min-width:0; min-height:0;
           display:flex; flex-direction:column; align-items:center; justify-content:center;
-          gap:clamp(8px,1.6vh,18px);
-          padding:clamp(12px,2.2vh,26px);
+          gap:clamp(6px,1.2vh,14px);
+          padding:clamp(10px,1.8vh,22px);
           border-radius:var(--r-lg); border:2px solid var(--border); background:var(--surface);
           color:var(--cream);
           transition:border-color .18s ease, box-shadow .18s ease;
@@ -95,22 +102,25 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .mcard.صح { border-color:var(--gold); box-shadow:var(--glow-gold); }
         .mcard.غلط { border-color:var(--coral); box-shadow:var(--glow-coral); }
 
-        .mc-team { font-size:clamp(13px,1.7vw,18px); font-weight:700; color:var(--text-2); }
-        .mc-name { font-size:clamp(24px,3.6vw,44px); font-weight:800; line-height:1.15; text-align:center; overflow-wrap:anywhere; }
+        .mc-team { font-size:clamp(12px, min(1.7vw, 2.4vh), 18px); font-weight:700; color:var(--text-2); }
+        .mc-name {
+          font-size:clamp(22px, min(3.6vw, 4.6vh), 44px);
+          font-weight:800; line-height:1.15; text-align:center; overflow-wrap:anywhere;
+        }
 
-        .mc-choices { display:flex; gap:clamp(8px,1.2vw,14px); width:100%; }
+        .mc-choices { display:flex; gap:clamp(8px,1.2vw,14px); width:100%; flex:none; }
         .choice {
           flex:1; min-width:0;
-          display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
-          padding:clamp(10px,1.8vh,20px) 6px;
+          display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+          padding:clamp(8px, 1.5vh, 18px) 6px;
           border-radius:var(--r-md); border:2px solid var(--border);
           background:transparent; color:var(--text-2);
           font-family:inherit; cursor:pointer;
           transition:transform .08s ease, background .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease;
         }
         .choice:active { transform:scale(.97); }
-        .c-label { font-size:clamp(12px,1.5vw,18px); font-weight:700; }
-        .c-pts { font-size:clamp(20px,2.8vw,34px); font-weight:800; }
+        .c-label { font-size:clamp(11px, min(1.5vw, 2vh), 18px); font-weight:700; line-height:1.35; }
+        .c-pts { font-size:clamp(18px, min(2.8vw, 3.6vh), 34px); font-weight:800; line-height:1.15; }
 
         /* المختار يمتلئ، وغير المختار يخفت — الفرق لون كامل لا درجة أفتح بقليل */
         .choice.ok.on { background:var(--gold); border-color:var(--gold); color:var(--on-gold); }
