@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { SetupInput } from '../game/session'
 import type { TeamId } from '../game/types'
+import { isMuted, play, setMuted } from '../audio/sfx'
 // نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
 import stickerUrl from '../../assets/sahsahli-sticker-hero.svg'
 
@@ -22,6 +23,16 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   const [starter, setStarter] = useState<TeamId | null>(null)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
+  const [mute, setMute] = useState(isMuted())
+
+  /** الكتم يُضبط مرّة قبل الجلسة ويبقى محفوظاً — لا يعود الحكم إليه أثناء اللعب. */
+  function toggleMute() {
+    const next = !mute
+    setMute(next)
+    setMuted(next)
+    // عيّنة عند التشغيل: الحكم يسمع المستوى قبل أن يبدأ لا في منتصف سؤال
+    if (!next) play('pickLand')
+  }
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
 
@@ -82,6 +93,17 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
     <div className="screen setup">
       <div className="hero">
         <img src={stickerUrl} alt="صحصحلي" />
+        {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
+            الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
+        <button
+          className={'mute-toggle' + (mute ? ' off' : '')}
+          onClick={toggleMute}
+          aria-pressed={mute}
+          title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
+        >
+          <span aria-hidden="true">{mute ? '🔇' : '🔊'}</span>
+          <span className="mt-label">{mute ? 'مكتوم' : 'الصوت'}</span>
+        </button>
       </div>
 
       {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
@@ -160,6 +182,24 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             radial-gradient(44% 74% at 86% 14%, rgba(228,103,74,.14), transparent 70%),
             linear-gradient(180deg, rgba(27,62,86,.85), rgba(27,62,86,0));
         }
+
+        /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
+           فلا تعترض العين وهي تنزل من الشعار إلى بطاقتي الفريقين. */
+        .mute-toggle {
+          position:absolute; z-index:2;
+          top:clamp(10px,1.8vh,18px); inset-inline-end:clamp(10px,2vw,20px);
+          display:flex; align-items:center; gap:7px;
+          padding:8px 14px; border-radius:999px;
+          border:1px solid var(--border); background:rgba(15,44,66,.6);
+          color:var(--text-2); font-family:inherit; font-size:14px; font-weight:700;
+          cursor:pointer;
+          transition:color .2s ease, border-color .2s ease, opacity .2s ease, transform .15s var(--ease-spring);
+        }
+        .mute-toggle:active { transform:scale(.94); }
+        .mute-toggle.off { opacity:.6; }
+        .mute-toggle:not(.off) { color:var(--gold); border-color:var(--gold); }
+        /* الأيقونة وحدها على الجوال — الكلمة تزاحم الشعار في العرض الضيّق */
+        @media (max-width:560px) { .mt-label { display:none; } }
 
         .setup-body {
           flex:1; min-height:0;

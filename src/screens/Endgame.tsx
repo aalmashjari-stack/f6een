@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { GameState } from '../game/session'
 import { leader, playerStats } from '../game/session'
 import type { Action } from '../game/reducer'
 import { Confetti } from '../components/Confetti'
 import { useCountUp } from '../components/useCountUp'
+import { play } from '../audio/sfx'
 // نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
 import stickerUrl from '../../assets/sahsahli-sticker-hero.svg'
 
@@ -43,6 +44,15 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
   // النتيجة تُبنى أمام الجميع بدل أن تُعرض جاهزة — الرقم النهائي هو خاتمة الجلسة.
   const s0 = useCountUp(state.teams[0].score, 1400)
   const s1 = useCountUp(state.teams[1].score, 1400)
+
+  // البشارة مع الكونفيتي، والتعادل لا يُبشَّر به كما لا يُحتفل به.
+  // الحارس يمنع تكرارها حين يعيد StrictMode تركيب الشاشة في التطوير.
+  const fanfared = useRef(false)
+  useEffect(() => {
+    if (fanfared.current || win === null) return
+    fanfared.current = true
+    play('win')
+  }, [win])
 
   return (
     <div className="screen end">

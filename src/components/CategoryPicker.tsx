@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CATEGORIES } from '../game/bank'
+import { play } from '../audio/sfx'
 
 /**
  * اختيار التصنيف — بديل العجلة. خلية سداسية والضوء يلفّ عليها ثم يستقرّ.
@@ -54,7 +55,13 @@ export function CategoryPicker({
     let elapsed = 0
     for (let s = 0; s <= steps; s++) {
       const idx = availIdx[(startPos + s) % availIdx.length]
-      timers.current.push(window.setTimeout(() => setCursor(idx), elapsed))
+      // نقرة مع كل قفزة — تتباطأ مع الضوء نفسه، فيُسمع اقتراب السحبة من الاستقرار
+      timers.current.push(
+        window.setTimeout(() => {
+          setCursor(idx)
+          play('pickStep')
+        }, elapsed),
+      )
       // تباطؤ تدريجي: الخطوة تطول كلما اقتربنا من النهاية
       const p = s / steps
       elapsed += 48 + 620 * p * p * p
@@ -64,6 +71,7 @@ export function CategoryPicker({
       window.setTimeout(() => {
         setLanded(target)
         setRunning(false)
+        play('pickLand')
         timers.current.push(window.setTimeout(() => onResult(target), 950))
       }, elapsed),
     )

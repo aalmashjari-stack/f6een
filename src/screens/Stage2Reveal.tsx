@@ -2,6 +2,7 @@ import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { Mark, TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
+import { play } from '../audio/sfx'
 
 /**
  * تنقيط راس براس — الشاشة ٥.
@@ -58,9 +59,11 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
                       className={'choice ' + (m === 'صح' ? 'ok' : 'no') + (on ? ' on' : '')}
                       aria-pressed={on}
                       // الضغط على المضيء يُلغيه: التراجع بضغطة واحدة بلا دورة كاملة
-                      onClick={() =>
+                      onClick={() => {
+                        // التراجع لا صوت له — الصوت إعلانُ نتيجة، وإلغاؤها ليس نتيجة
+                        if (!on) play(m === 'صح' ? 'correct' : 'wrong')
                         dispatch({ t: 'S2_SET_MARK', who: team, mark: on ? 'صمت' : m })
-                      }
+                      }}
                     >
                       <span className="c-label">{LABEL[m]}</span>
                       <span className="c-pts tabular">{PTS[m]}</span>
