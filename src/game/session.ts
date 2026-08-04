@@ -38,6 +38,13 @@ export interface GameState {
 
   usedQuestionIds: Set<string>
 
+  /**
+   * قوالب الأسئلة التي ظهرت في هذه الجلسة — لا يُعرض قالب مرتين (انظر familyOf).
+   * داخل الجلسة فقط لا عبر الجلسات: القوالب أحد وعشرون، وحجزها دائماً يُجفّف البنك.
+   * مصفوفة لا Set لأن الحالة تُحفظ بـ JSON للاستئناف.
+   */
+  spentFamilies: string[]
+
   /** تصنيفات خرجت من العجلة في المرحلة الحالية (تُصفّر عند بداية راس براس). */
   spentCategories: string[]
   currentCategory: string | null
@@ -110,6 +117,7 @@ export function createSession(input: SetupInput): GameState {
     teams,
     startingTeam: input.startingTeam,
     usedQuestionIds: used,
+    spentFamilies: [],
     spentCategories: [],
     currentCategory: null,
     currentQuestion: null,

@@ -1,5 +1,5 @@
 import type { Level, Question } from './types'
-import { poolByCatLevel, poolByLevels } from './bank'
+import { familyOf, poolByCatLevel, poolByLevels } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -15,11 +15,32 @@ export function shuffle<T>(arr: T[]): T[] {
  * pool = أسئلة (التصنيف، المستوى) ناقص المستخدمة. إن نفد، نرجع لأقدم مستخدم.
  * في النسخة الحالية "الأقدم استخداماً" مبسّط: أي سؤال من الخلية (لأننا لا نحفظ ترتيب الاستخدام بعد).
  * تُضاف المعرّفات المسحوبة إلى used فوراً.
+ *
+ * `reserved` = معرّفات محجوزة لطابور الحق ما تلحق. الطابور يُسحب عند إنشاء الجلسة
+ * ولا يُضاف إلى used (يحترق عند العرض فقط)، فبدون استثنائه هنا قد تُسحب منه ورقة
+ * وتُعرض في الجولة الجماعية ثم تعود وتظهر ثانيةً في الحق ما تلحق — نفس السؤال مرتين.
+ *
+ * `spentFamilies` = قوالب ظهرت في هذه الجلسة (أو محجوزة في الطابور) — انظر familyOf.
+ *
+ * سلّم التنازل عند ضيق المخزون: القالب أولاً، ثم الحجز، ثم عدم التكرار أخيراً.
+ * لأن سؤالاً من قالب مطروق يُحسّ متشابهاً، أما كسر الحجز فيعيد السؤال نفسه حرفياً.
  */
-export function drawOne(category: string, level: Level, used: Set<string>): Question {
+export function drawOne(
+  category: string,
+  level: Level,
+  used: Set<string>,
+  reserved: Set<string> = new Set(),
+  spentFamilies: Set<string> = new Set(),
+): Question {
   const cell = poolByCatLevel(category, level)
-  const fresh = cell.filter((q) => !used.has(q.id))
-  const pick = fresh.length > 0 ? fresh[Math.floor(Math.random() * fresh.length)] : cell[Math.floor(Math.random() * cell.length)]
+  const unused = cell.filter((q) => !used.has(q.id))
+  const free = unused.filter((q) => !reserved.has(q.id))
+  const best = free.filter((q) => {
+    const fam = familyOf(q)
+    return fam === null || !spentFamilies.has(fam)
+  })
+  const pool = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : cell
+  const pick = pool[Math.floor(Math.random() * pool.length)]
   used.add(pick.id)
   return pick
 }
@@ -31,8 +52,25 @@ export function drawOne(category: string, level: Level, used: Set<string>): Ques
  * لا يضيف المعرّفات إلى `used`: الطابور احتياطي، ويُستهلك منه ١٠–١٤ سؤالاً فقط.
  * الحرق يقع عند العرض الفعلي (انظر S3_JUDGE) — وإلا احترق ٤٠ سؤالاً في الجلسة
  * بدل ١٢، فينكمش أفق «٤٢ جلسة بلا تكرار» في القسم ١٢ إلى نحو ١٢ جلسة.
+ *
+ * الطابور نفسه بلا تكرار قوالب: أسئلته تُعرض متتابعة في ثلاثين ثانية، فتشابه
+ * صيغتين فيه أوضح ما يكون على المسامع.
  */
 export function drawStage3Queue(count: number, used: Set<string>): Question[] {
   const pool = poolByLevels(['سهل', 'متوسط']).filter((q) => !used.has(q.id))
-  return shuffle(pool).slice(0, count)
+  const queue: Question[] = []
+  const seenFamilies = new Set<string>()
+  const spare: Question[] = []
+  for (const q of shuffle(pool)) {
+    if (queue.length >= count) break
+    const fam = familyOf(q)
+    if (fam !== null && seenFamilies.has(fam)) {
+      spare.push(q)
+      continue
+    }
+    if (fam !== null) seenFamilies.add(fam)
+    queue.push(q)
+  }
+  // إن لم يكتمل العدد (مخزون شحيح) نكمل من المُستبعَد — الاحتياطي أولى من طابور ناقص.
+  return queue.concat(spare.slice(0, count - queue.length))
 }

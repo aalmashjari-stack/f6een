@@ -1,4 +1,5 @@
-import type { Mark, TeamId } from './types'
+import type { Mark, Question, TeamId } from './types'
+import { familyOf } from './bank'
 import { drawOne } from './draw'
 import {
   GameState,
@@ -34,6 +35,27 @@ export type Action =
   | { t: 'REPORT_QUESTION'; id: string }
   | { t: 'NEW_GAME' }
 
+/** أوراق الحق ما تلحق التي لم تُعرض بعد — محجوزة فلا تُسحب لمرحلة أخرى. */
+const pendingS3Ids = (s: GameState): Set<string> =>
+  new Set(s.s3Queue.slice(s.s3Pos).map((q) => q.id))
+
+/** قوالب ممنوعة الآن: ما ظهر في الجلسة + ما ينتظر دوره في طابور الحق ما تلحق. */
+const guardedFamilies = (s: GameState): Set<string> => {
+  const fams = new Set(s.spentFamilies)
+  for (const q of s.s3Queue.slice(s.s3Pos)) {
+    const fam = familyOf(q)
+    if (fam !== null) fams.add(fam)
+  }
+  return fams
+}
+
+/** يسجّل قالب سؤال عُرض للتوّ. */
+const withFamily = (s: GameState, q: Question): GameState => {
+  const fam = familyOf(q)
+  if (fam === null || s.spentFamilies.includes(fam)) return s
+  return { ...s, spentFamilies: [...s.spentFamilies, fam] }
+}
+
 /** كل نقطة تُسجَّل مرّتين: في مجموع الفريق، وفي عمود مرحلتها لشاشة الختام. */
 const addScore = (s: GameState, team: TeamId, delta: number, stage: StageKey): GameState => {
   const teams = [...s.teams] as GameState['teams']
@@ -56,10 +78,16 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (!state) return state
       const level =
         state.phase === 'stage1-wheel' ? stage1Level(state.s1Index) : 'متوسط'
-      const q = drawOne(action.category, level, state.usedQuestionIds)
+      const q = drawOne(
+        action.category,
+        level,
+        state.usedQuestionIds,
+        pendingS3Ids(state),
+        guardedFamilies(state),
+      )
       persistUsedIds(state.usedQuestionIds)
       return {
-        ...state,
+        ...withFamily(state, q),
         currentCategory: action.category,
         currentQuestion: q,
         spentCategories: [...state.spentCategories, action.category],
@@ -199,6 +227,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (shown) {
         s.usedQuestionIds.add(shown.id)
         persistUsedIds(s.usedQuestionIds)
+        s = withFamily(s, shown)
       }
       return { ...s, s3Pos: s.s3Pos + 1, s3Revealed: false }
     }
@@ -231,9 +260,20 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     /* ---------------- فاصل التعادل ---------------- */
     case 'TIEBREAK_SPIN': {
       if (!state) return state
-      const q = drawOne(action.category, 'صعب', state.usedQuestionIds)
+      const q = drawOne(
+        action.category,
+        'صعب',
+        state.usedQuestionIds,
+        pendingS3Ids(state),
+        guardedFamilies(state),
+      )
       persistUsedIds(state.usedQuestionIds)
-      return { ...state, currentCategory: action.category, currentQuestion: q, s3Revealed: false }
+      return {
+        ...withFamily(state, q),
+        currentCategory: action.category,
+        currentQuestion: q,
+        s3Revealed: false,
+      }
     }
 
     case 'TIEBREAK_PICK': {
