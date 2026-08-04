@@ -30,8 +30,9 @@
   --sh-lift: 0 18px 40px rgba(0, 0, 0, .34);
 
   /* ——— الحركة ——— */
-  /* @kind easing */
-  --sh-ease-spring: cubic-bezier(.22, 1.4, .36, 1);
+  /* التصنيف «other» لا «easing»: تطبيع من تطبيق claude.ai/design نفسه —
+     نطابقه حتى لا تُظهر كل مزامنة قادمة فرقاً وهمياً في هذا السطر. */
+  --sh-ease-spring: cubic-bezier(.22, 1.4, .36, 1); /* @kind other */
 
   /* ——— الخط ———
      Cairo أولاً لا SF Arabic: النظام يشحن Cairo ولا يشحن خطوط أبل (لا يجوز

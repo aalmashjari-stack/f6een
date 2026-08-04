@@ -26,7 +26,9 @@
 
   --ease-spring: cubic-bezier(.22, 1.4, .36, 1);
 
-  font-family: "SF Arabic", "Geeza Pro", system-ui, "Segoe UI", Tahoma, sans-serif;
+  /* Cairo أولاً — نفس سلسلة نظام التصميم حرفياً، حتى تُقرأ اللعبة والتصاميم
+     بشكل واحد على كل جهاز. القرار وسببه في src/fonts/cairo.css. */
+  font-family: "Cairo", system-ui, "Segoe UI", Tahoma, sans-serif;
   color-scheme: dark;
 }
 

@@ -1,0 +1,39 @@
+/* Cairo — خط اللعبة المعتمد، برخصة SIL Open Font License 1.1.
+   القرار من نظام التصميم في claude.ai/design (٤ أغسطس ٢٠٢٦): Cairo أولاً
+   لا SF Arabic — خطّا أبل لا يُشحنان، وتركهما أول السلسلة كان يجعل اللعبة
+   تُقرأ بشكل على الماك وبشكل آخر على أي جهاز آخر.
+
+   اختير Cairo لأنه يحمل وزن ٨٠٠ الذي يعتمد عليه التصميم بكثافة (العناوين،
+   الأرقام، أسماء اللاعبين)؛ وخطوط عربية حرّة كثيرة تقف عند ٧٠٠ فيصطنع
+   المتصفّح الوزن الأثقل ويخرج مشوّهاً.
+
+   الملفات محلية (منسوخة من @fontsource/cairo عبر design-system/fonts/)
+   لا من Google Fonts: اللعبة تعمل بلا إنترنت — القسم ٦ من SPEC. */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./cairo-arabic-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./cairo-arabic-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./cairo-arabic-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('./cairo-arabic-800-normal.woff2') format('woff2');
+}
