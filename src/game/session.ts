@@ -45,7 +45,7 @@ export interface GameState {
    */
   spentFamilies: string[]
 
-  /** تصنيفات خرجت من العجلة في المرحلة الحالية (تُصفّر عند بداية راس براس). */
+  /** تصنيفات خرجت من العجلة في المرحلة الحالية (تُصفّر عند بداية الديربي). */
   spentCategories: string[]
   currentCategory: string | null
   currentQuestion: Question | null
@@ -174,7 +174,7 @@ export interface PlayerStat {
   wrong: number
 }
 
-/** إحصاء اللاعب الفردي يأتي كلّه من راس براس — وهي المرحلة الوحيدة التي يُنقَّط فيها لاعب بعينه. */
+/** إحصاء اللاعب الفردي يأتي كلّه من الديربي — وهي المرحلة الوحيدة التي يُنقَّط فيها لاعب بعينه. */
 export function playerStats(state: GameState): PlayerStat[] {
   const stats: PlayerStat[] = []
   for (const t of state.teams)

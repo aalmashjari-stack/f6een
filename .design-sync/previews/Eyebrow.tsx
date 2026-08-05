@@ -6,7 +6,7 @@ const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 export const StageContext = () => (
   <div dir="rtl" style={{ ...stage, display: 'flex', flexDirection: 'column', gap: 16 }}>
     <Eyebrow>الجولة الجماعية · سؤال 3 / 6 · متوسط · دور الصقور</Eyebrow>
-    <Eyebrow>راس براس · جولة 2 / 4 · متوسط · لا تشاور</Eyebrow>
+    <Eyebrow>الديربي · جولة 2 / 4 · متوسط · لا تشاور</Eyebrow>
     <Eyebrow>الحق ما تلحق · النواخذة</Eyebrow>
   </div>
 )

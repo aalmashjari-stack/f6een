@@ -14,7 +14,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`راس براس · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar teams={state.teams} label={`الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       <div className="s2-versus">
         <span className="p right">{nameOf(0)}</span>

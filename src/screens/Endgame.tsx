@@ -34,7 +34,7 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
   const sp = state.stagePoints
   const rows = [
     { key: 's1', label: 'الجولة الجماعية', v: sp.s1 },
-    { key: 's2', label: 'راس براس', v: sp.s2 },
+    { key: 's2', label: 'الديربي', v: sp.s2 },
     { key: 's3', label: 'الحق ما تلحق', v: sp.s3 },
     // سطر الحسم لا يظهر إلا إن وقع تعادل فعلاً — وإلا كان صفراً بلا معنى
     ...(sp.tie[0] || sp.tie[1] ? [{ key: 'tie', label: 'سؤال الحسم', v: sp.tie }] : []),
@@ -79,7 +79,7 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
 
       {best && (
         <div className="best">
-          أفضل لاعب في راس براس: <b>{best.player.name}</b> · {correctAnswers(best.correct)}
+          أفضل لاعب في الديربي: <b>{best.player.name}</b> · {correctAnswers(best.correct)}
         </div>
       )}
 
@@ -133,10 +133,10 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         </div>
       )}
 
-      {/* اللاعب لا يُنقَّط بمفرده إلا في راس براس — والعنوان يقول ذلك صراحةً حتى لا
+      {/* اللاعب لا يُنقَّط بمفرده إلا في الديربي — والعنوان يقول ذلك صراحةً حتى لا
           يُقرأ صفرٌ أمام اسم لاعب اجتهد في المرحلتين الأخريين على أنه حكم عليه. */}
       <div className="es-block">
-        <div className="es-title">راس براس · لاعباً لاعباً</div>
+        <div className="es-title">الديربي · لاعباً لاعباً</div>
         <div className="es-table">
           {stats.map((s, i) => (
             <div key={s.player.id} className="es-row player" style={{ animationDelay: `${0.5 + i * 0.05}s` }}>

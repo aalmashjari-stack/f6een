@@ -5,7 +5,7 @@ import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 
 /**
- * اختيار لاعبَي راس براس — الشاشة ٤. بلا زر، تنتقل تلقائياً.
+ * اختيار لاعبَي الديربي — الشاشة ٤. بلا زر، تنتقل تلقائياً.
  * اختيار عشوائي بحركة تشويق، ضمن الدورة الكاملة (s2Rem).
  * سطر «لم يُختر بعد» يخدم شفافية الدورة بنفس منطق الأقسام الرمادية.
  */
@@ -86,7 +86,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
 
   return (
     <div className="screen center-col">
-      <ScoreBar teams={state.teams} label={`راس براس · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar teams={state.teams} label={`الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       <div className="grow center-all">
         <div

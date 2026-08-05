@@ -6,7 +6,7 @@ export interface ScoreBarTeam {
 export interface ScoreBarProps {
   /** الفريقان — الأول يُعرض يميناً في RTL */
   teams: [ScoreBarTeam, ScoreBarTeam]
-  /** سطر السياق بين الكبسولتين: «راس براس · جولة 2 / 4» */
+  /** سطر السياق بين الكبسولتين: «الديربي · جولة 2 / 4» */
   label?: string
 }
 

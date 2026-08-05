@@ -23,7 +23,7 @@ export const WithLabel = () => (
   <div dir="rtl" style={{ ...stage, ...box }}>
     <ScoreBar
       teams={[{ name: 'الصقور', score: 50 }, { name: 'النواخذة', score: 30 }]}
-      label="راس براس · جولة 2 / 4"
+      label="الديربي · جولة 2 / 4"
     />
   </div>
 )

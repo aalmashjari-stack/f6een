@@ -5,7 +5,7 @@ import { ScoreBar } from '../components/ScoreBar'
 import { play } from '../audio/sfx'
 
 /**
- * تنقيط راس براس — الشاشة ٥.
+ * تنقيط الديربي — الشاشة ٥.
  *
  * لكل لاعب مربعان صريحان: «إجابة صحيحة +20» و«إجابة خاطئة −10».
  * الضغط على المربع المضيء نفسه يلغيه ويرجع اللاعب إلى الصمت (0) — وهو الحالة الابتدائية.
@@ -29,7 +29,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`راس براس · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar teams={state.teams} label={`الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       <div className="reveal-q center fade">{q.question}</div>
       <div className="reveal-a">

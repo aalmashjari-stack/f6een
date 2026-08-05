@@ -10,7 +10,7 @@ export function WheelScreen({ state, dispatch }: { state: GameState; dispatch: (
     ? `الجولة الجماعية · سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS} · ${stage1Level(
         state.s1Index,
       )} · دور ${state.teams[stage1Owner(state.s1Index, state.startingTeam)].name}`
-    : `راس براس · جولة ${state.s2Index + 1} / ${state.s2Rounds} · متوسط`
+    : `الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds} · متوسط`
 
   return (
     <div className="screen">

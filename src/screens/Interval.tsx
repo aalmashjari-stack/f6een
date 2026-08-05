@@ -17,7 +17,7 @@ interface Next {
 const NEXT: Record<string, Next> = {
   'stage2-selection': {
     eyebrow: 'المرحلة القادمة',
-    title: 'راس براس',
+    title: 'الديربي',
     rule: 'هذه مواجهة فردية: لاعب من كل فريق وجهاً لوجه. لا يجوز لأي فرد من الفريقين أن يتدخّل — لا كلام ولا همس ولا إشارة. ومن بادر بالإجابة أولاً هو صاحبها وحده: إن أصاب كسب 20، وإن أخطأ خُصم منه 10 وانتهت الجولة. والصمت لا يكلّف شيئاً.',
     cta: 'ابدأ',
   },
@@ -74,7 +74,7 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
       <style>{`
         .center-col { display:flex; flex-direction:column; }
         .interval-card { max-width:760px; text-align:center; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(28px,6vh,60px); display:flex; flex-direction:column; gap:16px; }
-        /* القاعدة تظهر بعد الاسم بلحظة: الفريق يقرأ «راس براس» ثم يقرأ قاعدتها،
+        /* القاعدة تظهر بعد الاسم بلحظة: الفريق يقرأ «الديربي» ثم يقرأ قاعدتها،
            وهي أهم سطر في الشاشة لأن قواعد المرحلة تغيّرت للتوّ. */
         .il-eyebrow { color:var(--text-2); font-weight:700; font-size:clamp(14px,1.8vw,18px); animation:il-rise .5s ease-out .1s both; }
         .il-title {

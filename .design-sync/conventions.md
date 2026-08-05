@@ -77,7 +77,7 @@ import { Button, ScoreBar } from '@sahsahli/ui'
   <Screen>
     <ScoreBar
       teams={[{ name: 'الصقور', score: 50 }, { name: 'النواخذة', score: 30 }]}
-      label="راس براس · جولة 2 / 4"
+      label="الديربي · جولة 2 / 4"
     />
     <Eyebrow>من بادر بالإجابة أولاً هو وحده الذي يُنقَّط</Eyebrow>
     <AnswerReveal question="ما أكبر شريان في جسم الإنسان؟" answer="الشريان الأورطي" />

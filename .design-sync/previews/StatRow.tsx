@@ -7,7 +7,7 @@ export const PointsBreakdown = () => (
   <div dir="rtl" style={{ ...stage, display: 'flex', flexDirection: 'column', gap: 6, minWidth: 560 }}>
     <StatRow variant="head" right="الصقور" label="المرحلة" left="النواخذة" />
     <StatRow right="+30" label="الجولة الجماعية" left="+30" />
-    <StatRow right="+40" label="راس براس" left="−10" highlight="right" />
+    <StatRow right="+40" label="الديربي" left="−10" highlight="right" />
     <StatRow right="+15" label="الحق ما تلحق" left="+20" highlight="left" />
     <StatRow variant="total" right={55} label="المجموع" left={40} />
   </div>

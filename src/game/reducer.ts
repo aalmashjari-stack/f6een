@@ -21,7 +21,7 @@ export type Action =
   | { t: 'SPIN_DONE'; category: string } // العجلة توقّفت على تصنيف
   | { t: 'S1_TO_REVEAL' } // انتهت مهلة الفريق الآخر ← كشف تلقائي
   | { t: 'S1_SCORE'; outcome: 'owner' | 'rival' | 'none' }
-  | { t: 'S2_TO_REVEAL' } // انتهى مؤقت راس براس ← كشف
+  | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
   | { t: 'INTERVAL_CONTINUE' }
   | { t: 'S2_SELECT'; sel: [number, number] } // اختيار اللاعبَين (بعد التشويق)
   | { t: 'S2_SET_MARK'; who: 0 | 1; mark: Mark }
@@ -123,7 +123,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (nextIndex < STAGE1_QUESTIONS) {
         return { ...s, s1Index: nextIndex, currentCategory: null, currentQuestion: null, phase: 'stage1-wheel' }
       }
-      // انتهت المرحلة ١ → فاصل ثم راس براس (تُصفَّر العجلة)
+      // انتهت المرحلة ١ → فاصل ثم الديربي (تُصفَّر العجلة)
       return {
         ...s,
         s1Index: nextIndex,
@@ -141,7 +141,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       return { ...state, phase: state.intervalNext }
     }
 
-    /* ---------------- اختيار لاعبَي راس براس ---------------- */
+    /* ---------------- اختيار لاعبَي الديربي ---------------- */
     case 'S2_SELECT': {
       if (!state) return state
       // إزالة المختارَين من دورة كل فريق؛ إعادة تعبئة الدورة إن فرغت
@@ -201,7 +201,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (nextIndex < s.s2Rounds) {
         return { ...s, s2Index: nextIndex, s2Sel: null, currentCategory: null, currentQuestion: null, phase: 'stage2-selection' }
       }
-      // انتهت راس براس → فاصل ثم الحق ما تلحق
+      // انتهى الديربي → فاصل ثم الحق ما تلحق
       return {
         ...s,
         s2Index: nextIndex,

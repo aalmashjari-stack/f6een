@@ -16,8 +16,8 @@ export type SfxName =
   | 'timeUp' // انتهاء الوقت
   | 'pickStep' // قفزة الضوء بين التصنيفات
   | 'pickLand' // استقرار السحبة على تصنيف
-  | 'correct' // إجابة صحيحة في راس براس
-  | 'wrong' // إجابة خاطئة في راس براس
+  | 'correct' // إجابة صحيحة في الديربي
+  | 'wrong' // إجابة خاطئة في الديربي
   | 'win' // نهاية اللعبة
 
 const MUTE_KEY = 'sahsahli.muted'
@@ -142,7 +142,7 @@ export function play(name: SfxName) {
       tone({ freq: 1174.66, dur: 0.3, type: 'sine', gain: 0.4, at: 0.09 })
       break
 
-    // هبوط قصير خشن — متمايز عن «صح» بلا لبس، والتنقيط في راس براس سريع متتابع
+    // هبوط قصير خشن — متمايز عن «صح» بلا لبس، والتنقيط في الديربي سريع متتابع
     case 'wrong':
       tone({ freq: 311.13, to: 185, dur: 0.28, type: 'square', gain: 0.26 })
       break

@@ -10,7 +10,7 @@ export const TeamTally = () => (
   </div>
 )
 
-/** لاعباً لاعباً في راس براس. */
+/** لاعباً لاعباً في الديربي. */
 export const PlayerTally = () => (
   <div dir="rtl" style={{ ...stage, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
     <Chip tone="gold" count={2}>صح</Chip>
