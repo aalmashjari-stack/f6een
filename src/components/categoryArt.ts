@@ -1,4 +1,6 @@
-// ٣:٢ أصلاً فتملأ إطارها بلا قصّ — و JPEG لأنها رسمة بلا شفافية: رُبع حجم PNG
+// الصور الجديدة تصل بنسبة ٣:٢ — نسبة الإطار نفسها — فتملأه بلا قصّ ولا حشو.
+// وتُشحن JPEG: رسمٌ بلا شفافية، فحجمها رُبع PNG عند نفس العرض (١٠٢٤px، وهو
+// ثلاثة أضعاف أكبر عرض تبلغه البطاقة). ما بقي PNG لم يُستبدل أصله بعد.
 import geography from '../../assets/categories/geography.jpg'
 import history from '../../assets/categories/history.png'
 import religion from '../../assets/categories/religion.png'
@@ -7,7 +9,7 @@ import medicine from '../../assets/categories/medicine.png'
 import biologyAstronomy from '../../assets/categories/biology-astronomy.png'
 import literatureArts from '../../assets/categories/literature-arts.png'
 import techMisc from '../../assets/categories/tech-misc.png'
-import sportsNumbers from '../../assets/categories/sports-numbers.png'
+import sportsNumbers from '../../assets/categories/sports-numbers.jpg'
 
 /**
  * تصنيفات تركيبها لا يحتمل القصّ — الإطار ٣:٢ يبتر ما لا يُستغنى عنه فيها،
@@ -18,7 +20,6 @@ import sportsNumbers from '../../assets/categories/sports-numbers.png'
  * شرائط طينية لا امتداداً للصورة. والنسخة المضبّبة تناسب كل موضع من نفسها.
  */
 export const ART_FIT_WHOLE = new Set([
-  'رياضة وأرقام', // ولد واقف يملأ الارتفاع، والكرة عند قدميه
   'تاريخ وحضارات', // لوحتان فوق بعض، والقصّ يبتر إحداهما
 ])
 
