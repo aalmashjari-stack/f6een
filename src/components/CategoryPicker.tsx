@@ -104,6 +104,8 @@ export function CategoryPicker({
         </div>
       </div>
 
+      {/* حُذف سطر «السحبة نهائية — بلا إعادة» في ٦ أغسطس ٢٠٢٦ بقرار علي.
+          القاعدة قائمة في المحرّك: لا زرّ لإعادة السحبة أصلاً. */}
       <div className="stack gap-s">
         <button
           className={'action' + (landed ? ' landed' : '')}
@@ -114,8 +116,6 @@ export function CategoryPicker({
               واختلاف اللفظ بين شاشتين متطابقتين يجعله يتردّد قبل الضغط. */}
           {landed ? landed : running ? '…' : 'ابدأ'}
         </button>
-        {/* لا لفظ يوحي بأن الحكم هو من يختار — التطبيق يسحب، ولا سلطة تقديرية للحكم (المبدأ ٣). */}
-        <div className="action-note">السحبة نهائية — بلا إعادة</div>
       </div>
 
       <style>{`
