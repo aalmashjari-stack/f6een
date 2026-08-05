@@ -1,24 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { CATEGORIES } from '../game/bank'
+import { CATEGORY_ART } from './categoryArt'
 import { play } from '../audio/sfx'
 
 /**
- * اختيار التصنيف — بديل العجلة. خلية سداسية والضوء يلفّ عليها ثم يستقرّ.
+ * اختيار التصنيف — بديل العجلة. بطاقة لكل تصنيف والضوء يلفّ عليها ثم يستقرّ.
  *
  * يحفظ قواعد القسم ٧ كما هي:
  * - المستهلَك يبقى ظاهراً باهتاً لا يختفي (شفافية، ومنع تهمة التلاعب).
  * - السحبة نهائية بلا إعادة.
  * - الانتقال للسؤال تلقائي بعد الاستقرار، بلا ضغطة وبلا شاشة وسيطة.
  *
- * سبب استبدال القرص: نص التصنيفات في القطاعات السفلية كان مقلوباً وصعب القراءة،
- * و«وضوح النص شرط تشغيل لا تفضيل جمالي» (القسم ١). السداسي يبقي النص أفقياً.
+ * شبكة ٣×٣ ببطاقات مصوّرة — قرار علي في ٥ أغسطس ٢٠٢٦: صورة لكل تصنيف،
+ * الاسم تحتها، والبطاقات متجاورة بلا تعشيق خلية النحل. النص يبقى أفقياً
+ * فيحفظ شرط الوضوح الذي أسقط القرص الدوّار (القسم ١).
  */
-
-const ROWS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-]
 
 export function CategoryPicker({
   spent,
@@ -81,33 +77,30 @@ export function CategoryPicker({
     <div className="picker">
       <div className="eyebrow center">{eyebrow}</div>
 
-      <div className="comb-wrap grow">
-        <div className="comb">
-          {ROWS.map((row, r) => (
-            <div key={r} className={'comb-row' + (r % 2 === 1 ? ' offset' : '')}>
-              {row.map((i) => {
-                const cat = CATEGORIES[i]
-                const isSpent = spent.includes(cat)
-                const isCursor = cursor === i && !landed
-                const isLanded = landed === cat
-                return (
-                  <div
-                    key={cat}
-                    className={
-                      'hex' +
-                      (isSpent ? ' spent' : '') +
-                      (isCursor ? ' cursor' : '') +
-                      (isLanded ? ' landed' : '')
-                    }
-                  >
-                    <span className="hex-face">
-                      <span className="hex-name">{cat}</span>
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          ))}
+      <div className="grid-wrap grow">
+        <div className="cat-grid">
+          {CATEGORIES.map((cat, i) => {
+            const isSpent = spent.includes(cat)
+            const isCursor = cursor === i && !landed
+            const isLanded = landed === cat
+            return (
+              <div
+                key={cat}
+                className={
+                  'cat' +
+                  (isSpent ? ' spent' : '') +
+                  (isCursor ? ' cursor' : '') +
+                  (isLanded ? ' landed' : '')
+                }
+              >
+                <span
+                  className="cat-img"
+                  style={{ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties}
+                />
+                <span className="cat-name">{cat}</span>
+              </div>
+            )
+          })}
         </div>
       </div>
 
@@ -128,90 +121,89 @@ export function CategoryPicker({
       <style>{`
         .picker { flex:1; min-height:0; display:flex; flex-direction:column; gap:clamp(10px,1.8vh,18px); }
 
-        /* الزر يحمل اسم التصنيف لحظة الاستقرار — وهي أهم لحظة في الشاشة،
+        /* الزر يحمل اسم التصنيف لحظة الاستقرار — وهي أهم لحظة في الشاشة,
            فلا يجوز أن يرثها بهتانُ الزر المعطَّل. */
         .action.landed:disabled { opacity:1; filter:none; box-shadow:var(--lift), var(--glow-gold); }
-        .comb-wrap { display:flex; align-items:center; justify-content:center; min-height:0; }
+        .grid-wrap { display:flex; align-items:center; justify-content:center; min-height:0; }
 
-        .comb {
-          --hw: min(23vw, 20vh, 210px);   /* عرض السداسي */
-          --hh: calc(var(--hw) * 1.1547); /* ارتفاع السداسي المنتظم */
-          --gap: clamp(6px, 1vw, 14px);
-          display:flex; flex-direction:column; align-items:center;
-        }
-        .comb-row { display:flex; gap:var(--gap); }
-        /* تداخل رأسي بمقدار ربع الارتفاع ليشتبك الصفّان كخلية نحل */
-        .comb-row + .comb-row { margin-top: calc(var(--hh) * -0.25 + var(--gap) * 0.5); }
-        /* إزاحة الصف الأوسط بنصف خلية */
-        .comb-row.offset { margin-inline-start: calc(var(--hw) * 0.5 + var(--gap) * 0.5); }
+        /* هذه الشاشة وحدها تتنازل عن جزء من هامشها الرأسي: البطاقات التسع
+           تتنافس على ارتفاع واحد، وكل بكسل يعود إليها يكبّر الصورة ويقلّل قصّها. */
+        .screen:has(.picker) { padding-block: clamp(16px, 3vh, 28px); }
 
-        /* الصفوف متداخلة رأسياً، فالسداسي المكبَّر يُغطّى بالصف الذي تحته
-           ما لم يُرفع فوقه — تظهر قمّته مقصوصة كأنها عطب. */
-        .hex {
-          position:relative;
-          width:var(--hw); height:var(--hh);
-          display:grid; place-items:center;
-          transition:transform .2s var(--ease-spring), filter .25s ease;
-          filter:drop-shadow(0 8px 18px rgba(0,0,0,.3));
-        }
-        .hex.cursor, .hex.landed { z-index:2; }
-
-        /* الوجه سداسي مدوّر الزوايا — قرار علي في ٥ أغسطس ٢٠٢٦ من أربعة أشكال
-           عُرضت عليه: الزوايا الحادّة كانت وحدها الشكل الحادّ في شاشة كل ما فيها
-           مدوّر (البطاقات والكبسولات والأزرار).
-
-           قناع SVG لا clip-path: الأخير لا يدوّر الزوايا. المسار محسوب على صندوق
-           100×115.47 (نسبة السداسي المنتظم) بنصف قطر ١٥، و preserveAspectRatio='none'
-           مع mask-size:100% 100% يمدّه على الخلية — والخلية محفوظة النسبة
-           (--hh = --hw × 1.1547) فالتدوير لا يتشوّه مهما تغيّر المقاس.
-
-           الحدود لا تعمل مع القناع كما لا تعمل مع clip-path، فالحالة تُقرأ من
-           اللون والحجم والتوهّج. */
-        .hex-face {
-          width:100%; height:100%;
-          display:grid; place-items:center;
-          padding:0 18%;
-          -webkit-mask-image:url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20115.47'%20preserveAspectRatio='none'><path%20d='M37.01%2C7.50%20Q50.00%2C0.00%2062.99%2C7.50%20L87.01%2C21.37%20Q100.00%2C28.87%20100.00%2C43.87%20L100.00%2C71.60%20Q100.00%2C86.60%2087.01%2C94.10%20L62.99%2C107.97%20Q50.00%2C115.47%2037.01%2C107.97%20L12.99%2C94.10%20Q0.00%2C86.60%200.00%2C71.60%20L0.00%2C43.87%20Q0.00%2C28.87%2012.99%2C21.37%20Z'%20fill='%23000'/></svg>");
-          mask-image:url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20115.47'%20preserveAspectRatio='none'><path%20d='M37.01%2C7.50%20Q50.00%2C0.00%2062.99%2C7.50%20L87.01%2C21.37%20Q100.00%2C28.87%20100.00%2C43.87%20L100.00%2C71.60%20Q100.00%2C86.60%2087.01%2C94.10%20L62.99%2C107.97%20Q50.00%2C115.47%2037.01%2C107.97%20L12.99%2C94.10%20Q0.00%2C86.60%200.00%2C71.60%20L0.00%2C43.87%20Q0.00%2C28.87%2012.99%2C21.37%20Z'%20fill='%23000'/></svg>");
-          -webkit-mask-size:100% 100%; mask-size:100% 100%;
-          -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
-          background:linear-gradient(160deg, var(--surface-2), var(--surface) 68%);
-          /* أقصر من أسرع قفزة للضوء (٤٨ms) وإلا لم يبلغ لونَه كاملاً فبدا باهتاً */
-          transition:background .07s linear;
-        }
-        .hex-name {
-          font-size:clamp(13px, 1.75vw, 21px);
-          font-weight:800; text-align:center; line-height:1.35; color:var(--cream);
-          transition:color .07s linear;
+        .cat-grid {
+          /* ما فوق الشبكة وتحتها ثابت بالبكسل (الاسم والزر والشريط) ولا يتقلّص
+             مع الشاشة، فنسبة vh وحدها تقصّ الصف الأخير على الشاشات القصيرة.
+             الارتفاع المتبقّي يُقسم على صفّين ونصف: 2×cw هو ارتفاع صور ٣:٢ الثلاثة. */
+          --cw: min(26vw, calc((100vh - 436px) / 2), 340px);   /* عرض البطاقة */
+          --gap: clamp(8px, .9vw, 11px);
+          display:grid;
+          grid-template-columns:repeat(3, var(--cw));
+          gap:var(--gap);
         }
 
-        /* المستهلَك: ظاهر لكن باهت — لا يختفي */
-        .hex.spent { filter:none; opacity:.55; }
-        .hex.spent .hex-face { background:var(--spent); }
-        .hex.spent .hex-name { color:var(--spent-text); }
+        .cat {
+          display:flex; flex-direction:column;
+          border-radius:18px; overflow:hidden;
+          background:linear-gradient(165deg, var(--surface-2), var(--surface));
+          box-shadow:0 8px 18px rgba(0,0,0,.3);
+          transition:transform .2s var(--ease-spring), box-shadow .25s ease, filter .25s ease, opacity .25s ease;
+        }
+        .cat.cursor, .cat.landed { z-index:2; }
 
-        /* الضوء المارّ — يجب أن يُتابَع من آخر المجلس، فالفرق عن الخلية الساكنة
-           لون كامل لا درجة أفتح بقليل. */
-        .hex.cursor { transform:scale(1.09); filter:drop-shadow(0 0 30px rgba(245,239,227,.75)); }
-        .hex.cursor .hex-face { background:var(--cream); }
-        .hex.cursor .hex-name { color:var(--night); }
+        /* الصورة تملأ صدر البطاقة، وفوقها طبقة صبغ (--tint) تتبدّل مع الحالة.
+           الصبغ الساكن ليليّ خفيف يوحّد الصور مع بقية الشاشة. */
+        .cat-img {
+          display:block; width:100%;
+          /* المصدر مربّع، فكلّما اقترب الإطار من المربّع قلّ المقصوص منه:
+             ٣:٢ يُظهر ثلثي الصورة بدل نصفها، والمشهد يُقرأ لا زاويته وحدها. */
+          aspect-ratio:3/2;
+          --tint:linear-gradient(rgba(11,34,51,.16), rgba(11,34,51,.16));
+          background-image:var(--tint), var(--art);
+          background-size:cover, cover;
+          background-position:center, center;
+          background-color:var(--surface);
+          transition:filter .25s ease;
+        }
+        .cat-name {
+          display:block; text-align:center;
+          font-size:clamp(12px, 1.3vw, 17px);
+          font-weight:800; line-height:1.2; color:var(--cream);
+          /* شريط ضيّق: ما يُوفَّر هنا يذهب إلى الصورة في الصفوف الثلاثة معاً */
+          padding:.28em .3em .38em;
+          /* سطر واحد دائماً — الالتفاف يرفع ارتفاع الصف فيقصّ الصف الأخير خلف الزر */
+          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+          transition:color .07s linear, background .07s linear;
+        }
 
-        /* الاستقرار */
-        .hex.landed {
-          transform:scale(1.12);
-          filter:drop-shadow(0 0 26px rgba(255,189,89,.65));
+        /* المستهلَك: ظاهر لكن باهت — لا يختفي. الصورة تفقد لونها معه. */
+        .cat.spent { opacity:.55; box-shadow:none; }
+        .cat.spent .cat-img { filter:grayscale(1) brightness(.6); }
+        .cat.spent .cat-name { color:var(--spent-text); }
+
+        /* الضوء المارّ — يجب أن يُتابَع من آخر المجلس، فالفرق عن البطاقة الساكنة
+           غمرة كريمية كاملة لا درجة أفتح بقليل. */
+        .cat.cursor { transform:scale(1.07); box-shadow:0 0 30px rgba(245,239,227,.6); }
+        .cat.cursor { background:var(--cream); }
+        .cat.cursor .cat-img { --tint:linear-gradient(rgba(245,239,227,.55), rgba(245,239,227,.55)); }
+        .cat.cursor .cat-name { color:var(--night); }
+
+        /* الاستقرار: البطاقة تلبس الذهبي والصورة تلوح خلف غمرته */
+        .cat.landed {
+          transform:scale(1.1);
+          box-shadow:0 0 26px rgba(255,189,89,.65);
           animation:land .6s var(--ease-spring);
+          background:linear-gradient(160deg, #FFCE7B, var(--gold) 60%, #F0A93F);
         }
-        .hex.landed .hex-face { background:linear-gradient(160deg, #FFCE7B, var(--gold) 60%, #F0A93F); }
-        .hex.landed .hex-name { color:var(--on-gold); }
+        .cat.landed .cat-img { --tint:linear-gradient(rgba(255,189,89,.45), rgba(255,189,89,.45)); }
+        .cat.landed .cat-name { color:var(--on-gold); }
 
         @keyframes land {
-          0%   { transform:scale(1.07); }
-          45%  { transform:scale(1.2); }
-          100% { transform:scale(1.12); }
+          0%   { transform:scale(1.05); }
+          45%  { transform:scale(1.16); }
+          100% { transform:scale(1.1); }
         }
 
-        @media (max-width:560px) { .comb { --hw:min(29vw, 17vh, 150px); } }
+        @media (max-width:560px) { .cat-grid { --cw:min(30vw, 20vh, 180px); } }
       `}</style>
     </div>
   )
