@@ -80,7 +80,6 @@ export function CategoryPicker({
       <div className="grid-wrap grow">
         <div className="cat-grid">
           {CATEGORIES.map((cat, i) => {
-            const fill = ART_FIT_WHOLE[cat]
             const isSpent = spent.includes(cat)
             const isCursor = cursor === i && !landed
             const isLanded = landed === cat
@@ -95,13 +94,8 @@ export function CategoryPicker({
                 }
               >
                 <span
-                  className={'cat-img' + (fill ? ' fit' : '')}
-                  style={
-                    {
-                      '--art': `url(${CATEGORY_ART[cat]})`,
-                      ...(fill ? { '--fill': fill } : null),
-                    } as React.CSSProperties
-                  }
+                  className={'cat-img' + (ART_FIT_WHOLE.has(cat) ? ' fit' : '')}
+                  style={{ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties}
                 />
                 <span className="cat-name">{cat}</span>
               </div>
@@ -167,15 +161,28 @@ export function CategoryPicker({
           background-image:var(--tint), var(--art);
           background-size:cover, cover;
           background-position:center, center;
+          /* احتياط: كل طبقة لا تملأ الإطار تماماً تتكرّر افتراضياً. لا أثر لها
+             مع cover، لكن الغفلة عنها كرّرت الصورة المصغّرة في بطاقات fit. */
+          background-repeat:no-repeat;
           background-color:var(--surface);
           transition:filter .25s ease;
         }
-        /* ثلاث طبقات: الصبغ فوق الجميع فيشمل الصورة وما حولها بلون حالتها،
-           ثم الصورة كاملة مصغّرة، وتحتها تدرّج حافتها يملأ ما بقي. */
-        .cat-img.fit {
-          background-image:var(--tint), var(--art), var(--fill);
-          background-size:cover, contain, cover;
-          background-position:center, center, center;
+        /* الصورة كاملةً في وسط الإطار، وما حولها نسخةٌ منها مكبّرة مضبّبة —
+           فتناسب ألوانُ الحشو الصورةَ في كل ارتفاع بلا ضبط يدوي لكل صورة. */
+        .cat-img.fit { position:relative; overflow:hidden; background:var(--surface); }
+        .cat-img.fit::before, .cat-img.fit::after { content:''; position:absolute; inset:0; }
+        .cat-img.fit::before {
+          background:var(--art) center / cover no-repeat;
+          /* التكبير يدفع حافة الضباب خارج الإطار — بدونه تشحب الأطراف */
+          filter:blur(16px); transform:scale(1.18);
+        }
+        /* الصبغ هنا لا على العنصر: العناصر الزائفة تعلو خلفيّته، فلو بقي
+           تحتها لما بلغ الصورةَ ولا حشوها لونُ الحالة. */
+        .cat-img.fit::after {
+          background-image:var(--tint), var(--art);
+          background-size:cover, contain;
+          background-position:center, center;
+          background-repeat:no-repeat, no-repeat;
         }
         .cat-name {
           display:block; text-align:center;
