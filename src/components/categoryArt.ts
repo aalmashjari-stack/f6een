@@ -1,4 +1,5 @@
-import geography from '../../assets/categories/geography.png'
+// ٣:٢ أصلاً فتملأ إطارها بلا قصّ — و JPEG لأنها رسمة بلا شفافية: رُبع حجم PNG
+import geography from '../../assets/categories/geography.jpg'
 import history from '../../assets/categories/history.png'
 import religion from '../../assets/categories/religion.png'
 import science from '../../assets/categories/science.png'
@@ -18,7 +19,6 @@ import sportsNumbers from '../../assets/categories/sports-numbers.png'
  */
 export const ART_FIT_WHOLE = new Set([
   'رياضة وأرقام', // ولد واقف يملأ الارتفاع، والكرة عند قدميه
-  'جغرافيا ومعالم', // الكرة الأرضية تملأ الأعلى والأرض تحتها
   'تاريخ وحضارات', // لوحتان فوق بعض، والقصّ يبتر إحداهما
 ])
 
