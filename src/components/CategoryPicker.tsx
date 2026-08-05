@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CATEGORIES } from '../game/bank'
-import { CATEGORY_ART } from './categoryArt'
+import { ART_FIT_WHOLE, CATEGORY_ART } from './categoryArt'
 import { play } from '../audio/sfx'
 
 /**
@@ -80,6 +80,7 @@ export function CategoryPicker({
       <div className="grid-wrap grow">
         <div className="cat-grid">
           {CATEGORIES.map((cat, i) => {
+            const fill = ART_FIT_WHOLE[cat]
             const isSpent = spent.includes(cat)
             const isCursor = cursor === i && !landed
             const isLanded = landed === cat
@@ -94,8 +95,13 @@ export function CategoryPicker({
                 }
               >
                 <span
-                  className="cat-img"
-                  style={{ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties}
+                  className={'cat-img' + (fill ? ' fit' : '')}
+                  style={
+                    {
+                      '--art': `url(${CATEGORY_ART[cat]})`,
+                      ...(fill ? { '--fill': fill } : null),
+                    } as React.CSSProperties
+                  }
                 />
                 <span className="cat-name">{cat}</span>
               </div>
@@ -163,6 +169,13 @@ export function CategoryPicker({
           background-position:center, center;
           background-color:var(--surface);
           transition:filter .25s ease;
+        }
+        /* ثلاث طبقات: الصبغ فوق الجميع فيشمل الصورة وما حولها بلون حالتها،
+           ثم الصورة كاملة مصغّرة، وتحتها تدرّج حافتها يملأ ما بقي. */
+        .cat-img.fit {
+          background-image:var(--tint), var(--art), var(--fill);
+          background-size:cover, contain, cover;
+          background-position:center, center, center;
         }
         .cat-name {
           display:block; text-align:center;
