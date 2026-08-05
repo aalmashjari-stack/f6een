@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CATEGORIES } from '../game/bank'
-import { ART_FIT_WHOLE, CATEGORY_ART } from './categoryArt'
+import { CATEGORY_ART } from './categoryArt'
 import { play } from '../audio/sfx'
 
 /**
@@ -94,7 +94,7 @@ export function CategoryPicker({
                 }
               >
                 <span
-                  className={'cat-img' + (ART_FIT_WHOLE.has(cat) ? ' fit' : '')}
+                  className="cat-img"
                   style={{ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties}
                 />
                 <span className="cat-name">{cat}</span>
@@ -161,28 +161,9 @@ export function CategoryPicker({
           background-image:var(--tint), var(--art);
           background-size:cover, cover;
           background-position:center, center;
-          /* احتياط: كل طبقة لا تملأ الإطار تماماً تتكرّر افتراضياً. لا أثر لها
-             مع cover، لكن الغفلة عنها كرّرت الصورة المصغّرة في بطاقات fit. */
           background-repeat:no-repeat;
           background-color:var(--surface);
           transition:filter .25s ease;
-        }
-        /* الصورة كاملةً في وسط الإطار، وما حولها نسخةٌ منها مكبّرة مضبّبة —
-           فتناسب ألوانُ الحشو الصورةَ في كل ارتفاع بلا ضبط يدوي لكل صورة. */
-        .cat-img.fit { position:relative; overflow:hidden; background:var(--surface); }
-        .cat-img.fit::before, .cat-img.fit::after { content:''; position:absolute; inset:0; }
-        .cat-img.fit::before {
-          background:var(--art) center / cover no-repeat;
-          /* التكبير يدفع حافة الضباب خارج الإطار — بدونه تشحب الأطراف */
-          filter:blur(16px); transform:scale(1.18);
-        }
-        /* الصبغ هنا لا على العنصر: العناصر الزائفة تعلو خلفيّته، فلو بقي
-           تحتها لما بلغ الصورةَ ولا حشوها لونُ الحالة. */
-        .cat-img.fit::after {
-          background-image:var(--tint), var(--art);
-          background-size:cover, contain;
-          background-position:center, center;
-          background-repeat:no-repeat, no-repeat;
         }
         .cat-name {
           display:block; text-align:center;
