@@ -7,7 +7,7 @@ import { drawStage3Queue } from './draw'
 const TIME_SCALE =
   typeof location !== 'undefined' && new URLSearchParams(location.search).has('fast') ? 0.1 : 1
 
-export const STAGE1_QUESTIONS = 6
+export const STAGE1_QUESTIONS = 8
 export const STAGE1_CONSULT_MS = 60_000 * TIME_SCALE
 export const STAGE1_RIVAL_MS = 15_000 * TIME_SCALE
 export const STAGE1_POINTS = 10
@@ -22,7 +22,7 @@ export const TIEBREAK_POINTS = 10
 /** مستوى سؤال الجولة الجماعية حسب الموضع — القسم ٨. */
 export function stage1Level(index: number): Level {
   if (index < 2) return 'سهل'
-  if (index < 4) return 'متوسط'
+  if (index < 6) return 'متوسط'
   return 'صعب'
 }
 
