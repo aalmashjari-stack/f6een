@@ -28,6 +28,10 @@
   --glow-coral: 0 0 40px rgba(228, 103, 74, .30);
   --lift: 0 18px 40px rgba(0, 0, 0, .34);
 
+  /* سطح الذهب — الدرجتان طرفاه وليستا في لوحة SPEC، فمكانهما هنا وحده.
+     كان منسوخاً حرفياً في أربعة مواضع، وقد تفرّق اثنان منها فعلاً. */
+  --grad-gold: linear-gradient(150deg, #FFCE7B, var(--gold) 55%, #F0A93F);
+
   --ease-spring: cubic-bezier(.22, 1.4, .36, 1);
 
   /* Cairo أولاً — نفس سلسلة نظام التصميم حرفياً، حتى تُقرأ اللعبة والتصاميم
@@ -228,7 +232,7 @@ body::after {
   border-radius: 999px; /* كبسولة */
   padding: clamp(18px, 3vh, 30px) 34px;
   font-size: clamp(20px, 3vw, 30px);
-  background: linear-gradient(150deg, #FFCE7B, var(--gold) 55%, #F0A93F);
+  background: var(--grad-gold);
   color: var(--on-gold);
   box-shadow: var(--lift), var(--glow-gold);
   transition: transform .14s var(--ease-spring), box-shadow .25s ease, filter .2s ease;
