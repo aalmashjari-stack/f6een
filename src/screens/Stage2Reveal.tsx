@@ -38,7 +38,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       </div>
 
       <div className="eyebrow center">
-        من بادر بالإجابة أولاً هو وحده الذي يُنقَّط — والآخر يبقى بلا شيء
+        من بادر بالإجابة أولاً هو وحده الذي يُنقَّط — والآخر يبقى بلا شيء. وفي حال لم يُجب أحد انتقل إلى الجولة التالية
       </div>
 
       <div className="mark-cards grow">
