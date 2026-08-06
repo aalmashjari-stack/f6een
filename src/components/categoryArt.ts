@@ -11,6 +11,9 @@ import biologyAstronomy from '../../assets/categories/biology-astronomy.png'
 import literatureArts from '../../assets/categories/literature-arts.png'
 import techMisc from '../../assets/categories/tech-misc.png'
 import sportsNumbers from '../../assets/categories/sports-numbers.jpg'
+import kuwait from '../../assets/categories/kuwait.jpg'
+import cinemaDrama from '../../assets/categories/cinema-drama.jpg'
+import whoAmI from '../../assets/categories/who-am-i.jpg'
 
 /**
  * صورة كل تصنيف في لوحة التصنيفات — اختارها علي في ٥ أغسطس ٢٠٢٦.
@@ -26,4 +29,8 @@ export const CATEGORY_ART: Record<string, string> = {
   'أدب وفنون': literatureArts,
   'تقنية ومنوعات': techMisc,
   'رياضة وأرقام': sportsNumbers,
+  // الفئات الثلاث المضافة في ٧ أغسطس ٢٠٢٦ — صورها من علي بنسبة ٣:٢ أصلاً فلا تُقصّ
+  'الكويت': kuwait,
+  'سينما ودراما': cinemaDrama,
+  'من أنا؟': whoAmI,
 }
