@@ -5,6 +5,7 @@ import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
+import { QuestionText } from '../components/QuestionText'
 
 /**
  * الحق ما تلحق — الشاشة ٦. المؤقت مرجاني (العداء مع الوقت).
@@ -52,7 +53,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
       <div className="s3-q grow center-all">
         {q ? (
           <div className="s3-inner">
-            <p className="q-text">{q.question}</p>
+            <QuestionText>{q.question}</QuestionText>
             {state.s3Revealed && (
               <p className="s3-answer">
                 <span className="a-label">الإجابة:</span> {q.answer}

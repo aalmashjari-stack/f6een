@@ -6,6 +6,7 @@ import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
+import { QuestionText } from '../components/QuestionText'
 
 type Step = 'consult' | 'rival'
 
@@ -44,7 +45,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
       </div>
 
       <div className="q-box">
-        <p className="q-text">{q.question}</p>
+        <QuestionText>{q.question}</QuestionText>
       </div>
 
       {/* الحلقة كبيرة في منتصف المساحة الحرّة */}

@@ -310,7 +310,16 @@ body::after {
   box-shadow: var(--lift);
   animation: pop-in .45s var(--ease-spring) both;
 }
-.q-text { font-size: clamp(24px, 4.4vw, 46px); font-weight: 800; line-height: 1.5; text-align: center; }
+/* كل مقاس يأخذ أصغر نصيبيه: من العرض ومن الارتفاع.
+   بـ vw وحده يتضخّم الخط على شاشة عريضة قصيرة ولا تكبر معه البطاقة، فتبتلع
+   نصيبَ المؤقّت تحتها ويُقصّ الرقم خلف الزر. وهي العلّة نفسها التي عولجت في
+   بطاقات الديربي بالحل نفسه. */
+.q-text { font-size: clamp(24px, min(4.4vw, 6.2vh), 46px); font-weight: 800; line-height: 1.5; text-align: center; }
+/* درجتا الهبوط للأسئلة الطويلة — العتبات ومبرّرها في QuestionText.tsx.
+   السطر يقترب مع صغر الخط: النص الطويل أسطره أكثر، ولو بقي التباعد على ١٫٥
+   لأكلت الفراغاتُ ما وفّره تصغير الحرف. */
+.q-text.long  { font-size: clamp(20px, min(3.7vw, 4.8vh), 39px); line-height: 1.45; }
+.q-text.xlong { font-size: clamp(18px, min(3.2vw, 4vh), 34px); line-height: 1.4; }
 
 @keyframes pop-in {
   from { opacity: 0; transform: scale(.965) translateY(10px); }

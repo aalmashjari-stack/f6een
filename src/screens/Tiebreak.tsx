@@ -4,6 +4,7 @@ import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { CATEGORIES } from '../game/bank'
 import { ScoreBar } from '../components/ScoreBar'
+import { QuestionText } from '../components/QuestionText'
 
 /**
  * فاصل التعادل — سؤال صعب واحد. يُعاد عند بقاء التعادل (لا أحد أصاب).
@@ -30,7 +31,7 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
 
       <div className="q-box grow center-all">
         <div className="s3-inner">
-          <p className="q-text">{q.question}</p>
+          <QuestionText>{q.question}</QuestionText>
           {state.s3Revealed && (
             <p className="s3-answer">
               <span className="a-label">الإجابة:</span> {q.answer}

@@ -5,6 +5,7 @@ import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
+import { QuestionText } from '../components/QuestionText'
 
 export function Stage2Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const q = state.currentQuestion!
@@ -27,7 +28,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
       </div>
 
       <div className="q-box grow center-all">
-        <p className="q-text">{q.question}</p>
+        <QuestionText>{q.question}</QuestionText>
       </div>
 
       <Timer remainingMs={left} totalMs={STAGE2_TIMER_MS} />
