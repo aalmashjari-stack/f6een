@@ -9,6 +9,17 @@
     <title>صحصحلي</title>
   </head>
   <body>
+    <!-- بوابة الاتجاه: تظهر فقط على أجهزة اللمس في الوضع الطولي (media query في theme.css).
+         خارج #root عمداً — تعمل حتى قبل تحميل React ولا تتأثر بحالة اللعبة. -->
+    <div id="rotate-gate" aria-hidden="true">
+      <svg viewBox="0 0 100 100" class="rotate-gate-icon">
+        <rect x="30" y="10" width="40" height="70" rx="7" fill="none" stroke="currentColor" stroke-width="4" />
+        <line x1="30" y1="60" x2="70" y2="60" stroke="currentColor" stroke-width="4" />
+        <path d="M78 30 a26 26 0 1 1 -8 -19" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+        <path d="M78 3 L78 30 L51 30" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <p>أدر جهازك أفقياً للعب</p>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -370,3 +370,43 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
 }
+
+/* ===================== بوابة الاتجاه ===================== */
+/* اللعبة شاشة واحدة عريضة (القسم ١ من SPEC.md) — على الجوال لا تُعرض طولية.
+   الشرط hover:none و pointer:coarse يحصر الحجب بأجهزة اللمس، فلا تُحجب نافذة
+   مكتب طويلة ضيّقة عن خطأ. */
+#rotate-gate { display: none; }
+
+@media (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  #rotate-gate {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px;
+    text-align: center;
+    background: var(--night-deep);
+    color: var(--cream);
+  }
+  #rotate-gate .rotate-gate-icon {
+    width: clamp(64px, 20vw, 96px);
+    height: clamp(64px, 20vw, 96px);
+    color: var(--gold);
+    animation: rotate-gate-tilt 1.8s ease-in-out infinite;
+  }
+  #rotate-gate p {
+    font-size: clamp(16px, 5vw, 22px);
+    font-weight: 700;
+  }
+  #root { display: none; }
+}
+
+@keyframes rotate-gate-tilt {
+  0%, 20% { transform: rotate(0deg); }
+  50%, 70% { transform: rotate(-90deg); }
+  100% { transform: rotate(-90deg); }
+}
