@@ -84,6 +84,17 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
         }
         .il-rule { color:var(--cream); font-size:clamp(17px,2.4vw,24px); line-height:1.7; font-weight:600; animation:il-rise .55s ease-out .55s both; }
 
+        /* جوال أفقي: قاعدة الديربي ستّة أسطر بـ line-height 1.7 وحشوة ٢٨، فتتجاوز
+           البطاقة الشاشةَ صعوداً حتى تحجب شريط النتيجة ونزولاً حتى يقطعها الزر.
+           القاعدة أهمّ سطر هنا (قواعد المرحلة تغيّرت للتوّ) فلا تُقصّ — يضمر
+           الخطّ والتباعد بدلاً منها. */
+        @media (max-height:480px) {
+          .interval-card { padding:clamp(10px,4vh,60px) clamp(16px,4vw,60px); gap:clamp(4px,1.4vh,16px); }
+          .il-eyebrow { font-size:clamp(11px, min(1.8vw,2.6vh), 18px); line-height:1.3; }
+          .il-title { font-size:clamp(24px, min(7vw,11vh), 72px); }
+          .il-rule { font-size:clamp(12px, min(2.4vw,3.4vh), 24px); line-height:1.45; }
+        }
+
         /* التعادل مرجاني لا ذهبي: المرجاني لغة التوتّر في هذه اللعبة (القسم ١١)،
            وهذه اللحظة الوحيدة التي تكون فيها اللعبة معلّقة بسؤال واحد. */
         .interval-card.tie { border-color:var(--coral); box-shadow:var(--glow-coral); }

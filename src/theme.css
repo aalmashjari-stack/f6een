@@ -220,6 +220,11 @@ body::after {
   }
 }
 
+/* جوال أفقي: الشاشة عريضة لكن ارتفاعها ~٣٥٠–٣٩٠ بكسل بعد شريط المتصفّح.
+   الهوامش والفجوات والشريط كلّها مقاسة بـ vw فلا تشعر بضيق الارتفاع، وكانت
+   وحدها تلتهم ثلث الشاشة — فيفيض المحتوى أو تُقصّ الإجابة صامتة.
+   العلاج كتلة واحدة في آخر الملف — انظر «الشاشة القصيرة» هناك. */
+
 /* ===================== الأزرار ===================== */
 .action {
   flex: none;
@@ -330,11 +335,14 @@ body::after {
 .reveal-a {
   position: relative;
   overflow: hidden;
+  /* الإجابة ذروة السؤال فلا تُضغط: بلا هذا يقتطع منها الصفُّ الذي تحتها ارتفاعَها
+     على شاشة قصيرة، و overflow:hidden يبتلع النصّ فتظهر البطاقة شريطاً فارغاً. */
+  flex-shrink: 0;
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   background: linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
   border: 1px solid var(--gold);
   border-radius: clamp(30px, 6vh, 64px);
-  padding: clamp(20px, 3.4vh, 38px) clamp(28px, 5vw, 64px);
+  padding: clamp(12px, 3.4vh, 38px) clamp(28px, 5vw, 64px);
   box-shadow: var(--lift), var(--glow-gold);
   animation: pop-in .45s var(--ease-spring) both, reveal-glow 1.1s ease-out both;
 }
@@ -363,12 +371,71 @@ body::after {
 .reveal-a .a-label { color: var(--text-2); font-weight: 700; font-size: 15px; }
 .reveal-a .a-text {
   color: var(--gold); font-weight: 800;
-  font-size: clamp(30px, 5vw, 52px); line-height: 1.3; text-align: center;
+  /* أصغرُ نصيبَي العرض والارتفاع — علّة .q-text نفسها (انظر تعليقها أعلاه):
+     على جوال أفقي كان الخط ينفخ بـ vw حتى تُقصّ الإجابة داخل بطاقتها. */
+  font-size: clamp(24px, min(5vw, 7.4vh), 52px); line-height: 1.3; text-align: center;
 }
 .reveal-q { font-size: clamp(15px, 2vw, 20px); font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+}
+
+/* ===================== الشاشة القصيرة ===================== */
+/* جوال أفقي: الشاشة عريضة لكن ارتفاعها ~٣٢٠–٣٩٠ بكسل بعد شريط المتصفّح، وهي
+   الوضعية الوحيدة المسموح بها للّعب على الجوال (بوابة الاتجاه تحت هذا السطر).
+   كل المقاسات هنا مكتوبة بـ vw فلا تشعر بضيق الارتفاع: الهوامش والفجوات
+   والشريط والزر وحدها كانت تلتهم ثلث الشاشة، فيفيض المحتوى أو يُقصّ صامتاً.
+   القاعدة: يتنازل أولاً ما يُقرأ مرّة (الهوامش، السطور التفسيرية، سُمك الزر)،
+   ويبقى ما يُقرأ طوال الجولة (السؤال، الإجابة، المؤقّت، أزرار التنقيط).
+
+   موضع الكتلة في آخر الملف مقصود: الاستعلام لا يرفع الأولوية، فلو سبقت
+   قواعدَها الأصليةَ لغلبتها تلك بحكم ترتيب المصدر وحده. */
+@media (max-height: 480px) {
+  .screen {
+    padding: clamp(8px, 2vh, 16px) clamp(16px, 3vw, 40px);
+    gap: clamp(6px, 1.6vh, 12px);
+  }
+  .scorebar .team { padding: 5px 8px 5px 16px; }
+  .scorebar .team .pts-disc { width: clamp(36px, 10vh, 46px); height: clamp(36px, 10vh, 46px); }
+  /* نقض للالتفاف أعلاه: تحت ٦٢٠ بكسل عرضاً ينزل السطر الأوسط إلى سطر ثالث
+     ليحمي الكبسولتين من القصّ — مقايضةٌ صحيحة على شاشة طويلة. أمّا هنا فالعرض
+     هو المتوفّر والارتفاع هو الشحيح، فالسطر يعود إلى مكانه ويتقلّص هو بدلاً
+     من أن يسرق ثلاثين بكسلاً من السؤال. */
+  .scorebar { flex-wrap: nowrap; }
+  .scorebar .mid {
+    order: 0; width: auto; white-space: normal; padding: 0 6px;
+    font-size: clamp(10px, 1.6vw, 17px); line-height: 1.3;
+  }
+  /* الزر يبقى عريضاً بعرض الشاشة — وهو ما يجعله سهل الإصابة — ويتنازل عن
+     سُمكه الرأسي وحده. */
+  .action { padding: clamp(9px, 2.6vh, 30px) 34px; font-size: clamp(18px, min(3vw, 6vh), 30px); }
+  /* line-height صريح: صندوق سطر Cairo الطبيعي ~١٫٨٧ من حجم الحرف، فالسطر
+     الواحد يحجز ضعف ما يحتاجه — وهو هدر لا يُلاحَظ إلا حين يشحّ الارتفاع. */
+  .eyebrow { font-size: clamp(11px, 1.8vw, 17px); line-height: 1.3; }
+  .action-note { font-size: clamp(10px, 1.6vw, 15px); margin-top: -6px; }
+  /* حشوة البطاقتين مقاسة بـ vh أصلاً لكن أرضيتها (٢٢ و٢٠) وُضعت لشاشة طويلة:
+     هنا تنزل، فيبقى النصّ نفسه بحجمه ويصغر ما حوله. */
+  .q-box { padding: clamp(10px, 4vh, 48px) clamp(20px, 5vw, 64px); }
+  .reveal-a { padding: clamp(8px, 3.4vh, 38px) clamp(20px, 5vw, 64px); }
+  /* أرضيات الخط نفسها تنزل: أرضية ١٨ للسؤال الطويل جداً وُضعت لشاشة طويلة،
+     وعلى ٣٢٠ بكسل تُخرج الزرَّ من الشاشة. الفارق بين ١٨ و١٥ لا يُلحَظ من بُعد
+     المجلس، وخروج الزر يُلحَظ فوراً. */
+  .q-text       { line-height: 1.35; }
+  .q-text.long  { font-size: clamp(17px, min(3.7vw, 4.8vh), 39px); }
+  .q-text.xlong { font-size: clamp(15px, min(3.2vw, 4vh), 34px); line-height: 1.3; }
+  /* سطر السؤال المنكمش فوق الإجابة: صندوق سطر Cairo الطبيعي كان يعطي سطرين
+     ستّين بكسلاً — وهي بالضبط ما ينقص «لا أحد أصاب» ليبقى داخل الشاشة. */
+  .reveal-q { font-size: clamp(13px, min(2vw, 2.6vh), 20px); line-height: 1.35; }
+  .reveal-a .a-label { font-size: 13px; line-height: 1.3; }
+}
+
+/* الطبقة الأضيق — ٣٦٠ بكسل فما دون (iPhone SE أفقياً وما يشبهه). أُفردت عن
+   الطبقة أعلاه حتى لا تُشدّ شاشاتُ الـ٣٩٠–٤٨٠ إلى ضيقٍ لا تحتاجه. */
+@media (max-height: 360px) {
+  .screen { padding: 5px clamp(16px, 3vw, 40px); gap: 4px; }
+  .action { padding: 6px 34px; font-size: clamp(16px, min(3vw, 6vh), 30px); }
+  .action-note { font-size: 10px; }
 }
 
 /* ===================== بوابة الاتجاه ===================== */

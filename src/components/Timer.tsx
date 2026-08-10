@@ -70,6 +70,16 @@ export function Timer({
           0%,100% { opacity:1; }
           50%     { opacity:.55; }
         }
+
+        /* جوال أفقي: أرضية الحلقة ١٢٠ بكسل وأرضية الرقم ٣٤ — أكبر ممّا يتبقّى
+           لها من الارتفاع، فيخرج الرقم من حلقته ويركب على السؤال والزر معاً.
+           هنا تنزل الأرضيتان إلى ما تحتمله الشاشة القصيرة. */
+        @media (max-height:480px) {
+          .ring-timer.md { height:clamp(56px, 16vh, 200px); }
+          .ring-timer.lg { height:min(26vh, 40vw, 320px); }
+          .ring-timer .secs { font-size:clamp(20px, 8vh, 104px); }
+          .ring-timer .track, .ring-timer .fill { stroke-width:10; }
+        }
       `}</style>
     </div>
   )

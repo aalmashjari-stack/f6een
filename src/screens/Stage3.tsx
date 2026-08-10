@@ -113,6 +113,21 @@ function Stage3Styles() {
         .v.correct { flex:1; background:var(--gold); color:var(--on-gold); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
         .v.correct .v-pts { font-size:.5em; }
         .v.wrong { flex:1; background:var(--coral); color:var(--on-coral); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
+
+        /* جوال أفقي: أرضيات الحشوة والخط هنا (٢٢ للبطاقة و٣٠ للإجابة و٢٠ لزرَّي
+           الحكم) وُضعت لشاشة طويلة، فيفيض السؤالُ والإجابةُ من البطاقة ويركبان
+           على الزرّين. ولأنّ الساعة لا تتوقّف في هذه المرحلة، فالفيض هنا أسوأ
+           من غيره: الحكم لا يملك ثانية ليتبيّن ما يقرأ. */
+        @media (max-height:480px) {
+          .s3-q { padding:clamp(8px,4vh,48px) clamp(16px,5vw,64px); }
+          .s3-inner { gap:clamp(6px,2vh,20px); }
+          .s3-answer { font-size:clamp(20px, min(5vw,7vh), 54px); }
+          .v.correct, .v.wrong { padding:clamp(8px,3.5vh,34px); font-size:clamp(22px, min(5vw,8vh), 52px); }
+          .s3r-team { font-size:clamp(26px, min(6vw,13vh), 64px); }
+          .s3r-eyebrow { font-size:clamp(13px, min(2.2vw,4vh), 22px); }
+          .s3r-note { font-size:clamp(11px, min(1.7vw,3vh), 18px); }
+          .s3-ready { gap:6px; }
+        }
       `}</style>
   )
 }

@@ -131,6 +131,14 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
           .mark-cards { gap:10px; }
           .mcard { padding:10px 8px; }
         }
+
+        /* المقاسات أعلاه تضمر مع الارتفاع، أمّا أرضياتها (١٠ للبطاقة و٨ للمربع)
+           فبقيت ثابتة — وهي وحدها ما يفيض على ٣٢٠ بكسل، فيطفو اسم الفريق فوق
+           حاشية البطاقة. */
+        @media (max-height:480px) {
+          .mcard { padding:clamp(6px,1.8vh,22px); gap:clamp(3px,1.2vh,14px); }
+          .choice { padding:clamp(4px,1.5vh,18px) 6px; }
+        }
       `}</style>
     </div>
   )

@@ -96,6 +96,18 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
           min-height:0;
         }
+        /* أرضية للمؤقّت على الجوال الأفقي: بلا هذا ينكمش مكانه إلى ٢٠ بكسل
+           فيفيض الرقم فوق بطاقة السؤال والزر — انظر تعليق الحلقة في Timer.tsx. */
+        @media (max-height:480px) {
+          .timer-stage { min-height:clamp(46px, 17vh, 120px); gap:6px; }
+          .rival-hint { font-size:clamp(12px,1.6vw,19px); padding:5px 16px; }
+          /* كبسولتا الفريقين والسطر التفسيري يتنازلان لصالح السؤال والمؤقّت:
+             هما معرّفان بالمكان (يمين/يسار) لا بالحجم، فتصغيرهما لا يُفقد شيئاً. */
+          .s1-teams { gap:8px; }
+          .tpill { padding:5px 16px; gap:8px; }
+          .tpill .role { font-size:11px; line-height:1.3; }
+          .tpill .tname { line-height:1.3; }
+        }
         .rival-hint {
           flex:none;
           text-align:center; color:var(--cream); font-weight:700;

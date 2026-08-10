@@ -66,6 +66,15 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
         .tb-picks { display:flex; gap:14px; }
         .tb { flex:1; border:2px solid var(--gold); background:transparent; color:var(--cream); font-family:inherit; font-weight:800; font-size:clamp(20px,3vw,30px); padding:clamp(18px,3vh,28px); border-radius:var(--r-lg); cursor:pointer; }
         .tb:active { transform:scale(.98); }
+
+        /* جوال أفقي: فجوة ٢٠ بين السؤال والإجابة وحشوة ١٨ في زرَّي الحسم
+           تُخرج محتوى البطاقة من حدّها فيطفو السؤال فوق إطارها. */
+        @media (max-height:480px) {
+          .s3-inner { gap:clamp(6px,2vh,20px); }
+          .s3-answer { font-size:clamp(16px, min(3vw,4.5vh), 32px); }
+          .tb-picks { gap:8px; }
+          .tb { padding:clamp(8px,3vh,28px); font-size:clamp(15px, min(3vw,5vh), 30px); }
+        }
       `}</style>
     </div>
   )
