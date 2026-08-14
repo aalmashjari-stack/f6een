@@ -16,7 +16,16 @@
 const LONG = 80
 const EXTRA_LONG = 120
 
+/**
+ * تُصدَّر لأن الشاشتين اللتين تكرّران السؤال بعد كشفه (تنقيط الجولة الجماعية
+ * والديربي) تعرضانه بأسلوب مختلف — أصغر وباهتاً، خلف الإجابة لا فوقها — فلا
+ * تُطبّقان .q-text نفسها، لكنهما تحتاجان الدرجتين نفسهما: سؤال «من أنا؟»
+ * الطويل يفيض على بطاقة الكشف الأصغر بنفس القدر الذي يفيض به على بطاقة السؤال.
+ */
+export function questionSizeSuffix(text: string): '' | ' long' | ' xlong' {
+  return text.length > EXTRA_LONG ? ' xlong' : text.length > LONG ? ' long' : ''
+}
+
 export function QuestionText({ children }: { children: string }) {
-  const size = children.length > EXTRA_LONG ? ' xlong' : children.length > LONG ? ' long' : ''
-  return <p className={'q-text' + size}>{children}</p>
+  return <p className={'q-text' + questionSizeSuffix(children)}>{children}</p>
 }

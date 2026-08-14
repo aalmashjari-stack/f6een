@@ -376,6 +376,10 @@ body::after {
   font-size: clamp(24px, min(5vw, 7.4vh), 52px); line-height: 1.3; text-align: center;
 }
 .reveal-q { font-size: clamp(15px, 2vw, 20px); font-weight: 600; }
+/* درجتا الهبوط نفس عتبات QuestionText.tsx (LONG/EXTRA_LONG) — سؤال «من أنا؟»
+   الطويل يفيض على سطر الكشف الصغير هذا كما يفيض على بطاقة السؤال الحيّ. */
+.reveal-q.long  { font-size: clamp(13px, min(1.7vw, 2.3vh), 17px); }
+.reveal-q.xlong { font-size: clamp(12px, min(1.5vw, 2vh), 14px); line-height: 1.3; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
@@ -427,6 +431,11 @@ body::after {
   /* سطر السؤال المنكمش فوق الإجابة: صندوق سطر Cairo الطبيعي كان يعطي سطرين
      ستّين بكسلاً — وهي بالضبط ما ينقص «لا أحد أصاب» ليبقى داخل الشاشة. */
   .reveal-q { font-size: clamp(13px, min(2vw, 2.6vh), 20px); line-height: 1.35; }
+  /* .reveal-q.long أخصّ من .reveal-q فتغلبه دائماً بصرف النظر عن الاستعلام —
+     فبلا هاتين القاعدتين يبقى سؤال «من أنا؟» الطويل عند مقاسه الأصلي هنا
+     ولا يستفيد من ضغطة الشاشة القصيرة كما استفاد .q-text.long المناظر له. */
+  .reveal-q.long  { font-size: clamp(11px, min(1.6vw, 2.1vh), 17px); }
+  .reveal-q.xlong { font-size: clamp(10px, min(1.4vw, 1.8vh), 14px); line-height: 1.3; }
   .reveal-a .a-label { font-size: 13px; line-height: 1.3; }
 }
 
