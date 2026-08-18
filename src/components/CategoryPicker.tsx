@@ -27,7 +27,7 @@ export function CategoryPicker({
 }: {
   spent: string[]
   onResult: (category: string) => void
-  eyebrow: string
+  eyebrow: React.ReactNode
 }) {
   const [cursor, setCursor] = useState<number | null>(null)
   const [landed, setLanded] = useState<string | null>(null)
@@ -82,7 +82,18 @@ export function CategoryPicker({
       <div className="eyebrow center">{eyebrow}</div>
 
       <div className="grid-wrap grow">
-        <div className="cat-grid">
+        <div
+          className="cat-grid"
+          style={
+            {
+              // نستهدف ثلاثة صفوف دائماً: الأعمدة تكبر مع الفئات فتبقى البطاقة
+              // بحجمها ولا تُقصّ الأسماء. ‏١٢ فئة ← ٤ أعمدة (٤×٣ كما أُقرّت)،
+              // ‏١٣ ← ٥ أعمدة (٥+٥+٣) بدل صفٍّ رابع فيه بطاقة يتيمة.
+              '--cols': Math.ceil(CATEGORIES.length / 3),
+              '--rows': Math.ceil(CATEGORIES.length / Math.ceil(CATEGORIES.length / 3)),
+            } as React.CSSProperties
+          }
+        >
           {CATEGORIES.map((cat, i) => {
             const isSpent = spent.includes(cat)
             const isCursor = cursor === i && !landed
@@ -112,7 +123,7 @@ export function CategoryPicker({
           القاعدة قائمة في المحرّك: لا زرّ لإعادة السحبة أصلاً. */}
       <div className="stack gap-s">
         <button
-          className={'action' + (landed ? ' landed' : '')}
+          className={'action compact' + (landed ? ' landed' : '')}
           onClick={start}
           disabled={running || landed !== null || available.length === 0}
         >
@@ -139,11 +150,20 @@ export function CategoryPicker({
              مع الشاشة، فنسبة vh وحدها تقصّ الصف الأخير على الشاشات القصيرة.
              الارتفاع المتبقّي يُقسم على صفّين ونصف: 2×cw هو ارتفاع صور ٣:٢ الثلاثة.
              و max الخارجي أرضية نجاة: تحت ٤٣٦ بكسل ارتفاعاً كان الطرح يصير سالباً
-             فينهار عرض البطاقة إلى صفر وتختفي الشبكة كاملةً — لا تصغر بل تختفي. */
-          --cw: max(64px, min(21vw, calc((100vh - 436px) / 2), 340px));   /* عرض البطاقة */
+             فينهار عرض البطاقة إلى صفر وتختفي الشبكة كاملةً — لا تصغر بل تختفي.
+             ‏--rows (من JS = ceil(عدد الفئات ∕ ٤)) يجعل الحدّ الرأسي يتكيّف مع
+             عدد الصفوف: R صفوفٍ من صور ٣:٢ ارتفاعها (2R∕3)×cw، فالحدّ ×٣∕(٢R).
+             كان ثابتاً على ٣ صفوف، فيُقصّ صفٌّ رابع خلف الزر عند زيادة الفئات. */
+          --cols: 4; --rows: 3;
+          /* عرض العمود محدود بثلاثة: عرض الشاشة مقسوماً على الأعمدة (فلا فيض
+             أفقي مهما كثرت)، وارتفاع صفوف الصور، وسقفٌ مطلق. */
+          --cw: max(64px, min(
+            calc(92vw / var(--cols)),
+            calc((100vh - 436px) * 3 / (2 * var(--rows))),
+            340px));
           --gap: clamp(8px, .9vw, 11px);
           display:grid;
-          grid-template-columns:repeat(4, var(--cw));
+          grid-template-columns:repeat(var(--cols), var(--cw));
           gap:var(--gap);
         }
 

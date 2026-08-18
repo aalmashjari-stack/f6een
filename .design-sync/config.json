@@ -1,8 +1,8 @@
 {
   "projectId": "5e10f7fb-659c-4fbf-a2a2-b235dc71380b",
   "shape": "package",
-  "pkg": "@sahsahli/ui",
-  "globalName": "SahsahliUI",
+  "pkg": "@f6een/ui",
+  "globalName": "F6eenUI",
   "buildCmd": "npm run build --prefix design-system",
   "cssEntry": "dist/ds.css",
   "tokensGlob": "dist/tokens.css",

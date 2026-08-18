@@ -4,7 +4,8 @@ import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { CATEGORIES } from '../game/bank'
 import { ScoreBar } from '../components/ScoreBar'
-import { QuestionText } from '../components/QuestionText'
+import { QuestionView } from '../components/QuestionView'
+import { RoundBar } from '../components/RoundBar'
 
 /**
  * فاصل التعادل — سؤال صعب واحد. يُعاد عند بقاء التعادل (لا أحد أصاب).
@@ -27,11 +28,11 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
   return (
     <div className="screen">
       <ScoreBar teams={state.teams} label="فاصل التعادل" />
-      <div className="eyebrow center">سؤال صعب حاسم · {state.currentCategory}</div>
+      <RoundBar title="سؤال حاسم" chips={[state.currentCategory, 'صعب']} />
 
       <div className="q-box grow center-all">
         <div className="s3-inner">
-          <QuestionText>{q.question}</QuestionText>
+          <QuestionView q={q} />
           {state.s3Revealed && (
             <p className="s3-answer">
               <span className="a-label">الإجابة:</span> {q.answer}
@@ -41,7 +42,7 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
       </div>
 
       {!state.s3Revealed ? (
-        <button className="action" onClick={() => dispatch({ t: 'S3_REVEAL' })}>
+        <button className="action compact" onClick={() => dispatch({ t: 'S3_REVEAL' })}>
           اكشف الإجابة
         </button>
       ) : (

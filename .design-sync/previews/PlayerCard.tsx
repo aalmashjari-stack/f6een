@@ -1,4 +1,4 @@
-import { ChoiceBox, PlayerCard } from '@sahsahli/ui'
+import { ChoiceBox, PlayerCard } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

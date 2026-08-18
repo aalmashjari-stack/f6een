@@ -1,4 +1,4 @@
-import { ScoreBar } from '@sahsahli/ui'
+import { ScoreBar } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

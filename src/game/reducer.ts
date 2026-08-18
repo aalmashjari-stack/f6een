@@ -236,16 +236,22 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     case 'S3_END_TURN': {
       if (!state) return state
       const done = state.s3Done.includes(state.s3Team) ? state.s3Done : [...state.s3Done, state.s3Team]
+      // السؤال المعروض لحظة انتهاء الوقت ظهر على الشاشة (القسم ٨): يُحرق ويُتجاوز
+      // كي لا يبدأ به الفريق التالي من جديد. الحكم يفعل هذا عند كل سؤال، أما هنا
+      // فالوقت هو من أنهى الدور والسؤال الجاري لم يُحكَم بعد.
+      let s = state
+      const shown = s.s3Queue[s.s3Pos]
+      if (shown) s = { ...burn(s, shown), s3Pos: s.s3Pos + 1 }
       if (done.length < 2) {
-        const nextTeam = (1 - state.s3Team) as TeamId
-        return { ...state, s3Team: nextTeam, s3Done: done, s3Revealed: false }
+        const nextTeam = (1 - s.s3Team) as TeamId
+        return { ...s, s3Team: nextTeam, s3Done: done, s3Revealed: false }
       }
       // انتهى الفريقان → تعادل؟ فاصل تعادل : ختام
       // يمرّ بالفاصل أولاً: القفز المباشر إلى سؤال حاسم بلا إنذار يفاجئ المتسابقين
       // ولا يعرفون أنهم في سؤال فاصل ولا ما قواعده.
-      if (state.teams[0].score === state.teams[1].score) {
+      if (s.teams[0].score === s.teams[1].score) {
         return {
-          ...state,
+          ...s,
           s3Done: done,
           currentCategory: null,
           currentQuestion: null,
@@ -255,7 +261,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
           phase: 'interval',
         }
       }
-      return { ...state, s3Done: done, phase: 'endgame' }
+      return { ...s, s3Done: done, phase: 'endgame' }
     }
 
     /* ---------------- فاصل التعادل ---------------- */

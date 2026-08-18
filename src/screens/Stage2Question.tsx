@@ -5,7 +5,8 @@ import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
-import { QuestionText } from '../components/QuestionText'
+import { QuestionView } from '../components/QuestionView'
+import { RoundBar } from '../components/RoundBar'
 
 export function Stage2Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const q = state.currentQuestion!
@@ -15,7 +16,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       <div className="s2-versus">
         <span className="p right">{nameOf(0)}</span>
@@ -23,18 +24,16 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         <span className="p left">{nameOf(1)}</span>
       </div>
 
-      <div className="eyebrow center">
-        {state.currentCategory} · متوسط · لا تشاور
-      </div>
+      <RoundBar title="الديربي" chips={[state.currentCategory, 'متوسط', 'لا تشاور']} />
 
       <div className="q-box grow center-all">
-        <QuestionText>{q.question}</QuestionText>
+        <QuestionView q={q} />
       </div>
 
       <Timer remainingMs={left} totalMs={STAGE2_TIMER_MS} />
 
       <div className="stack gap-s">
-        <button className="action" onClick={() => dispatch({ t: 'S2_TO_REVEAL' })}>
+        <button className="action compact" onClick={() => dispatch({ t: 'S2_TO_REVEAL' })}>
           كشف الإجابة
         </button>
         <div className="action-note">يُكشف تلقائياً عند انتهاء الوقت</div>

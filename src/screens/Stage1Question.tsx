@@ -6,7 +6,8 @@ import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
-import { QuestionText } from '../components/QuestionText'
+import { QuestionView } from '../components/QuestionView'
+import { RoundBar } from '../components/RoundBar'
 
 type Step = 'consult' | 'rival'
 
@@ -28,9 +29,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
     <div className="screen">
       <ScoreBar teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} />
 
-      <div className="eyebrow center">
-        الجولة الجماعية · {state.currentCategory} · {q.level}
-      </div>
+      <RoundBar title="الجولة الجماعية" chips={[state.currentCategory, q.level]} />
 
       {/* الفريقان ككبسولتين — صاحب الدور ذهبي ممتلئ، الآخر مفرّغ */}
       <div className="s1-teams">
@@ -44,16 +43,17 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         </div>
       </div>
 
-      <div className="q-box">
-        <QuestionText>{q.question}</QuestionText>
+      {/* سؤال الصورة يأخذ المساحة الحرّة (الصورة هي البطل)، والمؤقّت يتراجع
+          تحته؛ سؤال النصّ يبقى كما كان — صندوقٌ صغير والمؤقّت هو البطل. */}
+      <div className={'q-box s1q' + (q.image ? ' s1q-photo' : '')}>
+        <QuestionView q={q} />
       </div>
 
-      {/* الحلقة كبيرة في منتصف المساحة الحرّة */}
-      <div className="timer-stage grow">
+      <div className={'timer-stage' + (q.image ? '' : ' grow')}>
         <Timer
           remainingMs={inConsult ? consultLeft : rivalLeft}
           totalMs={inConsult ? STAGE1_CONSULT_MS : STAGE1_RIVAL_MS}
-          size="lg"
+          size={q.image ? 'md' : 'lg'}
         />
         {!inConsult && (
           <div className="rival-hint">مهلة {rivalTeam.name} — بلا تكرار إجابة {ownerTeam.name}</div>
@@ -62,14 +62,14 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
 
       {inConsult ? (
         <div className="stack gap-s">
-          <button className="action" onClick={() => setStep('rival')}>
+          <button className="action compact" onClick={() => setStep('rival')}>
             انتهى التشاور — إجابة {ownerTeam.name}
           </button>
           <div className="action-note">اترك الوقت ينتهي أو اضغط بعد أن يجيب صاحب الدور</div>
         </div>
       ) : (
         <div className="stack gap-s">
-          <button className="action" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
+          <button className="action compact" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
             اكشف الإجابة
           </button>
           <div className="action-note">أو اتركها تُكشف تلقائياً عند انتهاء الوقت</div>
@@ -77,6 +77,31 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
       )}
 
       <style>{`
+        /* بطاقة السؤال هنا وحدها لا تنمو مع المؤقّت (المؤقّت هو النامي في هذه
+           الشاشة)، فبلا سقفٍ يزحمه السؤالُ الطويل حين يلتفّ سطرين. السقف يمنح
+           QuestionText هدفاً رأسياً يهبط إليه، ويضمن للمؤقّت نصيبه ثابتاً مهما
+           طال السؤال. overflow مخبأ حارسٌ أخير لو بلغ الخطُّ أرضيّته. */
+        .q-box.s1q {
+          display:flex; align-items:center; justify-content:center;
+          /* flex:none حتى تحضن البطاقةُ محتواها ما دام دون السقف — بلا هذا
+             يقلّصها العمودُ تحت مقاس السؤال القصير فيهبط خطُّه بلا داعٍ. */
+          flex:none; min-height:0;
+          /* سقفٌ يحدّ حصّة السؤال من الشاشة فيبقى للمؤقّت نصيبه مهما طال: السؤال
+             القصير سطرٌ واحد دون السقف يبقى بمقاسه، والطويل يبلغ السقف فيهبط
+             خطُّه (QuestionText) ليسعه بدل أن يزحم المؤقّت تحته. */
+          max-height:clamp(110px, 24vh, 200px);
+          padding-block:clamp(14px, 2.6vh, 28px);
+          overflow:hidden;
+        }
+        @media (max-height:480px) {
+          .q-box.s1q { max-height:clamp(84px, 34vh, 170px); padding-block:clamp(8px, 2vh, 18px); }
+        }
+        /* سؤال الصورة يقلب الأولوية: البطاقة تنمو (الصورة هي البطل) بلا سقفٍ
+           يخنقها، والمؤقّت يتراجع تحتها (بلا grow، ومقاسه md). */
+        .q-box.s1q.s1q-photo {
+          flex:1 1 0; max-height:none; padding-block:clamp(10px, 2vh, 20px);
+        }
+
         .s1-teams { display:flex; gap:14px; flex:none; }
         .tpill {
           flex:1; display:flex; align-items:center; justify-content:center; gap:12px;

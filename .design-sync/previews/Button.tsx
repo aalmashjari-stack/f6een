@@ -1,4 +1,4 @@
-import { Button } from '@sahsahli/ui'
+import { Button } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

@@ -4,6 +4,7 @@ import type { Mark, TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { play } from '../audio/sfx'
 import { questionSizeSuffix } from '../components/QuestionText'
+import { celebSrc } from '../game/celebs'
 
 /**
  * تنقيط الديربي — الشاشة ٥.
@@ -30,9 +31,13 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
-      <div className={'reveal-q center fade' + questionSizeSuffix(q.question)}>{q.question}</div>
+      {q.image ? (
+        <img className="reveal-photo" src={celebSrc(q.image)} alt="" />
+      ) : (
+        <div className={'reveal-q center fade' + questionSizeSuffix(q.question)}>{q.question}</div>
+      )}
       <div className="reveal-a">
         <span className="a-label">الإجابة</span>
         <span className="a-text">{q.answer}</span>

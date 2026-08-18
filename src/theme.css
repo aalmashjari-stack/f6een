@@ -243,6 +243,13 @@ body::after {
   transition: transform .14s var(--ease-spring), box-shadow .25s ease, filter .2s ease;
   line-height: 1.3;
 }
+/* زرّ فعلٍ مُدمَج: لا يملأ العرض بل بقدر لفظه ويتوسّط، فلا يزاحم ما فوقه على
+   الارتفاع ولا يبدو ثقيلاً. لأزرار «ابدأ» و«التشاور» و«كشف الإجابة». */
+.action.compact {
+  align-self: center;
+  padding: clamp(11px, 1.9vh, 18px) clamp(52px, 9vw, 104px);
+  font-size: clamp(17px, 2.2vw, 24px);
+}
 .action:active { transform: scale(.975) translateY(1px); box-shadow: 0 6px 16px rgba(0,0,0,.3); }
 .action:disabled { opacity: .35; cursor: default; box-shadow: none; filter: saturate(.5); }
 
@@ -287,6 +294,27 @@ body::after {
 
 .action-note { text-align: center; color: var(--text-3); font-size: clamp(12px, 1.6vw, 15px); margin-top: -4px; }
 
+/* ===================== سؤال الصورة (من صاحب الصورة؟) ===================== */
+/* الصورة هي السؤال — تُعرض داخل إطارها بلا قصّ (contain) لأنّ صور المشاهير
+   عمودية غالباً، والوجه لا يُقصّ. الارتفاع محدودٌ بـ vh فيبقى للمؤقّت والزر مكان. */
+.q-photo-wrap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(6px, 1.4vh, 14px); width: 100%; height: 100%; min-height: 0;
+}
+.q-prompt { flex: none; font-weight: 800; font-size: clamp(18px, 2.6vw, 28px); color: var(--cream); }
+/* الصورة تتقلّص داخل حاويتها (flex-shrink) فلا تفيض مهما ضاق الارتفاع، وسقفٌ
+   بـ vh يمنعها أن تتضخّم على شاشةٍ طويلة. contain لأنّ الوجوه لا تُقصّ. */
+.q-photo {
+  flex: 0 1 auto; min-height: 0;
+  max-height: min(46vh, 360px); max-width: 100%; width: auto; height: auto;
+  object-fit: contain; border-radius: 16px; box-shadow: var(--lift); background: var(--surface-2);
+}
+/* صورةٌ أصغر في شاشتَي الكشف — تحلّ محلّ نصّ السؤال فوق الإجابة. */
+.rv-photo, .reveal-photo {
+  display: block; margin-inline: auto; max-width: 100%; width: auto; height: auto;
+  max-height: min(30vh, 220px); border-radius: 14px; box-shadow: var(--lift);
+}
+
 /* ===================== عناصر عامة ===================== */
 .eyebrow {
   color: var(--text-2);
@@ -295,6 +323,22 @@ body::after {
   letter-spacing: .4px;
 }
 .center { text-align: center; }
+
+/* شريط سياق الجولة (RoundBar) — عنوانٌ بارز ورقائقُ وسائط، لغةٌ واحدة في كل
+   الشاشات. حلّ محلّ السطر المفصول بالنقاط الذي كان يزدحم فلا يُقرأ لمحةً. */
+.rd {
+  display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: clamp(7px, 1vw, 11px);
+}
+.rd-title { font-size: clamp(16px, 2.2vw, 21px); font-weight: 800; color: var(--cream); }
+.rd-chip {
+  font-size: clamp(12px, 1.5vw, 15px); font-weight: 700; line-height: 1.35;
+  padding: 3px 13px; border-radius: 999px;
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text-2);
+}
+/* رقاقة صاحب الدور ذهبية — أهمّ معلومة في الشريط تُميَّز باللون. */
+.rd-chip.turn { background: transparent; border-color: var(--gold); color: var(--gold); }
+
 .grow { flex: 1; min-height: 0; }
 .stack { display: flex; flex-direction: column; }
 .gap-s { gap: 8px; }
@@ -417,6 +461,10 @@ body::after {
   /* line-height صريح: صندوق سطر Cairo الطبيعي ~١٫٨٧ من حجم الحرف، فالسطر
      الواحد يحجز ضعف ما يحتاجه — وهو هدر لا يُلاحَظ إلا حين يشحّ الارتفاع. */
   .eyebrow { font-size: clamp(11px, 1.8vw, 17px); line-height: 1.3; }
+  /* شريط سياق الجولة يتنازل هو الآخر عن حجمه على الشاشة القصيرة. */
+  .rd { gap: 6px; }
+  .rd-title { font-size: clamp(13px, 1.9vw, 19px); }
+  .rd-chip { font-size: clamp(11px, 1.4vw, 14px); padding: 2px 10px; }
   .action-note { font-size: clamp(10px, 1.6vw, 15px); margin-top: -6px; }
   /* حشوة البطاقتين مقاسة بـ vh أصلاً لكن أرضيتها (٢٢ و٢٠) وُضعت لشاشة طويلة:
      هنا تنزل، فيبقى النصّ نفسه بحجمه ويصغر ما حوله. */

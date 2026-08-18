@@ -4,6 +4,7 @@ import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { questionSizeSuffix } from '../components/QuestionText'
+import { celebSrc } from '../game/celebs'
 
 /**
  * كشف وتنقيط الجولة الجماعية — الشاشة ٣.
@@ -34,7 +35,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <ScoreBar teams={state.teams} />
 
       <div className="rv-card">
-        <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
+        {q.image ? (
+          <img className="rv-photo" src={celebSrc(q.image)} alt="" />
+        ) : (
+          <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
+        )}
         <span className="rv-rule" aria-hidden="true" />
         <div className="rv-a">{q.answer}</div>
       </div>

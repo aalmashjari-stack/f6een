@@ -122,3 +122,47 @@ describe('نقاء المحرك', () => {
     expect(s.spentFamilies).toEqual(familiesBefore)
   })
 })
+
+/** يقود جلسةً عبر المحرك إلى بداية دور الحق ما تلحق (الفريق الأول). */
+function driveToStage3(): GameState {
+  let s = createSession(INPUT)
+  for (let i = 0; i < STAGE1_QUESTIONS; i++) {
+    s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
+    s = step(s, { t: 'S1_TO_REVEAL' })
+    s = step(s, { t: 'S1_SCORE', outcome: 'owner' })
+  }
+  s = step(s, { t: 'INTERVAL_CONTINUE' })
+  while (s.phase === 'stage2-selection') {
+    s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
+    s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
+    s = step(s, { t: 'S2_TO_REVEAL' })
+    s = step(s, { t: 'S2_NEXT_ROUND' })
+  }
+  s = step(s, { t: 'INTERVAL_CONTINUE' })
+  return s
+}
+
+/**
+ * حارس انحدار لخللٍ لُوحظ في جلسة حقيقية: الساعة لا تتوقف، فحين ينتهي وقت
+ * الفريق الأول وسؤالٌ ما زال معروضاً، كان طابور الأسئلة يبقى عند موضعه فيبدأ
+ * الفريق الثاني بالسؤال نفسه. الآن يُحرق السؤال المعروض ويُتجاوز عند انتهاء الدور.
+ */
+describe('الحق ما تلحق — انتهاء الوقت لا يكرّر السؤال', () => {
+  it('السؤال المعروض لحظة انتهاء وقت الفريق الأول لا يبدأ به الفريق الثاني', () => {
+    let s = driveToStage3()
+    expect(s.phase).toBe('stage3-play')
+    expect(s.s3Team).toBe(0)
+
+    // الفريق الأول يعرض ويحكم بضعة أسئلة، ثم ينتهي الوقت وسؤالٌ ما زال معروضاً
+    for (let k = 0; k < 3; k++) {
+      s = step(s, { t: 'S3_REVEAL' })
+      s = step(s, { t: 'S3_JUDGE', verdict: 'correct' })
+    }
+    const onScreenAtTimeout = s.s3Queue[s.s3Pos]
+    s = step(s, { t: 'S3_END_TURN' })
+
+    expect(s.s3Team).toBe(1)
+    expect(s.s3Queue[s.s3Pos].id).not.toBe(onScreenAtTimeout.id)
+    expect(s.usedQuestionIds.has(onScreenAtTimeout.id)).toBe(true) // احترق فلا يعود
+  })
+})

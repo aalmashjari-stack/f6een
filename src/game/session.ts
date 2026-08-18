@@ -142,7 +142,7 @@ export function createSession(input: SetupInput): GameState {
 }
 
 /* ======================= الذاكرة عبر الجلسات — القسم ٨ ======================= */
-const USED_KEY = 'sahsahli.usedQuestionIds'
+const USED_KEY = 'f6een.usedQuestionIds'
 
 export function loadUsedIds(): Set<string> {
   try {

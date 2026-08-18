@@ -1,4 +1,4 @@
-import { IntervalCard } from '@sahsahli/ui'
+import { IntervalCard } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

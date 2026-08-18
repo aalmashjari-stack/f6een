@@ -1,4 +1,4 @@
-import { QuestionCard } from '@sahsahli/ui'
+import { QuestionCard } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

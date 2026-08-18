@@ -24,9 +24,14 @@ describe('بنك الأسئلة', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('لا نصّ سؤال مكرّر', () => {
-    const texts = ALL_QUESTIONS.map((q) => norm(q.question))
+  it('لا نصّ سؤال مكرّر (نصّاً) ولا صورة مكرّرة (صورةً)', () => {
+    // أسئلة النصّ تُميَّز بنصّها. أسئلة الصور («من صاحب الصورة؟») نصّها واحد
+    // عمداً، فتمييزها بمفتاح صورتها — ولكلٍّ مفتاح فريد.
+    const texts = ALL_QUESTIONS.filter((q) => !q.image).map((q) => norm(q.question))
     expect(new Set(texts).size).toBe(texts.length)
+
+    const images = ALL_QUESTIONS.filter((q) => q.image).map((q) => q.image)
+    expect(new Set(images).size).toBe(images.length)
   })
 
   it('كل سؤال كامل الحقول، وتصنيفه ومستواه معروفان', () => {
@@ -39,18 +44,27 @@ describe('بنك الأسئلة', () => {
     }
   })
 
-  it('التصنيفات اثنا عشر — شبكة البطاقات مبنية على ٤×٣', () => {
-    expect(CATEGORIES).toHaveLength(12)
+  it('لا تصنيف مكرّر — وشبكة البطاقات تتكيّف مع عددها', () => {
+    // كان الحدّ اثني عشر (٤×٣ ثابتة)؛ صارت الشبكة تحسب صفوفها من عدد الفئات،
+    // فلم يعد العدد مقيَّداً — يبقى الشرط أن تكون الفئات فريدة وألا تقلّ عن الأصل.
+    expect(new Set(CATEGORIES).size).toBe(CATEGORIES.length)
+    expect(CATEGORIES.length).toBeGreaterThanOrEqual(12)
   })
 
   /**
    * الجلسة تسحب من خلية (تصنيف × مستوى) مرّة أو مرّتين. عشرون حدٌّ يحفظ
    * عشر جلسات على الأقل بلا أن تنزل الخوارزمية إلى التنازل عن عدم التكرار.
+   * فئات الصور محتواها يُزوَّد تدريجياً (صور من علي)، فيكفيها واحد لكل خلية
+   * الآن — والسحب يتنازل بلطف لو ضاقت؛ تكبر لاحقاً إلى الحدّ نفسه.
    */
-  it('لا خلية (تصنيف × مستوى) دون عشرين سؤالاً', () => {
-    for (const c of CATEGORIES)
-      for (const l of LEVELS)
-        expect(poolByCatLevel(c, l).length, `${c} · ${l}`).toBeGreaterThanOrEqual(20)
+  it('لكل خلية نصّية عشرون سؤالاً، ولكل خلية صور واحد على الأقل', () => {
+    for (const c of CATEGORIES) {
+      const isImageCat = ALL_QUESTIONS.some((q) => q.category === c && q.image)
+      for (const l of LEVELS) {
+        const n = poolByCatLevel(c, l).length
+        expect(n, `${c} · ${l}`).toBeGreaterThanOrEqual(isImageCat ? 1 : 20)
+      }
+    }
   })
 })
 

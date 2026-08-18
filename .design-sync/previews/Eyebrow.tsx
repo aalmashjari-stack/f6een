@@ -1,4 +1,4 @@
-import { Eyebrow } from '@sahsahli/ui'
+import { Eyebrow } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

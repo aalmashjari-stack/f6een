@@ -1,4 +1,4 @@
-import { AnswerReveal, Button, Eyebrow, ScoreBar, Screen } from '@sahsahli/ui'
+import { AnswerReveal, Button, Eyebrow, ScoreBar, Screen } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

@@ -86,7 +86,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
 
   return (
     <div className="screen center-col">
-      <ScoreBar teams={state.teams} label={`الديربي · جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       <div className="grow center-all">
         <div

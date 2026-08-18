@@ -1,4 +1,4 @@
-import { StatRow } from '@sahsahli/ui'
+import { StatRow } from '@f6een/ui'
 
 const stage = { background: 'var(--sh-night)', padding: 22, borderRadius: 18 }
 

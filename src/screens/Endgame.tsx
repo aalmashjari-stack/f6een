@@ -6,7 +6,7 @@ import { Confetti } from '../components/Confetti'
 import { useCountUp } from '../components/useCountUp'
 import { play } from '../audio/sfx'
 // نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
-import stickerUrl from '../../assets/sahsahli-sticker-hero.svg'
+import stickerUrl from '../../assets/f6een-hero.png'
 
 /** تمييز العدد العربي: ١ مفرد، ٢ مثنّى، ٣–١٠ جمع، ١١ فأكثر مفرد منصوب. */
 function correctAnswers(n: number) {
@@ -60,7 +60,7 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
       {win !== null && <Confetti />}
 
       <div className="brand">
-        <img src={stickerUrl} alt="صحصحلي" />
+        <img src={stickerUrl} alt="فطين" />
       </div>
 
       <div className="winner">

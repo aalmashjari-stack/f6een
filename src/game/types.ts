@@ -7,6 +7,11 @@ export interface Question {
   topic: string
   question: string
   answer: string
+  /**
+   * مفتاح صورة — لأسئلة «من صاحب الصورة؟». حين يوجد، تُعرض الصورة بدل نصّ
+   * السؤال، والإجابة اسمُ صاحبها. المفتاح يُحلّ إلى ملفٍ مُجمَّع في celebs.ts.
+   */
+  image?: string
 }
 
 export type TeamId = 0 | 1

@@ -1,4 +1,5 @@
 import raw from '../../data/questions-bank-v5.json'
+import extraRaw from '../../data/questions-extra.json'
 import type { Level, Question } from './types'
 
 interface Bank {
@@ -9,9 +10,12 @@ interface Bank {
 }
 
 const bank = raw as Bank
+// بنكٌ مكمّل منفصل — بنك v5 معتمد للقراءة فقط، فالفئات الجديدة (مشاهير، صور…)
+// تُضاف هنا وتُدمج. ترتيب الفئات: القديمة أولاً ثم الجديدة.
+const extra = extraRaw as { categories: string[]; questions: Question[] }
 
-export const CATEGORIES: string[] = bank.categories
-export const ALL_QUESTIONS: Question[] = bank.questions
+export const CATEGORIES: string[] = [...bank.categories, ...extra.categories]
+export const ALL_QUESTIONS: Question[] = [...bank.questions, ...extra.questions]
 
 /** فهرسة: تصنيف × مستوى ← أسئلة. جوهر السحب في القسم ٨. */
 const byCatLevel = new Map<string, Question[]>()
@@ -62,11 +66,15 @@ const prefixKey = (q: Question) =>
 const familyById = new Map<string, string>()
 {
   const counts = new Map<string, number>()
-  for (const q of ALL_QUESTIONS) {
+  // أسئلة الصور («من صاحب الصورة؟») نصّها واحد فتتجمّع كلّها في عائلة واحدة
+  // فيُسمح بواحدة في الجلسة — وهو خطأ: العبرة بالصورة لا بالنصّ. تُستثنى فلا
+  // عائلة لها، وتمييزها بالصورة يحرسه المحرك (لا صورة تتكرّر عبر عدم التكرار).
+  const textual = ALL_QUESTIONS.filter((q) => !q.image)
+  for (const q of textual) {
     const k = prefixKey(q)
     counts.set(k, (counts.get(k) ?? 0) + 1)
   }
-  for (const q of ALL_QUESTIONS) {
+  for (const q of textual) {
     const k = prefixKey(q)
     if ((counts.get(k) ?? 0) >= FAMILY_MIN_SIZE) familyById.set(q.id, k)
   }

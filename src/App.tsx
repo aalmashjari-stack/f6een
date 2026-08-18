@@ -15,7 +15,7 @@ import { Tiebreak } from './screens/Tiebreak'
 import { Endgame } from './screens/Endgame'
 
 /* حفظ محلي واستئناف خلال ٢٤ ساعة — نافذة الاستكمال (القسم ٩). */
-const SAVE_KEY = 'sahsahli.session'
+const SAVE_KEY = 'f6een.session'
 const RESUME_WINDOW_MS = 24 * 60 * 60 * 1000
 
 /* يُرفع كلما تغيّر شكل الحالة المحفوظة. جلسة حُفظت بنسخة أقدم تنقصها حقول

@@ -9,12 +9,7 @@ import {
 } from '../game/session'
 import type { TeamId } from '../game/types'
 import { isMuted, play, setMuted } from '../audio/sfx'
-// نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
-import stickerUrl from '../../assets/sahsahli-sticker-hero.svg'
-// مشهد المجلس — عائلة أمام شاشة واحدة، وهي صورة اللعبة نفسها. مولّدة بنسبة
-// ٤٫٩٤:١ لتملأ الشريط العلوي كاملةً بلا قصّ. JPEG لا PNG: رسمٌ بلا شفافية،
-// فحجمه الرُبع (القسم ١١ من SPEC).
-import majlisUrl from '../../assets/majlis-banner.jpg'
+import stickerUrl from '../../assets/f6een-hero.png'
 
 const MIN = 2
 const MAX = 6
@@ -130,13 +125,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   return (
     <div className="screen setup">
       <div className="hero">
-        {/* مشهد المجلس خلفيةً للشريط — لا يكلّف ارتفاعاً، فيظهر حتى على
-            الشاشة القصيرة. الصورة كما وردت بلا تعديل؛ الشعار الذهبي فوقها. */}
-        <div className="hero-scene" aria-hidden="true">
-          <img src={majlisUrl} alt="" />
-        </div>
-
-        <img className="hero-logo" src={stickerUrl} alt="صحصحلي" />
+        <img className="hero-logo" src={stickerUrl} alt="فطين" />
         {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
             الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
         <button
@@ -156,7 +145,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين. */}
         <section className="setup-block">
           <p className="stages-intro">
-            <span className="brand-inline">صحصح لي</span> لعبة جماعية تتكوّن من ٣ جولات هي:
+            <span className="brand-inline">فطين</span> لعبة جماعية تتكوّن من ٣ جولات هي:
           </p>
           <div className="stages">
             {STAGES.map((s, i) => (
@@ -248,21 +237,25 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .hero {
           position:relative; flex:none;
           margin:calc(-1 * clamp(16px,3vw,40px)) calc(-1 * clamp(16px,3vw,40px)) 0;
-          padding:0 clamp(16px,3vw,40px);
-          display:flex; justify-content:center; align-items:center;
-          /* نسبة ملف البانر — تُذكر هنا وحدها. تبديل الصورة = تعديل هذا
-             السطر فقط، والشريط يأخذ ارتفاعه منها فتظهر كاملةً بلا قصّ.
-             والسقف يمنعها من ابتلاع الشاشة على العروض الضخمة. */
-          --banner-ratio:1920 / 389;
-          aspect-ratio:var(--banner-ratio);
-          max-height:400px;
+          padding:clamp(26px,4.5vh,54px) clamp(16px,3vw,40px);
+          display:flex; justify-content:flex-start; align-items:center;
+          min-height:clamp(170px, 24vh, 300px);
           border-radius:0 0 clamp(34px,6vw,76px) clamp(34px,6vw,76px);
           overflow:hidden;
-          /* يبقى احتياطاً لو تعذّر تحميل الصورة. */
-          background:
-            radial-gradient(72% 108% at 50% -8%, rgba(255,189,89,.17), transparent 70%),
-            radial-gradient(44% 74% at 86% 14%, rgba(228,103,74,.14), transparent 70%),
-            linear-gradient(180deg, rgba(27,62,86,.85), rgba(27,62,86,0));
+          /* لوح داكن أفتح قليلاً من أرضية الصفحة ثم يذوب فيها — فيُقرأ
+             الشريط كرأسٍ للصفحة لا كصندوق مركّب عليها. */
+          background:linear-gradient(180deg,
+            color-mix(in srgb, var(--surface) 62%, var(--night-deep)),
+            var(--night-deep));
+        }
+
+        /* خيط ذهبي خافت على الحافّة السفلى — عتبة تفصل الرأس عمّا تحته،
+           بالنبرة نفسها التي تفصل بها .setup-rule أقسام الصفحة. */
+        .hero::after {
+          content:''; position:absolute; pointer-events:none;
+          inset:auto clamp(16px,3vw,40px) 0;
+          height:1px;
+          background:linear-gradient(90deg, transparent, rgba(255,189,89,.3), transparent);
         }
 
         /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
@@ -283,32 +276,10 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         /* الأيقونة وحدها على الجوال — الكلمة تزاحم الشعار في العرض الضيّق */
         @media (max-width:560px) { .mt-label { display:none; } }
 
-        /* ─── مشهد المجلس خلفيةً ─────────────────────────────────────── */
-        .hero-scene { position:absolute; inset:0; overflow:hidden; }
-        /* نسبة الشريط = نسبة الصورة، فـcover لا يقصّ شيئاً هنا. ويبقى
-           موجوداً ليقصّ بلطف حين يُفرَض على الشريط ارتفاع آخر (شاشة قصيرة
-           أو جوال) بدل أن تتشوّه الصورة، و object-position يُبقي وسط
-           المشهد حينها. */
-        .hero-scene img {
-          position:absolute; inset:0;
-          width:100%; height:100%;
-          object-fit:cover; object-position:center 45%;
-        }
-        /* حجاب يخفت الصورة حتى يُقرأ الشعار الذهبي فوقها، وينتهي بلون
-           أرضية المسرح فيذوب الشريط في الصفحة بلا حدّ ظاهر. */
-        .hero-scene::after {
-          content:''; position:absolute; inset:0;
-          background:
-            radial-gradient(62% 88% at 50% 10%, rgba(255,189,89,.13), transparent 72%),
-            linear-gradient(180deg, rgba(11,34,51,.72), rgba(11,34,51,.80) 58%, var(--night-deep));
-        }
-
-        /* الحدّ بنسبة من الشريط لا بـvh — ارتفاع الشريط صار مربوطاً بعرضه،
-           فحدٌّ بالارتفاع يفيض عنه على الشاشات القصيرة العريضة. */
         .hero-logo {
           position:relative; z-index:1;
-          width:min(60%, 560px); height:auto; max-height:62%; object-fit:contain;
-          filter:drop-shadow(0 10px 30px rgba(0,0,0,.4));
+          width:min(55%, 520px); height:auto; max-height:85%; object-fit:contain;
+          filter:drop-shadow(0 12px 30px rgba(0,0,0,.45));
           animation:brand-in .7s var(--ease-spring) both;
         }
         @keyframes brand-in {
@@ -345,7 +316,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           text-align:center; margin:0;
           color:var(--text-2); font-size:clamp(15px,1.9vw,20px); line-height:1.7;
         }
-        /* «صحصح لي» بتصميم مميّز — تدرّج ذهبي↔مرجاني بلونَي العلامة نفسها،
+        /* «فطين» بتصميم مميّز — تدرّج ذهبي↔مرجاني بلونَي العلامة نفسها،
            أكبر من محيطه قليلاً وبوهج خافت، فيُقرأ كاسم اللعبة لا كلمة عابرة. */
         .brand-inline {
           font-weight:800; font-size:1.35em;
@@ -505,10 +476,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           .teams-grid{ grid-template-columns:1fr; }
           .setup-actions{ flex-direction:column; }
 
-          /* على الجوال تعطي نسبة الصورة شريطاً بارتفاع ٧٦px — رفيعاً تضيع
-             فيه العائلة. فيُفرض ارتفاع أعلى، و cover يقصّ الأطراف ويُبقي
-             التلفاز ومن حوله. */
-          .hero { aspect-ratio:auto; height:clamp(150px, 21vh, 200px); }
+          .hero { min-height:clamp(120px, 18vh, 180px); }
 
           .stage-card {
             flex-direction:row; align-items:flex-start; text-align:start;
@@ -522,10 +490,11 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
            كل شيء ينكمش حتى يبقى زر «ابدأ اللعبة» فوق الحافّة — الفعل
            الأساسي لا يجوز أن يسقط تحت الطيّة. */
         @media (max-height:700px) {
-          /* الشاشة القصيرة لا تحتمل نسبة الصورة كاملةً (٢٠٪ من العرض)،
-             فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
-          .hero { aspect-ratio:auto; height:clamp(92px, 15vh, 120px); }
-          .hero-logo { width:min(46%, 340px); max-height:66%; }
+          .hero {
+            min-height:clamp(80px, 12vh, 110px);
+            padding:clamp(12px,2vh,20px) clamp(16px,3vw,40px);
+          }
+          .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
           .setup-body { --gap-block:clamp(11px,1.9vh,17px); --gap-in:clamp(8px,1.2vh,12px); margin-top:0; }
 
