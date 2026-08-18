@@ -10,6 +10,10 @@ import {
 import type { TeamId } from '../game/types'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import stickerUrl from '../../assets/f6een-hero.png'
+// مشهد المجلس — عائلة أمام شاشة واحدة، وهي صورة اللعبة نفسها. نسبتها
+// ٤٫٩٤:١ فتملأ الشريط كاملةً بلا قصّ. JPEG لا PNG: رسمٌ بلا شفافية،
+// فحجمه الرُبع (القسم ١١ من SPEC).
+import bannerUrl from '../../assets/f6een-banner.jpg'
 
 const MIN = 2
 const MAX = 6
@@ -125,6 +129,12 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   return (
     <div className="screen setup">
       <div className="hero">
+        {/* المشهد خلفيةً مطلقة — لا يكلّف الشريط ارتفاعاً، فيبقى ارتفاعه
+            محكوماً بنسبة الصورة وحدها. */}
+        <div className="hero-scene" aria-hidden="true">
+          <img src={bannerUrl} alt="" />
+        </div>
+
         <img className="hero-logo" src={stickerUrl} alt="فطين" />
         {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
             الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
@@ -237,25 +247,43 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .hero {
           position:relative; flex:none;
           margin:calc(-1 * clamp(16px,3vw,40px)) calc(-1 * clamp(16px,3vw,40px)) 0;
-          padding:clamp(26px,4.5vh,54px) clamp(16px,3vw,40px);
+          padding:0 clamp(16px,3vw,40px);
           display:flex; justify-content:flex-start; align-items:center;
-          min-height:clamp(170px, 24vh, 300px);
+          /* نسبة ملف البانر — تُذكر هنا وحدها، فالشريط يأخذ ارتفاعه منها
+             وتظهر الصورة كاملةً بلا قصّ. تبديل الصورة = تعديل هذا السطر
+             فقط. والسقف يمنعها من ابتلاع الشاشة على العروض الضخمة. */
+          --banner-ratio:2448 / 496;
+          aspect-ratio:var(--banner-ratio);
+          max-height:400px;
           border-radius:0 0 clamp(34px,6vw,76px) clamp(34px,6vw,76px);
           overflow:hidden;
-          /* لوح داكن أفتح قليلاً من أرضية الصفحة ثم يذوب فيها — فيُقرأ
-             الشريط كرأسٍ للصفحة لا كصندوق مركّب عليها. */
+          /* يبقى احتياطاً لو تعذّر تحميل الصورة. */
           background:linear-gradient(180deg,
             color-mix(in srgb, var(--surface) 62%, var(--night-deep)),
             var(--night-deep));
         }
 
-        /* خيط ذهبي خافت على الحافّة السفلى — عتبة تفصل الرأس عمّا تحته،
-           بالنبرة نفسها التي تفصل بها .setup-rule أقسام الصفحة. */
-        .hero::after {
-          content:''; position:absolute; pointer-events:none;
-          inset:auto clamp(16px,3vw,40px) 0;
-          height:1px;
-          background:linear-gradient(90deg, transparent, rgba(255,189,89,.3), transparent);
+        /* ─── مشهد المجلس ─────────────────────────────────────────────── */
+        .hero-scene { position:absolute; inset:0; overflow:hidden; }
+        /* نسبة الشريط = نسبة الصورة، فـcover لا يقصّ شيئاً في الحالة
+           العادية. ويبقى موجوداً ليقصّ بلطف حين يُفرَض ارتفاع آخر (شاشة
+           قصيرة أو جوال) بدل أن تتشوّه الصورة. */
+        /* الإظلام على الصورة نفسها بـfilter لا بطبقة لون شفّافة فوقها:
+           الطبقة الشفّافة تسحب الألوان نحو لونها فيصير المشهد النهاريّ
+           طيناً، أما brightness فيخفض الإضاءة ويُبقي فروق الألوان. */
+        .hero-scene img {
+          position:absolute; inset:0;
+          width:100%; height:100%;
+          object-fit:cover; object-position:center 45%;
+          filter:brightness(.5) saturate(.88);
+        }
+        /* صبغة ليلية تسحب دفء المشهد نحو أزرق الصفحة فلا يبقى جزيرة
+           برتقالية فوقها، وذوبانٌ سفليّ ينهي الشريط في أرضية الصفحة
+           بلا حدّ ظاهر. */
+        .hero-scene::after {
+          content:''; position:absolute; inset:0;
+          background:
+            linear-gradient(180deg, rgba(10,28,43,.32), rgba(10,28,43,.27) 52%, var(--night-deep));
         }
 
         /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
@@ -476,7 +504,10 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           .teams-grid{ grid-template-columns:1fr; }
           .setup-actions{ flex-direction:column; }
 
-          .hero { min-height:clamp(120px, 18vh, 180px); }
+          /* على الجوال تعطي نسبة الصورة شريطاً بارتفاع ٧٦px — رفيعاً تضيع
+             فيه العائلة. فيُفرض ارتفاع أعلى، و cover يقصّ الأطراف ويُبقي
+             التلفاز ومن حوله. */
+          .hero { aspect-ratio:auto; height:clamp(150px, 21vh, 200px); }
 
           .stage-card {
             flex-direction:row; align-items:flex-start; text-align:start;
@@ -490,10 +521,9 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
            كل شيء ينكمش حتى يبقى زر «ابدأ اللعبة» فوق الحافّة — الفعل
            الأساسي لا يجوز أن يسقط تحت الطيّة. */
         @media (max-height:700px) {
-          .hero {
-            min-height:clamp(80px, 12vh, 110px);
-            padding:clamp(12px,2vh,20px) clamp(16px,3vw,40px);
-          }
+          /* الشاشة القصيرة لا تحتمل نسبة الصورة كاملةً (٢٠٪ من العرض)،
+             فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
+          .hero { aspect-ratio:auto; height:clamp(92px, 15vh, 120px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
           .setup-body { --gap-block:clamp(11px,1.9vh,17px); --gap-in:clamp(8px,1.2vh,12px); margin-top:0; }
