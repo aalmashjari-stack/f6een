@@ -1,0 +1,21 @@
+{
+  "_note": "بنك مكمّل للفئات الجديدة — بنك v5 معتمد للقراءة فقط. أسئلة الصور: image = مفتاح صورة فريد يُحلّ في src/game/celebs.ts، answer = اسم صاحبها، question ثابت 'من صاحب الصورة؟'. المدخلات الحالية مؤقتة: كل image له مفتاح فريد لكنه غير مسجّل بعد في celebs.ts فيعرض صورة placeholder ريثما تصل الصور الحقيقية.",
+  "categories": ["مشاهير"],
+  "questions": [
+    { "id": "X001", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١›", "image": "celeb-x001" },
+    { "id": "X002", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٢›", "image": "celeb-x002" },
+    { "id": "X003", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٣›", "image": "celeb-x003" },
+    { "id": "X004", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٤›", "image": "celeb-x004" },
+    { "id": "X005", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٥›", "image": "celeb-x005" },
+    { "id": "X006", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٦›", "image": "celeb-x006" },
+    { "id": "X007", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٧›", "image": "celeb-x007" },
+    { "id": "X008", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٨›", "image": "celeb-x008" },
+    { "id": "X009", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٩›", "image": "celeb-x009" },
+    { "id": "X010", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٠›", "image": "celeb-x010" },
+    { "id": "X011", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١١›", "image": "celeb-x011" },
+    { "id": "X012", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٢›", "image": "celeb-x012" },
+    { "id": "X013", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٣›", "image": "celeb-x013" },
+    { "id": "X014", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٤›", "image": "celeb-x014" },
+    { "id": "X015", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٥›", "image": "celeb-x015" }
+  ]
+}
