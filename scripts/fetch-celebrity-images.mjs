@@ -12,6 +12,8 @@ const outputDir = resolve(process.argv[3] || 'assets/celebrities')
 const limit = Number.parseInt(process.env.CELEB_LIMIT || '0', 10)
 const start = Number.parseInt(process.env.CELEB_START || '1', 10)
 const targetOk = Number.parseInt(process.env.CELEB_TARGET_OK || '0', 10)
+const indexOffset = Number.parseInt(process.env.CELEB_INDEX_OFFSET || '0', 10)
+const plainNames = process.env.CELEB_PLAIN_NAMES === '1'
 const userAgent = 'F6een-celebrity-importer/1.0 (local asset preparation)'
 const blockedIndices = new Set([60, 69, 83, 97, 107])
 const englishAliases = new Map([
@@ -29,6 +31,17 @@ const englishAliases = new Map([
   [137, 'Drew Weissman'],
   [148, 'Hanan Balkhy'],
   [167, 'Radwa Ashour'],
+  // دفعة المشاهير الثانية: أسماء عربية التقط البحث العام صفحاتٍ لأشخاص آخرين بها.
+  [305, 'Farid al-Atrash'],
+  [342, 'Ahmed Zaki actor'],
+])
+const wikidataIds = new Map([
+  [303, 'Q2600118'], // صباح
+  [318, 'Q9557'], // أمير خان
+  [327, 'Q9570'], // أميتاب باتشان
+  [328, 'Q12207870'], // حسن البلام
+  [346, 'Q9543'], // سلمان خان
+  [347, 'Q158957'], // بريانكا تشوبرا
 ])
 
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms))
@@ -189,6 +202,28 @@ async function searchWikidata(term) {
   return null
 }
 
+async function exactWikidataImage(id) {
+  const payload = await fetchJson(apiUrl('www.wikidata.org', {
+    action: 'wbgetentities',
+    ids: id,
+    props: 'claims|labels',
+    languages: 'ar|en',
+    format: 'json',
+    origin: '*',
+  }))
+  const entity = payload.entities?.[id]
+  const filename = entity?.claims?.P18?.[0]?.mainsnak?.datavalue?.value
+  if (!filename) return null
+  const image = await commonsImageInfo(filename)
+  if (!image) return null
+  return {
+    ...image,
+    matchedTitle: entity.labels?.ar?.value || entity.labels?.en?.value || id,
+    wikidataId: id,
+    searchTerm: id,
+  }
+}
+
 async function commonsImageInfo(fileTitle) {
   const title = fileTitle.startsWith('File:') ? fileTitle : `File:${fileTitle}`
   const payload = await fetchJson(apiUrl('commons.wikimedia.org', {
@@ -269,6 +304,8 @@ async function bulkPrefetch(people) {
 
 async function findImage(person, prefetched) {
   if (blockedIndices.has(person.index)) return null
+  const wikidataId = wikidataIds.get(person.index)
+  if (wikidataId) return exactWikidataImage(wikidataId)
   const englishAlias = englishAliases.get(person.index)
   if (englishAlias) {
     const page = await exactWikipediaPage(englishAlias, 'en.wikipedia.org')
@@ -326,11 +363,11 @@ function parsePeople(text) {
   return text
     .split(/\r?\n/u)
     .map((line) => line.trim())
-    .filter((line) => line.includes(' - '))
+    .filter((line) => line && (plainNames || line.includes(' - ')))
     .map((line, index) => {
       const [rawName, ...descriptionParts] = line.split(' - ')
       return {
-        index: index + 1,
+        index: index + 1 + indexOffset,
         rawName: rawName.trim(),
         name: cleanName(rawName),
         description: descriptionParts.join(' - ').trim(),
