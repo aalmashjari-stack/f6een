@@ -14,8 +14,7 @@ import sportsNumbers from '../../assets/categories/sports-numbers.jpg'
 import kuwait from '../../assets/categories/kuwait.jpg'
 import cinemaDrama from '../../assets/categories/cinema-drama.jpg'
 import whoAmI from '../../assets/categories/who-am-i.jpg'
-// فئة مضافة (مشاهير) — صورة مؤقتة SVG ريثما تصل صورة نهائية بنسبة ٣:٢
-import celebrities from '../../assets/categories/celebrities.svg'
+import celebrities from '../../assets/categories/celebrities.jpg'
 
 /**
  * صورة كل تصنيف في لوحة التصنيفات — اختارها علي في ٥ أغسطس ٢٠٢٦.
