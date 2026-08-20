@@ -16,13 +16,16 @@ export function RoundBar({
 }) {
   return (
     <div className="rd center">
+      <span className="rd-mark" aria-hidden="true">◆</span>
       <span className="rd-title">{title}</span>
-      {chips?.filter(Boolean).map((c, i) => (
-        <span key={i} className="rd-chip">
-          {c}
-        </span>
-      ))}
-      {turn && <span className="rd-chip turn">{turn}</span>}
+      <span className="rd-meta">
+        {chips?.filter(Boolean).map((c, i) => (
+          <span key={i} className="rd-chip">
+            {c}
+          </span>
+        ))}
+        {turn && <span className="rd-chip turn">{turn}</span>}
+      </span>
     </div>
   )
 }

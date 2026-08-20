@@ -108,11 +108,13 @@ export function CategoryPicker({
                   (isLanded ? ' landed' : '')
                 }
               >
+                <span className="cat-index tabular">{String(i + 1).padStart(2, '0')}</span>
                 <span
                   className="cat-img"
                   style={{ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties}
                 />
                 <span className="cat-name">{cat}</span>
+                <span className="cat-status">{isSpent ? 'خرجت' : isLanded ? 'اختيرت' : 'متاحة'}</span>
               </div>
             )
           })}
@@ -134,16 +136,23 @@ export function CategoryPicker({
       </div>
 
       <style>{`
-        .picker { flex:1; min-height:0; display:flex; flex-direction:column; gap:clamp(10px,1.8vh,18px); }
+        .picker { flex:none; min-height:100%; display:flex; flex-direction:column; gap:clamp(18px,2.8vh,30px); }
 
         /* الزر يحمل اسم التصنيف لحظة الاستقرار — وهي أهم لحظة في الشاشة,
            فلا يجوز أن يرثها بهتانُ الزر المعطَّل. */
         .action.landed:disabled { opacity:1; filter:none; box-shadow:var(--lift), var(--glow-gold); }
-        .grid-wrap { display:flex; align-items:center; justify-content:center; min-height:0; }
+        .grid-wrap {
+          flex:none; min-height:auto; display:flex; align-items:flex-start; justify-content:center;
+          padding-block:clamp(10px,1.5vh,18px);
+        }
 
         /* هذه الشاشة وحدها تتنازل عن جزء من هامشها الرأسي: البطاقات التسع
            تتنافس على ارتفاع واحد، وكل بكسل يعود إليها يكبّر الصورة ويقلّل قصّها. */
-        .screen:has(.picker) { padding-block: clamp(16px, 3vh, 28px); }
+        .screen:has(.picker) {
+          padding-block:clamp(20px,3.4vh,36px);
+          overflow-y:auto;
+          scrollbar-gutter:stable;
+        }
 
         .cat-grid {
           /* ما فوق الشبكة وتحتها ثابت بالبكسل (الاسم والزر والشريط) ولا يتقلّص
@@ -161,7 +170,7 @@ export function CategoryPicker({
             calc(92vw / var(--cols)),
             calc((100vh - 436px) * 3 / (2 * var(--rows))),
             340px));
-          --gap: clamp(8px, .9vw, 11px);
+          --gap:clamp(22px,1.6vw,36px);
           display:grid;
           grid-template-columns:repeat(var(--cols), var(--cw));
           gap:var(--gap);

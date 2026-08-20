@@ -30,7 +30,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
   const nameOf = (team: TeamId) => state.teams[team].players[sel[team]]?.name ?? ''
 
   return (
-    <div className="screen">
+    <div className="screen s2-reveal-screen">
       <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       {q.image ? (
@@ -82,12 +82,33 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         })}
       </div>
 
-      <button className="action" onClick={() => dispatch({ t: 'S2_NEXT_ROUND' })}>
+      <button className="action compact" onClick={() => dispatch({ t: 'S2_NEXT_ROUND' })}>
         الجولة التالية
       </button>
 
       <style>{`
-        .mark-cards { display:flex; gap:16px; }
+        body .screen.s2-reveal-screen:not(.setup):not(.end) {
+          padding-block:clamp(14px,2vh,24px);
+          gap:clamp(12px,1.8vh,20px);
+        }
+        .s2-reveal-screen .reveal-a {
+          align-self:center;
+          width:min(94%,1120px);
+          padding-block:clamp(12px,2vh,22px);
+        }
+
+        /* بطاقتا القرار تأخذان ارتفاعاً حقيقياً. استعمال grow وحده يجعل
+           ارتفاع الحاوية صفراً عندما تزحم الشاشة، فتفيض البطاقتان خلف الزر. */
+        .s2-reveal-screen .mark-cards {
+          flex:none;
+          min-height:clamp(205px,28vh,280px);
+          display:flex;
+          gap:clamp(20px,2.6vw,34px);
+        }
+        .s2-reveal-screen > .action {
+          flex:none;
+          margin-top:clamp(4px,.8vh,10px);
+        }
 
         /* ارتفاع البطاقة هو ما يتبقّى من الشاشة، أما مقاسات ما فيها فكانت محسوبة
            على العرض وحده (vw) — فعلى شاشة عريضة قصيرة يتضخّم المحتوى ولا تكبر
@@ -134,7 +155,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .mcard.صح .choice.no, .mcard.غلط .choice.ok { opacity:.4; }
 
         @media (max-width:560px) {
-          .mark-cards { gap:10px; }
+          .s2-reveal-screen .mark-cards { gap:14px; }
           .mcard { padding:10px 8px; }
         }
 
@@ -142,6 +163,11 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
            فبقيت ثابتة — وهي وحدها ما يفيض على ٣٢٠ بكسل، فيطفو اسم الفريق فوق
            حاشية البطاقة. */
         @media (max-height:480px) {
+          .s2-reveal-screen .reveal-a {
+            width:min(96%,960px);
+            padding-block:clamp(9px,2.4vh,16px);
+          }
+          .s2-reveal-screen .mark-cards { min-height:190px; }
           .mcard { padding:clamp(6px,1.8vh,22px); gap:clamp(3px,1.2vh,14px); }
           .choice { padding:clamp(4px,1.5vh,18px) 6px; }
         }

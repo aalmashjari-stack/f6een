@@ -30,7 +30,11 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         <QuestionView q={q} />
       </div>
 
-      <Timer remainingMs={left} totalMs={STAGE2_TIMER_MS} />
+      {/* مؤقّت الديربي داخل مسار مستقل: لا يشارك بطاقة السؤال ارتفاعها ولا
+          يُترك كعنصر حرّ بين أقسام الصفحة القابلة للتمرير. */}
+      <div className="s2-timer-stage">
+        <Timer remainingMs={left} totalMs={STAGE2_TIMER_MS} />
+      </div>
 
       <div className="stack gap-s">
         <button className="action compact" onClick={() => dispatch({ t: 'S2_TO_REVEAL' })}>
@@ -43,6 +47,19 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         .s2-versus { display:flex; align-items:center; justify-content:center; gap:clamp(12px,3vw,32px); }
         .s2-versus .p { font-size:clamp(20px,3vw,32px); font-weight:800; }
         .s2-versus .vs { color:var(--coral); font-weight:800; font-size:clamp(16px,2vw,22px); }
+        .s2-timer-stage {
+          flex:none;
+          min-height:clamp(132px,22vh,220px);
+          display:grid;
+          place-items:center;
+          padding-block:clamp(12px,2.4vh,26px);
+          scroll-margin-block:clamp(28px,5vh,56px);
+        }
+        .screen .s2-timer-stage .ring-timer {
+          flex:none;
+          margin:0;
+          max-height:none;
+        }
       `}</style>
     </div>
   )

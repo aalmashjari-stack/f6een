@@ -45,6 +45,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       </div>
 
       <div className="eyebrow center">من أصاب؟</div>
+      <div className="judge-call">قرار الحكم</div>
 
       <div className="pick-cards grow">
         {picks.map(({ role, team, outcome }) => (

@@ -7,6 +7,6 @@ export default defineConfig({
   base: './',
   // strictPort: المنفذ ثابت لا يزحف. الذاكرة المحلية (الجلسة المحفوظة و used_question_ids)
   // مربوطة بالأصل origin، فلو تغيّر المنفذ ضاع سجلّ الأسئلة المستخدمة وعادت تتكرّر.
-  // إن كان ٥١٧٣ مشغولاً يفشل الخادم بوضوح بدل أن ينتقل بصمت لمنفذ آخر.
-  server: { host: true, port: 5173, strictPort: true },
+  // إن كان ٤١٧٣ مشغولاً يفشل الخادم بوضوح بدل أن ينتقل بصمت لمنفذ آخر.
+  server: { host: true, port: 4173, strictPort: true },
 })

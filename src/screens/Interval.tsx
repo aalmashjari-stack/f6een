@@ -45,6 +45,7 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
     cta: 'ابدأ',
   }
   const tie = state.intervalNext === 'tiebreak'
+  const stageNo = state.intervalNext === 'stage2-selection' ? '02' : state.intervalNext === 'stage3-play' ? '03' : '∞'
 
   const [held, setHeld] = useState(false)
   const timer = useRef<number | null>(null)
@@ -61,6 +62,8 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
       <ScoreBar teams={state.teams} />
       <div className="grow center-all">
         <div className={'interval-card' + (tie ? ' tie' : '') + (held ? ' held' : '')}>
+          <div className="il-stage-no tabular" aria-hidden="true">{stageNo}</div>
+          <div className="il-live"><span /> انتقال مباشر</div>
           <div className="il-eyebrow">{info.eyebrow}</div>
           <div className="il-title">{info.title}</div>
           <div className="il-rule">{info.rule}</div>

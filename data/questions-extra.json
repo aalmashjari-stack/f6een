@@ -1,21 +1,1358 @@
 {
-  "_note": "بنك مكمّل للفئات الجديدة — بنك v5 معتمد للقراءة فقط. أسئلة الصور: image = مفتاح صورة فريد يُحلّ في src/game/celebs.ts، answer = اسم صاحبها، question ثابت 'من صاحب الصورة؟'. المدخلات الحالية مؤقتة: كل image له مفتاح فريد لكنه غير مسجّل بعد في celebs.ts فيعرض صورة placeholder ريثما تصل الصور الحقيقية.",
-  "categories": ["مشاهير"],
+  "_note": "بنك مكمّل لفئة مشاهير. image هو اسم ملف الصورة دون الامتداد، ويُحل في src/game/celebs.ts. صعوبة الصور مراجعة يدوية لجمهور عربي/خليجي حسب شهرة الوجه: 50 سهل، 50 متوسط، 50 صعب.",
+  "categories": [
+    "مشاهير"
+  ],
   "questions": [
-    { "id": "X001", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١›", "image": "celeb-x001" },
-    { "id": "X002", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٢›", "image": "celeb-x002" },
-    { "id": "X003", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٣›", "image": "celeb-x003" },
-    { "id": "X004", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٤›", "image": "celeb-x004" },
-    { "id": "X005", "category": "مشاهير", "level": "سهل", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٥›", "image": "celeb-x005" },
-    { "id": "X006", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٦›", "image": "celeb-x006" },
-    { "id": "X007", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٧›", "image": "celeb-x007" },
-    { "id": "X008", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٨›", "image": "celeb-x008" },
-    { "id": "X009", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ٩›", "image": "celeb-x009" },
-    { "id": "X010", "category": "مشاهير", "level": "متوسط", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٠›", "image": "celeb-x010" },
-    { "id": "X011", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١١›", "image": "celeb-x011" },
-    { "id": "X012", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٢›", "image": "celeb-x012" },
-    { "id": "X013", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٣›", "image": "celeb-x013" },
-    { "id": "X014", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٤›", "image": "celeb-x014" },
-    { "id": "X015", "category": "مشاهير", "level": "صعب", "topic": "مشاهير", "question": "من صاحب الصورة؟", "answer": "‹تجريبي ١٥›", "image": "celeb-x015" }
+    {
+      "id": "X001",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سلمان بن عبد العزيز آل سعود",
+      "image": "celeb-001-q367825"
+    },
+    {
+      "id": "X002",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد بن سلمان آل سعود",
+      "image": "celeb-002-q6892571"
+    },
+    {
+      "id": "X003",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد بن زايد آل نهيان",
+      "image": "celeb-003-q1951896"
+    },
+    {
+      "id": "X004",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد بن راشد آل مكتوم",
+      "image": "celeb-004-q57655"
+    },
+    {
+      "id": "X005",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "عبد الله الثاني بن الحسين",
+      "image": "celeb-005-q57464"
+    },
+    {
+      "id": "X006",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "حمد بن عيسى آل خليفة",
+      "image": "celeb-006-q57352"
+    },
+    {
+      "id": "X007",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "تميم بن حمد آل ثاني",
+      "image": "celeb-007-q1855372"
+    },
+    {
+      "id": "X008",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مشعل الأحمد الجابر الصباح",
+      "image": "celeb-008-q12243161"
+    },
+    {
+      "id": "X009",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "هيثم بن طارق",
+      "image": "celeb-009-q12250314"
+    },
+    {
+      "id": "X010",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد السادس",
+      "image": "celeb-010-q57553"
+    },
+    {
+      "id": "X011",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "عبد الفتاح السيسي",
+      "image": "celeb-011-q307871"
+    },
+    {
+      "id": "X012",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "رجب طيب أردوغان",
+      "image": "celeb-012-q39259"
+    },
+    {
+      "id": "X013",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جو بايدن",
+      "image": "celeb-013-q6279"
+    },
+    {
+      "id": "X014",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "دونالد ترامب",
+      "image": "celeb-014-q22686"
+    },
+    {
+      "id": "X015",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "شي جين بينغ",
+      "image": "celeb-015-q15031"
+    },
+    {
+      "id": "X016",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "فلاديمير بوتين",
+      "image": "celeb-016-q7747"
+    },
+    {
+      "id": "X017",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "إيمانويل ماكرون",
+      "image": "celeb-017-q3052772"
+    },
+    {
+      "id": "X018",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أولاف شولتس",
+      "image": "celeb-018-q61053"
+    },
+    {
+      "id": "X019",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ريشي سوناك",
+      "image": "celeb-019-q20055561"
+    },
+    {
+      "id": "X020",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كير ستارمر",
+      "image": "celeb-020-q6383803"
+    },
+    {
+      "id": "X021",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ناريندرا مودي",
+      "image": "celeb-021-q1058"
+    },
+    {
+      "id": "X022",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جاستن ترودو",
+      "image": "celeb-022-q3099714"
+    },
+    {
+      "id": "X023",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جيورجيا ميلوني",
+      "image": "celeb-023-q451791"
+    },
+    {
+      "id": "X024",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أنطونيو غوتيريش",
+      "image": "celeb-024-q311440"
+    },
+    {
+      "id": "X025",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أورسولا فون دير لاين",
+      "image": "celeb-025-q60772"
+    },
+    {
+      "id": "X026",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أحمد أبو الغيط",
+      "image": "celeb-026-q58108"
+    },
+    {
+      "id": "X027",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أنور إبراهيم",
+      "image": "celeb-027-q299574"
+    },
+    {
+      "id": "X028",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "لولا دا سيلفا",
+      "image": "celeb-028-q37181"
+    },
+    {
+      "id": "X029",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "شيخ حسينة",
+      "image": "celeb-029-q52183"
+    },
+    {
+      "id": "X030",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "برابوو سوبيانتو",
+      "image": "celeb-030-q2107268"
+    },
+    {
+      "id": "X031",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "يون سوك يول",
+      "image": "celeb-031-q16090635"
+    },
+    {
+      "id": "X032",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "شيغيرو إيشيبا",
+      "image": "celeb-032-q1335527"
+    },
+    {
+      "id": "X033",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أنتوني بلينكن",
+      "image": "celeb-033-q7821917"
+    },
+    {
+      "id": "X034",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جيك سوليفان",
+      "image": "celeb-034-q16730147"
+    },
+    {
+      "id": "X035",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سيرجي لافروف",
+      "image": "celeb-035-q58217"
+    },
+    {
+      "id": "X036",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "وانغ يي",
+      "image": "celeb-036-q701801"
+    },
+    {
+      "id": "X037",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أيمن الصفدي",
+      "image": "celeb-037-q28336737"
+    },
+    {
+      "id": "X038",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سامح شكري",
+      "image": "celeb-038-q7409268"
+    },
+    {
+      "id": "X039",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "بدر البوسعيدي",
+      "image": "celeb-039-q98456849"
+    },
+    {
+      "id": "X040",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد بن عبد الرحمن آل ثاني",
+      "image": "celeb-040-q23020336"
+    },
+    {
+      "id": "X041",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "فيصل بن فرحان آل سعود",
+      "image": "celeb-041-q72099398"
+    },
+    {
+      "id": "X042",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "عبد الله بن زايد آل نهيان",
+      "image": "celeb-042-q58301"
+    },
+    {
+      "id": "X043",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "صادق خان",
+      "image": "celeb-043-q334155"
+    },
+    {
+      "id": "X044",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "نادية مراد",
+      "image": "celeb-044-q22007112"
+    },
+    {
+      "id": "X045",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ملالا يوسفزي",
+      "image": "celeb-045-q32732"
+    },
+    {
+      "id": "X046",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "غريتا ثونبرغ",
+      "image": "celeb-046-q56434717"
+    },
+    {
+      "id": "X047",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "إلهام علييف",
+      "image": "celeb-047-q57371"
+    },
+    {
+      "id": "X048",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "شوكت ميرضيايف",
+      "image": "celeb-048-q57808"
+    },
+    {
+      "id": "X049",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "بول كاغامي",
+      "image": "celeb-049-q1231345"
+    },
+    {
+      "id": "X050",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سيريل رامافوزا",
+      "image": "celeb-050-q1148669"
+    },
+    {
+      "id": "X051",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "إيلون ماسك",
+      "image": "celeb-051-q317521"
+    },
+    {
+      "id": "X052",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جيف بيزوس",
+      "image": "celeb-052-q312556"
+    },
+    {
+      "id": "X053",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "بيل غيتس",
+      "image": "celeb-053-q5284"
+    },
+    {
+      "id": "X054",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مارك زوكربيرغ",
+      "image": "celeb-054-q36215"
+    },
+    {
+      "id": "X055",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ساتيا ناديلا",
+      "image": "celeb-055-q7426870"
+    },
+    {
+      "id": "X056",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سوندار بيتشاي",
+      "image": "celeb-056-q3503829"
+    },
+    {
+      "id": "X057",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سام ألتمان",
+      "image": "celeb-057-q7407093"
+    },
+    {
+      "id": "X058",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "تيم كوك",
+      "image": "celeb-058-q265852"
+    },
+    {
+      "id": "X059",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جنسن هوانغ",
+      "image": "celeb-059-q305177"
+    },
+    {
+      "id": "X060",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ديميس هاسابيس",
+      "image": "celeb-061-q3022141"
+    },
+    {
+      "id": "X061",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "لاري بايج",
+      "image": "celeb-062-q4934"
+    },
+    {
+      "id": "X062",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سيرجي برين",
+      "image": "celeb-063-q92764"
+    },
+    {
+      "id": "X063",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جاك ما",
+      "image": "celeb-064-q1137062"
+    },
+    {
+      "id": "X064",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ما هواتينغ (بوني ما)",
+      "image": "celeb-065-q1739008"
+    },
+    {
+      "id": "X065",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ليزا سو",
+      "image": "celeb-068-q18207172"
+    },
+    {
+      "id": "X066",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "لي جون",
+      "image": "celeb-070-q9000717"
+    },
+    {
+      "id": "X067",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "باتريك كوليسون",
+      "image": "celeb-071-q7146257"
+    },
+    {
+      "id": "X068",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جون كوليسون",
+      "image": "celeb-072-q6259169"
+    },
+    {
+      "id": "X069",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "برايان تشيسكي",
+      "image": "celeb-073-q4963341"
+    },
+    {
+      "id": "X070",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "دانييل إيك",
+      "image": "celeb-074-q351819"
+    },
+    {
+      "id": "X071",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "بافل دوروف",
+      "image": "celeb-075-q149067"
+    },
+    {
+      "id": "X072",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جان كوم",
+      "image": "celeb-076-q15737800"
+    },
+    {
+      "id": "X073",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "إيفان شبيغل",
+      "image": "celeb-077-q15439301"
+    },
+    {
+      "id": "X074",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "فادي غندور",
+      "image": "celeb-078-q767061"
+    },
+    {
+      "id": "X075",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "رونالدو مشحور",
+      "image": "celeb-079-q24248273"
+    },
+    {
+      "id": "X076",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "خلدون المبارك",
+      "image": "celeb-080-q515133"
+    },
+    {
+      "id": "X077",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ياسر الرميان",
+      "image": "celeb-081-q64853380"
+    },
+    {
+      "id": "X078",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "نجيب ساويرس",
+      "image": "celeb-084-q1391723"
+    },
+    {
+      "id": "X079",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ناصف ساويرس",
+      "image": "celeb-085-q7428648"
+    },
+    {
+      "id": "X080",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "يسعد ربراب",
+      "image": "celeb-086-q3155690"
+    },
+    {
+      "id": "X081",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "عزيز أخنوش",
+      "image": "celeb-087-q1638114"
+    },
+    {
+      "id": "X082",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد العبار",
+      "image": "celeb-088-q4120392"
+    },
+    {
+      "id": "X083",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "عبد العزيز الغرير",
+      "image": "celeb-089-q308526"
+    },
+    {
+      "id": "X084",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "صالح كامل",
+      "image": "celeb-090-q2214134"
+    },
+    {
+      "id": "X085",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "وليد آل إبراهيم",
+      "image": "celeb-091-q7961696"
+    },
+    {
+      "id": "X086",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سليمان الحبيب",
+      "image": "celeb-092-q7635956"
+    },
+    {
+      "id": "X087",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ماجد الفطيم",
+      "image": "celeb-093-q18719266"
+    },
+    {
+      "id": "X088",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "حسين سجواني",
+      "image": "celeb-094-q5949568"
+    },
+    {
+      "id": "X089",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "خلف الحبتور",
+      "image": "celeb-095-q21063901"
+    },
+    {
+      "id": "X090",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "طلال أبو غزالة",
+      "image": "celeb-096-q265812"
+    },
+    {
+      "id": "X091",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "زياد يوسف",
+      "image": "celeb-098-q3575465"
+    },
+    {
+      "id": "X092",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "غادة المطيري",
+      "image": "celeb-099-q16125107"
+    },
+    {
+      "id": "X093",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مريم مطر",
+      "image": "celeb-100-q20424559"
+    },
+    {
+      "id": "X094",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "وارن بافت",
+      "image": "celeb-101-q47213"
+    },
+    {
+      "id": "X095",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "تشارلي مانجر",
+      "image": "celeb-102-q918630"
+    },
+    {
+      "id": "X096",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "برنار أرنو",
+      "image": "celeb-103-q32055"
+    },
+    {
+      "id": "X097",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "موكيش أمباني",
+      "image": "celeb-105-q298547"
+    },
+    {
+      "id": "X098",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كريستالينا غورغييفا",
+      "image": "celeb-108-q265277"
+    },
+    {
+      "id": "X099",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جيروم باول",
+      "image": "celeb-110-q6182718"
+    },
+    {
+      "id": "X100",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كريستين لاغارد",
+      "image": "celeb-111-q484605"
+    },
+    {
+      "id": "X101",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مسعود أحمد",
+      "image": "celeb-112-q200029"
+    },
+    {
+      "id": "X102",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمود محيي الدين",
+      "image": "celeb-113-q738935"
+    },
+    {
+      "id": "X103",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جهاد أزعور",
+      "image": "celeb-114-q3178636"
+    },
+    {
+      "id": "X104",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد العريان",
+      "image": "celeb-115-q221296"
+    },
+    {
+      "id": "X105",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "توماس بيكيتي",
+      "image": "celeb-117-q984448"
+    },
+    {
+      "id": "X106",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "إستير دوفلو",
+      "image": "celeb-118-q434509"
+    },
+    {
+      "id": "X107",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أبهيجيت بانيرجي",
+      "image": "celeb-119-q320578"
+    },
+    {
+      "id": "X108",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مايكل بلومبرغ",
+      "image": "celeb-120-q607"
+    },
+    {
+      "id": "X109",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جيمس غورمان",
+      "image": "celeb-121-q6140775"
+    },
+    {
+      "id": "X110",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "جيمي ديمون",
+      "image": "celeb-122-q922169"
+    },
+    {
+      "id": "X111",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "لاري فينك",
+      "image": "celeb-123-q3218882"
+    },
+    {
+      "id": "X112",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كين غريفين",
+      "image": "celeb-124-q5365718"
+    },
+    {
+      "id": "X113",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ستيف شوارزمان",
+      "image": "celeb-125-q552465"
+    },
+    {
+      "id": "X114",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أحمد زويل",
+      "image": "celeb-126-q106624"
+    },
+    {
+      "id": "X115",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مجدي يعقوب",
+      "image": "celeb-127-q2919015"
+    },
+    {
+      "id": "X116",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "فاروق الباز",
+      "image": "celeb-128-q1750619"
+    },
+    {
+      "id": "X117",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سليم الحسني",
+      "image": "celeb-129-q7404549"
+    },
+    {
+      "id": "X118",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "إيمانويل شاربنتييه",
+      "image": "celeb-135-q17280087"
+    },
+    {
+      "id": "X119",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أوزليم توريتشي",
+      "image": "celeb-139-q92379963"
+    },
+    {
+      "id": "X120",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أنتوني فاوتشي",
+      "image": "celeb-140-q573246"
+    },
+    {
+      "id": "X121",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كيب ثورن",
+      "image": "celeb-141-q323320"
+    },
+    {
+      "id": "X122",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أندريه جيم",
+      "image": "celeb-142-q104104"
+    },
+    {
+      "id": "X123",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ميتشيو كاكو",
+      "image": "celeb-144-q486882"
+    },
+    {
+      "id": "X124",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "نيل ديغراس تايسون",
+      "image": "celeb-145-q310903"
+    },
+    {
+      "id": "X125",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "براين كوكس",
+      "image": "celeb-146-q34975"
+    },
+    {
+      "id": "X126",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سارة الأميري",
+      "image": "celeb-147-q28714779"
+    },
+    {
+      "id": "X127",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أسمهان الوافي",
+      "image": "celeb-149-q49998900"
+    },
+    {
+      "id": "X128",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "هدى الزغبي",
+      "image": "celeb-150-q1633764"
+    },
+    {
+      "id": "X129",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "نجيب محفوظ",
+      "image": "celeb-151-q7176"
+    },
+    {
+      "id": "X130",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "عبد الرزاق قرنح",
+      "image": "celeb-153-q317877"
+    },
+    {
+      "id": "X131",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أني إرنو",
+      "image": "celeb-154-q1153825"
+    },
+    {
+      "id": "X132",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "هان كانغ",
+      "image": "celeb-155-q5646626"
+    },
+    {
+      "id": "X133",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أمين معلوف",
+      "image": "celeb-156-q115243"
+    },
+    {
+      "id": "X134",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "أدونيس (علي أحمد سعيد إسبر)",
+      "image": "celeb-157-q380787"
+    },
+    {
+      "id": "X135",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "بثينة العيسى",
+      "image": "celeb-165-q6741658"
+    },
+    {
+      "id": "X136",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "رجاء عالم",
+      "image": "celeb-166-q459877"
+    },
+    {
+      "id": "X137",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "يوفال نوح هراري",
+      "image": "celeb-168-q2484404"
+    },
+    {
+      "id": "X138",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "سلافوي جيجك",
+      "image": "celeb-169-q184750"
+    },
+    {
+      "id": "X139",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "فيروز",
+      "image": "celeb-176-q3247658"
+    },
+    {
+      "id": "X140",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مارسيل خليفة",
+      "image": "celeb-177-q1346218"
+    },
+    {
+      "id": "X141",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كاظم الساهر",
+      "image": "celeb-178-q1362223"
+    },
+    {
+      "id": "X142",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ماجدة الرومي",
+      "image": "celeb-179-q1756790"
+    },
+    {
+      "id": "X143",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "محمد عبده",
+      "image": "celeb-180-q311826"
+    },
+    {
+      "id": "X144",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ظافر العابدين",
+      "image": "celeb-195-q3025678"
+    },
+    {
+      "id": "X145",
+      "category": "مشاهير",
+      "level": "متوسط",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "نادين لبكي",
+      "image": "celeb-196-q266539"
+    },
+    {
+      "id": "X146",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "ميسلون هادي",
+      "image": "celeb-197-q124304455"
+    },
+    {
+      "id": "X147",
+      "category": "مشاهير",
+      "level": "صعب",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مصطفى العقاد",
+      "image": "celeb-198-q380471"
+    },
+    {
+      "id": "X148",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "كريستوفر نولان",
+      "image": "celeb-199-q25191"
+    },
+    {
+      "id": "X149",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "فيصل القاسم",
+      "image": "celeb-212-q390072"
+    },
+    {
+      "id": "X150",
+      "category": "مشاهير",
+      "level": "سهل",
+      "topic": "مشاهير",
+      "question": "من صاحب الصورة؟",
+      "answer": "مصطفى الأغا",
+      "image": "celeb-213-q12243326"
+    }
   ]
 }

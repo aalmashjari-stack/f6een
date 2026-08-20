@@ -42,10 +42,13 @@ function TeamCapsule({ team, lead }: { team: Team; lead: boolean }) {
   }, [delta])
 
   return (
-    <div className={'team' + (lead ? ' lead' : '') + (delta !== null ? ' bump' : '')}>
-      <span className="name">{team.name}</span>
+    <div className={'team team-' + team.id + (lead ? ' lead' : '') + (delta !== null ? ' bump' : '')}>
+      <span className="team-copy">
+        <span className="team-kicker">الفريق {team.id === 0 ? 'الأول' : 'الثاني'}</span>
+        <span className="name">{team.name}</span>
+      </span>
       <span className="pts-disc">
-        <span className="pts tabular">{shown}</span>
+        <span className={`pts tabular digits-${Math.min(String(shown).length, 4)}`}>{shown}</span>
         {delta !== null && delta !== 0 && (
           <span key={delta} className={'delta tabular' + (delta < 0 ? ' minus' : '')}>
             {delta > 0 ? `+${delta}` : `${delta}`}
@@ -61,7 +64,10 @@ export function ScoreBar({ teams, label }: { teams: [Team, Team]; label?: string
   return (
     <div className="scorebar">
       <TeamCapsule team={teams[0]} lead={lead === 0} />
-      {label && <div className="mid">{label}</div>}
+      <div className="mid">
+        <span className="mid-dot" aria-hidden="true" />
+        <span>{label ?? 'فطين'}</span>
+      </div>
       <TeamCapsule team={teams[1]} lead={lead === 1} />
     </div>
   )

@@ -38,6 +38,10 @@ export function Timer({
       <span className="secs tabular" style={{ color }}>
         {secs}
       </span>
+      <span className="timer-unit">ثانية</span>
+      <span className="timer-progress" aria-hidden="true">
+        <span style={{ width: `${pct * 100}%`, background: color }} />
+      </span>
 
       <style>{`
         /* align-self:center إلزامي — بدونه يمدّد الأب عرض الحلقة فتنفجر خارج الشاشة.

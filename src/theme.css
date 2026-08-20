@@ -2,31 +2,31 @@
    التدرّجات والتوهّجات مشتقّة من نفس الألوان. الاستثناء الوحيد المعتمد:
    --night-deep أرضية المسرح، أُقرّت في ٤ أغسطس ٢٠٢٦ من لوحات claude.ai/design. */
 :root {
-  --night: #0F2C42;   /* أزرق ليل الغوص — الخلفية الأساسية */
+  --night: #102E43;   /* أزرق الشعار — الخلفية الأساسية */
   /* أرضية أعمق من الليل — اعتُمدت في ٤ أغسطس ٢٠٢٦ من لوحات claude.ai/design:
      المسرح أغمق درجةً من الأسطح فيقفز كل ما فوقه خطوة للأمام. */
-  --night-deep: #0B2233;
+  --night-deep: #071923;
   --gold: #FFBD59;    /* ذهبي — الأهم، صاحب الدور، الإجابة المكشوفة */
   --cream: #F5EFE3;   /* كريمي — النص الأساسي والفريق الثاني */
   --coral: #E4674A;   /* مرجاني — المؤشر، الخطر والوقت والخطأ */
 
-  --surface: #1B3E56;   /* سطح مرتفع */
-  --surface-2: #234C68; /* قسم متناوب */
-  --border: #2A4A63;    /* إطار خافت */
-  --text-2: #8AA3B8;    /* نص ثانوي */
-  --text-3: #5E7D96;    /* نص خافت جداً */
+  --surface: #12364B;   /* سطح مرتفع */
+  --surface-2: #19465E; /* قسم متناوب */
+  --border: #31566A;    /* إطار خافت */
+  --text-2: #A8BFCC;    /* نص ثانوي */
+  --text-3: #6F91A2;    /* نص خافت جداً */
   --spent: #2A3138;     /* مستهلك */
   --spent-text: #5A6570;/* نص على المستهلك */
   --on-gold: #412402;   /* النص فوق الذهبي */
   --on-coral: #4A1B0C;  /* النص فوق المرجاني */
 
-  --r-lg: 30px;
-  --r-md: 20px;
-  --r-sm: 14px;
+  --r-lg: 26px;
+  --r-md: 16px;
+  --r-sm: 11px;
 
-  --glow-gold: 0 0 40px rgba(255, 189, 89, .28);
-  --glow-coral: 0 0 40px rgba(228, 103, 74, .30);
-  --lift: 0 18px 40px rgba(0, 0, 0, .34);
+  --glow-gold: 0 0 0 1px rgba(255, 189, 89, .18), 0 20px 56px rgba(255, 189, 89, .18);
+  --glow-coral: 0 0 0 1px rgba(228, 103, 74, .22), 0 20px 56px rgba(228, 103, 74, .20);
+  --lift: 0 22px 60px rgba(0, 0, 0, .40);
 
   /* سطح الذهب — الدرجتان طرفاه وليستا في لوحة SPEC، فمكانهما هنا وحده.
      كان منسوخاً حرفياً في أربعة مواضع، وقد تفرّق اثنان منها فعلاً. */
@@ -45,7 +45,9 @@
 html, body, #root { height: 100%; }
 
 body {
-  background: var(--night-deep);
+  background:
+    linear-gradient(180deg, rgba(7,25,35,.2), rgba(7,25,35,.78)),
+    var(--night-deep);
   color: var(--cream);
   overflow: hidden;
   -webkit-user-select: none;
@@ -64,10 +66,10 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(90% 70% at 50% 52%, rgba(35, 76, 104, .85) 0%, rgba(15, 44, 66, .55) 45%, rgba(11, 34, 51, 0) 78%),
-    radial-gradient(60% 45% at 50% 50%, rgba(255, 189, 89, .14) 0%, rgba(255, 189, 89, 0) 70%),
-    radial-gradient(50% 40% at 8% 100%, rgba(228, 103, 74, .13) 0%, rgba(228, 103, 74, 0) 75%);
-  animation: drift 22s ease-in-out infinite alternate;
+    radial-gradient(74% 62% at 50% 44%, rgba(25,70,94,.92) 0%, rgba(16,46,67,.58) 48%, transparent 78%),
+    radial-gradient(46% 38% at 12% 8%, rgba(228,103,74,.18), transparent 72%),
+    radial-gradient(48% 42% at 92% 92%, rgba(255,189,89,.16), transparent 74%);
+  animation: drift 28s ease-in-out infinite alternate;
 }
 
 @keyframes drift {
@@ -84,10 +86,12 @@ body::after {
   z-index: 0;
   pointer-events: none;
   background:
-    repeating-linear-gradient(45deg, rgba(245, 239, 227, .055) 0 1px, rgba(245, 239, 227, 0) 1px 78px),
-    repeating-linear-gradient(-45deg, rgba(245, 239, 227, .055) 0 1px, rgba(245, 239, 227, 0) 1px 78px);
-  -webkit-mask-image: radial-gradient(65% 60% at 50% 52%, #000 0%, rgba(0, 0, 0, .35) 58%, transparent 82%);
-  mask-image: radial-gradient(65% 60% at 50% 52%, #000 0%, rgba(0, 0, 0, .35) 58%, transparent 82%);
+    linear-gradient(90deg, transparent 49.86%, rgba(255,189,89,.08) 50%, transparent 50.14%),
+    linear-gradient(0deg, transparent 49.86%, rgba(245,239,227,.045) 50%, transparent 50.14%);
+  background-size: 96px 96px;
+  transform: rotate(8deg) scale(1.16);
+  -webkit-mask-image: radial-gradient(70% 64% at 50% 48%, #000 0%, rgba(0,0,0,.45) 58%, transparent 88%);
+  mask-image: radial-gradient(70% 64% at 50% 48%, #000 0%, rgba(0,0,0,.45) 58%, transparent 88%);
 }
 
 #root { display: flex; flex-direction: column; position: relative; z-index: 1; }
@@ -101,10 +105,24 @@ body::after {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: clamp(16px, 3vw, 40px);
+  padding: clamp(16px, 2.6vw, 36px);
   gap: clamp(12px, 2vh, 24px);
-  animation: screen-in .42s var(--ease-spring) both;
+  animation: screen-in .5s var(--ease-spring) both;
 }
+
+/* خطّان صغيران يثبّتان هوية المسرح في كل شاشة بلا تكرار الشعار. */
+.screen:not(.setup)::before,
+.screen:not(.setup)::after {
+  content:'';
+  position:fixed;
+  top:0;
+  width:min(18vw, 220px);
+  height:4px;
+  z-index:4;
+  pointer-events:none;
+}
+.screen:not(.setup)::before { right:0; background:linear-gradient(90deg, transparent, var(--gold)); }
+.screen:not(.setup)::after { left:0; background:linear-gradient(90deg, var(--coral), transparent); }
 
 @keyframes screen-in {
   from { opacity: 0; transform: translateY(14px); }
@@ -121,9 +139,11 @@ body::after {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 12px 10px 24px;
-  border-radius: 999px; /* كبسولة لا مستطيل */
-  background: linear-gradient(160deg, var(--surface), rgba(27, 62, 86, .55));
+  border-radius: var(--r-md);
+  background: linear-gradient(145deg, rgba(25,70,94,.88), rgba(11,34,51,.76));
   border: 1px solid var(--border);
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+  backdrop-filter: blur(14px);
   transition: border-color .35s ease, box-shadow .35s ease, transform .35s var(--ease-spring);
 }
 /* النقاط في قرص دائري داخل الكبسولة */
@@ -133,7 +153,7 @@ body::after {
   place-items: center;
   width: clamp(46px, 6.2vh, 64px);
   height: clamp(46px, 6.2vh, 64px);
-  border-radius: 50%;
+  border-radius: 12px;
   background: rgba(15, 44, 66, .75);
   border: 1px solid var(--border);
   transition: background .35s ease, border-color .35s ease;
@@ -234,12 +254,12 @@ body::after {
   cursor: pointer;
   font-family: inherit;
   font-weight: 800;
-  border-radius: 999px; /* كبسولة */
+  border-radius: 16px;
   padding: clamp(18px, 3vh, 30px) 34px;
   font-size: clamp(20px, 3vw, 30px);
-  background: var(--grad-gold);
+  background: linear-gradient(135deg, #FFD47E, var(--gold) 58%, #EFA13A);
   color: var(--on-gold);
-  box-shadow: var(--lift), var(--glow-gold);
+  box-shadow: 0 14px 32px rgba(0,0,0,.28), var(--glow-gold);
   transition: transform .14s var(--ease-spring), box-shadow .25s ease, filter .2s ease;
   line-height: 1.3;
 }
@@ -352,11 +372,13 @@ body::after {
 
 /* بطاقة سؤال مشتركة بين المراحل — انحناء كبير جداً يكسر شكل المستطيل */
 .q-box {
-  background: linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
+  background:
+    linear-gradient(145deg, rgba(25,70,94,.94), rgba(12,42,58,.9) 66%),
+    var(--surface);
   border: 1px solid var(--border);
-  border-radius: clamp(30px, 6vh, 64px);
+  border-radius: clamp(22px, 4vh, 38px);
   padding: clamp(22px, 4vh, 48px) clamp(28px, 5vw, 64px);
-  box-shadow: var(--lift);
+  box-shadow: var(--lift), inset 0 1px rgba(255,255,255,.045);
   animation: pop-in .45s var(--ease-spring) both;
 }
 /* كل مقاس يأخذ أصغر نصيبيه: من العرض ومن الارتفاع.
@@ -533,4 +555,231 @@ body::after {
   0%, 20% { transform: rotate(0deg); }
   50%, 70% { transform: rotate(-90deg); }
   100% { transform: rotate(-90deg); }
+}
+
+/* ===================== إعادة التصميم ٢٠٢٦ =====================
+   طبقة موحّدة فوق شاشات اللعبة: الشعار هو المرجع اللوني، والسطوح زجاجية
+   حبرية بزوايا مشذّبة بدل وفرة الكبسولات والدوائر. خصوصية المحددات هنا
+   مقصودة كي تغلب أنماط الشاشة المحلية من دون تفريق الهوية بين المراحل. */
+
+body .screen .rd {
+  width: fit-content;
+  align-self: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(168,191,204,.14);
+  border-radius: 12px;
+  background: rgba(7,25,35,.34);
+  backdrop-filter: blur(12px);
+}
+body .screen .rd-chip {
+  border-radius: 8px;
+  background: rgba(25,70,94,.7);
+}
+
+/* المدخل: المشهد يبقى إنسانياً، لكن الشعار والزجاج يعيدان ربطه باللعبة. */
+body .screen.setup .hero {
+  border-radius: 0 0 52px 52px;
+  border-bottom: 1px solid rgba(255,189,89,.28);
+  box-shadow: 0 28px 70px rgba(0,0,0,.34);
+}
+body .screen.setup .hero-scene::after {
+  background:
+    linear-gradient(90deg, rgba(7,25,35,.05), rgba(7,25,35,.28) 48%, rgba(7,25,35,.88)),
+    linear-gradient(180deg, rgba(7,25,35,.12), transparent 52%, var(--night-deep));
+}
+body .screen.setup .hero-logo {
+  width: min(49%, 490px);
+  max-height: 70%;
+  filter: drop-shadow(0 18px 36px rgba(0,0,0,.62));
+}
+body .screen.setup .mute-toggle {
+  border-radius: 12px;
+  background: rgba(7,25,35,.72);
+  backdrop-filter: blur(14px);
+}
+body .screen.setup .stage-card,
+body .screen.setup .team-card {
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(25,70,94,.78), rgba(9,31,43,.84));
+  border-color: rgba(168,191,204,.2);
+  box-shadow: 0 18px 46px rgba(0,0,0,.24), inset 0 1px rgba(255,255,255,.04);
+  backdrop-filter: blur(16px);
+}
+body .screen.setup .stage-card:nth-child(2)::before { background: var(--coral); opacity:.72; }
+body .screen.setup .stage-card::before {
+  inset-inline: 18px;
+  height: 3px;
+  background: var(--gold);
+  opacity: .72;
+}
+body .screen.setup .stage-no {
+  border-radius: 10px;
+  transform: rotate(3deg);
+}
+body .screen.setup .stage-points,
+body .screen.setup .team-badge {
+  border-radius: 8px;
+}
+body .screen.setup .player {
+  border-radius: 10px;
+  background: rgba(7,25,35,.5);
+}
+body .screen.setup .pill {
+  border-radius: 10px;
+  background: rgba(7,25,35,.62);
+}
+
+/* لوحة التصنيفات: إطار غامق ثابت وصورة أغنى، ثم الذهب يعلن الاختيار. */
+body .screen .cat {
+  border-radius: 14px;
+  border: 1px solid rgba(168,191,204,.16);
+  background: rgba(7,25,35,.72);
+  box-shadow: 0 15px 30px rgba(0,0,0,.28);
+}
+body .screen .cat-name {
+  background: linear-gradient(180deg, rgba(18,54,75,.9), rgba(7,25,35,.96));
+  border-top: 1px solid rgba(168,191,204,.12);
+}
+body .screen .cat-img { filter: saturate(.88) contrast(1.05); }
+body .screen .cat.spent { opacity: .38; }
+body .screen .cat.cursor { border-color: var(--cream); }
+body .screen .cat.landed { border-color: var(--gold); }
+
+/* الجولة الجماعية: فريق الدور كتلة ذهبية، والخصم سطح زجاجي مقابِل. */
+body .screen .tpill {
+  border-radius: 14px;
+}
+body .screen .tpill.owner {
+  background: linear-gradient(135deg, #FFD47E, var(--gold) 62%, #EFA13A);
+}
+body .screen .tpill.rival {
+  background: rgba(7,25,35,.38);
+  backdrop-filter: blur(12px);
+}
+body .screen .rival-hint {
+  border-radius: 10px;
+  background: rgba(228,103,74,.08);
+}
+body .screen .rv-card,
+body .screen .reveal-a {
+  border-radius: 24px;
+  background:
+    radial-gradient(80% 120% at 50% 0%, rgba(255,189,89,.12), transparent 58%),
+    linear-gradient(145deg, rgba(25,70,94,.95), rgba(7,25,35,.94));
+}
+body .screen .pick,
+body .screen .none-btn {
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(25,70,94,.72), rgba(7,25,35,.82));
+  backdrop-filter: blur(12px);
+}
+
+/* المؤقت يتحول إلى عدّاد مسرحي: حلقة أنحف، رقم أوضح، وهج محدود. */
+body .screen .ring-timer .track { stroke: rgba(168,191,204,.16); stroke-width: 5; }
+body .screen .ring-timer .fill { stroke-width: 6; filter: drop-shadow(0 0 7px currentColor); }
+body .screen .ring-timer::before {
+  content:'';
+  position:absolute;
+  inset:17%;
+  border-radius:50%;
+  background:rgba(7,25,35,.32);
+  border:1px solid rgba(168,191,204,.1);
+  box-shadow:inset 0 10px 30px rgba(0,0,0,.24);
+}
+
+/* الفواصل والحسم: ملصق عنوان كبير داخل إطار مسرحي، لا صندوق عام. */
+body .screen .interval-card {
+  position: relative;
+  border-radius: 24px;
+  background:
+    radial-gradient(70% 80% at 50% 0%, rgba(255,189,89,.13), transparent 66%),
+    linear-gradient(145deg, rgba(25,70,94,.86), rgba(7,25,35,.9));
+  box-shadow: var(--lift), inset 0 1px rgba(255,255,255,.05);
+}
+body .screen .interval-card::before,
+body .screen .interval-card::after {
+  content:'';
+  position:absolute;
+  width:52px;
+  height:52px;
+  border-color:var(--gold);
+  opacity:.55;
+}
+body .screen .interval-card::before {
+  top:14px; right:14px;
+  border-top:2px solid; border-right:2px solid;
+}
+body .screen .interval-card::after {
+  bottom:14px; left:14px;
+  border-bottom:2px solid; border-left:2px solid;
+}
+
+/* الديربي: أسماء اللاعبين على سطح واضح، وقرار الحكم هو اللون الوحيد الصريح. */
+body .screen .not-picked .np-col,
+body .screen .mark-cards .mcard {
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(25,70,94,.7), rgba(7,25,35,.74));
+  backdrop-filter: blur(12px);
+}
+body .screen .mark-cards .choice {
+  border-radius: 12px;
+}
+body .screen .s2-versus {
+  align-self:center;
+  min-width:min(100%, 620px);
+  padding:10px 22px;
+  border-block:1px solid rgba(168,191,204,.16);
+  background:linear-gradient(90deg, transparent, rgba(7,25,35,.42), transparent);
+}
+
+/* الحق ما تلحق: المرجاني يحتكر الخطر، والذهبي يحتكر الإصابة. */
+body .screen .s3-ready {
+  position:relative;
+  min-width:min(90vw, 720px);
+  padding:clamp(32px,7vh,70px);
+  border:1px solid rgba(228,103,74,.42);
+  border-radius:24px;
+  background:radial-gradient(70% 90% at 50% 20%, rgba(228,103,74,.13), transparent 72%), rgba(7,25,35,.34);
+  box-shadow:var(--glow-coral);
+}
+body .screen .s3-q {
+  border-radius:28px;
+  background:linear-gradient(145deg, rgba(25,70,94,.9), rgba(7,25,35,.9));
+}
+body .screen .s3-verdicts .v {
+  border-radius:16px;
+}
+body .screen .tb {
+  border-radius:14px;
+  background:rgba(7,25,35,.36);
+}
+
+/* الختام: الجداول تبدو لوحة نتيجة واحدة، والشعار يظل خاتمة الهوية. */
+body .screen.end .brand img {
+  width:min(48%, 360px);
+  max-height:11vh;
+}
+body .screen.end .winner {
+  position:relative;
+  width:min(100%, 680px);
+  padding:clamp(18px,3vh,32px);
+  border-block:1px solid rgba(255,189,89,.32);
+  background:linear-gradient(90deg, transparent, rgba(255,189,89,.06), transparent);
+}
+body .screen.end .best {
+  padding:8px 18px;
+  border-radius:10px;
+  background:rgba(255,189,89,.08);
+  border:1px solid rgba(255,189,89,.18);
+}
+body .screen.end .es-row,
+body .screen.end .report-note {
+  border-radius:12px;
+  background:linear-gradient(145deg, rgba(25,70,94,.58), rgba(7,25,35,.65));
+}
+
+@media (max-width: 640px) {
+  body .screen.setup .hero { border-radius:0 0 34px 34px; }
+  body .screen.setup .hero-logo { width:min(62%, 380px); }
 }

@@ -5,8 +5,7 @@ import type { Action } from '../game/reducer'
 import { Confetti } from '../components/Confetti'
 import { useCountUp } from '../components/useCountUp'
 import { play } from '../audio/sfx'
-// نسخة داخل التطبيق بمصباح ٥٠٪. الملفان المعتمدان في assets/ يبقيان للمتاجر والطباعة.
-import stickerUrl from '../../assets/f6een-hero.png'
+import { BrandLogo } from '../components/BrandLogo'
 
 /** تمييز العدد العربي: ١ مفرد، ٢ مثنّى، ٣–١٠ جمع، ١١ فأكثر مفرد منصوب. */
 function correctAnswers(n: number) {
@@ -60,10 +59,11 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
       {win !== null && <Confetti />}
 
       <div className="brand">
-        <img src={stickerUrl} alt="فطين" />
+        <BrandLogo className="end-logo" />
       </div>
 
       <div className="winner">
+        <span className="winner-stamp">نتيجة الليلة</span>
         {win === null ? (
           <span className="w-title">تعادل</span>
         ) : (

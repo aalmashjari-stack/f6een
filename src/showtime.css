@@ -1,0 +1,355 @@
+/*
+ * فطين — اتجاه «مهرجان اللعب».
+ * واجهة نهارية مطبوعة لا تستعير أي سطح أو لون من النسخة الليلية السابقة.
+ */
+:root {
+  --festival-paper:#fff6e7; --festival-white:#fffdf8; --festival-ink:#301a3b;
+  --festival-purple:#6d3477; --festival-orange:#ff6647; --festival-yellow:#ffd447;
+  --festival-mint:#8bd7ac; --festival-pink:#f4a8bd; --festival-muted:#766471;
+  --festival-shadow:7px 8px 0 #301a3b;
+  --night:var(--festival-paper); --night-deep:var(--festival-paper);
+  --gold:var(--festival-yellow); --cream:var(--festival-ink); --coral:var(--festival-orange);
+  --surface:var(--festival-white); --surface-2:#f5dfef; --border:var(--festival-ink);
+  --text-2:var(--festival-muted); --text-3:#9b8994; --spent:#d9cfd2; --spent-text:#897a82;
+  --on-gold:var(--festival-ink); --on-coral:var(--festival-white);
+  --glow-gold:none; --glow-coral:none; --lift:none; --grad-gold:var(--festival-yellow);
+  color-scheme:light;
+}
+
+/* شعار فطين — حروف عربية مستقلة قابلة للتشكيل من دون صورة نقطية. */
+.f6een-mark{
+  --mark-ink:var(--festival-ink);
+  --mark-fill:var(--festival-white);
+  --mark-coral:var(--festival-orange);
+  --mark-yellow:var(--festival-yellow);
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  max-width:100%;
+  min-width:0;
+  padding:.22em .16em .12em;
+  font-family:'F6een Display','Cairo',sans-serif;
+  font-size:clamp(54px,7.8vw,114px);
+  font-weight:800;
+  line-height:.72;
+  isolation:isolate;
+}
+.f6een-word{
+  direction:rtl;
+  display:inline-flex;
+  align-items:flex-end;
+  filter:drop-shadow(.055em .07em 0 var(--mark-coral));
+}
+.f6een-letter{
+  position:relative;
+  display:inline-block;
+  flex:none;
+  margin-inline-start:-.075em;
+  color:var(--mark-fill);
+  -webkit-text-stroke:.042em var(--mark-ink);
+  paint-order:stroke fill;
+  transform-origin:50% 86%;
+}
+.f6een-fa{z-index:1}
+.f6een-taa{
+  z-index:3;
+  color:var(--mark-yellow);
+  transform:translateY(-.045em) scale(1.2) rotate(-2deg);
+  margin-inline:.005em -.015em;
+}
+.f6een-yaa{z-index:2}
+.f6een-nun{z-index:1;margin-inline-start:-.055em}
+.f6een-spark{
+  position:absolute;z-index:-1;width:.13em;height:.13em;border:.025em solid var(--mark-ink);
+  background:var(--festival-mint);transform:rotate(45deg);
+}
+.f6een-spark.spark-1{inset-inline-end:-.01em;top:.18em}
+.f6een-spark.spark-2{inset-inline-start:.08em;bottom:.02em;width:.08em;height:.08em;background:var(--mark-yellow)}
+
+body{background:var(--festival-paper);color:var(--festival-ink)}
+body::before{inset:0;transform:none;background:radial-gradient(circle at 8% 17%,rgba(255,102,71,.16) 0 8%,transparent 8.2%),radial-gradient(circle at 91% 84%,rgba(139,215,172,.24) 0 11%,transparent 11.2%),linear-gradient(122deg,transparent 0 47%,rgba(109,52,119,.035) 47.2% 52%,transparent 52.2%),var(--festival-paper);animation:none}
+body::after{inset:0;transform:none;background-image:radial-gradient(rgba(48,26,59,.12) .8px,transparent .8px);background-size:18px 18px;opacity:.34;-webkit-mask-image:none;mask-image:none}
+body .screen{isolation:isolate;color:var(--festival-ink)}
+body .screen:not(.setup)::before,body .screen:not(.setup)::after{top:12px;width:64px;height:16px;opacity:1;border:2px solid var(--festival-ink);transform:rotate(-4deg)}
+body .screen:not(.setup)::before{right:18px;background:var(--festival-yellow)}
+body .screen:not(.setup)::after{left:18px;background:var(--festival-mint);transform:rotate(4deg)}
+
+/* النتيجة */
+body .screen .scorebar{position:relative;display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(8px,1.4vw,18px);align-items:stretch;padding:0}
+body .screen .scorebar .team{min-width:0;min-height:clamp(66px,9vh,90px);display:grid;grid-template-columns:1fr auto;gap:12px;padding:9px clamp(12px,2vw,22px);border:3px solid var(--festival-ink);border-radius:26px 9px 26px 9px;background:var(--festival-yellow);box-shadow:5px 6px 0 var(--festival-ink);transform:rotate(.5deg);clip-path:none;backdrop-filter:none}
+body .screen .scorebar .team-1{grid-template-columns:auto 1fr;background:var(--festival-mint);transform:rotate(-.5deg)}
+body .screen .scorebar .team-1 .team-copy{order:2} body .screen .scorebar .team-1 .pts-disc{order:1}
+body .screen .scorebar .team.lead{border-color:var(--festival-orange);background:var(--festival-white);box-shadow:7px 8px 0 var(--festival-orange);transform:translateY(-3px) rotate(-1deg)}
+body .screen .scorebar .team-copy{min-width:0;display:flex;flex-direction:column;justify-content:center;line-height:1.12}
+body .screen .scorebar .team-kicker{color:var(--festival-purple);font-size:clamp(9px,1vw,12px)!important;font-weight:800}
+body .screen .scorebar .team .name,body .screen .scorebar .team.lead .name,body .screen .scorebar .team.lead .team-kicker{min-width:0;color:var(--festival-ink);font-size:clamp(16px,2vw,23px);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body .screen .scorebar .team .pts-disc{width:clamp(48px,6.4vh,66px);height:clamp(48px,6.4vh,66px);border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white)}
+body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{display:block;justify-self:center;align-self:center;max-width:100%;color:var(--festival-purple);font-size:clamp(24px,min(3.4vw,4.4vh),38px);line-height:1;text-align:center;direction:ltr;white-space:nowrap}
+body .screen .scorebar .team .pts.digits-3{font-size:clamp(20px,min(2.8vw,3.8vh),31px)}
+body .screen .scorebar .team .pts.digits-4{font-size:clamp(17px,min(2.3vw,3.2vh),26px)}
+body .screen .scorebar .mid{position:static;min-width:clamp(88px,13vw,150px);display:flex;justify-content:center;gap:7px;padding:8px 14px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-purple);color:var(--festival-white);box-shadow:4px 5px 0 var(--festival-ink);transform:rotate(-2deg);font-size:clamp(11px,1.4vw,15px)}
+.mid-dot{width:8px;height:8px;border-radius:50%;background:var(--festival-yellow);animation:festival-blink 1.2s ease-in-out infinite}@keyframes festival-blink{50%{transform:scale(.45)}}
+
+/* سياق الجولة */
+body .screen .rd{width:100%;display:grid;grid-template-columns:auto auto 1fr;align-items:center;justify-content:start;gap:10px;padding:0;border:0;border-radius:0;background:transparent;backdrop-filter:none;text-align:right}
+body .screen .rd-mark{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--festival-orange);color:var(--festival-white);font-size:9px;transform:rotate(12deg)}
+body .screen .rd-title{color:var(--festival-purple);font-size:clamp(22px,3vw,36px);line-height:1}
+body .screen .rd-meta{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px;padding-bottom:5px;border-bottom:3px dotted rgba(48,26,59,.28)}
+body .screen .rd-chip{padding:4px 12px;border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-ink)}
+body .screen .rd-chip:nth-child(even){background:var(--festival-pink)} body .screen .rd-chip.turn{background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(-2deg)}
+
+/* الأزرار */
+body .screen .action{border:3px solid var(--festival-ink);border-radius:18px;background:var(--festival-orange);color:var(--festival-white);box-shadow:7px 8px 0 var(--festival-ink);clip-path:none;letter-spacing:.01em}
+body .screen .action::after{display:none} body .screen .action:hover:not(:disabled){filter:none;transform:translateY(-3px) rotate(-.5deg);box-shadow:9px 11px 0 var(--festival-ink)}
+body .screen .action:active:not(:disabled){transform:translate(5px,6px);box-shadow:2px 2px 0 var(--festival-ink)}
+body .screen .action.coral{background:var(--festival-purple);color:var(--festival-white);box-shadow:7px 8px 0 var(--festival-mint)}
+body .screen .action.ghost{background:var(--festival-white);color:var(--festival-purple);box-shadow:7px 8px 0 var(--festival-yellow)}
+body .screen .action.sub{border:0;background:transparent;color:var(--festival-purple);box-shadow:none} body .screen .action-note{color:var(--festival-muted)}
+
+/* السؤال والمؤقت */
+body .screen .q-box,body .screen .s3-q{position:relative;overflow:visible;border:4px solid var(--festival-ink);border-radius:42px 14px 42px 14px;background:var(--festival-white);box-shadow:10px 11px 0 var(--festival-mint);clip-path:none}
+body .screen .q-box::before,body .screen .s3-q::before{content:'';position:absolute;top:-13px;inset-inline-start:8%;width:86px;height:24px;background:rgba(255,212,71,.78);transform:rotate(-4deg);z-index:2}
+body .screen .q-box::after,body .screen .s3-q::after{content:'؟';position:absolute;inset-inline-end:18px;bottom:-28px;color:var(--festival-pink);font-size:clamp(72px,11vw,150px);font-weight:800;line-height:1;opacity:.28;pointer-events:none}
+body .screen .q-text,body .screen .q-photo-wrap{position:relative;z-index:1;color:var(--festival-ink)} body .screen .q-photo{border:4px solid var(--festival-ink);border-radius:26px;box-shadow:7px 8px 0 var(--festival-yellow)}
+body .screen .ring-timer{width:clamp(150px,19vw,230px);height:clamp(112px,15vh,155px);aspect-ratio:auto;display:grid;grid-template-rows:1fr auto;place-items:center;padding:13px 18px 16px;border:4px solid var(--festival-ink);border-radius:28px 8px 28px 8px;background:var(--festival-yellow);box-shadow:8px 9px 0 var(--festival-purple);transform:rotate(-1deg)}
+body .screen .ring-timer::before{display:none} body .screen .ring-timer svg{display:none}
+body .screen .ring-timer .secs{position:static;grid-row:1;color:var(--festival-purple)!important;font-size:clamp(42px,8vh,82px);transform:none}
+body .screen .timer-unit{position:absolute;top:56%;color:var(--festival-purple);font-size:clamp(9px,1.2vw,13px);font-weight:800}
+body .screen .timer-progress{grid-row:2;width:100%;height:12px;display:block;overflow:hidden;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-white)}
+body .screen .timer-progress>span{display:block;height:100%;transition:width .12s linear}
+
+/* شاشة الإعداد */
+body .screen.setup .hero{min-height:clamp(240px,20.3vw,400px);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:clamp(28px,4vw,58px);border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
+body .screen.setup .hero-scene{display:block}
+body .screen.setup .hero-scene img{filter:none;object-position:center 50%}
+body .screen.setup .hero-scene::after{background:linear-gradient(90deg,rgba(255,249,239,.03) 0 52%,rgba(255,249,239,.52) 72%,rgba(255,249,239,.92) 100%)}
+body .screen.setup .hero-logo{grid-column:1;width:max-content;max-width:min(36%,430px);height:auto;max-height:74%;align-self:center;justify-self:start;margin-inline-start:clamp(8px,2vw,28px);padding:.22em .16em .12em;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none;filter:drop-shadow(0 10px 14px rgba(48,26,59,.18))}
+body .screen.setup .hero-statement{grid-column:2;align-self:center;max-width:none;padding:0;gap:12px}
+body .screen.setup .hero-kicker{padding:5px 13px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(2deg)}
+body .screen.setup .hero-statement strong{color:var(--festival-ink);font-size:clamp(28px,4.2vw,58px);line-height:1.2}
+body .screen.setup .mute-toggle{border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white);color:var(--festival-purple);box-shadow:4px 5px 0 var(--festival-ink)}
+body .screen.setup .stages-intro{color:var(--festival-muted)} body .screen.setup .brand-inline{color:var(--festival-purple);background:none;-webkit-text-fill-color:currentColor;text-shadow:none}
+body .screen.setup .setup-rule{color:var(--festival-purple)} body .screen.setup .setup-rule::before,body .screen.setup .setup-rule::after{height:4px;background:repeating-linear-gradient(90deg,var(--festival-orange) 0 10px,transparent 10px 17px)}
+body .screen.setup .stage-card,body .screen.setup .team-card{border:4px solid var(--festival-ink);border-radius:32px 10px 32px 10px;background:var(--festival-white);box-shadow:var(--festival-shadow);clip-path:none;backdrop-filter:none}
+body .screen.setup .stage-card:nth-child(1){background:var(--festival-yellow);transform:rotate(-1deg)} body .screen.setup .stage-card:nth-child(2){background:var(--festival-pink);transform:translateY(14px) rotate(1deg)} body .screen.setup .stage-card:nth-child(3){background:var(--festival-mint);transform:rotate(-.5deg)} body .screen.setup .stage-card::before{display:none}
+body .screen.setup .stage-no{width:auto;height:auto;align-self:flex-start;border:0;border-radius:0;background:transparent;color:var(--festival-purple);box-shadow:none;font-size:clamp(44px,7vw,80px);transform:none}
+body .screen.setup .stage-tag{order:-1;color:var(--festival-purple);font-size:11px;font-weight:800} body .screen.setup .stage-name{color:var(--festival-ink)} body .screen.setup .stage-desc{color:var(--festival-muted)}
+body .screen.setup .stage-points,body .screen.setup .team-badge{border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
+body .screen.setup .team-card:first-child{background:#f7e7f3;transform:rotate(.4deg)} body .screen.setup .team-card:last-child{background:#e5f7ec;transform:rotate(-.4deg)} body .screen.setup .team-card.starter{background:var(--festival-yellow);border-color:var(--festival-ink);box-shadow:9px 10px 0 var(--festival-orange)}
+body .screen.setup .team-name{color:var(--festival-purple);border-bottom:3px dotted var(--festival-purple)}
+body .screen.setup .player{border:3px solid var(--festival-ink);border-radius:15px;background:var(--festival-white);color:var(--festival-ink);box-shadow:3px 4px 0 rgba(48,26,59,.28)} body .screen.setup .team-card.starter .player{background:var(--festival-white);color:var(--festival-ink);border-color:var(--festival-ink)}
+body .screen.setup .counter{color:var(--festival-purple);border-top:3px dotted rgba(48,26,59,.24)} body .screen.setup .pill{border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white);color:var(--festival-purple)}
+
+/* التصنيفات */
+body .screen .cat{position:relative;display:grid;grid-template-rows:1fr auto;overflow:visible;border:3px solid var(--festival-ink);border-radius:24px 7px 24px 7px;background:var(--festival-white);box-shadow:5px 6px 0 var(--festival-ink);clip-path:none}
+body .screen .cat:nth-child(4n+1){transform:rotate(-1deg)} body .screen .cat:nth-child(4n+2){transform:rotate(.8deg)} body .screen .cat:nth-child(4n+3){transform:rotate(-.4deg)} body .screen .cat:nth-child(4n){transform:rotate(1.1deg)}
+body .screen .cat-img{grid-column:1;grid-row:1;margin:5px;border-radius:18px 4px 18px 4px;filter:saturate(.85) contrast(1.02)} body .screen .cat-name{grid-column:1;grid-row:2;position:static;padding:.38em .5em .48em;border:0;background:transparent;color:var(--festival-ink);text-align:center}
+body .screen .cat-index{position:absolute;top:-9px;inset-inline-start:-7px;z-index:3;padding:2px 7px;border:2px solid var(--festival-ink);border-radius:50%;background:var(--festival-yellow);color:var(--festival-ink);font-size:clamp(9px,1vw,12px);font-weight:800}
+body .screen .cat-status{position:absolute;top:8px;inset-inline-end:8px;z-index:3;padding:1px 7px;border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple);font-size:clamp(8px,.9vw,10px);font-weight:800}
+body .screen .cat.spent{opacity:.34;filter:grayscale(.7);box-shadow:none} body .screen .cat.cursor{transform:translateY(-7px) rotate(-2deg);border-color:var(--festival-purple);background:var(--festival-pink);box-shadow:7px 8px 0 var(--festival-purple)} body .screen .cat.landed{transform:translateY(-9px) rotate(2deg);border-color:var(--festival-ink);background:var(--festival-yellow);box-shadow:8px 9px 0 var(--festival-orange)} body .screen .cat.landed .cat-name{color:var(--festival-ink)}
+
+/* الجولة الجماعية والكشف */
+body .screen .tpill{border:3px solid var(--festival-ink);border-radius:24px 8px 24px 8px;box-shadow:5px 6px 0 var(--festival-ink);clip-path:none} body .screen .tpill.owner{background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(-.5deg)} body .screen .tpill.rival{background:var(--festival-white);color:var(--festival-purple);transform:rotate(.5deg)} body .screen .tpill.rival.active{background:var(--festival-orange);color:var(--festival-white);border-color:var(--festival-ink)}
+body .screen .rival-hint{border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-pink);color:var(--festival-ink);transform:rotate(-1deg)}
+body .screen .rv-card,body .screen .reveal-a{border:4px solid var(--festival-ink);border-radius:40px 12px 40px 12px;background:var(--festival-white);box-shadow:10px 11px 0 var(--festival-yellow);clip-path:none} body .screen .rv-q,body .screen .reveal-q{color:var(--festival-muted)} body .screen .rv-a,body .screen .reveal-a .a-text{color:var(--festival-purple)}
+body .screen .judge-call{align-self:center;margin-block:-12px -6px;padding:4px 18px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-orange);color:var(--festival-white);font-size:clamp(11px,1.4vw,14px);font-weight:800;transform:rotate(-2deg);z-index:2}
+body .screen .pick,body .screen .none-btn,body .screen .mark-cards .mcard,body .screen .not-picked .np-col{border:3px solid var(--festival-ink);border-radius:30px 9px 30px 9px;background:var(--festival-white);color:var(--festival-ink);box-shadow:6px 7px 0 var(--festival-ink);backdrop-filter:none}
+body .screen .pick:first-child,body .screen .mark-cards .mcard:first-child{background:#f7e7f3;transform:rotate(-.5deg)} body .screen .pick:nth-child(2),body .screen .mark-cards .mcard:nth-child(2){background:#e5f7ec;transform:translateY(7px) rotate(.5deg)} body .screen .none-btn{border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
+body .screen .mark-cards .choice{border:3px solid var(--festival-ink);border-radius:14px;background:var(--festival-white);color:var(--festival-ink)} body .screen .mark-cards .choice.ok.on{background:var(--festival-yellow);color:var(--festival-ink);border-color:var(--festival-ink)} body .screen .mark-cards .choice.no.on{background:var(--festival-orange);color:var(--festival-white);border-color:var(--festival-ink)}
+
+/* الفواصل والديربي */
+body .screen .interval-card{position:relative;overflow:hidden;width:min(100%,900px);max-width:none;min-height:min(54vh,450px);justify-content:center;border:4px solid var(--festival-ink);border-radius:58px 15px 58px 15px;background:var(--festival-pink);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
+body .screen .interval-card.tie{background:var(--festival-yellow);border-color:var(--festival-ink);box-shadow:12px 13px 0 var(--festival-orange)} body .screen .interval-card::before,body .screen .interval-card::after{display:none} body .screen .il-title,body .screen .interval-card.tie .il-title{color:var(--festival-purple);text-shadow:none} body .screen .il-rule{color:var(--festival-ink)}
+body .screen .il-stage-no{position:absolute;inset-inline-start:-.04em;bottom:-.3em;color:rgba(109,52,119,.1);font-size:min(40vw,400px);font-weight:800;line-height:1} body .screen .il-live{position:absolute;top:20px;inset-inline-end:24px;display:flex;align-items:center;gap:7px;color:var(--festival-purple);font-size:12px;font-weight:800} body .screen .il-live span{width:10px;height:10px;border-radius:50%;background:var(--festival-orange);animation:festival-blink 1.2s infinite}
+body .screen .s2-versus{border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-yellow);color:var(--festival-ink);box-shadow:5px 6px 0 var(--festival-purple)} body .screen .s2-versus .vs{color:var(--festival-purple)}
+body .screen .vs-wrap .vs-player{color:var(--festival-purple)} body .screen .vs-wrap.settled .vs-player{color:var(--festival-orange);text-shadow:5px 6px 0 rgba(255,212,71,.7)} body .screen .vs-wrap .vs-word{padding:9px 14px;border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(-5deg)}
+
+/* الحق ما تلحق */
+body .screen .s3-ready{border:4px solid var(--festival-ink);border-radius:58px 14px 58px 14px;background:var(--festival-orange);color:var(--festival-white);box-shadow:12px 13px 0 var(--festival-yellow);clip-path:none} body .screen .s3r-eyebrow{color:var(--festival-yellow)} body .screen .s3r-team{color:var(--festival-white)}
+body .screen .s3-ready-rules{display:flex;justify-content:center;gap:10px;flex-wrap:wrap} body .screen .s3-ready-rules span{padding:7px 14px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-ink);font-size:clamp(12px,1.6vw,16px);font-weight:700} body .screen .s3-ready-rules b{color:var(--festival-purple);font-size:1.2em}
+body .screen .s3-answer{color:var(--festival-purple)} body .screen .s3-verdicts .v,body .screen .tb{border:4px solid var(--festival-ink);border-radius:24px;box-shadow:7px 8px 0 var(--festival-ink)} body .screen .s3-verdicts .v.correct{background:var(--festival-mint);color:var(--festival-ink)} body .screen .s3-verdicts .v.wrong{background:var(--festival-orange);color:var(--festival-white)} body .screen .tb{background:var(--festival-white);color:var(--festival-purple)}
+
+/* الختام */
+body .screen.end .brand img{width:min(42%,360px);height:auto;max-height:18vh;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;filter:drop-shadow(0 8px 12px rgba(48,26,59,.18));object-fit:contain}
+body .screen.end .brand .f6een-mark{font-size:clamp(43px,min(6.5vw,9.3vh),80px);filter:drop-shadow(0 8px 12px rgba(48,26,59,.18))}
+body .screen.end .winner{width:min(100%,760px);padding:clamp(24px,4vh,44px);border:4px solid var(--festival-ink);border-radius:64px 16px 64px 16px;background:var(--festival-yellow);box-shadow:12px 13px 0 var(--festival-orange);transform:rotate(-.5deg)}
+body .screen.end .winner-stamp{align-self:center;padding:4px 12px;border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple);font-size:12px;font-weight:800;transform:rotate(2deg)} body .screen.end .w-eyebrow{color:var(--festival-purple)} body .screen.end .w-title{color:var(--festival-purple);text-shadow:none} body .screen.end .final-score{color:var(--festival-ink)}
+body .screen.end .best{border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-mint);color:var(--festival-ink);box-shadow:5px 6px 0 var(--festival-purple)} body .screen.end .best b{color:var(--festival-purple)} body .screen.end .es-title{align-self:flex-start;padding:3px 11px;border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-pink);color:var(--festival-ink)}
+body .screen.end .es-row,body .screen.end .report-note{border:3px solid var(--festival-ink);border-radius:20px 6px 20px 6px;background:var(--festival-white);color:var(--festival-ink)} body .screen.end .es-row.total{background:var(--festival-yellow);border-color:var(--festival-ink)} body .screen.end .es-row.total .es-num,body .screen.end .es-row.total .es-label{color:var(--festival-ink)} body .screen.end .chip.ok{color:var(--festival-purple);border-color:var(--festival-purple)} body .screen.end .chip.no{color:var(--festival-orange);border-color:var(--festival-orange)} body .screen.end .foot,body .screen.end .foot-link{color:var(--festival-purple)}
+
+/* ─── نظام المسافات العام ───────────────────────────────────────────────
+   كل شاشة تُقرأ كمجموعات مستقلة لا كصفّ عناصر متلاصقة. تكبر المسافة بين
+   الأقسام، ثم تصغر داخل المجموعة نفسها، وتحافظ الشاشات القصيرة على محتواها. */
+body .screen:not(.setup){
+  padding:clamp(20px,3vw,42px);
+  gap:clamp(18px,2.8vh,32px);
+}
+body .screen .scorebar{gap:clamp(12px,1.8vw,24px)}
+body .screen .rd{gap:clamp(12px,1.7vw,20px)}
+body .screen .rd-meta{gap:clamp(9px,1.2vw,14px);padding-bottom:clamp(8px,1.2vh,13px)}
+body .screen .stack.gap-s{gap:clamp(12px,1.8vh,18px)}
+body .screen .action-note{margin-top:0}
+
+/* مجموعات متوازية: الفراغ بينها أكبر من الفراغ داخل كل بطاقة. */
+body .screen .s1-teams,
+body .screen .pick-cards,
+body .screen .mark-cards,
+body .screen .not-picked,
+body .screen .tb-picks,
+body .screen .s3-verdicts{
+  gap:clamp(18px,2.6vw,32px);
+}
+body .screen .timer-stage,
+body .screen .s3-inner{
+  gap:clamp(18px,2.8vh,30px);
+}
+
+/* كانت شارة الحكم تُسحب بهوامش سالبة فوق ما حولها؛ الآن تأخذ مكانها الطبيعي. */
+body .screen .judge-call{margin-block:0}
+
+/* هواء داخل البطاقات الكبيرة وبين كتل شاشة الختام القابلة للتمرير. */
+body .screen .rv-card,
+body .screen .reveal-a,
+body .screen .interval-card,
+body .screen .s3-ready{
+  gap:clamp(16px,2.5vh,28px);
+}
+body .screen.end{gap:clamp(24px,3.8vh,46px)}
+body .screen.end .winner{gap:clamp(10px,1.8vh,18px)}
+body .screen.end .es-block{gap:clamp(14px,2vh,22px)}
+body .screen.end .es-table{gap:clamp(10px,1.5vh,16px)}
+body .screen.end .foot{gap:clamp(12px,1.8vw,20px)}
+
+/* الشاشات الأقل ارتفاعاً تتنفس من دون أن تخسر السؤال أو زر الحكم. */
+@media(max-height:560px){
+  body .screen:not(.setup){padding:clamp(12px,2.2vw,28px);gap:clamp(10px,1.9vh,17px)}
+  body .screen .s1-teams,
+  body .screen .pick-cards,
+  body .screen .mark-cards,
+  body .screen .not-picked,
+  body .screen .tb-picks,
+  body .screen .s3-verdicts{gap:clamp(11px,1.8vw,20px)}
+  body .screen .timer-stage,body .screen .s3-inner{gap:clamp(10px,1.8vh,17px)}
+  body .screen .rv-card,body .screen .reveal-a,body .screen .interval-card,body .screen .s3-ready{gap:clamp(9px,1.6vh,15px)}
+  body .screen.end{gap:clamp(14px,2.2vh,24px)}
+}
+
+@media(max-width:620px){body .screen .scorebar{grid-template-columns:1fr 1fr}body .screen .scorebar .mid{grid-column:1/-1;grid-row:2;justify-self:center;margin-top:-3px}body .screen .scorebar .team{padding:7px 9px}body .screen .scorebar .team-kicker{display:none}body .screen .rd{grid-template-columns:auto 1fr}body .screen .rd-meta{grid-column:1/-1;margin-top:5px}body .screen.setup .hero{grid-template-columns:1fr;min-height:260px}body .screen.setup .hero-logo{grid-column:1;width:min(48%,360px);justify-self:start}body .screen.setup .stage-card:nth-child(2){transform:none}}
+@media(max-height:480px){body .screen .scorebar{grid-template-columns:1fr auto 1fr}body .screen .scorebar .mid{grid-column:auto;grid-row:auto;min-width:74px;padding:4px 8px}body .screen .scorebar .team{min-height:46px;border-width:2px;border-radius:14px 5px 14px 5px;box-shadow:3px 4px 0 var(--festival-ink)}body .screen .scorebar .team .pts-disc{width:36px;height:36px;border-width:2px}body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{font-size:20px}body .screen .scorebar .team .pts.digits-3{font-size:17px}body .screen .scorebar .team .pts.digits-4{font-size:14px}body .screen .ring-timer{width:120px;height:76px;padding:6px 12px 9px;border-width:3px}body .screen .ring-timer .secs{font-size:clamp(30px,8vh,56px)}body .screen .timer-unit{top:52%;font-size:8px}body .screen .timer-progress{height:8px;border-width:2px}body .screen.setup .hero-statement{display:none}body .screen.setup .hero{min-height:94px;height:94px;grid-template-columns:1fr;padding:8px;box-shadow:6px 7px 0 var(--festival-purple)}body .screen.setup .hero-logo{width:min(30%,240px);max-height:82%;justify-self:start;margin-inline-start:12px;padding:0}body .screen .judge-call{margin-block:-7px -4px}body .screen .interval-card{min-height:0}body .screen .s3-ready{padding:clamp(12px,4vh,28px)}body .screen .s3-ready-rules span{padding:3px 9px}}
+
+@media(max-width:620px){body .screen.setup .hero-logo.f6een-mark{width:max-content;max-width:54%;font-size:clamp(45px,14vw,76px)}}
+@media(max-height:480px){body .screen.setup .hero-logo.f6een-mark{width:max-content;max-width:38%;font-size:clamp(30px,9.3vh,43px);padding:.18em .12em .08em}body .screen.end .brand .f6een-mark{font-size:clamp(32px,8.4vh,45px)}}
+@media(max-height:480px){body .screen:not(.setup){padding:clamp(8px,2vh,16px) clamp(16px,3vw,40px);gap:clamp(7px,1.7vh,11px)}body .screen .judge-call{margin-block:-5px -2px}body .screen .stack.gap-s{gap:clamp(5px,1.3vh,8px)}body .screen .rd{gap:6px}body .screen .rd-meta{gap:6px;padding-bottom:4px}body .screen.end{gap:clamp(8px,1.8vh,12px)}}
+@media(orientation:portrait) and (hover:none) and (pointer:coarse){#rotate-gate{background:var(--festival-paper);color:var(--festival-ink)}#rotate-gate .rotate-gate-icon{color:var(--festival-purple)}}
+
+/* ─── قاعدة الراحة البصرية المعتمدة ─────────────────────────────────────
+   لا تُضغط الشاشة كي تسع كل شيء دفعة واحدة. تحافظ العناصر على حجمها
+   ومسافاتها، ويصبح التمرير الرأسي هو الحل الطبيعي عندما يطول المحتوى. */
+body .screen {
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior-y:contain;
+  scrollbar-gutter:stable;
+}
+
+/* الشاشات الخفيفة تستفيد من المساحة المرنة وتبقى في لقطة واحدة. التمرير
+   موجود كشبكة أمان فقط إذا كان المحتوى نفسه أطول من الشاشة. */
+body .screen:not(.setup):not(.end):not(:has(.picker)) {
+  padding:clamp(20px,3vw,42px);
+  gap:clamp(18px,2.8vh,32px);
+}
+
+/* هذه الصفحات طويلة بطبيعتها، فلا نضغطها لإجبارها على لقطة واحدة. */
+body .screen.setup,
+body .screen.end,
+body .screen:has(.picker) {
+  padding:clamp(26px,3.8vw,56px);
+  gap:clamp(26px,4vh,48px);
+}
+
+body .screen.setup .setup-body { flex:none; min-height:auto; }
+
+/* فصل المجموعات المتوازية والكتل الداخلية في جميع مراحل اللعبة. */
+body .screen .stack.gap-s { gap:clamp(12px,1.8vh,18px); }
+body .screen .s1-teams,
+body .screen .pick-cards,
+body .screen .mark-cards,
+body .screen .not-picked,
+body .screen .tb-picks,
+body .screen .s3-verdicts { gap:clamp(18px,2.6vw,32px); }
+body .screen .timer-stage,
+body .screen .s3-inner { gap:clamp(18px,2.8vh,30px); }
+body .screen .timer-stage { padding-block:clamp(8px,1.5vh,16px); }
+
+/* سؤال الصورة لا يجوز أن يعتمد على flex-basis:0 بعد اعتماد التمرير؛ وإلا
+   تنكمش البطاقة إلى سطر السؤال وتختفي الصورة. يأخذ هذا النوع ارتفاعاً حقيقياً
+   في المرحلتين الأولى والثانية، بينما تبقى الصورة نفسها بلا قصّ. */
+body .screen .q-box:has(.q-photo-wrap) {
+  flex:none;
+  min-height:clamp(300px,52vh,540px);
+  max-height:none;
+}
+body .screen .q-box:has(.q-photo-wrap) .q-photo-wrap {
+  height:auto;
+  min-height:0;
+}
+body .screen .q-box:has(.q-photo-wrap) .q-photo {
+  flex:none;
+  max-height:min(46vh,360px);
+}
+body .screen .rv-card,
+body .screen .reveal-a,
+body .screen .interval-card,
+body .screen .s3-ready { gap:clamp(16px,2.5vh,28px); }
+body .screen.end { gap:clamp(32px,5vh,60px); }
+
+/* شاشة الإعداد تتبع الإيقاع نفسه ولا تحاول حشر المراحل والفرق في لقطة واحدة. */
+body .screen.setup .setup-body {
+  --gap-block:clamp(38px,6vh,72px);
+  --gap-in:clamp(20px,3vh,34px);
+}
+body .screen.setup .setup-block + .setup-block { margin-top:clamp(30px,4.8vh,58px); }
+body .screen.setup .stages {
+  width:min(94%,1060px);
+  margin-inline:auto;
+  gap:clamp(24px,2.8vw,40px);
+}
+body .screen.setup .teams-grid { gap:clamp(28px,3.4vw,48px); }
+body .screen.setup .team-card { gap:clamp(18px,2.6vh,30px); }
+body .screen.setup .stages .stage-card {
+  gap:clamp(12px,1.8vh,20px);
+  padding:clamp(16px,2.2vh,24px) clamp(13px,1.5vw,18px);
+}
+body .screen.setup .players { gap:clamp(14px,2vh,22px); }
+body .screen.setup .setup-actions { gap:clamp(18px,2.4vw,30px); }
+
+/* حتى الشاشات القصيرة تحتفظ بهواء واضح؛ التمرير يتكفّل بالباقي. */
+@media(max-height:560px) {
+  body .screen:not(.setup):not(.end):not(:has(.picker)) {
+    padding:clamp(12px,2.2vw,28px);
+    gap:clamp(10px,1.9vh,17px);
+  }
+  body .screen.setup,
+  body .screen.end,
+  body .screen:has(.picker) {
+    padding:clamp(18px,3vw,34px);
+    gap:clamp(18px,3vh,28px);
+  }
+  body .screen .stack.gap-s { gap:clamp(9px,1.7vh,14px); }
+  body .screen .s1-teams,
+  body .screen .pick-cards,
+  body .screen .mark-cards,
+  body .screen .not-picked,
+  body .screen .tb-picks,
+  body .screen .s3-verdicts { gap:clamp(11px,1.8vw,20px); }
+  body .screen .timer-stage,
+  body .screen .s3-inner { gap:clamp(10px,1.8vh,17px); }
+  body .screen .q-box:has(.q-photo-wrap) {
+    min-height:clamp(230px,70vh,340px);
+  }
+  body .screen .q-box:has(.q-photo-wrap) .q-photo {
+    max-height:min(48vh,240px);
+  }
+}

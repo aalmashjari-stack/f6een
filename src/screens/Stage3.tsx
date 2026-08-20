@@ -31,9 +31,10 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           <div className="s3-ready">
             <div className="s3r-eyebrow">الحق ما تلحق</div>
             <div className="s3r-team">دور {team.name}</div>
-            {/* حُذفت رقاقتا القاعدة في ٥ أغسطس ٢٠٢٦ بقرار علي: الفاصل قبل هذه
-                الشاشة يقول النصّ نفسه حرفياً (Interval.tsx)، فتكراره بعده بثانية
-                زحمةٌ لا تذكير. */}
+            <div className="s3-ready-rules">
+              <span><b className="tabular">30</b> ثانية دون توقف</span>
+              <span><b className="tabular">+5</b> لكل إجابة صحيحة</span>
+            </div>
           </div>
         </div>
         <button className="action coral" onClick={() => setStarted(true)}>

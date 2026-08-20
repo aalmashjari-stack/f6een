@@ -9,11 +9,11 @@ import {
 } from '../game/session'
 import type { TeamId } from '../game/types'
 import { isMuted, play, setMuted } from '../audio/sfx'
-import stickerUrl from '../../assets/f6een-hero.png'
+import { BrandLogo } from '../components/BrandLogo'
 // مشهد المجلس — عائلة أمام شاشة واحدة، وهي صورة اللعبة نفسها. نسبتها
 // ٤٫٩٤:١ فتملأ الشريط كاملةً بلا قصّ. JPEG لا PNG: رسمٌ بلا شفافية،
 // فحجمه الرُبع (القسم ١١ من SPEC).
-import bannerUrl from '../../assets/f6een-banner.jpg'
+import bannerUrl from '../../assets/f6een-banner-tv.jpg'
 
 const MIN = 2
 const MAX = 6
@@ -135,7 +135,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           <img src={bannerUrl} alt="" />
         </div>
 
-        <img className="hero-logo" src={stickerUrl} alt="فطين" />
+        <BrandLogo className="hero-logo" />
         {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
             الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
         <button
@@ -165,6 +165,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
                     ويصير عموداً حقيقياً على الجوال ليقف النصّ بجانب الرقم. */}
                 <div className="stage-body">
                   <h3 className="stage-name">{s.name}</h3>
+                  <span className="stage-tag">المرحلة {ar(i + 1)}</span>
                   <p className="stage-desc">{s.desc}</p>
                   <span className="stage-points">{s.points}</span>
                 </div>
@@ -331,6 +332,11 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           gap:var(--gap-block);
         }
         .setup-block { display:flex; flex-direction:column; gap:var(--gap-in); }
+        /* فصل بصري أوضح بين شرح المراحل وحقول الفرق: العنوان التالي لا
+           يلتصق بظلال البطاقات، مع إبقاء الإيقاع الداخلي لكل قسم كما هو. */
+        .setup-block + .setup-block {
+          margin-top:clamp(22px, 3.4vh, 44px);
+        }
 
         /* كتلة الفعل عند الحافّة السفلى — تبتلع فراغ التابلت الطولي
            بدل أن تتركه معلّقاً تحتها. */
@@ -520,13 +526,14 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         /* ─── شاشة قصيرة (١٠٢٤×٦٠٠ مثلاً) ─────────────────────────────
            كل شيء ينكمش حتى يبقى زر «ابدأ اللعبة» فوق الحافّة — الفعل
            الأساسي لا يجوز أن يسقط تحت الطيّة. */
-        @media (max-height:700px) {
+        @media (max-height:560px) {
           /* الشاشة القصيرة لا تحتمل نسبة الصورة كاملةً (٢٠٪ من العرض)،
              فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
           .hero { aspect-ratio:auto; height:clamp(92px, 15vh, 120px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
           .setup-body { --gap-block:clamp(11px,1.9vh,17px); --gap-in:clamp(8px,1.2vh,12px); margin-top:0; }
+          .setup-block + .setup-block { margin-top:clamp(10px,1.8vh,16px); }
 
           .stages-intro { font-size:clamp(13px,1.5vw,15px); line-height:1.5; }
           .setup-rule { font-size:clamp(14px,1.6vw,17px); }
