@@ -14,8 +14,26 @@ const bank = raw as Bank
 // تُضاف هنا وتُدمج. ترتيب الفئات: القديمة أولاً ثم الجديدة.
 const extra = extraRaw as { categories: string[]; questions: Question[] }
 
+/**
+ * شخصيات سياسية مستبعدة من فئة «مشاهير» بقرار علي في ٢٠ أغسطس ٢٠٢٦.
+ * يبقى الاستبعاد هنا، لا في بنك v5 المحمي ولا في ملف الصور، حتى لا تعيدها
+ * أدوات توليد بنك المشاهير إلى اللعب في تحديث لاحق.
+ */
+export const EXCLUDED_POLITICAL_CELEBRITY_IDS = new Set([
+  'X001', 'X002', 'X003', 'X004', 'X005', 'X006', 'X007', 'X008', 'X009', 'X010',
+  'X011', 'X012', 'X013', 'X014', 'X015', 'X016', 'X017', 'X018', 'X019', 'X020',
+  'X021', 'X022', 'X023', 'X024', 'X025', 'X026', 'X027', 'X028', 'X029', 'X030',
+  'X031', 'X032', 'X033', 'X034', 'X035', 'X036', 'X037', 'X038', 'X039', 'X040',
+  'X041', 'X042', 'X043', 'X047', 'X048', 'X049', 'X050',
+  // سياسيون وردوا داخل أقسام الأعمال والاقتصاد والعلوم في المصدر.
+  'X081', 'X098', 'X100', 'X102', 'X108', 'X126',
+])
+
 export const CATEGORIES: string[] = [...bank.categories, ...extra.categories]
-export const ALL_QUESTIONS: Question[] = [...bank.questions, ...extra.questions]
+export const ALL_QUESTIONS: Question[] = [
+  ...bank.questions,
+  ...extra.questions.filter((q) => !EXCLUDED_POLITICAL_CELEBRITY_IDS.has(q.id)),
+]
 
 /** فهرسة: تصنيف × مستوى ← أسئلة. جوهر السحب في القسم ٨. */
 const byCatLevel = new Map<string, Question[]>()

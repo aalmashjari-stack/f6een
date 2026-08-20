@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { ALL_QUESTIONS, CATEGORIES, familyOf, poolByCatLevel } from './bank'
+import {
+  ALL_QUESTIONS,
+  CATEGORIES,
+  EXCLUDED_POLITICAL_CELEBRITY_IDS,
+  familyOf,
+  poolByCatLevel,
+} from './bank'
 import type { Level } from './types'
 
 const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
@@ -49,6 +55,11 @@ describe('بنك الأسئلة', () => {
     // فلم يعد العدد مقيَّداً — يبقى الشرط أن تكون الفئات فريدة وألا تقلّ عن الأصل.
     expect(new Set(CATEGORIES).size).toBe(CATEGORIES.length)
     expect(CATEGORIES.length).toBeGreaterThanOrEqual(12)
+  })
+
+  it('لا تدخل الشخصيات السياسية المستبعدة في سحب فئة مشاهير', () => {
+    const playableIds = new Set(ALL_QUESTIONS.map((q) => q.id))
+    for (const id of EXCLUDED_POLITICAL_CELEBRITY_IDS) expect(playableIds.has(id), id).toBe(false)
   })
 
   /**
