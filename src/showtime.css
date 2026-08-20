@@ -299,6 +299,19 @@ body .screen .q-box:has(.q-photo-wrap) .q-photo {
   flex:none;
   max-height:min(46vh,360px);
 }
+
+/* في الجولة الجماعية وحدها يتجاور سؤال الصورة والمؤقّت. يلغي هذا الغلافُ
+   الأرضية العامة للبطاقة المصوّرة، لأن ارتفاع الصف نفسه صار هو الحدّ الآمن. */
+body .screen .s1-question-body.photo .q-box.s1q-photo {
+  flex:1 1 0;
+  min-height:0;
+  max-height:none;
+}
+body .screen .s1-question-body.photo .q-photo-wrap { height:100%; }
+body .screen .s1-question-body.photo .q-photo {
+  flex:0 1 auto;
+  max-height:min(42vh,320px);
+}
 body .screen .rv-card,
 body .screen .reveal-a,
 body .screen .interval-card,

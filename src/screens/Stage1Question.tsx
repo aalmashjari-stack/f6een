@@ -43,21 +43,23 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         </div>
       </div>
 
-      {/* سؤال الصورة يأخذ المساحة الحرّة (الصورة هي البطل)، والمؤقّت يتراجع
-          تحته؛ سؤال النصّ يبقى كما كان — صندوقٌ صغير والمؤقّت هو البطل. */}
-      <div className={'q-box s1q' + (q.image ? ' s1q-photo' : '')}>
-        <QuestionView q={q} />
-      </div>
+      <div className={'s1-question-body' + (q.image ? ' photo' : '')}>
+        {/* في سؤال الصورة يتجاور السؤال والمؤقّت أفقياً حتى يبقى الوجه كبيراً
+            من غير أن يهبط المؤقّت فوق زر الحكم. سؤال النص يحتفظ بترتيبه الرأسي. */}
+        <div className={'q-box s1q' + (q.image ? ' s1q-photo' : '')}>
+          <QuestionView q={q} />
+        </div>
 
-      <div className={'timer-stage' + (q.image ? '' : ' grow')}>
-        <Timer
-          remainingMs={inConsult ? consultLeft : rivalLeft}
-          totalMs={inConsult ? STAGE1_CONSULT_MS : STAGE1_RIVAL_MS}
-          size={q.image ? 'md' : 'lg'}
-        />
-        {!inConsult && (
-          <div className="rival-hint">مهلة {rivalTeam.name} — بلا تكرار إجابة {ownerTeam.name}</div>
-        )}
+        <div className={'timer-stage' + (q.image ? '' : ' grow')}>
+          <Timer
+            remainingMs={inConsult ? consultLeft : rivalLeft}
+            totalMs={inConsult ? STAGE1_CONSULT_MS : STAGE1_RIVAL_MS}
+            size={q.image ? 'md' : 'lg'}
+          />
+          {!inConsult && (
+            <div className="rival-hint">مهلة {rivalTeam.name} — بلا تكرار إجابة {ownerTeam.name}</div>
+          )}
+        </div>
       </div>
 
       {inConsult ? (
@@ -95,11 +97,56 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         }
         @media (max-height:480px) {
           .q-box.s1q { max-height:clamp(84px, 34vh, 170px); padding-block:clamp(8px, 2vh, 18px); }
+          body .screen:has(.s1q-photo) .rd,
+          body .screen:has(.s1q-photo) .action-note { display:none; }
+          body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:4px; }
+          body .screen:has(.s1q-photo) .q-photo-wrap { gap:3px; }
+          body .screen:has(.s1q-photo) .q-prompt {
+            font-size:clamp(14px,4vh,18px);
+            line-height:1.2;
+          }
         }
         /* سؤال الصورة يقلب الأولوية: البطاقة تنمو (الصورة هي البطل) بلا سقفٍ
            يخنقها، والمؤقّت يتراجع تحتها (بلا grow، ومقاسه md). */
         .q-box.s1q.s1q-photo {
           flex:1 1 0; max-height:none; padding-block:clamp(10px, 2vh, 20px);
+        }
+
+        /* display:contents يحفظ تخطيط سؤال النص القديم. في سؤال الصورة يتحول
+           الغلاف إلى صف: البطاقة تأخذ المساحة المرنة والمؤقّت يحتفظ بعرضه. */
+        .s1-question-body { display:contents; }
+        .s1-question-body.photo {
+          display:flex; flex:1 1 0; min-height:0;
+          align-items:stretch; justify-content:center;
+          gap:clamp(22px,3vw,42px);
+        }
+        .s1-question-body.photo .q-box.s1q-photo {
+          flex:1 1 0; min-width:0; min-height:0;
+        }
+        .s1-question-body.photo .q-photo-wrap { height:100%; }
+        .s1-question-body.photo .q-photo {
+          flex:0 1 auto;
+          max-height:min(42vh,320px);
+        }
+        .s1-question-body.photo .timer-stage {
+          flex:0 0 clamp(150px,19vw,230px);
+          align-self:center;
+          padding-block:0;
+        }
+
+        /* شاشة التلفاز القصيرة والعريضة (مثل ١٤٦١×٦٦٩): نقل المؤقّت إلى الجانب
+           يحلّ نصف المشكلة، وهذا الضغط الخفيف يعيد المساحة المحرّرة إلى الوجه. */
+        @media (max-height:800px) {
+          body .screen:has(.s1q-photo) {
+            padding-block:clamp(14px,2.2vh,24px);
+            gap:clamp(10px,1.8vh,16px);
+          }
+          body .screen:has(.s1q-photo) .tpill { padding-block:7px; }
+          body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:8px; }
+          body .screen:has(.s1q-photo) .q-photo-wrap { gap:6px; }
+          body .screen:has(.s1q-photo) > .stack.gap-s { gap:6px; }
+          body .screen:has(.s1q-photo) .action.compact { padding-block:8px; }
+          body .screen:has(.s1q-photo) .action-note { line-height:1.25; }
         }
 
         .s1-teams { display:flex; gap:14px; flex:none; }
@@ -132,6 +179,8 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           .tpill { padding:5px 16px; gap:8px; }
           .tpill .role { font-size:11px; line-height:1.3; }
           .tpill .tname { line-height:1.3; }
+          .s1-question-body.photo { gap:clamp(12px,2vw,22px); }
+          .s1-question-body.photo .timer-stage { flex-basis:120px; }
         }
         .rival-hint {
           flex:none;
