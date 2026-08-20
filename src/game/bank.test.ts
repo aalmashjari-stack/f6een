@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   ALL_QUESTIONS,
   CATEGORIES,
+  EXCLUDED_OBSCURE_CELEBRITY_IDS,
   EXCLUDED_POLITICAL_CELEBRITY_IDS,
   familyOf,
   poolByCatLevel,
@@ -60,6 +61,11 @@ describe('بنك الأسئلة', () => {
   it('لا تدخل الشخصيات السياسية المستبعدة في سحب فئة مشاهير', () => {
     const playableIds = new Set(ALL_QUESTIONS.map((q) => q.id))
     for (const id of EXCLUDED_POLITICAL_CELEBRITY_IDS) expect(playableIds.has(id), id).toBe(false)
+  })
+
+  it('لا تدخل أسماء المشاهير شديدة الغموض في السحب', () => {
+    const playableIds = new Set(ALL_QUESTIONS.map((q) => q.id))
+    for (const id of EXCLUDED_OBSCURE_CELEBRITY_IDS) expect(playableIds.has(id), id).toBe(false)
   })
 
   /**

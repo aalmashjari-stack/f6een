@@ -29,10 +29,22 @@ export const EXCLUDED_POLITICAL_CELEBRITY_IDS = new Set([
   'X081', 'X098', 'X100', 'X102', 'X108', 'X126',
 ])
 
+/** أسماء شديدة الغموض على جمهور اللعبة العربي والخليجي، فلا تصلح لسؤال صورة ممتع. */
+export const EXCLUDED_OBSCURE_CELEBRITY_IDS = new Set([
+  'X064', 'X067', 'X068', 'X069', 'X072', 'X073', 'X074', 'X075', 'X080',
+  'X091', 'X093', 'X101', 'X103', 'X105', 'X106', 'X107', 'X109', 'X112',
+  'X113', 'X117', 'X118', 'X119', 'X121', 'X122', 'X127', 'X128', 'X130',
+  'X131', 'X132', 'X138', 'X146',
+])
+
 export const CATEGORIES: string[] = [...bank.categories, ...extra.categories]
 export const ALL_QUESTIONS: Question[] = [
   ...bank.questions,
-  ...extra.questions.filter((q) => !EXCLUDED_POLITICAL_CELEBRITY_IDS.has(q.id)),
+  ...extra.questions.filter(
+    (q) =>
+      !EXCLUDED_POLITICAL_CELEBRITY_IDS.has(q.id) &&
+      !EXCLUDED_OBSCURE_CELEBRITY_IDS.has(q.id),
+  ),
 ]
 
 /** فهرسة: تصنيف × مستوى ← أسئلة. جوهر السحب في القسم ٨. */
