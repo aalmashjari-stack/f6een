@@ -121,7 +121,10 @@ body .screen .timer-progress{grid-row:2;width:100%;height:12px;display:block;ove
 body .screen .timer-progress>span{display:block;height:100%;transition:width .12s linear}
 
 /* شاشة الإعداد */
-body .screen.setup .hero{min-height:clamp(240px,20.3vw,400px);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:clamp(28px,4vw,58px);border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
+/* الارتفاع يتبع ارتفاع الشاشة لا عرضها: بـ20.3vw كان الشريط ٢٦٠px على
+   لابتوب ١٢٨٠ — ثلث الشاشة لصورة تُنظر مرّة. و min-height هو ما كان يبطل
+   سقفَ max-height في theme.css، فصار الاثنان محكومين بـvh. */
+body .screen.setup .hero{min-height:clamp(88px,17vh,300px);max-height:clamp(88px,17vh,300px);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:clamp(10px,2.4vw,58px);border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
 body .screen.setup .hero-scene{display:block}
 body .screen.setup .hero-scene img{filter:none;object-position:center 50%}
 body .screen.setup .hero-scene::after{background:linear-gradient(90deg,rgba(255,249,239,.03) 0 52%,rgba(255,249,239,.52) 72%,rgba(255,249,239,.92) 100%)}
@@ -134,7 +137,9 @@ body .screen.setup .stages-intro{color:var(--festival-muted)} body .screen.setup
 body .screen.setup .setup-rule{color:var(--festival-purple)} body .screen.setup .setup-rule::before,body .screen.setup .setup-rule::after{height:4px;background:repeating-linear-gradient(90deg,var(--festival-orange) 0 10px,transparent 10px 17px)}
 body .screen.setup .stage-card,body .screen.setup .team-card{border:4px solid var(--festival-ink);border-radius:32px 10px 32px 10px;background:var(--festival-white);box-shadow:var(--festival-shadow);clip-path:none;backdrop-filter:none}
 body .screen.setup .stage-card:nth-child(1){background:var(--festival-yellow);transform:rotate(-1deg)} body .screen.setup .stage-card:nth-child(2){background:var(--festival-pink);transform:translateY(14px) rotate(1deg)} body .screen.setup .stage-card:nth-child(3){background:var(--festival-mint);transform:rotate(-.5deg)} body .screen.setup .stage-card::before{display:none}
-body .screen.setup .stage-no{width:auto;height:auto;align-self:flex-start;border:0;border-radius:0;background:transparent;color:var(--festival-purple);box-shadow:none;font-size:clamp(44px,7vw,80px);transform:none}
+/* الرقم كان clamp(44px,7vw,80px) — ٨٠px لرقمٍ واحد يزاحم الاسم والنقاط
+   على ارتفاع البطاقة. صار يتبع الارتفاع فيكبر على التلفزيون وحده. */
+body .screen.setup .stage-no{width:auto;height:auto;align-self:center;border:0;border-radius:0;background:transparent;color:var(--festival-purple);box-shadow:none;font-size:clamp(22px,4.4vh,72px);line-height:1;transform:none}
 body .screen.setup .stage-tag{order:-1;color:var(--festival-purple);font-size:11px;font-weight:800} body .screen.setup .stage-name{color:var(--festival-ink)} body .screen.setup .stage-desc{color:var(--festival-muted)}
 body .screen.setup .stage-points,body .screen.setup .team-badge{border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
 body .screen.setup .team-card:first-child{background:#f7e7f3;transform:rotate(.4deg)} body .screen.setup .team-card:last-child{background:#e5f7ec;transform:rotate(-.4deg)} body .screen.setup .team-card.starter{background:var(--festival-yellow);border-color:var(--festival-ink);box-shadow:9px 10px 0 var(--festival-orange)}
@@ -244,32 +249,43 @@ body .screen.end .foot{gap:clamp(12px,1.8vw,20px)}
 @media(max-height:480px){body .screen:not(.setup){padding:clamp(8px,2vh,16px) clamp(16px,3vw,40px);gap:clamp(7px,1.7vh,11px)}body .screen .judge-call{margin-block:-5px -2px}body .screen .stack.gap-s{gap:clamp(5px,1.3vh,8px)}body .screen .rd{gap:6px}body .screen .rd-meta{gap:6px;padding-bottom:4px}body .screen.end{gap:clamp(8px,1.8vh,12px)}}
 @media(orientation:portrait) and (hover:none) and (pointer:coarse){#rotate-gate{background:var(--festival-paper);color:var(--festival-ink)}#rotate-gate .rotate-gate-icon{color:var(--festival-purple)}}
 
-/* ─── قاعدة الراحة البصرية المعتمدة ─────────────────────────────────────
-   لا تُضغط الشاشة كي تسع كل شيء دفعة واحدة. تحافظ العناصر على حجمها
-   ومسافاتها، ويصبح التمرير الرأسي هو الحل الطبيعي عندما يطول المحتوى. */
+/* ─── قاعدة اللقطة الواحدة (٢١ أغسطس ٢٠٢٦، بقرار علي) ──────────────────
+   حلّت محلّ «قاعدة الراحة البصرية» التي كانت هنا: تلك أبقت العناصر بحجمها
+   وجعلت التمرير الرأسي حلاً طبيعياً متى طال المحتوى. وأثرها في الاستعمال
+   أن الإعداد والعجلة والختام تُخفي أفعالها تحت الطيّة — وزرّ «لف العجلة»
+   يسقط خارج الشاشة على لابتوب ٧٢٠.
+   القاعدة الجديدة: كل شاشة تُقرأ في لقطة واحدة. ما يتنازل هو الفراغ ثم
+   حجم الحرف — بلا حشر — والنصّ الذي يُقرأ مرّة يُحذف لا يُصغَّر. */
 body .screen {
-  overflow-y:auto;
-  overflow-x:hidden;
+  overflow:hidden;
   overscroll-behavior-y:contain;
+}
+
+/* الإعداد وحده يُمرَّر بقرار علي (٢١ أغسطس ٢٠٢٦): هو الشاشة الوحيدة التي
+   تُملأ قبل أن تبدأ اللعبة، فالحكم واقفٌ عندها بيده لا يقرأها من آخر المجلس
+   — والتمرير فيها لا يُخفي شيئاً عن الجمهور. أمّا شاشات اللعب فتُقرأ من بعيد
+   وأثناء المؤقّت، فلا تمرير فيها. */
+body .screen.setup {
+  overflow-y:auto;
   scrollbar-gutter:stable;
 }
 
-/* الشاشات الخفيفة تستفيد من المساحة المرنة وتبقى في لقطة واحدة. التمرير
-   موجود كشبكة أمان فقط إذا كان المحتوى نفسه أطول من الشاشة. */
 body .screen:not(.setup):not(.end):not(:has(.picker)) {
   padding:clamp(20px,3vw,42px);
   gap:clamp(18px,2.8vh,32px);
 }
 
-/* هذه الصفحات طويلة بطبيعتها، فلا نضغطها لإجبارها على لقطة واحدة. */
+/* هذه الثلاث أكثفها محتوى، فهوامشها أوّل ما يتنازل مع ضيق الارتفاع. */
 body .screen.setup,
 body .screen.end,
 body .screen:has(.picker) {
-  padding:clamp(26px,3.8vw,56px);
-  gap:clamp(26px,4vh,48px);
+  padding:clamp(12px,2.4vh,44px) clamp(20px,3.4vw,56px);
+  gap:clamp(8px,1.8vh,34px);
 }
 
-body .screen.setup .setup-body { flex:none; min-height:auto; }
+/* عمودٌ مرن يقتسم ما تبقّى بعد الشريط: بـflex:none كان يأخذ ارتفاع محتواه
+   كاملاً فيفيض عن الشاشة مهما ضاقت. */
+body .screen.setup .setup-body { flex:1; min-height:0; }
 
 /* فصل المجموعات المتوازية والكتل الداخلية في جميع مراحل اللعبة. */
 body .screen .stack.gap-s { gap:clamp(12px,1.8vh,18px); }
@@ -316,27 +332,52 @@ body .screen .rv-card,
 body .screen .reveal-a,
 body .screen .interval-card,
 body .screen .s3-ready { gap:clamp(16px,2.5vh,28px); }
-body .screen.end { gap:clamp(32px,5vh,60px); }
-
-/* شاشة الإعداد تتبع الإيقاع نفسه ولا تحاول حشر المراحل والفرق في لقطة واحدة. */
-body .screen.setup .setup-body {
-  --gap-block:clamp(38px,6vh,72px);
-  --gap-in:clamp(20px,3vh,34px);
+/* كان clamp(32px,5vh,60px) — ثمانية أبناء بفجوة ٥٤px تعني ٣٨٠px فراغاً
+   وحده على شاشة ١٠٨٠، والختام أكثف الشاشات محتوى (حتى اثنا عشر لاعباً). */
+body .screen.end { gap:clamp(6px,1.5vh,34px); }
+body .screen.end .es-block { gap:clamp(4px,.8vh,14px); }
+body .screen.end .es-table { gap:clamp(4px,.7vh,12px); }
+body .screen.end .winner { padding:clamp(8px,1.6vh,32px) clamp(18px,3vw,44px); gap:clamp(2px,.6vh,12px); }
+body .screen.end .es-row { padding:clamp(4px,.8vh,12px) clamp(9px,1.4vw,18px); }
+/* بطاقة الفائز والشعار أوّل ما يتنازل مع ضيق الارتفاع: يُنظر إليهما لحظةً،
+   والجداول تحتهما هي ما يُقرأ ويُناقَش. */
+body .screen.end .brand .f6een-mark { font-size:clamp(28px,min(5vw,6.6vh),80px); }
+body .screen.end .winner { border-radius:clamp(22px,4vh,64px) 16px clamp(22px,4vh,64px) 16px; }
+@media (max-height:760px) {
+  body .screen.end .winner { padding:clamp(6px,1.2vh,20px) clamp(14px,2.4vw,32px); }
+  body .screen.end .winner-stamp { padding:2px 10px; font-size:10px; }
+  body .screen.end .action { padding:clamp(8px,1.6vh,18px) 28px; }
+  body .screen.end { gap:clamp(5px,1.1vh,20px); }
+  body .screen.end .brand .f6een-mark { font-size:clamp(24px,4.4vh,52px); }
 }
-body .screen.setup .setup-block + .setup-block { margin-top:clamp(30px,4.8vh,58px); }
+/* جوال أفقي (٤٨٠px فما دون): لا يتّسع لثلاثة جداول مهما صغر الخط — عشرون
+   بكسلاً لكل سطر لا تُقرأ أصلاً. هنا وحدها يعود التمرير، وهو أصدق من حشرٍ
+   لا يُقرأ. الشاشة الوحيدة الأخرى التي تُمرَّر هي الإعداد بقرار علي. */
+@media (max-height:480px) {
+  body .screen.end { overflow-y:auto; }
+}
+
+/* شاشة الإعداد: الفراغ يتنفّس على الشاشة الطويلة وينكمش على القصيرة، فتبقى
+   القرعة وزر البدء ظاهرَين مع ستة لاعبين لكل فريق. الأرضيات هنا صغيرة عمداً
+   — هي التي تُستدعى على لابتوب ٧٢٠، وكانت ٣٨/٢٠/٣٠ فتفيض الشاشة بـ٧٧٨px. */
+body .screen.setup .setup-body {
+  --gap-block:clamp(6px,1.5vh,60px);
+  --gap-in:clamp(5px,1vh,28px);
+}
+body .screen.setup .setup-block + .setup-block { margin-top:clamp(3px,.8vh,48px); }
 body .screen.setup .stages {
   width:min(94%,1060px);
   margin-inline:auto;
-  gap:clamp(24px,2.8vw,40px);
+  gap:clamp(10px,1.5vw,40px);
 }
-body .screen.setup .teams-grid { gap:clamp(28px,3.4vw,48px); }
-body .screen.setup .team-card { gap:clamp(18px,2.6vh,30px); }
+body .screen.setup .teams-grid { gap:clamp(12px,2vw,48px); }
+body .screen.setup .team-card { gap:clamp(5px,1vh,26px); }
 body .screen.setup .stages .stage-card {
-  gap:clamp(12px,1.8vh,20px);
-  padding:clamp(16px,2.2vh,24px) clamp(13px,1.5vw,18px);
+  gap:clamp(6px,1vh,18px);
+  padding:clamp(6px,1.1vh,22px) clamp(9px,1.2vw,18px);
 }
-body .screen.setup .players { gap:clamp(14px,2vh,22px); }
-body .screen.setup .setup-actions { gap:clamp(18px,2.4vw,30px); }
+body .screen.setup .players { gap:clamp(4px,.8vh,18px); }
+body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
 
 /* حتى الشاشات القصيرة تحتفظ بهواء واضح؛ التمرير يتكفّل بالباقي. */
 @media(max-height:560px) {

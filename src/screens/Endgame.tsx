@@ -83,6 +83,10 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         </div>
       )}
 
+      {/* الكتل الثلاث في صفّ على الشاشة العريضة بدل عمود واحد يمتدّ ثلاثة
+          أضعاف ارتفاع الشاشة. الشاشة عريضة والجداول ضيّقة، فالعرض هو
+          المتوفّر — وهذا وحده يردّ الختام إلى لقطة واحدة. */}
+      <div className="es-grid">
       {/* ——— من أين جاءت النقاط ———
           السؤال الأول بعد «مين فاز» هو «وين خسرنا». الجدول يجيب عنه بثلاثة أسطر:
           كل مرحلة وما كسبه فيها كل فريق. الأرقام هنا تُجمع فتساوي النتيجة النهائية،
@@ -142,17 +146,23 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
             <div key={s.player.id} className="es-row player" style={{ animationDelay: `${0.5 + i * 0.05}s` }}>
               <span className="sr-name">{s.player.name}</span>
               <span className="sr-team">{state.teams[s.teamId].name}</span>
+              {/* رمز بدل كلمة في سطر اللاعب وحده: اثنا عشر سطراً في عمودين،
+                  و«صح»/«غلط» مكتوبتين تسرقان من الاسم عرضه حتى يُقصّ. اللون
+                  يحمل المعنى نفسه (ذهبي/مرجاني)، والعنوان فوق الجدول يفسّره. */}
               <span className="es-chips">
-                <span className="chip ok">
-                  <span className="tabular">{s.correct}</span> صح
+                <span className="chip ok" title="إجابات صحيحة">
+                  <span aria-hidden="true">✓</span>
+                  <span className="tabular">{s.correct}</span>
                 </span>
-                <span className="chip no">
-                  <span className="tabular">{s.wrong}</span> غلط
+                <span className="chip no" title="إجابات خاطئة">
+                  <span aria-hidden="true">✗</span>
+                  <span className="tabular">{s.wrong}</span>
                 </span>
               </span>
             </div>
           ))}
         </div>
+      </div>
       </div>
 
       <button className="action" onClick={() => dispatch({ t: 'NEW_GAME' })}>
@@ -175,7 +185,23 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
       )}
 
       <style>{`
-        .end { overflow:auto; align-items:center; text-align:center; }
+        /* لا تمرير — الختام يُقرأ في لقطة واحدة كبقية الشاشات. */
+        .end { overflow:hidden; align-items:center; text-align:center; }
+
+        /* الكتل الثلاث صفّاً على العريض، وتنكسر إلى عمود على الضيّق.
+           align-items:start حتى لا يتمدّد الجدول القصير ليطاول الطويل. */
+        .es-grid {
+          width:100%; min-height:0; flex:0 1 auto;
+          display:grid; grid-template-columns:1fr;
+          gap:clamp(10px, 1.6vw, 26px);
+          align-items:start; justify-items:center;
+        }
+        /* الأعمدة الثلاثة غير متساوية عمداً: جدول اللاعبين أكثفها (اثنا عشر
+           سطراً في عمودين) فيأخذ الضعف، وجدول «الحق ما تلحق» سطران فيكفيه
+           أقلّها. بأثلاث متساوية كان سطر اللاعب ١٩٥px فيُقصّ الاسم. */
+        @media (min-width:900px) {
+          .es-grid { grid-template-columns:minmax(0,1fr) minmax(0,.78fr) minmax(0,1.55fr); }
+        }
         .brand img {
           width:min(56%, 420px); height:auto; max-height:14vh; object-fit:contain;
           animation:brand-in .7s var(--ease-spring) both;
@@ -186,8 +212,11 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         }
         .winner { display:flex; flex-direction:column; gap:6px; align-items:center; }
         .w-eyebrow { color:var(--text-2); font-weight:700; font-size:clamp(15px,2vw,20px); animation:rise .5s ease-out .18s both; }
+        /* أحجام الختام تأخذ أصغر نصيبَي العرض والارتفاع — نفس علّة .q-text:
+           بـvw وحده ينفخ الخط على شاشة عريضة ويدفع الجداول خارجها، والختام
+           أكثف الشاشات (حتى اثنا عشر لاعباً وأربعة أسطر مراحل). */
         .w-title {
-          color:var(--gold); font-weight:800; font-size:clamp(40px,8vw,84px); line-height:1.05;
+          color:var(--gold); font-weight:800; font-size:clamp(30px,min(6.4vw,7.4vh),84px); line-height:1.05;
           animation:winner-in .8s var(--ease-spring) .26s both;
           text-shadow:0 0 46px rgba(255,189,89,.42);
         }
@@ -198,10 +227,10 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
           100% { opacity:1; transform:none; filter:none; }
         }
         .final-score {
-          font-size:clamp(28px,4.4vw,44px); font-weight:800; color:var(--cream); margin-top:6px;
+          font-size:clamp(22px,min(3.6vw,4.2vh),44px); font-weight:800; color:var(--cream); margin-top:6px;
           animation:rise .5s ease-out .42s both;
         }
-        .best { color:var(--cream); font-size:clamp(17px,2.4vw,22px); animation:rise .5s ease-out .46s both; }
+        .best { color:var(--cream); font-size:clamp(13px,min(2vw,2.3vh),22px); animation:rise .5s ease-out .46s both; }
         @keyframes rise {
           from { opacity:0; transform:translateY(12px); }
           to   { opacity:1; transform:none; }
@@ -209,35 +238,52 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         .best b { color:var(--gold); }
 
         /* لا تمرير داخلي: الصفحة كلها تُمرَّر حتى لا يُقتطع لاعب من القائمة (حتى ١٢ لاعباً). */
-        .es-block { width:100%; max-width:680px; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }
-        .es-title { color:var(--text-2); font-weight:700; font-size:clamp(14px,1.8vw,17px); text-align:center; }
-        .es-table { display:flex; flex-direction:column; gap:6px; }
+        .es-block { width:100%; max-width:680px; min-width:0; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }
+        .es-title { color:var(--text-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7vh),17px); text-align:center; }
+        .es-table { display:flex; flex-direction:column; gap:6px; width:100%; }
+        /* من سبعة لاعبين فصاعداً ينقسم الجدول عمودين: اثنا عشر لاعباً في ستة
+           صفوف بدل اثني عشر — وهو أطول جدول في الشاشة. */
+        .es-table:has(.es-row.player:nth-child(7)) {
+          display:grid; grid-template-columns:1fr 1fr; gap:6px clamp(6px,.8vw,12px);
+        }
         .es-row {
           display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
           background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
           padding:clamp(9px,1.4vh,14px) clamp(12px,2vw,20px);
         }
-        .es-label { color:var(--text-2); font-size:clamp(14px,1.9vw,19px); font-weight:700; white-space:nowrap; }
+        .es-label { color:var(--text-2); font-size:clamp(11px,min(1.6vw,1.9vh),19px); font-weight:700; white-space:nowrap; line-height:1.35; }
         .es-label.strong { color:var(--cream); }
-        .es-num { font-size:clamp(19px,2.6vw,30px); font-weight:800; color:var(--text-2); }
+        .es-num { font-size:clamp(14px,min(2.1vw,2.5vh),30px); font-weight:800; color:var(--text-2); line-height:1.25; }
         /* الأعلى في المرحلة وحده ذهبي — الفرق يُقرأ بلمحة بلا مقارنة رقمين */
         .es-num.up { color:var(--gold); }
         .es-row.head { background:transparent; border-color:transparent; padding-bottom:0; }
-        .es-row.head span { color:var(--text-2); font-weight:700; font-size:clamp(13px,1.7vw,17px); }
+        .es-row.head span { color:var(--text-2); font-weight:700; font-size:clamp(10px,min(1.4vw,1.6vh),17px); }
         .es-row.total { border-color:var(--gold); background:transparent; }
-        .es-row.total .es-num { color:var(--gold); font-size:clamp(22px,3.2vw,36px); }
+        .es-row.total .es-num { color:var(--gold); font-size:clamp(16px,min(2.5vw,2.9vh),36px); }
 
         .es-row.s3, .es-row.player { grid-template-columns:1fr auto; }
-        .es-row.player { grid-template-columns:1fr auto auto; }
+        .es-row.player { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto; }
         .es-row.player { animation:rise .45s ease-out both; }
-        .sr-name { font-weight:800; text-align:right; font-size:clamp(15px,2vw,20px); }
-        .sr-team { color:var(--text-3); font-size:clamp(12px,1.5vw,14px); }
+        /* سطر واحد لكل لاعب: العمود ضيّق (نصف الكتلة) والأسماء تطول، فبلا
+           هذا يلتفّ السطر إلى ثلاثة ويصير الجدول أطول من الشاشة وحده. */
+        .sr-name {
+          font-weight:800; text-align:right; font-size:clamp(11px,min(1.5vw,1.8vh),20px);
+          min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.35;
+        }
+        /* اسم الفريق يتقلّص هو أيضاً — عمود auto لا يتنازل من تلقائه، فيدفع
+           السطر خارج الكتلة أفقياً على الشاشة الأضيق. */
+        .sr-team {
+          color:var(--text-3); font-size:clamp(9px,min(1.1vw,1.3vh),14px);
+          white-space:nowrap; line-height:1.35;
+          min-width:0; overflow:hidden; text-overflow:ellipsis;
+        }
 
-        .es-chips { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+        .es-chips { display:flex; gap:5px; flex-wrap:nowrap; justify-content:flex-end; }
         .chip {
-          display:inline-flex; align-items:center; gap:5px;
-          border:1px solid var(--border); border-radius:999px; padding:4px 12px;
-          color:var(--text-2); font-size:clamp(12px,1.6vw,15px); font-weight:700; white-space:nowrap;
+          display:inline-flex; align-items:center; gap:4px;
+          border:1px solid var(--border); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
+          color:var(--text-2); font-size:clamp(9px,min(1.2vw,1.4vh),15px); font-weight:700; white-space:nowrap;
+          line-height:1.4;
         }
         .chip .tabular { font-size:1.15em; font-weight:800; }
         .chip.ok { color:var(--gold); border-color:rgba(255,189,89,.45); }

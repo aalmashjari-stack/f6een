@@ -136,44 +136,41 @@ export function CategoryPicker({
       </div>
 
       <style>{`
-        .picker { flex:none; min-height:100%; display:flex; flex-direction:column; gap:clamp(18px,2.8vh,30px); }
+        .picker { flex:1; min-height:0; display:flex; flex-direction:column; gap:clamp(8px,1.6vh,20px); }
 
         /* الزر يحمل اسم التصنيف لحظة الاستقرار — وهي أهم لحظة في الشاشة,
            فلا يجوز أن يرثها بهتانُ الزر المعطَّل. */
         .action.landed:disabled { opacity:1; filter:none; box-shadow:var(--lift), var(--glow-gold); }
         .grid-wrap {
-          flex:none; min-height:auto; display:flex; align-items:flex-start; justify-content:center;
-          padding-block:clamp(10px,1.5vh,18px);
+          flex:1; min-height:0; display:flex; align-items:center; justify-content:center;
+          padding-block:clamp(4px,1vh,12px);
         }
 
         /* هذه الشاشة وحدها تتنازل عن جزء من هامشها الرأسي: البطاقات التسع
            تتنافس على ارتفاع واحد، وكل بكسل يعود إليها يكبّر الصورة ويقلّل قصّها. */
         .screen:has(.picker) {
-          padding-block:clamp(20px,3.4vh,36px);
-          overflow-y:auto;
-          scrollbar-gutter:stable;
+          padding-block:clamp(12px,2.4vh,28px);
+          overflow:hidden;
         }
 
+        /* الشبكة تملأ ما تركه لها الصفّ المرن (.grid-wrap) بالضبط: أعمدة وصفوف
+           متساوية بـ1fr، فلا ثابتَ بكسليٍّ يُخمَّن ولا فيضَ مهما تغيّر الارتفاع.
+           كانت --cw تُحسب بطرح ثابت (٤٣٦px) من 100vh — والثابت أصغر من الكروم
+           الفعلي، فيفيض الصف الأخير خلف الزر على شاشة ٧٢٠. الآن الارتفاع
+           مقيسٌ لا مُخمَّن، والعرض محدود بنسبة البطاقة فلا تتمدّد بشعاً. */
         .cat-grid {
-          /* ما فوق الشبكة وتحتها ثابت بالبكسل (الاسم والزر والشريط) ولا يتقلّص
-             مع الشاشة، فنسبة vh وحدها تقصّ الصف الأخير على الشاشات القصيرة.
-             الارتفاع المتبقّي يُقسم على صفّين ونصف: 2×cw هو ارتفاع صور ٣:٢ الثلاثة.
-             و max الخارجي أرضية نجاة: تحت ٤٣٦ بكسل ارتفاعاً كان الطرح يصير سالباً
-             فينهار عرض البطاقة إلى صفر وتختفي الشبكة كاملةً — لا تصغر بل تختفي.
-             ‏--rows (من JS = ceil(عدد الفئات ∕ ٤)) يجعل الحدّ الرأسي يتكيّف مع
-             عدد الصفوف: R صفوفٍ من صور ٣:٢ ارتفاعها (2R∕3)×cw، فالحدّ ×٣∕(٢R).
-             كان ثابتاً على ٣ صفوف، فيُقصّ صفٌّ رابع خلف الزر عند زيادة الفئات. */
           --cols: 4; --rows: 3;
-          /* عرض العمود محدود بثلاثة: عرض الشاشة مقسوماً على الأعمدة (فلا فيض
-             أفقي مهما كثرت)، وارتفاع صفوف الصور، وسقفٌ مطلق. */
-          --cw: max(64px, min(
-            calc(92vw / var(--cols)),
-            calc((100vh - 436px) * 3 / (2 * var(--rows))),
-            340px));
-          --gap:clamp(22px,1.6vw,36px);
+          --gap:clamp(10px,1.1vw,24px);
           display:grid;
-          grid-template-columns:repeat(var(--cols), var(--cw));
+          grid-template-columns:repeat(var(--cols), 1fr);
+          grid-template-rows:repeat(var(--rows), 1fr);
           gap:var(--gap);
+          /* الارتفاع هو المرجع والعرض يتبعه بالنسبة: البطاقة صورةٌ ٣:٢ وتحتها
+             شريط اسم، فنصيبها الرأسي ≈٢٫٤ مقابل ٣ عرضاً. وحين يضيق العرض
+             يغلب max-width فتتقلّص البطاقات بدل أن تفيض أفقياً. */
+          height:100%;
+          aspect-ratio:calc(var(--cols) * 3) / calc(var(--rows) * 2.4);
+          max-width:100%;
         }
 
         .cat {
@@ -189,9 +186,11 @@ export function CategoryPicker({
            الصبغ الساكن ليليّ خفيف يوحّد الصور مع بقية الشاشة. */
         .cat-img {
           display:block; width:100%;
-          /* المصدر مربّع، فكلّما اقترب الإطار من المربّع قلّ المقصوص منه:
-             ٣:٢ يُظهر ثلثي الصورة بدل نصفها، والمشهد يُقرأ لا زاويته وحدها. */
-          aspect-ratio:3/2;
+          /* تملأ ما بقي من البطاقة بعد شريط الاسم بدل أن تفرض ارتفاعاً بنسبة
+             ثابتة: الصفّ صار 1fr مقيساً، فلو بقيت aspect-ratio لتجاوز مجموعُ
+             البطاقات ارتفاعَ الشبكة وعاد الفيض من باب آخر. و cover يحفظ
+             تناسب الصورة ويقصّ الفائض كما كان. */
+          flex:1; min-height:0;
           --tint:linear-gradient(rgba(11,34,51,.16), rgba(11,34,51,.16));
           background-image:var(--tint), var(--art);
           background-size:cover, cover;
@@ -240,23 +239,20 @@ export function CategoryPicker({
         }
 
         /* على الجوال يُقلب الترتيب إلى ٣×٤: أربعة أعمدة على شاشة ضيّقة تجعل
-           البطاقة أصغر من أن تُقرأ صورتها. والصفوف تصير أربعة فيهبط سقف
-           الارتفاع من ٢٠vh إلى ١٥vh حتى لا يخرج الصف الأخير خلف الزر. */
+           البطاقة أصغر من أن تُقرأ صورتها. الأعمدة والصفوف وحدها تتبدّل،
+           والنسبة تتبعهما تلقائياً. */
+        /* ‏!important لأن الأعمدة والصفوف تُكتب inline من JS (تتبع عدد الفئات)،
+           والـinline يغلب الورقة مهما خصّصنا المحدّد. */
         @media (max-width:560px) {
-          .cat-grid { grid-template-columns:repeat(3, var(--cw)); --cw:max(64px, min(30vw, 15vh, 180px)); }
+          .cat-grid { --cols:3 !important; --rows:4 !important; }
         }
 
         /* جوال أفقي (~٣٥٠–٤٨٠ بكسل ارتفاعاً): ثلاثة صفوف لا تتّسع مهما صغرت
            البطاقة، فتُقلب الشبكة إلى ٦×٢ — الارتفاع هو الشحيح هنا لا العرض،
            والشاشة تملك عرضاً فائضاً يستوعب ستة أعمدة ببطاقة أكبر لا أصغر.
-           الحسبة: الصف = ثلثا العرض (صورة ٣:٢) + ٢٣ لشريط الاسم، وصفّان وفجوة
-           يتركان cw = ثلاثة أرباع ما تبقّى. و‏٢٢٤ هو الثابت فوق الشبكة وتحتها
-           (الشريط والعنوان والزر والهوامش) بعد أن ضمرت كلها في الاستعلام نفسه. */
+           صفّان بستّة أعمدة، والمقاس يتبع الارتفاع المقيس كما في الحالة العامة. */
         @media (max-height:480px) {
-          .cat-grid {
-            grid-template-columns:repeat(6, var(--cw));
-            --cw:max(56px, min(13vw, calc((100vh - 224px) * 0.75), 150px));
-          }
+          .cat-grid { --cols:6 !important; --rows:2 !important; }
           .picker { gap:clamp(6px,1.2vh,18px); }
           .screen:has(.picker) { padding-block:clamp(8px, 2vh, 28px); }
         }

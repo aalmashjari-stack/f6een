@@ -152,11 +152,11 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
       {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
           في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
       <div className="setup-body">
-        {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين. */}
+        {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين.
+            حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦: البطاقات الثلاث تقول
+            بنفسها إنها ثلاث جولات، والسطر يكرّر ما تحته ويكلّف ارتفاعاً
+            تحتاجه الشاشة القصيرة. */}
         <section className="setup-block">
-          <p className="stages-intro">
-            <span className="brand-inline">فطين</span> لعبة جماعية تتكوّن من ٣ جولات هي:
-          </p>
           <div className="stages">
             {STAGES.map((s, i) => (
               <article key={s.name} className="stage-card">
@@ -174,10 +174,10 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           </div>
         </section>
 
-        {/* فاصل بين الشرح والإعداد — يعلن أن ما تحته حقول تُملأ لا شرح يُقرأ. */}
+        {/* حقول الفريقين. حُذف عنوان «بيانات الفريقين المتنافسين» في ٢١ أغسطس
+            ٢٠٢٦: حقولٌ باسم فريق ولاعبين لا تحتاج عنواناً يسمّيها، وارتفاعه
+            أنفع للحقول نفسها. */}
         <section className="setup-block">
-          <h2 className="setup-rule"><span>بيانات الفريقين المتنافسين</span></h2>
-
           <div className="teams-grid">
             {[0, 1].map((ti) => {
               const team = ti as TeamId
@@ -241,7 +241,10 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
       </div>
 
       <style>{`
-        .setup { overflow:auto; }
+        /* التمرير مسموح هنا وحدها (قرار علي ٢١ أغسطس ٢٠٢٦) — والمقاسات مع ذلك
+           مضبوطة لتسع ٦+٦ لاعبين بلا تمرير في المقاسات الشائعة، فيبقى التمرير
+           شبكة أمان لا الوضع الطبيعي. */
+        .setup { overflow-y:auto; }
 
         /* الهيرو يبتلع حشوة .screen ليلامس حافّتي الشاشة وأعلاها،
            وينتهي بانحناء سفلي فيقرأ كمنصّة يقف عليها الشعار لا كشريط. */
@@ -255,7 +258,9 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
              فقط. والسقف يمنعها من ابتلاع الشاشة على العروض الضخمة. */
           --banner-ratio:2448 / 496;
           aspect-ratio:var(--banner-ratio);
-          max-height:400px;
+          /* السقف بالارتفاع لا بالبكسل وحده: نسبة الصورة على شاشة عريضة
+             تعطي شريطاً بارتفاع ٢٦٠px، وهو وحده ثلث لابتوب ٧٢٠. */
+          max-height:min(300px, 24vh);
           border-radius:0 0 clamp(34px,6vw,76px) clamp(34px,6vw,76px);
           overflow:hidden;
           /* يبقى احتياطاً لو تعذّر تحميل الصورة. */
@@ -321,13 +326,13 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
            الكبيرة فيتعب تتبّعه. والفراغ بين الكتل (--gap-block) أوسع من
            الفراغ داخلها (--gap-in) — هذا وحده ما يجعل الأقسام تُقرأ منفصلة. */
         .setup-body {
-          --gap-block: clamp(26px, 4.4vh, 52px);
-          --gap-in:    clamp(14px, 2vh, 22px);
+          --gap-block: clamp(10px, 2.6vh, 44px);
+          --gap-in:    clamp(8px, 1.4vh, 20px);
           flex:1; min-height:0;
           width:min(100%, 1140px); margin-inline:auto;
           /* فسحة تحت الشريط أوسع من فجوة .screen — المشهد صورة كاملة العرض،
              فيحتاج هواءً يفصله عن النصّ أكثر مما يحتاجه عنصر عاديّ. */
-          margin-top:clamp(12px, 2.8vh, 34px);
+          margin-top:clamp(8px, 1.8vh, 28px);
           display:flex; flex-direction:column;
           gap:var(--gap-block);
         }
@@ -335,14 +340,14 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         /* فصل بصري أوضح بين شرح المراحل وحقول الفرق: العنوان التالي لا
            يلتصق بظلال البطاقات، مع إبقاء الإيقاع الداخلي لكل قسم كما هو. */
         .setup-block + .setup-block {
-          margin-top:clamp(22px, 3.4vh, 44px);
+          margin-top:clamp(4px, 1.2vh, 30px);
         }
 
         /* كتلة الفعل عند الحافّة السفلى — تبتلع فراغ التابلت الطولي
            بدل أن تتركه معلّقاً تحتها. */
         .setup-foot {
           margin-top:auto; display:flex; flex-direction:column;
-          gap:clamp(10px, 1.5vh, 16px); padding-top:clamp(4px, 1vh, 10px);
+          gap:clamp(4px, .9vh, 16px); padding-top:clamp(2px, .6vh, 10px);
         }
 
         /* ─── سطر التقديم ──────────────────────────────────────────────── */
@@ -377,12 +382,17 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .setup-rule span { white-space:nowrap; }
 
         /* ─── بطاقات المراحل ──────────────────────────────────────────── */
-        .stages { display:grid; grid-template-columns:repeat(3, 1fr); gap:clamp(14px, 1.8vw, 22px); }
+        .stages { display:grid; grid-template-columns:repeat(3, 1fr); gap:clamp(10px, 1.4vw, 20px); }
+        /* الوضع الافتراضي مُدمَج — صفٌّ أفقي: الرقم فالاسم فالنقاط. البطاقة
+           العمودية الكاملة (بالوصف تحتها) تعود على الشاشات الطويلة وحدها
+           في آخر الملف. كان العكس — عموديّة دائماً وتنكمش تحت ٥٦٠px — فكانت
+           تأكل ٣١٢px على لابتوب ٧٢٠ وتدفع زر البدء خارج الشاشة. */
         .stage-card {
           position:relative; overflow:hidden;
-          display:flex; flex-direction:column; align-items:center; text-align:center;
-          gap:clamp(8px, 1.2vh, 13px);
-          padding:clamp(18px,2.8vh,28px) clamp(14px,1.6vw,20px);
+          display:flex; flex-direction:row; align-items:center; justify-content:center;
+          text-align:center;
+          gap:clamp(7px, 1vh, 12px);
+          padding:clamp(8px,1.4vh,16px) clamp(10px,1.2vw,16px);
           background:linear-gradient(165deg,
             color-mix(in srgb, var(--surface-2) 92%, transparent),
             color-mix(in srgb, var(--surface) 72%, transparent) 72%);
@@ -406,10 +416,10 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         /* رقم المرحلة قرص ذهبي — يرتّب المراحل الثلاث بلمحة قبل قراءة الاسم. */
         .stage-no {
           flex:none;
-          width:clamp(38px,5.2vh,48px); height:clamp(38px,5.2vh,48px);
+          width:clamp(26px,3.6vh,46px); height:clamp(26px,3.6vh,46px);
           border-radius:50%; display:grid; place-items:center;
           background:var(--grad-gold);
-          color:var(--on-gold); font-weight:800; font-size:clamp(18px,2.3vw,23px); line-height:1;
+          color:var(--on-gold); font-weight:800; font-size:clamp(14px,1.9vw,22px); line-height:1;
           box-shadow:0 6px 18px rgba(255,189,89,.26), inset 0 -2px 4px rgba(0,0,0,.12);
         }
         /* عمود حقيقي في كل المقاسات: يبتلع الارتفاع الفائض (flex:1) فيبقى
@@ -417,24 +427,29 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
            display:contents يؤدّي الغرض نفسه، لكنه يجعل للغلاف حالتَي تخطيط
            تتبدّلان مع الاستعلامات — وحين يتحقّق الاستعلامان معاً (جوال
            أفقي مثلاً) تنتج حالة ثالثة لم يقصدها أحد. */
+        /* في الوضع المُدمَج صفٌّ أفقي كالبطاقة نفسها، والوصف مخفيّ. */
         .stage-body {
-          display:flex; flex-direction:column; align-items:center; flex:1;
-          gap:clamp(8px, 1.2vh, 13px); min-width:0;
+          display:flex; flex-direction:row; align-items:center; flex:0 1 auto;
+          gap:clamp(7px, 1vh, 12px); min-width:0;
         }
-        .stage-name { margin:0; color:var(--gold); font-size:clamp(16px,2vw,21px); font-weight:800; }
-        .stage-desc { margin:0; color:var(--text-2); font-size:clamp(12.5px,1.45vw,15px); line-height:1.7; }
-        /* margin-top:auto يحاذي الشارات الثلاث في سطر واحد مهما اختلف طول الوصف. */
+        .stage-name { margin:0; color:var(--gold); font-size:clamp(13px,1.6vw,20px); font-weight:800; white-space:nowrap; }
+        /* الوصف سطرٌ يُقرأ مرّة ثم لا يُعاد إليه — أول ما يتنازل حين يشحّ
+           الارتفاع، ويعود كاملاً على الشاشة الطويلة. */
+        .stage-desc { display:none; margin:0; color:var(--text-2); font-size:clamp(12.5px,1.45vw,15px); line-height:1.6; }
+        .stage-tag { display:none; }
         .stage-points {
-          margin-top:auto; padding:6px 16px; border-radius:999px;
+          padding:4px 12px; border-radius:999px;
           border:1px solid rgba(255,189,89,.34); background:rgba(255,189,89,.08);
-          color:var(--cream); font-size:clamp(12px,1.35vw,14px); font-weight:700; white-space:nowrap;
+          color:var(--cream); font-size:clamp(11px,1.2vw,14px); font-weight:700; white-space:nowrap;
         }
 
         /* ─── بطاقتا الفريقين ─────────────────────────────────────────── */
         .teams-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px, 2.2vw, 28px); }
+        /* البطاقة تتقلّص مع عمودها بدل أن تفرض عرض محتواها على الشبكة. */
+        .team-card { min-width:0; }
         .team-card {
-          display:flex; flex-direction:column; gap:clamp(12px, 1.8vh, 18px);
-          padding:clamp(18px,2.8vh,30px) clamp(16px,2vw,26px);
+          display:flex; flex-direction:column; gap:clamp(6px, 1.1vh, 16px);
+          padding:clamp(10px,1.7vh,26px) clamp(12px,1.6vw,24px);
           background:linear-gradient(165deg,
             color-mix(in srgb, var(--surface-2) 94%, transparent),
             color-mix(in srgb, var(--surface) 80%, transparent) 68%);
@@ -447,26 +462,40 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
 
         /* شارة الترتيب — تسمّي البطاقة قبل أن يُكتب فيها اسم، فلا تبقى مجهولة. */
         .team-badge {
-          align-self:center; padding:5px 16px; border-radius:999px;
+          align-self:center; padding:clamp(1px,.35vh,5px) 14px; border-radius:999px;
           border:1px solid var(--border); background:rgba(15,44,66,.55);
-          color:var(--text-2); font-size:clamp(11px,1.2vw,13px); font-weight:700;
+          color:var(--text-2); font-size:clamp(10px,1.1vw,13px); font-weight:700; line-height:1.4;
           transition:color .3s ease, border-color .3s ease;
         }
         .team-card.starter .team-badge { color:var(--gold); border-color:rgba(255,189,89,.5); }
 
         .team-name {
           background:transparent; border:none; border-bottom:2px solid var(--border);
-          color:var(--gold); font-weight:800; font-size:clamp(19px,2.5vw,26px);
-          font-family:inherit; text-align:center; padding:10px 8px; outline:none;
+          color:var(--gold); font-weight:800; font-size:clamp(15px,1.9vw,24px);
+          font-family:inherit; text-align:center; padding:clamp(1px,.45vh,9px) 8px; outline:none;
+          line-height:1.35;
           transition:border-color .2s ease;
         }
         .team-name::placeholder { color:var(--text-3); font-weight:700; }
 
-        .players { display:flex; flex-direction:column; gap:clamp(9px, 1.3vh, 13px); }
+        .players { display:flex; flex-direction:column; gap:clamp(4px, .8vh, 11px); }
+        /* من خمسة لاعبين فصاعداً يقف الحقلان جنباً إلى جنب: ستة أسماء في
+           ثلاثة صفوف بدل ستة. البطاقة عريضة أصلاً (نصف الشاشة) والاسم قصير،
+           فالعرض متوفّر والارتفاع هو الشحيح. هذا يوفّر نصف ارتفاع القائمة
+           بلا أن يصغر حرفٌ واحد — والبديل كان ضغط الحقول حتى تتلاصق. */
+        .players:has(.player:nth-child(5)) {
+          display:grid; grid-template-columns:1fr 1fr;
+          gap:clamp(4px, .8vh, 11px) clamp(6px, .8vw, 12px);
+        }
+        /* الحشوة الرأسية هي ما يتنازل مع ستّة لاعبين — لا حجم الحرف: الاسم
+           يُقرأ عن بُعد، والفراغ حوله لا. */
         .player {
           background:rgba(15,44,66,.6); border:1px solid var(--border);
           border-radius:999px; color:var(--cream); font-family:inherit;
-          font-size:clamp(15px,1.6vw,17px); padding:13px 22px; outline:none; text-align:center;
+          font-size:clamp(13px,1.4vw,17px); padding:clamp(5px,.95vh,12px) 20px; outline:none; text-align:center;
+          /* بلا هذا لا يتقلّص عمود الشبكة تحت عرض النصّ الافتراضي (min-width
+             الضمني = auto)، فتتمدّد البطاقة وتخرج من الشاشة أفقياً. */
+          min-width:0;
           transition:border-color .2s ease, background .2s ease;
         }
         .player::placeholder { color:var(--text-3); }
@@ -475,14 +504,17 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
 
         /* خيط فاصل فوق العدّاد — يفصل ضبط العدد عن حقول الأسماء. */
         .counter {
-          display:flex; align-items:center; justify-content:center; gap:18px;
-          color:var(--text-2); font-weight:700;
-          padding-top:clamp(10px, 1.4vh, 15px);
+          display:flex; align-items:center; justify-content:center; gap:16px;
+          color:var(--text-2); font-weight:700; font-size:clamp(12px,1.3vw,16px);
+          padding-top:clamp(2px, .55vh, 13px);
           border-top:1px solid var(--border);
         }
         .pill {
-          width:42px; height:42px; border-radius:50%; border:1px solid var(--border);
-          background:rgba(15,44,66,.6); color:var(--cream); font-size:22px; cursor:pointer;
+          flex:none;
+          width:clamp(24px,3.4vh,40px); height:clamp(24px,3.4vh,40px);
+          border-radius:50%; border:1px solid var(--border);
+          background:rgba(15,44,66,.6); color:var(--cream);
+          font-size:clamp(16px,2.2vh,21px); cursor:pointer;
           transition:transform .15s var(--ease-spring), border-color .2s ease, color .2s ease;
         }
         @media (hover:hover) { .pill:not(:disabled):hover { border-color:var(--gold); color:var(--gold); } }
@@ -492,8 +524,8 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         /* ─── القرعة والأزرار ─────────────────────────────────────────── */
         /* الخانة تبقى محجوزة وإن كانت فارغة: نتيجة القرعة تحلّ محلّها لاحقاً،
            وبلا حجزها يقفز الزرّان تحتها لحظة ظهورها. */
-        .toss { text-align:center; min-height:38px; display:grid; place-items:center; }
-        .toss-result { font-size:clamp(18px,2.6vw,27px); font-weight:700; }
+        .toss { text-align:center; min-height:clamp(18px,2.8vh,38px); display:grid; place-items:center; }
+        .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
         .toss-result b { color:var(--gold); }
 
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
@@ -501,6 +533,11 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .setup-actions { display:flex; gap:clamp(10px, 1.4vw, 16px); }
         .setup-actions .action { flex:2; }
         .setup-actions .action.ghost { flex:1; }
+        /* الزر يتنازل عن سُمكه الرأسي مع ضيق الارتفاع ويبقى عريضاً سهل الإصابة. */
+        .setup-actions .action {
+          padding:clamp(9px,1.7vh,26px) 28px;
+          font-size:clamp(16px,2.2vw,28px);
+        }
 
         /* ─── الجوال ────────────────────────────────────────────────────
            البطاقات تصير صفوف قائمة: الرقم إلى جانب النص لا فوقه — أقصر
@@ -532,34 +569,56 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           .hero { aspect-ratio:auto; height:clamp(92px, 15vh, 120px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
-          .setup-body { --gap-block:clamp(11px,1.9vh,17px); --gap-in:clamp(8px,1.2vh,12px); margin-top:0; }
-          .setup-block + .setup-block { margin-top:clamp(10px,1.8vh,16px); }
+          .setup-body { --gap-block:clamp(6px,1.4vh,14px); --gap-in:clamp(5px,1vh,10px); margin-top:0; }
+          .setup-block + .setup-block { margin-top:clamp(5px,1.2vh,12px); }
 
-          .stages-intro { font-size:clamp(13px,1.5vw,15px); line-height:1.5; }
-          .setup-rule { font-size:clamp(14px,1.6vw,17px); }
-
-          /* البطاقة تنقلب صفّاً أفقياً: الرقم والاسم والنقاط في سطر واحد.
-             تحفظ الترتيب والقاعدة وتوفّر ثلثي ارتفاعها — والوصف وحده يسقط.
-             والغلاف يقلب اتجاهه معها، وإلا نزلت الشارة تحت الاسم فعاد
-             الارتفاع الذي وُفّر. */
-          .stage-card { flex-direction:row; align-items:center; justify-content:center; gap:10px; padding:10px 12px; }
-          .stage-body { flex-direction:row; align-items:center; flex:0 1 auto; gap:10px; }
-          .stage-desc { display:none; }
+          /* البطاقة أصلاً صفٌّ أفقي في الوضع الافتراضي، فلم يبقَ هنا إلا
+             شدّ المقاسات إلى أصغرها. */
+          .stage-card { padding:8px 10px; }
           .stage-no { width:28px; height:28px; font-size:15px; }
           .stage-name { font-size:clamp(14px,1.6vw,17px); }
           .stage-points { margin-top:0; padding:4px 12px; font-size:clamp(11px,1.2vw,12.5px); }
 
-          .team-card { padding:12px 14px; gap:9px; }
+          /* هذه القيم كانت أكبر من أرضيات الوضع الافتراضي بعد إعادة الضبط،
+             فكانت تنفخ الشاشة القصيرة بدل أن تشدّها — وهي مكتوبة صريحة
+             بالبكسل فتغلب الـclamp مهما صغرت أرضيته. */
+          .team-card { padding:8px 12px; gap:6px; }
           .team-badge { display:none; }
-          .team-name { font-size:clamp(17px,2vw,20px); padding:6px 8px; }
-          .players { gap:8px; }
-          .player { padding:9px 18px; font-size:15px; }
-          .counter { padding-top:8px; gap:14px; }
-          .pill { width:34px; height:34px; font-size:19px; }
+          .team-name { font-size:clamp(15px,1.8vw,19px); padding:2px 8px; line-height:1.3; }
+          .players { gap:5px; }
+          .player { padding:4px 14px; font-size:13px; line-height:1.35; }
+          .counter { padding-top:4px; gap:12px; font-size:12px; }
+          .pill { width:26px; height:26px; font-size:16px; }
 
-          .toss { min-height:26px; }
-          .toss-result { font-size:clamp(15px,2vw,20px); }
-          .setup-actions .action { padding:12px 24px; font-size:clamp(17px,2.2vw,21px); }
+          .toss { min-height:20px; }
+          .toss-result { font-size:clamp(14px,1.9vw,19px); }
+          .setup-actions .action { padding:8px 22px; font-size:clamp(15px,2vw,20px); }
+        }
+
+        /* ─── جوال أفقي (٤٨٠px ارتفاعاً فما دون) ────────────────────────
+           آخر ما يمكن التنازل عنه قبل الحشر: شرح المراحل الثلاث يسقط كاملاً.
+           هو نصٌّ يُقرأ مرّة قبل أول جلسة، والفاصل يعيد قاعدة كل مرحلة قبلها
+           على أي حال — بينما حقول اللاعبين وزر البدء لا بديل عنها. */
+        @media (max-height:480px) {
+          /* ثلاثة أعمدة: ستة أسماء في صفّين بدل ثلاثة. */
+          .players:has(.player:nth-child(5)) { grid-template-columns:repeat(3, 1fr); }
+        }
+
+        /* ─── الشاشة الطويلة (تلفزيون ١٠٨٠p وما فوق) ────────────────────
+           هنا وحدها يتّسع الارتفاع للبطاقة الكاملة: الرقم فوق الاسم، والوصف
+           تحته، والشارة في القاع. تعود الهيئة الغنيّة حيث تُقرأ من بُعد
+           المجلس بلا أن تدفع زر البدء خارج الشاشة. */
+        @media (min-height:900px) {
+          .stage-card {
+            flex-direction:column; align-items:center;
+            gap:clamp(8px,1.2vh,13px);
+            padding:clamp(18px,2.8vh,28px) clamp(14px,1.6vw,20px);
+          }
+          .stage-body { flex-direction:column; align-items:center; flex:1; gap:clamp(8px,1.2vh,13px); }
+          .stage-desc { display:block; }
+          .stage-name { white-space:normal; }
+          /* margin-top:auto يحاذي الشارات الثلاث في سطر واحد مهما اختلف طول الوصف. */
+          .stage-points { margin-top:auto; padding:6px 16px; }
         }
       `}</style>
     </div>
