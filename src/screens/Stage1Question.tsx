@@ -124,10 +124,6 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           flex:1 1 0; min-width:0; min-height:0;
         }
         .s1-question-body.photo .q-photo-wrap { height:100%; }
-        .s1-question-body.photo .q-photo {
-          flex:0 1 auto;
-          max-height:min(42vh,320px);
-        }
         .s1-question-body.photo .timer-stage {
           flex:0 0 clamp(150px,19vw,230px);
           align-self:center;

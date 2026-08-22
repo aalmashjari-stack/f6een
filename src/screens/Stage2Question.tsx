@@ -26,14 +26,19 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
 
       <RoundBar title="الديربي" chips={[state.currentCategory, 'متوسط', 'لا تشاور']} />
 
-      <div className="q-box grow center-all">
-        <QuestionView q={q} />
-      </div>
+      {/* في سؤال الصورة يتجاور السؤال والمؤقّت أفقياً كما في الجولة الجماعية:
+          الوجه هو السؤال، ومسار المؤقّت تحته كان يأكل مئة وستين بكسلاً فتُقصّ
+          الصورة والزرّ خارج الشاشة. سؤال النص يحتفظ بترتيبه الرأسي. */}
+      <div className={'s2-question-body' + (q.image ? ' photo' : '')}>
+        <div className="q-box grow center-all">
+          <QuestionView q={q} />
+        </div>
 
-      {/* مؤقّت الديربي داخل مسار مستقل: لا يشارك بطاقة السؤال ارتفاعها ولا
-          يُترك كعنصر حرّ بين أقسام الصفحة القابلة للتمرير. */}
-      <div className="s2-timer-stage">
-        <Timer remainingMs={left} totalMs={STAGE2_TIMER_MS} />
+        {/* مؤقّت الديربي داخل مسار مستقل: لا يشارك بطاقة السؤال ارتفاعها ولا
+            يُترك كعنصر حرّ بين أقسام الصفحة القابلة للتمرير. */}
+        <div className="s2-timer-stage">
+          <Timer remainingMs={left} totalMs={STAGE2_TIMER_MS} />
+        </div>
       </div>
 
       <div className="stack gap-s">
@@ -47,6 +52,20 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         .s2-versus { display:flex; align-items:center; justify-content:center; gap:clamp(12px,3vw,32px); }
         .s2-versus .p { font-size:clamp(20px,3vw,32px); font-weight:800; }
         .s2-versus .vs { color:var(--coral); font-weight:800; font-size:clamp(16px,2vw,22px); }
+        /* display:contents يحفظ تخطيط سؤال النص كما كان: البطاقة والمؤقّت
+           ابنان مباشران للشاشة. في سؤال الصورة وحده يصير الغلاف صفّاً. */
+        .s2-question-body { display:contents; }
+        .s2-question-body.photo {
+          display:flex; flex:1 1 0; min-height:0;
+          align-items:stretch; justify-content:center;
+          gap:clamp(22px,3vw,42px);
+        }
+        .s2-question-body.photo .s2-timer-stage {
+          flex:0 0 clamp(150px,19vw,230px);
+          align-self:center;
+          min-height:0;
+          padding-block:0;
+        }
         .s2-timer-stage {
           flex:none;
           min-height:clamp(132px,22vh,220px);

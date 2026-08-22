@@ -191,7 +191,9 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         /* الكتل الثلاث صفّاً على العريض، وتنكسر إلى عمود على الضيّق.
            align-items:start حتى لا يتمدّد الجدول القصير ليطاول الطويل. */
         .es-grid {
-          width:100%; min-height:0; flex:0 1 auto;
+          /* تأخذ ما تبقّى بعد الفائز والزرّ: بـ0 1 auto كانت تنكمش دون محتواها
+             فتفيض كتلُها من صندوقها وتركب على زرّ «لعبة جديدة». */
+          width:100%; min-height:0; flex:1 1 auto;
           display:grid; grid-template-columns:1fr;
           gap:clamp(10px, 1.6vw, 26px);
           align-items:start; justify-items:center;
@@ -210,13 +212,20 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
           from { opacity:0; transform:scale(.86) translateY(-10px); }
           to   { opacity:1; transform:none; }
         }
-        .winner { display:flex; flex-direction:column; gap:6px; align-items:center; }
-        .w-eyebrow { color:var(--text-2); font-weight:700; font-size:clamp(15px,2vw,20px); animation:rise .5s ease-out .18s both; }
+        .winner { display:flex; flex-direction:column; gap:6px; align-items:center; flex:none; }
+        .w-eyebrow {
+          color:var(--text-2); font-weight:700; line-height:1.2;
+          font-size:clamp(12px,min(1.6vw,2vh),18px);
+          animation:rise .5s ease-out .18s both;
+        }
         /* أحجام الختام تأخذ أصغر نصيبَي العرض والارتفاع — نفس علّة .q-text:
            بـvw وحده ينفخ الخط على شاشة عريضة ويدفع الجداول خارجها، والختام
            أكثف الشاشات (حتى اثنا عشر لاعباً وأربعة أسطر مراحل). */
+        /* اسم الفائز أكبر عنصر في الشاشة، لكنه يُقرأ لمحةً واحدة بينما الجداول
+           تحته تُقرأ وتُناقَش. سقفه هنا أقلّ من السابق (٦٤ بدل ٨٤) ونصيبه من
+           الارتفاع أقلّ (٦vh بدل ٧٫٤) — الفرق كلّه يذهب إلى الجداول. */
         .w-title {
-          color:var(--gold); font-weight:800; font-size:clamp(30px,min(6.4vw,7.4vh),84px); line-height:1.05;
+          color:var(--gold); font-weight:800; font-size:clamp(26px,min(5vw,6vh),64px); line-height:1.05;
           animation:winner-in .8s var(--ease-spring) .26s both;
           text-shadow:0 0 46px rgba(255,189,89,.42);
         }
@@ -227,7 +236,8 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
           100% { opacity:1; transform:none; filter:none; }
         }
         .final-score {
-          font-size:clamp(22px,min(3.6vw,4.2vh),44px); font-weight:800; color:var(--cream); margin-top:6px;
+          font-size:clamp(16px,min(2.6vw,3.2vh),34px); font-weight:800; color:var(--cream); margin-top:clamp(1px,.5vh,6px);
+          line-height:1.2;
           animation:rise .5s ease-out .42s both;
         }
         .best { color:var(--cream); font-size:clamp(13px,min(2vw,2.3vh),22px); animation:rise .5s ease-out .46s both; }

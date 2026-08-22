@@ -124,11 +124,17 @@ body .screen .timer-progress>span{display:block;height:100%;transition:width .12
 /* الارتفاع يتبع ارتفاع الشاشة لا عرضها: بـ20.3vw كان الشريط ٢٦٠px على
    لابتوب ١٢٨٠ — ثلث الشاشة لصورة تُنظر مرّة. و min-height هو ما كان يبطل
    سقفَ max-height في theme.css، فصار الاثنان محكومين بـvh. */
-body .screen.setup .hero{min-height:clamp(88px,17vh,300px);max-height:clamp(88px,17vh,300px);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:clamp(10px,2.4vw,58px);border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
+/* الشريط يأخذ ارتفاعه من نسبة البانر نفسها (aspect-ratio) فتظهر الصورة
+   كاملةً بلا قصّ — الإعداد يُمرَّر بإذن علي، فلا حاجة لضغط الشريط في
+   ارتفاعٍ ثابتٍ يقصّ نصفه. سقفٌ واسع يمنعه من ابتلاع شاشة ضخمة وحده. */
+body .screen.setup .hero{aspect-ratio:var(--banner-ratio);height:auto;min-height:0;max-height:min(400px,46vh);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:0;border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
 body .screen.setup .hero-scene{display:block}
-body .screen.setup .hero-scene img{filter:none;object-position:center 50%}
+body .screen.setup .hero-scene img{filter:none;object-fit:cover;object-position:center 50%}
 body .screen.setup .hero-scene::after{background:linear-gradient(90deg,rgba(255,249,239,.03) 0 52%,rgba(255,249,239,.52) 72%,rgba(255,249,239,.92) 100%)}
-body .screen.setup .hero-logo{grid-column:1;width:max-content;max-width:min(36%,430px);height:auto;max-height:74%;align-self:center;justify-self:start;margin-inline-start:clamp(8px,2vw,28px);padding:.22em .16em .12em;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none;filter:drop-shadow(0 10px 14px rgba(48,26,59,.18))}
+/* الشعار الآن داخل شريطٍ يعرض البانر كاملاً، فله مساحة أوسع: نصيبه من
+   العرض أكبر (٤٤٪) ومن ارتفاع الشريط أكبر (٨٤٪)، وأصغر النصيبين يحكمه
+   فلا يخرج حبره من الصندوق. */
+body .screen.setup .hero-logo{grid-column:1;width:max-content;max-width:min(44%,560px);height:auto;max-height:84%;font-size:clamp(38px,min(8.2vw,12vh),150px);align-self:center;justify-self:start;margin-inline-start:clamp(20px,3.4vw,64px);padding:.22em .16em .12em;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none;filter:drop-shadow(0 10px 14px rgba(48,26,59,.18))}
 body .screen.setup .hero-statement{grid-column:2;align-self:center;max-width:none;padding:0;gap:12px}
 body .screen.setup .hero-kicker{padding:5px 13px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(2deg)}
 body .screen.setup .hero-statement strong{color:var(--festival-ink);font-size:clamp(28px,4.2vw,58px);line-height:1.2}
@@ -299,21 +305,67 @@ body .screen .timer-stage,
 body .screen .s3-inner { gap:clamp(18px,2.8vh,30px); }
 body .screen .timer-stage { padding-block:clamp(8px,1.5vh,16px); }
 
-/* سؤال الصورة لا يجوز أن يعتمد على flex-basis:0 بعد اعتماد التمرير؛ وإلا
-   تنكمش البطاقة إلى سطر السؤال وتختفي الصورة. يأخذ هذا النوع ارتفاعاً حقيقياً
-   في المرحلتين الأولى والثانية، بينما تبقى الصورة نفسها بلا قصّ. */
-body .screen .q-box:has(.q-photo-wrap) {
-  flex:none;
-  min-height:clamp(300px,52vh,540px);
+/* سؤال الصورة — قاعدة واحدة لكل بطاقاته (الجولة الجماعية، الديربي، الحق ما
+   تلحق). كانت البطاقة flex:none بأرضية ٥٢vh والصورة بسقف ٤٦vh: أرقامٌ من
+   الشاشة لا من البطاقة، فمجموع الشاشة يتجاوز ارتفاعها ولا تمرير يُنقذه —
+   البطاقة تُقصّ في الديربي، وتركب على الإجابة في الحق ما تلحق.
+   الآن البطاقة تقتسم ما تبقّى (flex:1 1 0) والصورة تنكمش داخلها، فالفائض
+   مستحيلٌ هندسياً لا مضبوطٌ بمقاسٍ مخمَّن. */
+body .screen :is(.q-box,.s3-q):has(.q-photo-wrap) {
+  flex:1 1 0;
+  min-height:0;
   max-height:none;
+  display:flex;
+  /* stretch لا center: ابن البطاقة يرث ارتفاعها المحسوم فينتقل الضيق إلى
+     الصورة داخله. بـcenter يبقى ارتفاعه ارتفاعَ محتواه، فلا تنكمش الصورة
+     أبداً وتفيض على ما تحتها — وهذا بالضبط ما كان يحدث في الحق ما تلحق. */
+  align-items:stretch;
+  justify-content:center;
 }
-body .screen .q-box:has(.q-photo-wrap) .q-photo-wrap {
-  height:auto;
+body .screen :is(.q-box,.s3-q):has(.q-photo-wrap) .q-photo-wrap {
+  flex:1 1 auto;
+  height:100%;
   min-height:0;
 }
-body .screen .q-box:has(.q-photo-wrap) .q-photo {
-  flex:none;
-  max-height:min(46vh,360px);
+
+/* شاشة سؤال الصورة تتنازل عن هوائها قبل أن تتنازل عن الوجه: الصورة هي السؤال،
+   وإن نزلت تحت المئة بكسل لم يعد يُقرأ من آخر المجلس. الحشوة والفجوة هنا أضيق
+   من بقية الشاشات، وحشوة البطاقة أضيق ما تكون لأن للصورة إطارها الخاص أصلاً. */
+body .screen:not(.setup):not(.end):has(.q-photo-wrap) {
+  padding:clamp(14px,2.2vw,30px);
+  gap:clamp(10px,1.6vh,20px);
+}
+body .screen :is(.q-box,.s3-q):has(.q-photo-wrap) {
+  padding:clamp(10px,1.6vh,22px) clamp(14px,2.4vw,28px);
+}
+/* الأسطر التي تُقرأ مرّة واحدة (شرح الزرّ، «قرار الحكم»، قاعدة المبادرة في
+   الديربي) تذهب كاملةً على الشاشة القصيرة متى كان في الشاشة وجهٌ يُعرَّف —
+   حذفٌ لا تصغير، فالوجه هو ما لا يُقرأ إن صغر. «من أصاب؟» تبقى: هي السؤال
+   الموجَّه إلى الحكم لا شرحاً له. */
+@media (max-height:820px) {
+  body .screen:has(.q-photo-wrap) .action-note,
+  body .screen:has(.rv-photo) .judge-call,
+  body .screen:has(.reveal-photo) .eyebrow { display:none; }
+}
+/* صورة الكشف تُحذف كلها على الشاشة القصيرة. ما دون ستمئة وعشرين بكسلاً لا
+   يبقى لها بعد الإجابة وبطاقات التنقيط إلا عشرات البكسلات — وجهٌ بهذا الحجم
+   لا يُعرَّف، وقد رآه المجلس كبيراً في شاشة السؤال قبل ثوانٍ. الإجابة
+   والتنقيط هما ما يلزم هنا، وما تحرّر من مكانها يذهب إليهما. */
+@media (max-height:620px) {
+  body .screen .rv-photo,
+  body .screen .reveal-photo { display:none; }
+  /* والحق ما تلحق مثلها لحظة الكشف: الصورة والإجابة في بطاقة واحدة، فإن
+     ضاقت البطاقة ذهبت الصورة وبقيت الإجابة — والساعة لا تتوقف. */
+  body .screen .s3-q:has(.s3-answer) .q-photo { display:none; }
+}
+
+/* جوال أفقي في سؤال الصورة: رقائق السياق (التصنيف · المستوى · لا تشاور)
+   معلوماتٌ تُقرأ مرّة، والوجه لا يُقرأ أصلاً إن نزل تحت الخمسين. الرقائق تذهب
+   وأسماء المتبارزين تصغر — والباقي كله للوجه. */
+@media (max-height:480px) {
+  body .screen:has(.q-photo-wrap) .rd { display:none; }
+  body .screen:has(.q-photo-wrap) .s2-versus .p { font-size:clamp(15px,2.2vw,22px); }
+  body .screen:has(.q-photo-wrap) .s2-versus .vs { font-size:clamp(12px,1.6vw,16px); }
 }
 
 /* في الجولة الجماعية وحدها يتجاور سؤال الصورة والمؤقّت. يلغي هذا الغلافُ
@@ -324,10 +376,6 @@ body .screen .s1-question-body.photo .q-box.s1q-photo {
   max-height:none;
 }
 body .screen .s1-question-body.photo .q-photo-wrap { height:100%; }
-body .screen .s1-question-body.photo .q-photo {
-  flex:0 1 auto;
-  max-height:min(42vh,320px);
-}
 body .screen .rv-card,
 body .screen .reveal-a,
 body .screen .interval-card,
@@ -353,30 +401,41 @@ body .screen.end .winner { border-radius:clamp(22px,4vh,64px) 16px clamp(22px,4v
 /* جوال أفقي (٤٨٠px فما دون): لا يتّسع لثلاثة جداول مهما صغر الخط — عشرون
    بكسلاً لكل سطر لا تُقرأ أصلاً. هنا وحدها يعود التمرير، وهو أصدق من حشرٍ
    لا يُقرأ. الشاشة الوحيدة الأخرى التي تُمرَّر هي الإعداد بقرار علي. */
-@media (max-height:480px) {
+/* والنافذة الأضيق من ٩٠٠ مثلها: تحتها تنكسر الكتل الثلاث إلى عمود واحد
+   فيصير الختام ثلاثة أضعاف طوله، ولا مقاسَ خطٍّ يُنقذه — أربعة لاعبين وحدهم
+   يفيضون بمئتَي بكسل. التمرير هنا أصدق من جداول تركب على الزرّ. */
+@media (max-height:480px), (max-width:899px) {
   body .screen.end { overflow-y:auto; }
+  /* ومع التمرير تأخذ الجداول ارتفاعها الحقيقي: بـ1 1 auto كانت تنكمش إلى
+     صندوقٍ أقصر من كتلها فتفيض هذه فوق زرّ «لعبة جديدة» بدل أن تنزل تحته. */
+  body .screen.end .es-grid { flex:0 0 auto; }
 }
 
 /* شاشة الإعداد: الفراغ يتنفّس على الشاشة الطويلة وينكمش على القصيرة، فتبقى
    القرعة وزر البدء ظاهرَين مع ستة لاعبين لكل فريق. الأرضيات هنا صغيرة عمداً
    — هي التي تُستدعى على لابتوب ٧٢٠، وكانت ٣٨/٢٠/٣٠ فتفيض الشاشة بـ٧٧٨px. */
+/* الإعداد يُمرَّر، فالفراغ هنا يتنفّس بلا خوفٍ من الطيّة: مسافةٌ واضحة بين
+   الكتل (المراحل ← الفرق ← الأزرار) وأخرى داخلها. */
 body .screen.setup .setup-body {
-  --gap-block:clamp(6px,1.5vh,60px);
-  --gap-in:clamp(5px,1vh,28px);
+  --gap-block:clamp(22px,3.4vh,60px);
+  --gap-in:clamp(12px,1.8vh,28px);
 }
-body .screen.setup .setup-block + .setup-block { margin-top:clamp(3px,.8vh,48px); }
+/* البطاقة الوسطى في شرح المراحل مزاحة ١٤px إلى الأسفل (translateY) زينةً،
+   والإزاحة لا تحجز مكاناً في التخطيط — فبفجوةٍ أصغر منها تركب البطاقة
+   على بطاقتَي الفريقين. الأرضية هنا تحجز ما تحتاجه الإزاحة. */
+body .screen.setup .setup-block + .setup-block { margin-top:max(28px, clamp(3px,.8vh,48px)); }
 body .screen.setup .stages {
   width:min(94%,1060px);
   margin-inline:auto;
   gap:clamp(10px,1.5vw,40px);
 }
-body .screen.setup .teams-grid { gap:clamp(12px,2vw,48px); }
-body .screen.setup .team-card { gap:clamp(5px,1vh,26px); }
+body .screen.setup .teams-grid { gap:clamp(20px,2.6vw,48px); }
+body .screen.setup .team-card { gap:clamp(12px,1.6vh,26px); padding:clamp(14px,2vh,26px) clamp(14px,1.8vw,24px); }
 body .screen.setup .stages .stage-card {
   gap:clamp(6px,1vh,18px);
   padding:clamp(6px,1.1vh,22px) clamp(9px,1.2vw,18px);
 }
-body .screen.setup .players { gap:clamp(4px,.8vh,18px); }
+body .screen.setup .players { gap:clamp(10px,1.4vh,18px); }
 body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
 
 /* حتى الشاشات القصيرة تحتفظ بهواء واضح؛ التمرير يتكفّل بالباقي. */
@@ -386,10 +445,16 @@ body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
     gap:clamp(10px,1.9vh,17px);
   }
   body .screen.setup,
-  body .screen.end,
   body .screen:has(.picker) {
     padding:clamp(18px,3vw,34px);
     gap:clamp(18px,3vh,28px);
+  }
+  /* الختام مستثنى من هذا التوسيع: هو أكثف الشاشات، وكان يقفز هنا من حشوة ١٣
+     وفجوة ١٠ إلى ٢٧ و١٨ — ستّون بكسلاً من الهواء تدفع الجداول تحت زرّ «لعبة
+     جديدة» بلا تمرير يُنقذها. على القصير يضيق الختام لا يتّسع. */
+  body .screen.end {
+    padding:clamp(10px,1.8vh,20px) clamp(14px,2.4vw,28px);
+    gap:clamp(5px,1vh,12px);
   }
   body .screen .stack.gap-s { gap:clamp(9px,1.7vh,14px); }
   body .screen .s1-teams,
@@ -400,10 +465,5 @@ body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
   body .screen .s3-verdicts { gap:clamp(11px,1.8vw,20px); }
   body .screen .timer-stage,
   body .screen .s3-inner { gap:clamp(10px,1.8vh,17px); }
-  body .screen .q-box:has(.q-photo-wrap) {
-    min-height:clamp(230px,70vh,340px);
-  }
-  body .screen .q-box:has(.q-photo-wrap) .q-photo {
-    max-height:min(48vh,240px);
-  }
+  /* الصورة هنا تقتسم ارتفاعاً شحيحاً أصلاً؛ لا سقف إضافي — الحاوية هي السقف. */
 }

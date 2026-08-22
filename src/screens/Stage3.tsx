@@ -104,9 +104,21 @@ function Stage3Styles() {
           padding:clamp(22px,4vh,48px) clamp(28px,5vw,64px);
           box-shadow:var(--lift);
         }
-        .s3-inner { display:flex; flex-direction:column; gap:20px; align-items:center; }
-        /* أكبر من السؤال: الساعة لا تتوقف، والحكم يقرأ الإجابة في لمحة لا في قراءة. */
-        .s3-answer { font-size:clamp(30px,5vw,54px); font-weight:800; color:var(--gold); text-align:center; line-height:1.25; }
+        /* عمودٌ مرن لا صندوقٌ بارتفاع محتواه: في سؤال الصورة يجب أن ينتقل ضيقُ
+           البطاقة إلى الصورة فتنكمش — وإلا فاضت الصورةُ فوق الإجابة والزرّين. */
+        .s3-inner {
+          display:flex; flex-direction:column; gap:clamp(8px,2vh,20px);
+          align-items:center; justify-content:center;
+          flex:1 1 auto; min-height:0; width:100%;
+        }
+        /* أكبر من السؤال: الساعة لا تتوقف، والحكم يقرأ الإجابة في لمحة لا في قراءة.
+           وبأصغر النصيبين (عرضاً وارتفاعاً) كبقية خطوط اللعبة: بـvw وحده كان
+           السطر ٥٤px على شاشة عريضة قصيرة فيزاحم الصورة فوقه. */
+        .s3-answer {
+          flex:none;
+          font-size:clamp(20px,min(4.4vw,6.4vh),54px); font-weight:800; color:var(--gold);
+          text-align:center; line-height:1.25; overflow-wrap:anywhere;
+        }
         .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
         .s3-verdicts { display:flex; gap:14px; align-items:stretch; }
         .v { border:none; cursor:pointer; font-family:inherit; font-weight:800; border-radius:var(--r-lg); display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .08s ease; }

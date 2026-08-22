@@ -68,7 +68,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <style>{`
         /* ===== بطاقة الكشف: السؤال والإجابة معاً ===== */
         .rv-card {
-          position:relative; overflow:hidden; flex:none;
+          /* تنكمش مع الشاشة بدل أن تصمد بمقاس محتواها: في سؤال الصورة كانت
+             الصورةُ داخلها تدفع بطاقتَي «من أصاب؟» خارج الشاشة. */
+          position:relative; overflow:hidden; flex:0 1 auto; min-height:0;
           display:flex; flex-direction:column; align-items:center; justify-content:center;
           gap:clamp(8px,1.6vh,16px);
           padding:clamp(14px,3.2vh,36px) clamp(24px,5vw,64px);
