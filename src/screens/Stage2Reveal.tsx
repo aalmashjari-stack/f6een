@@ -4,6 +4,7 @@ import type { Mark, TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { play } from '../audio/sfx'
 import { questionSizeSuffix } from '../components/QuestionText'
+import { FitAnswer } from '../components/FitAnswer'
 import { celebSrc } from '../game/celebs'
 
 /**
@@ -40,7 +41,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       )}
       <div className="reveal-a">
         <span className="a-label">الإجابة</span>
-        <span className="a-text">{q.answer}</span>
+        <FitAnswer as="span" className="a-text">{q.answer}</FitAnswer>
       </div>
 
       <div className="eyebrow center">

@@ -6,6 +6,7 @@ import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
+import { FitAnswer } from '../components/FitAnswer'
 
 /**
  * الحق ما تلحق — الشاشة ٦. المؤقت مرجاني (العداء مع الوقت).
@@ -56,9 +57,9 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           <div className="s3-inner">
             <QuestionView q={q} />
             {state.s3Revealed && (
-              <p className="s3-answer">
+              <FitAnswer as="p" className="s3-answer" fitKey={q.answer}>
                 <span className="a-label">الإجابة:</span> {q.answer}
-              </p>
+              </FitAnswer>
             )}
           </div>
         ) : (

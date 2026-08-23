@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useRef } from 'react'
+import { useFitText } from './fitText'
 
 /**
  * نص السؤال — مقاسه يتبع طوله.
@@ -34,40 +35,14 @@ export function questionSizeSuffix(text: string): '' | ' long' | ' xlong' {
  * ثمانيةٌ وستّون حرفاً، دون العتبة، فيبقى بالمقاس الأكبر ويلتفّ سطرين يزحمان
  * المؤقّت تحته. فبعد أن يرسم المتصفّح النص نُصغّر الخط درجةً درجة حتى يسع
  * صندوقه عرضاً وارتفاعاً — فأيّ سؤال مهما طال يستقرّ داخل بطاقته لا فوقها.
+ * الآلية نفسها في fitText.ts، تخدم الإجابة أيضاً منذ دخلت الألغاز بجملها.
  *
  * تبقى فئات .long/.xlong مقاسَ البداية: تسعون بالمئة من الأسئلة قصيرةٌ تسعُ
  * صندوقها بلا قياس، فلا يمسّها هذا الحلقُ أصلاً.
  */
 export function QuestionText({ children }: { children: string }) {
   const ref = useRef<HTMLParagraphElement>(null)
-
-  useLayoutEffect(() => {
-    const el = ref.current
-    const box = el?.parentElement
-    if (!el || !box) return
-
-    const fit = () => {
-      el.style.fontSize = '' // العودة لمقاس CSS ثم الهبوط منه
-      const start = parseFloat(getComputedStyle(el).fontSize)
-      // فيضُ الصندوق نفسه هو المقياس لا ارتفاع الفقرة: حروف العربية بمدّاتها
-      // وتشكيلها تتجاوز صندوقَ سطرها فيكبر scrollHeight الفقرة على سطرٍ واحد
-      // ويُوهم بفيضٍ لا وجود له. أمّا فيض الصندوق (بحدّه المقصوص) فلا يقع إلا
-      // حين يتجاوز النصُّ سقفَ البطاقة فعلاً — عرضاً أو ارتفاعاً.
-      const overflows = () =>
-        box.scrollWidth > box.clientWidth + 1 || box.scrollHeight > box.clientHeight + 1
-      let size = start
-      const floor = start * 0.55 // أرضيةٌ تحفظ القراءة من آخر المجلس (القسم ١)
-      while (size > floor && overflows()) {
-        size -= 1
-        el.style.fontSize = size + 'px'
-      }
-    }
-
-    fit()
-    const ro = new ResizeObserver(fit)
-    ro.observe(box)
-    return () => ro.disconnect()
-  }, [children])
+  useFitText(ref, children)
 
   return (
     <p ref={ref} className={'q-text' + questionSizeSuffix(children)}>

@@ -111,7 +111,14 @@ export function CategoryPicker({
                 <span className="cat-index tabular">{String(i + 1).padStart(2, '0')}</span>
                 <span
                   className="cat-img"
-                  style={{ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties}
+                  // فئة بلا صورة بعد: نترك --art معطّلاً بدل url(undefined) — وإلا
+                  // طلب المتصفّح مساراً وهمياً وفشل. الصبغة فوق --surface تكفي
+                  // ريثما تصل الصورة، فتبقى البطاقة قابلة للّعب لا مكسورة.
+                  style={
+                    CATEGORY_ART[cat]
+                      ? ({ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties)
+                      : undefined
+                  }
                 />
                 <span className="cat-name">{cat}</span>
                 <span className="cat-status">{isSpent ? 'خرجت' : isLanded ? 'اختيرت' : 'متاحة'}</span>
@@ -192,6 +199,9 @@ export function CategoryPicker({
              تناسب الصورة ويقصّ الفائض كما كان. */
           flex:1; min-height:0;
           --tint:linear-gradient(rgba(11,34,51,.16), rgba(11,34,51,.16));
+          /* قيمة أوّلية تصمد لو لم تُمرَّر صورة: بدونها يصير var(--art) غير صالح
+             فيسقط الإعلان كلّه ومعه الصبغة، لا الصورة وحدها. */
+          --art:none;
           background-image:var(--tint), var(--art);
           background-size:cover, cover;
           background-position:center, center;

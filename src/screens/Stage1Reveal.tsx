@@ -4,6 +4,7 @@ import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { questionSizeSuffix } from '../components/QuestionText'
+import { FitAnswer } from '../components/FitAnswer'
 import { celebSrc } from '../game/celebs'
 
 /**
@@ -41,7 +42,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
         )}
         <span className="rv-rule" aria-hidden="true" />
-        <div className="rv-a">{q.answer}</div>
+        <FitAnswer className="rv-a">{q.answer}</FitAnswer>
       </div>
 
       <div className="eyebrow center">من أصاب؟</div>
