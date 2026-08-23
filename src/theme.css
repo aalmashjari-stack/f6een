@@ -323,6 +323,19 @@ body::after {
   flex: 1 1 auto; min-height: 0;
 }
 .q-prompt { flex: none; font-weight: 800; font-size: clamp(18px, 2.6vw, 28px); color: var(--cream); }
+/* بطاقة السؤال صفٌّ أفقي في كل الشاشات، فلو تُرك التلميح على حاله لحاذى المثل
+   بجواره: «أكمل المثل من جد وجد…» سطراً واحداً. :has يقلبها عموداً حين يوجد
+   التلميح وحده — وهو أخفّ من غلافٍ جديد يلفّهما، إذ الغلاف يصير أبَ .q-text
+   فيقيس QuestionText عليه بدل البطاقة ويفقد سقفَه. */
+:is(.q-box, .s3-q):has(.q-hint) { flex-direction: column; }
+/* تلميح المثل — أصغر من السطر السائل فوق الصورة وأخفت: ذاك سؤالٌ قائم بذاته،
+   وهذا إرشادٌ يخدم المثل تحته ولا ينافسه على النظر. */
+.q-hint {
+  flex: none; align-self: center;
+  font-weight: 700; font-size: clamp(11px, min(1.5vw, 2.2vh), 16px);
+  letter-spacing: .02em; color: var(--text-2);
+  margin-bottom: clamp(4px, .9vh, 10px);
+}
 /* الصورة تتقلّص داخل حاويتها (flex-shrink) فلا تفيض مهما ضاق الارتفاع، وسقفٌ
    بـ vh يمنعها أن تتضخّم على شاشةٍ طويلة. contain لأنّ الوجوه لا تُقصّ. */
 .q-photo {
