@@ -336,6 +336,11 @@ body::after {
   letter-spacing: .02em; color: var(--text-2);
   margin-bottom: clamp(4px, .9vh, 10px);
 }
+/* جوال أفقي: العمود مزدحم أصلاً قبل التلميح، فيُقلَّص إلى أضيق ما يبقى مقروءاً
+   حتى لا يزيد الزحام. الأرضيتان هنا دون أرضيتَي الأعلى عمداً. */
+@media (max-height: 520px) {
+  .q-hint { font-size: clamp(9px, 2vh, 13px); margin-bottom: 2px; }
+}
 /* الصورة تتقلّص داخل حاويتها (flex-shrink) فلا تفيض مهما ضاق الارتفاع، وسقفٌ
    بـ vh يمنعها أن تتضخّم على شاشةٍ طويلة. contain لأنّ الوجوه لا تُقصّ. */
 .q-photo {
