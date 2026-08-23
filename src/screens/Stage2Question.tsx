@@ -79,6 +79,20 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
           margin:0;
           max-height:none;
         }
+        /* شاشة قصيرة: العمود يطلب ٦٤٣ بكسلاً في ٦٠٠. كل عنصر يتنازل إلا مسار
+           المؤقّت — flex:none وأرضية ١٣٢ — فتقع الأربعون الزائدة على ما تحته
+           ويخرج الزرّ وسطرُه عن الشاشة. فليتنازل هو أيضاً. وصار هذا آمناً بعد
+           أن أخذ رقمُ المؤقّت يقيس نفسه على بطاقته (fitText في Timer.tsx):
+           تصغر البطاقة ويصغر معها فلا يخرج. وسؤال الصورة لا يمسّه هذا — قاعدته
+           أخصّ (‎.s2-question-body.photo‎) فتغلبه. */
+        @media (max-height:700px) {
+          .s2-timer-stage {
+            flex:0 1 auto;
+            min-height:0;
+            padding-block:clamp(4px,1vh,12px);
+          }
+          .screen .s2-timer-stage .ring-timer { flex:0 1 auto; max-height:100%; }
+        }
       `}</style>
     </div>
   )
