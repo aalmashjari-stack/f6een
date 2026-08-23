@@ -24,10 +24,19 @@ export function CategoryPicker({
   spent,
   onResult,
   eyebrow,
+  auto,
 }: {
   spent: string[]
   onResult: (category: string) => void
   eyebrow: React.ReactNode
+  /**
+   * تبدأ السحبةُ وحدها بلا ضغطة — الديربي وحده (قرار علي في ٢٤ أغسطس ٢٠٢٦).
+   * هناك يعود الحكم إلى الفئات بعد كل تنقيط، أربع مرّات أو أكثر في المرحلة،
+   * فالضغطة تتكرّر بلا أن تحمل قراراً: السحبةُ عشوائية والحكم لا يملك منها
+   * شيئاً. أمّا الجولة الجماعية فسحبةٌ واحدة لكل سؤال ويسبقها انتقالُ الدور
+   * بين الفريقين، فتبقى الضغطة فاصلاً يلتقط المجلسُ فيه أنفاسه.
+   */
+  auto?: boolean
 }) {
   const [cursor, setCursor] = useState<number | null>(null)
   const [landed, setLanded] = useState<string | null>(null)
@@ -76,6 +85,22 @@ export function CategoryPicker({
       }, elapsed),
     )
   }
+
+  /**
+   * السحبة التلقائية تتأخّر لحظةً بعد الرسم: لو انطلق الضوءُ مع ظهور الشبكة
+   * لبدا وكأن الشاشة سبقت المجلس، ولم يلحق أحدٌ أن يرى ما الفئات المتاحة قبل
+   * أن تُختار واحدة.
+   *
+   * ومؤقّتُها خارج timers وله تنظيفُه: تشغيل الأثر مرّتين في التطوير يمسح ما
+   * في timers بينهما، فلو كان فيها لَما بقي منه شيء ولم تبدأ السحبة أبداً.
+   * وبهذا التنظيف يحيا مؤقّتٌ واحد لا أكثر، ويحرس start نفسَه بـrunning.
+   */
+  useEffect(() => {
+    if (!auto || available.length === 0) return
+    const t = window.setTimeout(start, 700)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auto])
 
   return (
     <div className="picker">
@@ -134,11 +159,13 @@ export function CategoryPicker({
         <button
           className={'action compact' + (landed ? ' landed' : '')}
           onClick={start}
-          disabled={running || landed !== null || available.length === 0}
+          disabled={auto || running || landed !== null || available.length === 0}
         >
           {/* «ابدأ» في المرحلتين معاً: لفظ واحد لفعل واحد. الحكم يشغّل ثلاث مراحل،
-              واختلاف اللفظ بين شاشتين متطابقتين يجعله يتردّد قبل الضغط. */}
-          {landed ? landed : running ? '…' : 'ابدأ'}
+              واختلاف اللفظ بين شاشتين متطابقتين يجعله يتردّد قبل الضغط.
+              وفي الديربي لا فعل — الشريطُ يبقى مكانه ليحمل اسم الفئة لحظة
+              الاستقرار (أهمّ ما في الشاشة)، ولئلّا يقفز ما تحته حين يختفي. */}
+          {landed ? landed : running ? '…' : auto ? 'تُسحب الفئة…' : 'ابدأ'}
         </button>
       </div>
 

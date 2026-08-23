@@ -24,6 +24,7 @@ export function WheelScreen({ state, dispatch }: { state: GameState; dispatch: (
       <CategoryPicker
         spent={state.spentCategories}
         eyebrow={eyebrow}
+        auto={!isStage1}
         onResult={(category) => dispatch({ t: 'SPIN_DONE', category })}
       />
     </div>
