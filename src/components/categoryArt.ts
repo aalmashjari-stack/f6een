@@ -15,6 +15,7 @@ import kuwait from '../../assets/categories/kuwait.jpg'
 import cinemaDrama from '../../assets/categories/cinema-drama.jpg'
 import whoAmI from '../../assets/categories/who-am-i.jpg'
 import celebrities from '../../assets/categories/celebrities.jpg'
+import proverbsRiddles from '../../assets/categories/proverbs-riddles.jpg'
 
 /**
  * صورة كل تصنيف في لوحة التصنيفات — اختارها علي في ٥ أغسطس ٢٠٢٦.
@@ -35,4 +36,6 @@ export const CATEGORY_ART: Record<string, string> = {
   'سينما ودراما': cinemaDrama,
   'من أنا؟': whoAmI,
   'مشاهير': celebrities,
+  // أُضيفت في ٢٣ أغسطس ٢٠٢٦ مع فئة الأمثال والألغاز — ٣:٢ أصلاً فلا تُقصّ
+  'أمثال وألغاز': proverbsRiddles,
 }
