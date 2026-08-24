@@ -13,7 +13,7 @@ import { BrandLogo } from '../components/BrandLogo'
 // مشهد المجلس — عائلة أمام شاشة واحدة، وهي صورة اللعبة نفسها. نسبتها
 // ٤٫٩٤:١ فتملأ الشريط كاملةً بلا قصّ. JPEG لا PNG: رسمٌ بلا شفافية،
 // فحجمه الرُبع (القسم ١١ من SPEC).
-import bannerUrl from '../../assets/f6een-banner-tv.jpg'
+import bannerUrl from '../../assets/f6een-banner-festival.jpg'
 
 const MIN = 2
 const MAX = 6
