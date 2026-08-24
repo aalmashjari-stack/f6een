@@ -44,7 +44,7 @@ function TeamCapsule({ team, lead, turn }: { team: Team; lead: boolean; turn?: b
   return (
     <div className={'team team-' + team.id + (lead ? ' lead' : '') + (turn ? ' turn' : '') + (delta !== null ? ' bump' : '')}>
       <span className="team-copy">
-        <span className="team-kicker">{turn ? 'صاحب الدور' : `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`}</span>
+        <span className="team-kicker">الفريق {team.id === 0 ? 'الأول' : 'الثاني'}</span>
         <span className="name">{team.name}</span>
       </span>
       <span className="pts-disc">
