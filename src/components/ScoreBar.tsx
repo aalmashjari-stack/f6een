@@ -15,7 +15,7 @@ import { useCountUp } from './useCountUp'
 const RECENT_MS = 2500
 const memory = new Map<Team['id'], { score: number; t: number }>()
 
-function TeamCapsule({ team, lead }: { team: Team; lead: boolean }) {
+function TeamCapsule({ team, lead, turn }: { team: Team; lead: boolean; turn?: boolean }) {
   // يُحسب مرة واحدة عند البناء — قبل أن يكتب التأثير أدناه القيمة الجديدة.
   const [from] = useState(() => {
     const m = memory.get(team.id)
@@ -42,9 +42,9 @@ function TeamCapsule({ team, lead }: { team: Team; lead: boolean }) {
   }, [delta])
 
   return (
-    <div className={'team team-' + team.id + (lead ? ' lead' : '') + (delta !== null ? ' bump' : '')}>
+    <div className={'team team-' + team.id + (lead ? ' lead' : '') + (turn ? ' turn' : '') + (delta !== null ? ' bump' : '')}>
       <span className="team-copy">
-        <span className="team-kicker">الفريق {team.id === 0 ? 'الأول' : 'الثاني'}</span>
+        <span className="team-kicker">{turn ? 'صاحب الدور' : `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`}</span>
         <span className="name">{team.name}</span>
       </span>
       <span className="pts-disc">
@@ -59,16 +59,16 @@ function TeamCapsule({ team, lead }: { team: Team; lead: boolean }) {
   )
 }
 
-export function ScoreBar({ teams, label }: { teams: [Team, Team]; label?: string }) {
+export function ScoreBar({ teams, label, turnTeam }: { teams: [Team, Team]; label?: string; turnTeam?: 0 | 1 }) {
   const lead = leader(teams)
   return (
     <div className="scorebar">
-      <TeamCapsule team={teams[0]} lead={lead === 0} />
+      <TeamCapsule team={teams[0]} lead={lead === 0} turn={turnTeam === 0} />
       <div className="mid">
         <span className="mid-dot" aria-hidden="true" />
         <span>{label ?? 'فطين'}</span>
       </div>
-      <TeamCapsule team={teams[1]} lead={lead === 1} />
+      <TeamCapsule team={teams[1]} lead={lead === 1} turn={turnTeam === 1} />
     </div>
   )
 }

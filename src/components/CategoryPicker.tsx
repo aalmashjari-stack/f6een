@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CATEGORIES } from '../game/bank'
+import { CATEGORIES, displayName } from '../game/bank'
 import { CATEGORY_ART } from './categoryArt'
 import { play } from '../audio/sfx'
 
@@ -176,7 +176,7 @@ export function CategoryPicker({
                       : undefined
                   }
                 />
-                <span className="cat-name">{cat}</span>
+                <span className="cat-name">{displayName(cat)}</span>
                 <span className="cat-status">{isSpent ? 'خرجت' : isLanded ? 'اختيرت' : 'متاحة'}</span>
               </div>
             )
@@ -196,7 +196,7 @@ export function CategoryPicker({
               واختلاف اللفظ بين شاشتين متطابقتين يجعله يتردّد قبل الضغط.
               وفي الديربي لا فعل — الشريطُ يبقى مكانه ليحمل اسم الفئة لحظة
               الاستقرار (أهمّ ما في الشاشة)، ولئلّا يقفز ما تحته حين يختفي. */}
-          {landed ? landed : running ? '…' : auto ? 'تُسحب الفئة…' : 'ابدأ'}
+          {landed ? displayName(landed) : running ? '…' : auto ? 'تُسحب الفئة…' : 'ابدأ'}
         </button>
       </div>
 

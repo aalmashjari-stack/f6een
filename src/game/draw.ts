@@ -57,8 +57,12 @@ export function drawOne(
  * الطابور نفسه بلا تكرار قوالب: أسئلته تُعرض متتابعة في ثلاثين ثانية، فتشابه
  * صيغتين فيه أوضح ما يكون على المسامع.
  */
+const STAGE3_MAX_Q_LEN = 80
+
 export function drawStage3Queue(count: number, used: Set<string>): Question[] {
-  const pool = poolByLevels(['سهل', 'متوسط']).filter((q) => !used.has(q.id))
+  const pool = poolByLevels(['سهل', 'متوسط']).filter(
+    (q) => !used.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
+  )
   const queue: Question[] = []
   const seenFamilies = new Set<string>()
   const spare: Question[] = []

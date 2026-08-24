@@ -116,3 +116,20 @@ const familyById = new Map<string, string>()
 export function familyOf(q: Question): string | null {
   return familyById.get(q.id) ?? null
 }
+
+/* ========================= أسماء عرض مختصرة ========================= */
+const DISPLAY_NAMES: Record<string, string> = {
+  'جغرافيا ومعالم': 'جغرافيا',
+  'تاريخ وحضارات': 'تاريخ',
+  'دين وسيرة': 'إسلاميات',
+  'علوم واختراعات': 'علوم',
+  'طب وصحة': 'صحة',
+  'أدب وفنون': 'أدب',
+  'تقنية ومنوعات': 'تقنية',
+  'رياضة وأرقام': 'رياضة',
+  'سينما ودراما': 'سينما',
+}
+
+export function displayName(cat: string): string {
+  return DISPLAY_NAMES[cat] ?? cat
+}

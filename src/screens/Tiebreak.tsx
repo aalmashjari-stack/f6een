@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
-import { CATEGORIES } from '../game/bank'
+import { CATEGORIES, displayName } from '../game/bank'
 import { ScoreBar } from '../components/ScoreBar'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
@@ -28,7 +28,7 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
   return (
     <div className="screen">
       <ScoreBar teams={state.teams} label="فاصل التعادل" />
-      <RoundBar title="سؤال حاسم" chips={[state.currentCategory, 'صعب']} />
+      <RoundBar title="سؤال حاسم" chips={[state.currentCategory && displayName(state.currentCategory), 'صعب']} />
 
       <div className="q-box grow center-all">
         <div className="s3-inner">

@@ -8,11 +8,14 @@ import { RoundBar } from '../components/RoundBar'
 export function WheelScreen({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const isStage1 = state.phase === 'stage1-wheel'
 
+  const ownerIdx = isStage1
+    ? stage1Owner(state.s1Index, state.startingTeam)
+    : undefined
+
   const eyebrow = isStage1 ? (
     <RoundBar
       title="الجولة الجماعية"
       chips={[`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`, stage1Level(state.s1Index)]}
-      turn={`دور ${state.teams[stage1Owner(state.s1Index, state.startingTeam)].name}`}
     />
   ) : (
     <RoundBar title="الديربي" chips={[`جولة ${state.s2Index + 1} / ${state.s2Rounds}`, 'متوسط']} />
@@ -20,7 +23,7 @@ export function WheelScreen({ state, dispatch }: { state: GameState; dispatch: (
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} />
+      <ScoreBar teams={state.teams} turnTeam={ownerIdx} />
       <CategoryPicker
         spent={state.spentCategories}
         eyebrow={eyebrow}

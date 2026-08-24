@@ -8,6 +8,7 @@ import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
+import { displayName } from '../game/bank'
 
 type Step = 'consult' | 'rival'
 
@@ -29,7 +30,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
     <div className="screen">
       <ScoreBar teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} />
 
-      <RoundBar title="الجولة الجماعية" chips={[state.currentCategory, q.level]} />
+      <RoundBar title="الجولة الجماعية" chips={[state.currentCategory && displayName(state.currentCategory), q.level]} />
 
       {/* الفريقان ككبسولتين — صاحب الدور ذهبي ممتلئ، الآخر مفرّغ */}
       <div className="s1-teams">
