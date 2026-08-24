@@ -160,15 +160,38 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
           .mcard { padding:10px 8px; }
         }
 
+        /* الشاشة القصيرة كانت تدفع «الجولة التالية» خارجها: ٦٠٥ بكسلاً مطلوبة
+           في ٦٠٠ على 1024×600، و٥١٠ في ٣٩٠ على الجوال الأفقي. الصلبُ فيها
+           شيئان: أرضية بطاقتَي القرار (٢٠٥) وسطرُ قاعدة المبادرة. السطر يُقرأ
+           مرّة واحدة في أول جولة ثم يعرفه المجلس، فيذهب كاملاً — حذفٌ لا
+           تصغير — وتتنازل الأرضية معه. البطاقتان لا تنهاران: مقاسات ما فيهما
+           محسوبة أصلاً بـmin(vw,vh) فتضمر قبل أن تفيض. */
+        @media (max-height:700px) {
+          .s2-reveal-screen .eyebrow { display:none; }
+          .s2-reveal-screen .mark-cards { min-height:clamp(150px,26vh,205px); }
+        }
+
         /* المقاسات أعلاه تضمر مع الارتفاع، أمّا أرضياتها (١٠ للبطاقة و٨ للمربع)
            فبقيت ثابتة — وهي وحدها ما يفيض على ٣٢٠ بكسل، فيطفو اسم الفريق فوق
            حاشية البطاقة. */
         @media (max-height:480px) {
+          /* الجوال الأفقي: بعد أن ذهب سطرُ القاعدة وتنازلت أرضية البطاقتين
+             بقي ٢٨ بكسلاً زائدة، مصدرها الحشوة (١٤×٢) والفجوات (١٢×٤).
+             الفراغ أوّل ما يتنازل — قبل الحرف — فتنزل أرضيتاهما إلى سبعة. */
+          body .screen.s2-reveal-screen:not(.setup):not(.end) {
+            padding-block:clamp(4px,2vh,24px);
+            gap:clamp(6px,1.8vh,20px);
+          }
           .s2-reveal-screen .reveal-a {
             width:min(96%,960px);
-            padding-block:clamp(9px,2.4vh,16px);
+            padding-block:clamp(4px,1.2vh,16px);
           }
-          .s2-reveal-screen .mark-cards { min-height:190px; }
+          /* «الإجابة» عنوانٌ يُقرأ مرّة، والنصّ الكبير تحت السؤال لا يُشتبه
+             فيه. يذهب هنا وحده ليتّسع لإجابةٍ طويلة («أبو عبيدة عامر بن عبد
+             الله بن الجراح») والزرِّ تحتها — كانت تدفعه خارج الشاشة. */
+          .s2-reveal-screen .a-label { display:none; }
+          .s2-reveal-screen > .action { margin-top:0; }
+          .s2-reveal-screen .mark-cards { min-height:clamp(96px,24vh,190px); }
           .mcard { padding:clamp(6px,1.8vh,22px); gap:clamp(3px,1.2vh,14px); }
           .choice { padding:clamp(4px,1.5vh,18px) 6px; }
         }
