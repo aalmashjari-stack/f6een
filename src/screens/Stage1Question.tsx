@@ -28,7 +28,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} />
+      <ScoreBar teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} turnTeam={owner} />
 
       <RoundBar title="الجولة الجماعية" chips={[state.currentCategory && displayName(state.currentCategory), q.level]} />
 
