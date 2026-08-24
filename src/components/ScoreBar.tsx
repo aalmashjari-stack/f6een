@@ -41,10 +41,15 @@ function TeamCapsule({ team, lead, turn }: { team: Team; lead: boolean; turn?: b
     return () => window.clearTimeout(t)
   }, [delta])
 
+  const kicker = turn ? 'صاحب الدور' : `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`
+
   return (
     <div className={'team team-' + team.id + (lead ? ' lead' : '') + (turn ? ' turn' : '') + (delta !== null ? ' bump' : '')}>
+      {/* الكِكر يقول «صاحب الدور» حين يكون الدور له، وإلّا فترتيبُه. ويسقط
+          حين يطابق اسمَ الفريق — الاسم الافتراضي هو «الفريق الأول/الثاني»
+          نفسه، فيُكتب مرّتين في كبسولة واحدة بلا فائدة. */}
       <span className="team-copy">
-        <span className="team-kicker">الفريق {team.id === 0 ? 'الأول' : 'الثاني'}</span>
+        {kicker !== team.name && <span className="team-kicker">{kicker}</span>}
         <span className="name">{team.name}</span>
       </span>
       <span className="pts-disc">
