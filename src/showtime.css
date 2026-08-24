@@ -84,6 +84,9 @@ body .screen .scorebar .team-1 .team-copy{order:2} body .screen .scorebar .team-
 body .screen .scorebar .team.lead{border-color:var(--festival-orange);background:var(--festival-white);box-shadow:7px 8px 0 var(--festival-orange);transform:translateY(-3px) rotate(-1deg)}
 body .screen .scorebar .team-copy{min-width:0;display:flex;flex-direction:column;justify-content:center;line-height:1.12}
 body .screen .scorebar .team-kicker{color:var(--festival-purple);font-size:clamp(9px,1vw,12px)!important;font-weight:800}
+/* «صاحب الدور» بحبر الشريط لا بذهبه: الكبسولة صفراء حين يكون الدور لها،
+   والذهبيّ فوقها يذوب. والمحدّد أخصّ من قاعدة theme.css التي تلوّنه ذهباً. */
+body .screen .scorebar .team.turn .team-kicker{color:var(--festival-ink)}
 body .screen .scorebar .team .name,body .screen .scorebar .team.lead .name,body .screen .scorebar .team.lead .team-kicker{min-width:0;color:var(--festival-ink);font-size:clamp(16px,2vw,23px);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body .screen .scorebar .team .pts-disc{width:clamp(48px,6.4vh,66px);height:clamp(48px,6.4vh,66px);border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white)}
 body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{display:block;justify-self:center;align-self:center;max-width:100%;color:var(--festival-purple);font-size:clamp(24px,min(3.4vw,4.4vh),38px);line-height:1;text-align:center;direction:ltr;white-space:nowrap}
