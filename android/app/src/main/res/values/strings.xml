@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">فطين</string>
+    <string name="title_activity_main">فطين</string>
+    <string name="package_name">com.f6een.app</string>
+    <string name="custom_url_scheme">com.f6een.app</string>
+</resources>
