@@ -193,9 +193,16 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         .es-grid {
           /* تأخذ ما تبقّى بعد الفائز والزرّ: بـ0 1 auto كانت تنكمش دون محتواها
              فتفيض كتلُها من صندوقها وتركب على زرّ «لعبة جديدة». */
-          width:100%; min-height:0; flex:1 1 auto;
+          min-height:0; flex:1 1 auto;
+          /* قياسٌ مشترك مع بطاقة الفائز بدل الامتداد من حافّة إلى حافّة: على
+             شاشة ألفَي بكسل كانت الجداول تعبر ١٩٠٠ بكسلاً تحت بطاقةٍ عرضُها
+             ٧٦٠، فتُقرأ الشاشة كتلتين لا تجمعهما عين واحدة. */
+          width:min(100%, 1400px); margin-inline:auto;
           display:grid; grid-template-columns:1fr;
           gap:clamp(10px, 1.6vw, 26px);
+          /* الفائضُ الرأسي يُقسَم فوق الجداول وتحتها بدل أن يتكوّم كلّه فوق
+             زرّ «لعبة جديدة» — الكتل تعلو إلى وسط نصيبها فتقف الشاشة متّزنة. */
+          align-content:center;
           align-items:start; justify-items:center;
         }
         /* الأعمدة الثلاثة غير متساوية عمداً: جدول اللاعبين أكثفها (اثنا عشر
