@@ -54,16 +54,49 @@ export function CategoryPicker({
     const target = available[Math.floor(Math.random() * available.length)]
     const targetIdx = CATEGORIES.indexOf(target)
 
-    // الضوء يمرّ على المتاح فقط، ويتباطأ تدريجياً حتى يقف على الهدف.
+    // الضوء ينطّ على المتاح عشوائياً، ويتباطأ تدريجياً حتى يقف على الهدف.
     const availIdx = CATEGORIES.map((c, i) => (spent.includes(c) ? -1 : i)).filter((i) => i >= 0)
-    const startPos = Math.floor(Math.random() * availIdx.length)
-    const endPos = availIdx.indexOf(targetIdx)
-    const laps = 3
-    const steps = laps * availIdx.length + ((endPos - startPos + availIdx.length) % availIdx.length)
+    const laps = 2
+    const steps = laps * availIdx.length
+
+    /**
+     * مدّة السحبة مطبَّعة لا محسوبة من مجموع القفزات.
+     *
+     * كانت كل قفزة تأخذ زمنها الخاص فيتضاعف المجموع مع عدد الفئات: عشرٌ وسبعة
+     * أعشار الثانية والشبكة كاملة، واثنتان وستّة أعشار حين لا يبقى إلا ثلاث.
+     * فالسحبة الأولى ثقيلة والأخيرة خاطفة — وفي الديربي تتكرّر أربع مرّات أو
+     * أكثر. قُلّصت وقُرّبت في ٢٤ أغسطس ٢٠٢٦ بطلب علي.
+     *
+     * الوزن يحمل شكلَ التباطؤ (تكعيبي، من واحد إلى أربعة عشر كما كان)، ثم
+     * تُقسَم المدّةُ على مجموع الأوزان — فيبقى إحساسُ العجلة الواقفة ويتحرّر
+     * الزمنُ من عدد القفزات. والحدّان يمنعان الخطف حين تقلّ الفئات والثقل
+     * حين تكتمل.
+     */
+    const weight = (s: number) => 1 + 13 * Math.pow(s / steps, 3)
+    let totalWeight = 0
+    for (let s = 0; s <= steps; s++) totalWeight += weight(s)
+    const spinMs = Math.min(2800, Math.max(1400, 90 * steps))
+
+    /**
+     * الضوء ينطّ عشوائياً لا يمشي بالترتيب (طلب علي في ٢٤ أغسطس ٢٠٢٦): المشي
+     * المرتّب يكشف الهدفَ قبل بلوغه — من رأى الضوء يتباطأ عرف أين سيقف من
+     * بطاقتين أو ثلاث. والنطّ يُبقي الجواب مجهولاً حتى آخر قفزة.
+     *
+     * قيدان يحفظان أن تُرى كلُّ قفزة: لا تكرار للبطاقة السابقة وإلا بدا الضوء
+     * واقفاً، ولا يمسّ الهدفَ في القفزة قبل الأخيرة وإلا بدت اللحظة الحاسمة
+     * سكوناً لا استقراراً.
+     */
+    const pick = (prev: number, isLast: boolean) => {
+      if (availIdx.length === 1) return availIdx[0]
+      const pool = availIdx.filter((i) => i !== prev && !(isLast && i === targetIdx))
+      return pool.length ? pool[Math.floor(Math.random() * pool.length)] : availIdx[0]
+    }
 
     let elapsed = 0
+    let prev = -1
     for (let s = 0; s <= steps; s++) {
-      const idx = availIdx[(startPos + s) % availIdx.length]
+      const idx = s === steps ? targetIdx : pick(prev, s === steps - 1)
+      prev = idx
       // نقرة مع كل قفزة — تتباطأ مع الضوء نفسه، فيُسمع اقتراب السحبة من الاستقرار
       timers.current.push(
         window.setTimeout(() => {
@@ -71,9 +104,7 @@ export function CategoryPicker({
           play('pickStep')
         }, elapsed),
       )
-      // تباطؤ تدريجي: الخطوة تطول كلما اقتربنا من النهاية
-      const p = s / steps
-      elapsed += 48 + 620 * p * p * p
+      elapsed += (weight(s) / totalWeight) * spinMs
     }
 
     timers.current.push(
