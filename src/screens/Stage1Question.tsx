@@ -121,10 +121,13 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           align-items:stretch; justify-content:center;
           gap:clamp(22px,3vw,42px);
         }
+        /* القيمتان تُعادان في showtime.css بأولوية أعلى — وهناك شرحُ لماذا
+           تحتضن البطاقةُ الصورةَ بدل أن تتمدّد. تبقيان هنا متطابقتين معها
+           كي لا يضلّ من قرأ الملف وحده. */
         .s1-question-body.photo .q-box.s1q-photo {
-          flex:1 1 0; min-width:0; min-height:0;
+          flex:0 1 auto; min-width:0; min-height:0;
         }
-        .s1-question-body.photo .q-photo-wrap { height:100%; }
+        .s1-question-body.photo .q-photo-wrap { height:100%; width:auto; min-width:0; }
         .s1-question-body.photo .timer-stage {
           flex:0 0 clamp(150px,19vw,230px);
           align-self:center;

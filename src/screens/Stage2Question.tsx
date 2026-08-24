@@ -61,6 +61,15 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
           align-items:stretch; justify-content:center;
           gap:clamp(22px,3vw,42px);
         }
+        /* البطاقة تحتضن الصورة بدل أن تتمدّد على المسار كلّه. بـflex:1 1 0
+           كانت تأخذ ١٠٠٨ بكسلاً لصورة عرضها ٤٤٠ — صندوقٌ أبيض ثلثاه فراغ،
+           والمؤقّت منفيٌّ عند الحافة اليسرى في عمودٍ لا يخصّه. الآن يُقرأ
+           الاثنان كتلةً واحدةً في وسط الشاشة. (الصور كلّها مربّعة — تحقّقتُ
+           من الـ٢٢٣ — فلا تتمدّد البطاقة على صورةٍ عريضة، وmax-width يحرسها
+           إن دخلت واحدة.) */
+        body .screen .s2-question-body.photo .q-box { flex:0 1 auto; min-width:0; }
+        body .screen .s2-question-body.photo .q-photo-wrap { width:auto; min-width:0; }
+
         .s2-question-body.photo .s2-timer-stage {
           flex:0 0 clamp(150px,19vw,230px);
           align-self:center;

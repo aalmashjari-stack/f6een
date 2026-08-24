@@ -71,6 +71,22 @@
 body{background:var(--festival-paper);color:var(--festival-ink)}
 body::before{inset:0;transform:none;background:radial-gradient(circle at 8% 17%,rgba(255,102,71,.16) 0 8%,transparent 8.2%),radial-gradient(circle at 91% 84%,rgba(139,215,172,.24) 0 11%,transparent 11.2%),linear-gradient(122deg,transparent 0 47%,rgba(109,52,119,.035) 47.2% 52%,transparent 52.2%),var(--festival-paper);animation:none}
 body::after{inset:0;transform:none;background-image:radial-gradient(rgba(48,26,59,.12) .8px,transparent .8px);background-size:18px 18px;opacity:.34;-webkit-mask-image:none;mask-image:none}
+/* ─── حدود الشاشة الآمنة ────────────────────────────────────────────────
+   ‏index.html يضع viewport-fit=cover فيمتدّ الويب‑ڤيو إلى حافة الجهاز
+   الفيزيائية — وهذا مقصود: الورقة تملأ الشاشة بلا أشرطة سوداء. لكن أعلاها
+   يمرّ تحت ساعة النظام، فكانت الساعة تدهس زرّ «الصوت» في الإعداد وطرفَ
+   شريط النتيجة في كل شاشة أخرى. الإزاحة على ‎#root‎ لا على كل شاشة: صفحةٌ
+   واحدة تنزل فينزل ما فيها، ولا تتكرّر القاعدة اثنتي عشرة مرّة.
+   على الويب هذه الدوالّ أصفار، فلا يتغيّر في الموقع بكسل واحد.
+   والأربعة معاً لا الأعلى وحده: التطبيق مقفول أفقياً، وفي هذا الوضع تصير
+   أذن الآيفون يميناً أو يساراً وشريطُ المنزل أسفل. */
+#root{
+  padding-top:env(safe-area-inset-top);
+  padding-right:env(safe-area-inset-right);
+  padding-bottom:env(safe-area-inset-bottom);
+  padding-left:env(safe-area-inset-left);
+}
+
 body .screen{isolation:isolate;color:var(--festival-ink)}
 body .screen:not(.setup)::before,body .screen:not(.setup)::after{top:12px;width:64px;height:16px;opacity:1;border:2px solid var(--festival-ink);transform:rotate(-4deg)}
 body .screen:not(.setup)::before{right:18px;background:var(--festival-yellow)}
@@ -374,11 +390,15 @@ body .screen :is(.q-box,.s3-q):has(.q-photo-wrap) {
 /* في الجولة الجماعية وحدها يتجاور سؤال الصورة والمؤقّت. يلغي هذا الغلافُ
    الأرضية العامة للبطاقة المصوّرة، لأن ارتفاع الصف نفسه صار هو الحدّ الآمن. */
 body .screen .s1-question-body.photo .q-box.s1q-photo {
-  flex:1 1 0;
+  /* تحتضن الصورة ولا تتمدّد على المسار: بـflex:1 1 0 كانت البطاقة ١٠٠٨ بكسلاً
+     لصورة عرضها ٤٤٨ — صندوقٌ أبيض ثلثاه فراغ، والمؤقّت منفيٌّ عند الحافة
+     اليسرى. الصورة لا تكبر بذلك (ارتفاعُ الصفّ هو ما يحدّها) لكن الاثنين
+     يُقرآن كتلةً واحدةً في وسط الشاشة. نظيرتها في Stage2Question.tsx. */
+  flex:0 1 auto;
   min-height:0;
   max-height:none;
 }
-body .screen .s1-question-body.photo .q-photo-wrap { height:100%; }
+body .screen .s1-question-body.photo .q-photo-wrap { height:100%; width:auto; min-width:0; }
 body .screen .rv-card,
 body .screen .reveal-a,
 body .screen .interval-card,
