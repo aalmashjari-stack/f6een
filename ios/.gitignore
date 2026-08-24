@@ -11,3 +11,6 @@ capacitor-cordova-ios-plugins
 # Generated Config files
 App/App/capacitor.config.json
 App/App/config.xml
+
+# نسخ زائدة تخلّفها مزامنة مكرّرة — الأصل config.xml مُتجاهَل أعلاه
+App/App/config [0-9].xml
