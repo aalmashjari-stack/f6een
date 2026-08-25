@@ -19,10 +19,20 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
     <div className="screen">
       <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
+      {/* اسم الفريق فوق اسم المتبارز — كما في شاشة الكشف تماماً. بدونه يقرأ
+          المجلس «لاعب ٢ ضد لاعب ٢» ولا يعرف من يمثّل من: الاسم الافتراضي
+          مبنيّ على ترتيب اللاعب داخل فريقه، فمتبارزان في نفس الترتيب يحملان
+          نفس الاسم. ويقع الالتباس نفسه بأسماء حقيقية متشابهة. */}
       <div className="s2-versus">
-        <span className="p right">{nameOf(0)}</span>
+        <span className="p right">
+          <i className="who">{state.teams[0].name}</i>
+          <b>{nameOf(0)}</b>
+        </span>
         <span className="vs">ضد</span>
-        <span className="p left">{nameOf(1)}</span>
+        <span className="p left">
+          <i className="who">{state.teams[1].name}</i>
+          <b>{nameOf(1)}</b>
+        </span>
       </div>
 
       <RoundBar title="الديربي" chips={[state.currentCategory && displayName(state.currentCategory), 'متوسط', 'لا تشاور']} />
@@ -51,7 +61,16 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
 
       <style>{`
         .s2-versus { display:flex; align-items:center; justify-content:center; gap:clamp(12px,3vw,32px); }
-        .s2-versus .p { font-size:clamp(20px,3vw,32px); font-weight:800; }
+        .s2-versus .p {
+          font-size:clamp(20px,3vw,32px); font-weight:800;
+          display:flex; flex-direction:column; align-items:center;
+          line-height:1.12; min-width:0;
+        }
+        .s2-versus .p b { font-weight:800; }
+        .s2-versus .who {
+          font-size:clamp(11px,min(1.5vw,1.9vh),16px);
+          font-weight:700; font-style:normal; opacity:.82;
+        }
         .s2-versus .vs { color:var(--coral); font-weight:800; font-size:clamp(16px,2vw,22px); }
         /* display:contents يحفظ تخطيط سؤال النص كما كان: البطاقة والمؤقّت
            ابنان مباشران للشاشة. في سؤال الصورة وحده يصير الغلاف صفّاً. */
@@ -95,6 +114,20 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
            أن أخذ رقمُ المؤقّت يقيس نفسه على بطاقته (fitText في Timer.tsx):
            تصغر البطاقة ويصغر معها فلا يخرج. وسؤال الصورة لا يمسّه هذا — قاعدته
            أخصّ (‎.s2-question-body.photo‎) فتغلبه. */
+        /* الجوال الأفقي: الشاشة ٣٩٠ ممتلئة تماماً، ولا يبقى للسؤال إلا ١٥٤ —
+           يأكل السطرُ السائل «من صاحب الصورة؟» أربعين منها، أكثر من نصف الوجه
+           (٧٦). والوجه هو السؤال: إن لم يُعرَف لم يُجَب. السطر يصغر ولا يُحذف
+           لأنه السؤال نفسه لا تلميحاً عليه — وهذا ضبطُ الجولة الجماعية نفسه
+           (Stage1Question.tsx) لم يكن قد وصل الديربي. */
+        @media (max-height:480px) {
+          body .screen:has(.q-photo-wrap) .q-prompt {
+            font-size:clamp(14px,4vh,18px);
+            line-height:1.2;
+          }
+          body .screen:has(.q-photo-wrap) .s2-question-body.photo .q-box { padding-block:4px; }
+          body .screen:has(.q-photo-wrap) .q-photo-wrap { gap:3px; }
+        }
+
         @media (max-height:700px) {
           .s2-timer-stage {
             flex:0 1 auto;
