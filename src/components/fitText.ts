@@ -22,8 +22,20 @@ export function useFitText(ref: RefObject<HTMLElement | null>, dep: string) {
     const fit = () => {
       el.style.fontSize = '' // العودة لمقاس CSS ثم الهبوط منه
       const start = parseFloat(getComputedStyle(el).fontSize)
-      const overflows = () =>
-        box.scrollWidth > box.clientWidth + 1 || box.scrollHeight > box.clientHeight + 1
+      /**
+       * الهامش: المدّات والتشكيل تفيض عن صندوق السطر بكسرٍ من ارتفاعه — سؤالٌ
+       * من سطر واحد بمقاس ٢٥ يعطي scrollHeight ٤٢ في صندوقٍ ارتفاعه ٣٨.
+       * قياسُ الأب بدل الفقرة يكفي حين يكون للأب حدٌّ حقيقي (بطاقة السؤال في
+       * الجولة الجماعية والديربي)، ويخذل حين يحتضن الأبُ نصَّه: هناك يساوي
+       * ارتفاعُه ارتفاعَ السطر فيرث الوهم نفسه — وهذا ما كان يحدث في الحق ما
+       * تلحق، فيهبط كلُّ سؤال إلى أرضية الـ٥٥٪ بلا سبب.
+       * الفيض الحقيقي سطرٌ كامل على الأقل (١.٥ من المقاس)، وفيض الحروف دونه
+       * بكثير — فثلث المقاس يفصل بينهما بأمان.
+       */
+      const overflows = () => {
+        const slack = Math.max(1, size * 0.35)
+        return box.scrollWidth > box.clientWidth + slack || box.scrollHeight > box.clientHeight + slack
+      }
       let size = start
       const floor = start * 0.55 // أرضيةٌ تحفظ القراءة من آخر المجلس (القسم ١)
       while (size > floor && overflows()) {
