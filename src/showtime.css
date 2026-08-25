@@ -510,4 +510,13 @@ body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
     padding-block:clamp(8px,2vh,16px);
   }
   body .screen .stack.gap-s { gap:clamp(6px,1.4vh,11px); }
+  /* شريطا الزينة (::before و::after) يقفان عند top:12 بعرض ٦٤ — وعلى الجوال
+     الأفقي يبدأ شريطُ النتيجة عند الثامنة، فيمرّ اللاصق فوق اسم الفريق
+     ويقصّه بصرياً. الزينة تتنازل قبل المحتوى: تذهب هنا وحدها. */
+  body .screen:not(.setup)::before,
+  body .screen:not(.setup)::after { display:none; }
+  /* ولاصقُ بطاقة السؤال يبرز ثلاثة عشر بكسلاً فوق حافّتها، والفجوة هنا سبعة
+     — فيقع على ما فوقه. يذهب هو أيضاً، وتبقى علامة «؟» فهي داخل البطاقة. */
+  body .screen .q-box::before,
+  body .screen .s3-q::before { display:none; }
 }

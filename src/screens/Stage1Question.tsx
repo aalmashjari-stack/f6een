@@ -57,8 +57,16 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
             totalMs={inConsult ? STAGE1_CONSULT_MS : STAGE1_RIVAL_MS}
             size={q.image ? 'md' : 'lg'}
           />
+          {/* حالةٌ وقاعدة في سطر واحد: «مهلة فلان» تتبدّل مع اللعب فتُقرأ في كل
+              سؤال، و«بلا تكرار إجابة فلان» قاعدةٌ تُقرأ مرّة. على الجوال الأفقي
+              يلتفّ السطر سطرين فيسرق ارتفاع المؤقّت — يُسحق إلى ثلاثة وعشرين
+              بكسلاً ورقمُه أربعةٌ وثلاثون، فيفيض عن بطاقته ويصطدم بالشريط.
+              فتذهب القاعدة وحدها هناك وتبقى الحالة. */}
           {!inConsult && (
-            <div className="rival-hint">مهلة {rivalTeam.name} — بلا تكرار إجابة {ownerTeam.name}</div>
+            <div className="rival-hint">
+              مهلة {rivalTeam.name}
+              <span className="rival-rule"> — بلا تكرار إجابة {ownerTeam.name}</span>
+            </div>
           )}
         </div>
       </div>
@@ -172,7 +180,9 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
            فيفيض الرقم فوق بطاقة السؤال والزر — انظر تعليق الحلقة في Timer.tsx. */
         @media (max-height:480px) {
           .timer-stage { min-height:clamp(46px, 17vh, 120px); gap:6px; }
-          .rival-hint { font-size:clamp(12px,1.6vw,19px); padding:5px 16px; }
+          /* المؤقّت لا يتنازل عن ارتفاعه لغيره: رقمه مقيسٌ على بطاقته، فإن
+             سُحبت من تحته فاض الرقم عنها. */
+          body .screen .timer-stage .ring-timer { flex:none; }
           /* كبسولتا الفريقين والسطر التفسيري يتنازلان لصالح السؤال والمؤقّت:
              هما معرّفان بالمكان (يمين/يسار) لا بالحجم، فتصغيرهما لا يُفقد شيئاً. */
           .s1-teams { gap:8px; }
@@ -188,6 +198,17 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           font-size:clamp(14px,1.8vw,19px);
           padding:9px 22px; border-radius:999px;
           border:2px solid var(--coral);
+        }
+        /* بعد القاعدة الأساسية عمداً: هي بنفس الأولوية وكانت تغلب هذه بالترتيب
+           وحده. القاعدة («بلا تكرار إجابة فلان») تُقرأ مرّة فتذهب، ويبقى السطر
+           سطراً واحداً ضيّقاً — وما يُوفَّر يعود إلى المؤقّت فوقه. */
+        @media (max-height:480px) {
+          .rival-hint {
+            font-size:clamp(12px,1.6vw,16px);
+            padding:4px 14px;
+            white-space:nowrap;
+          }
+          .rival-hint .rival-rule { display:none; }
         }
       `}</style>
     </div>

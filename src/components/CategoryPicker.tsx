@@ -320,7 +320,34 @@ export function CategoryPicker({
            والشاشة تملك عرضاً فائضاً يستوعب ستة أعمدة ببطاقة أكبر لا أصغر.
            صفّان بستّة أعمدة، والمقاس يتبع الارتفاع المقيس كما في الحالة العامة. */
         @media (max-height:480px) {
-          .cat-grid { --cols:6 !important; --rows:2 !important; }
+          /* كانت ٦×٢ = اثنتا عشرة خليّة، والفئات أربع عشرة — فتتدلّى بطاقتان
+             في صفٍّ ضمنيّ خارج الشبكة المقيسة. الآن تُثبَّت الأعمدة وحدها
+             وتتولّد الصفوف ضمنياً بارتفاعٍ متساوٍ، فتصحّ مهما تغيّر العدد.
+             وتسقط aspect-ratio معها: مرجعها عدد الصفوف، ولم يعد ثابتاً. */
+          .cat-grid {
+            --cols:7 !important;
+            grid-template-rows:none;
+            grid-auto-rows:1fr;
+            aspect-ratio:auto;
+            width:100%;
+          }
+          /* البطاقة هنا ثلاثةٌ وأربعون بكسلاً: صدرُها للصورة ينكمش إلى بكسلين
+             — فلا صورة أصلاً — والرقاقتان المطلقتان (الرقم و«متاحة») تركبان
+             على الاسم فتُقرأ «مشاهير» «مش». فتصير البطاقة شارةً نصّية: الاسم
+             وحده في وسطها. وحالة «خرجت» يحملها الشحوب والرمادي كما هي. */
+          body .screen .cat-img,
+          body .screen .cat-status,
+          body .screen .cat-index { display:none; }
+          body .screen .cat {
+            grid-template-rows:1fr;
+            place-items:center;
+            padding-inline:2px;
+          }
+          body .screen .cat-name {
+            grid-row:1;
+            padding:0;
+            font-size:clamp(11px,1.5vw,15px);
+          }
           .picker { gap:clamp(6px,1.2vh,18px); }
           .screen:has(.picker) { padding-block:clamp(8px, 2vh, 28px); }
         }
