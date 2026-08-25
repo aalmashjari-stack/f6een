@@ -45,8 +45,10 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         <FitAnswer className="rv-a">{q.answer}</FitAnswer>
       </div>
 
+      {/* حُذف شريط «قرار الحكم» في ٢٥ أغسطس ٢٠٢٦ بقرار علي: «مسوية زحمة
+          عالفاضي». وهو كذلك — «من أصاب؟» فوقه يوجّه السؤال إلى الحكم،
+          والبطاقتان تحته هما القرار نفسه. */}
       <div className="eyebrow center">من أصاب؟</div>
-      <div className="judge-call">قرار الحكم</div>
 
       <div className="pick-cards grow">
         {picks.map(({ role, team, outcome }) => (
