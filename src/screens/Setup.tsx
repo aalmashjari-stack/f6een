@@ -73,6 +73,11 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
 
+  /* لا تبدأ اللعبة باسم مستعار: كل حقل — الفريقان وكل لاعب — مكتوب (قرار علي
+     ٢٦ أغسطس ٢٠٢٦). الأسماء البديلة تبقى للعرض قبل الكتابة لا للّعب بها. */
+  const namesReady =
+    names.every((n) => n.trim()) && players.every((team) => team.every((p) => p.trim()))
+
   function setPlayer(team: TeamId, i: number, v: string) {
     setPlayers((p) => {
       const copy: [string[], string[]] = [[...p[0]], [...p[1]]]
@@ -115,7 +120,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   }
 
   function start() {
-    if (starter === null) return
+    if (starter === null || !namesReady) return
     onStart({
       teamNames: [teamLabel(0), teamLabel(1)],
       players: [
@@ -220,12 +225,15 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             لا سطران يطفوان في الفراغ. */}
         <div className="setup-foot">
           <div className="toss">
-            {starter !== null ? (
+            {tossing ? (
+              <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
+            ) : !namesReady ? (
+              /* بلا هذا السطر يبقى الزرّ رمادياً بلا سبب ظاهر، فيظنّه الحكم عطلاً. */
+              <div className="toss-result missing">اكتب أسماء الفريقين واللاعبين</div>
+            ) : starter !== null ? (
               <div className="toss-result">
                 يبدأ: <b>{teamLabel(starter)}</b>
               </div>
-            ) : tossing ? (
-              <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
             ) : null}
           </div>
 
@@ -233,7 +241,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             <button className="action ghost" onClick={toss} disabled={tossing}>
               {starter !== null ? 'إعادة القرعة' : 'قرعة البدء'}
             </button>
-            <button className="action" disabled={starter === null} onClick={start}>
+            <button className="action" disabled={starter === null || !namesReady} onClick={start}>
               ابدأ اللعبة
             </button>
           </div>
@@ -527,6 +535,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .toss { text-align:center; min-height:clamp(18px,2.8vh,38px); display:grid; place-items:center; }
         .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
         .toss-result b { color:var(--gold); }
+        .toss-result.missing { color:var(--text-2); font-weight:700; }
 
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
            فيبقى الفعل الأساسي هو الأكبر، والقرعة إلى جانبه لا فوقه. */
