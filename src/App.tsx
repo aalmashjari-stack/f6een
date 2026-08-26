@@ -1,7 +1,9 @@
-import { useEffect, useReducer } from 'react'
+import { useCallback, useEffect, useReducer, useState } from 'react'
 import type { GameState } from './game/session'
 import { persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
+import { Splash } from './screens/Splash'
+import { Intro } from './screens/Intro'
 import { Setup } from './screens/Setup'
 import { WheelScreen } from './screens/WheelScreen'
 import { Stage1Question } from './screens/Stage1Question'
@@ -66,8 +68,17 @@ function saveSession(state: GameState | null) {
   }
 }
 
+/* مراحل الإقلاع قبل اللعبة: الشعار ثم التعريف ثم الإعداد.
+   الاستئناف يقفز فوق التعريف — من انقطعت جلسته يريد أن يكمل لا أن يُعاد
+   تعليمه القواعد، والشعار وحده يبقى فيراه في كل تشغيل. */
+type Boot = 'splash' | 'intro' | 'ready'
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, null, loadSession)
+  const [boot, setBoot] = useState<Boot>('splash')
+
+  const leaveSplash = useCallback(() => setBoot(state ? 'ready' : 'intro'), [state])
+  const leaveIntro = useCallback(() => setBoot('ready'), [])
 
   useEffect(() => {
     saveSession(state)
@@ -79,6 +90,9 @@ export default function App() {
   useEffect(() => {
     if (used) persistUsedIds(used)
   }, [used])
+
+  if (boot === 'splash') return <Splash onDone={leaveSplash} />
+  if (boot === 'intro') return <Intro onDone={leaveIntro} />
 
   if (!state) return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
 

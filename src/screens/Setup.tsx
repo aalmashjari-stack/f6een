@@ -1,13 +1,7 @@
 import { useState } from 'react'
 import type { SetupInput } from '../game/session'
-import {
-  STAGE1_POINTS,
-  STAGE2_CORRECT,
-  STAGE2_WRONG,
-  STAGE3_POINTS,
-  STAGE3_TIMER_MS,
-} from '../game/session'
 import type { TeamId } from '../game/types'
+import { STAGES } from '../game/stages'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 // مشهد المجلس — عائلة أمام شاشة واحدة، وهي صورة اللعبة نفسها. نسبتها
@@ -25,28 +19,6 @@ const ar = (n: number) => String(n).replace(/\d/g, (d) => AR_DIGITS[+d])
 /** ترتيب الفريق: شارةً فوق بطاقته دائماً، واسماً بديلاً إن تُرك حقل الاسم فارغاً. */
 const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
 
-/* شرح مختصر للمراحل الثلاث — نصّه من SPEC القسمين ٤–٦، وأرقامه من ثوابت
-   المحرّك لا مكتوبة بيد. هذه الشاشة تُعلّم القواعد، فلو تغيّر تنقيط مرحلة
-   في session.ts وبقي الشرح ثابتاً لعلّمت الشاشة قاعدة لا يطبّقها المحرّك.
-   العلامة LRM قبل الإشارة صريحة (‎) لا حرفاً خفيّاً: بدونها تنقلب
-   «+٢٠» إلى «٢٠+» داخل فقرة عربية. */
-const STAGES = [
-  {
-    name: 'الجولة الجماعية',
-    desc: 'الفريقان يتشاوران معاً، وصاحب الدور يجيب',
-    points: `${ar(STAGE1_POINTS)} نقاط`,
-  },
-  {
-    name: 'الديربي',
-    desc: 'لاعب ضدّ لاعب بلا تشاور — الأسبق وحده يربح أو يخسر',
-    points: `‎+${ar(STAGE2_CORRECT)} / −${ar(Math.abs(STAGE2_WRONG))}`,
-  },
-  {
-    name: 'الحق ما تلحق',
-    desc: `كل فريق وحده، ${ar(STAGE3_TIMER_MS / 1000)} ثانية لا تتوقّف`,
-    points: `‎+${ar(STAGE3_POINTS)} لكل إجابة`,
-  },
-] as const
 
 /* نسيج الخلفية يعيش في `body::after` بـ theme.css فيشمل كل الشاشات.
    تكراره هنا كان يضاعفه تحت الشعار ويزحمه. */
