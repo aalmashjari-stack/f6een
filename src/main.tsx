@@ -4,6 +4,7 @@ import './fonts/cairo.css'
 import './fonts/brand.css'
 import './theme.css'
 import './showtime.css'
+import './skins/neo.css'
 import App from './App'
 
 createRoot(document.getElementById('root')!).render(

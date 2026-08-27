@@ -52,7 +52,13 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
       <div className="pick-cards grow">
         {picks.map(({ role, team, outcome }) => (
-          <button key={outcome} className="pick" onClick={() => dispatch({ t: 'S1_SCORE', outcome })}>
+          /* ‏team-{id} لا ترتيبَ الظهور: البطاقتان مرتّبتان بصاحب الدور أوّلاً
+             والدور يتناوب، فأي تلوين بـnth-child يقلب لون الفريقين كل سؤال. */
+          <button
+            key={outcome}
+            className={'pick team-' + team}
+            onClick={() => dispatch({ t: 'S1_SCORE', outcome })}
+          >
             <span className="pk-role">{role}</span>
             <span className="pk-name">{state.teams[team].name}</span>
             <span className="pk-delta">

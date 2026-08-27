@@ -43,8 +43,12 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
       const avail = slot.clientWidth * 0.94
       const w = probe.offsetWidth // قياس فعلي بنفس الخط والوزن — لا تقدير
       if (!avail || !w) return
-      // نفس قيمة clamp في CSS أدناه؛ تُحسب هنا لأن قراءة المقاس بعد تطبيقه تُنتج حلقة.
-      const base = Math.min(68, Math.max(30, window.innerWidth * 0.06))
+      /* الحجم المثاليّ يُقرأ من المسبار لا يُعاد حسابه هنا. الحلقة التي كان
+         يُخشى منها تقع لو قرأنا حجم الاسم *بعد* أن نكتبه؛ أمّا المسبار فحجمه
+         من CSS ولا نكتب فيه شيئاً. وبهذا تصير الصيغة في مكان واحد: من غيّر
+         حجم الأسماء في CSS — ومنها هويّة نيو — تبعه القياس تلقائياً. */
+      const base = parseFloat(getComputedStyle(probe).fontSize)
+      if (!base) return
       // حدّ أدنى للقراءة من آخر المجلس — دونه يتكفّل الالتفاف في CSS بالباقي.
       setFontPx(w > avail ? Math.max(18, (base * avail) / w) : base)
     }
@@ -139,7 +143,12 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         .vs-slot {
           position:relative;
           flex:1 1 0; min-width:0; display:flex; justify-content:center;
-          overflow:hidden; padding:.18em 0;
+          overflow:hidden;
+          /* الحشو يتبع حجم الاسم لا الحجم الموروث: القيمة السابقة .18em كانت
+             تُحسب على خطّ الجسم (~١٦px) فتخرج ثلاث بكسلات تحت اسمٍ ارتفاعه
+             تسعون، فيبتر الاقتصاصُ ذيلَ الحاء والجيم. والاقتصاص نفسه لازم
+             لبكرة الأسماء الهابطة، فيُوسَّع الحشو ولا يُلغى هو. */
+          padding-block:calc(var(--vs-size, 68px) * .22);
         }
 
         .vs-probe {

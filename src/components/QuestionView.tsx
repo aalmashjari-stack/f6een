@@ -1,6 +1,7 @@
 import type { Question } from '../game/types'
 import { celebSrc } from '../game/celebs'
 import { QuestionText } from './QuestionText'
+import { ZoomablePhoto } from './ZoomablePhoto'
 
 /**
  * مواضيع «أمثال وألغاز» التي تُعرض صدرَ المثل وحده — «من جد وجد…» — فالمطلوب
@@ -23,7 +24,7 @@ export function QuestionView({ q }: { q: Question }) {
     return (
       <div className="q-photo-wrap">
         <div className="q-prompt">من صاحب الصورة؟</div>
-        <img className="q-photo" src={celebSrc(q.image)} alt="" />
+        <ZoomablePhoto className="q-photo" src={celebSrc(q.image)} />
       </div>
     )
   }

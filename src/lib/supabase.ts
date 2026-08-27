@@ -28,8 +28,12 @@ export const supabase = createClient(url, key, {
        ولا يُطالَب بتسجيل دخول جديد كلّما فتحها. */
     persistSession: true,
     autoRefreshToken: true,
-    /* لا قراءة للجلسة من عنوان الصفحة: التطبيق يعمل داخل WKWebView بمخطّط
-       capacitor://، ولا يعود من إعادة توجيه OAuth عبر شريط العنوان. */
-    detectSessionInUrl: false,
+    /* **لازمة للويب.** دخول غوغل يغادر الصفحة ويرجع بـ`?code=` في العنوان،
+       وهذه هي التي تلتقطه وتبادله بجلسة. أطفأتُها أوّلاً ظنّاً أنّ Capacitor
+       لا يحتاجها — وكان ذلك سيكسر دخول الويب صامتاً: يرجع اللاعب من غوغل
+       فيجد نفسه غير مسجَّل بلا رسالة خطأ.
+       والتطبيق الأصليّ لا يتضرّر: مساره `signInWithIdToken` بلا عنوان يُقرأ. */
+    detectSessionInUrl: true,
+    flowType: 'pkce',
   },
 })

@@ -12,9 +12,6 @@ import bannerUrl from '../../assets/f6een-banner-festival.jpg'
 const MIN = 2
 const MAX = 6
 
-/** الأرقام الهندية — الواجهة عربية بالكامل، فالعدّاد والنصّ الإرشادي لا يخرجان بأرقام لاتينية. */
-const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩'
-const ar = (n: number) => String(n).replace(/\d/g, (d) => AR_DIGITS[+d])
 
 /** ترتيب الفريق: شارةً فوق بطاقته دائماً، واسماً بديلاً إن تُرك حقل الاسم فارغاً. */
 const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
@@ -96,8 +93,8 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
     onStart({
       teamNames: [teamLabel(0), teamLabel(1)],
       players: [
-        players[0].map((p, i) => p.trim() || `لاعب ${ar(i + 1)}`),
-        players[1].map((p, i) => p.trim() || `لاعب ${ar(i + 1)}`),
+        players[0].map((p, i) => p.trim() || `لاعب ${i + 1}`),
+        players[1].map((p, i) => p.trim() || `لاعب ${i + 1}`),
       ],
       startingTeam: starter,
     })
@@ -137,12 +134,12 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
           <div className="stages">
             {STAGES.map((s, i) => (
               <article key={s.name} className="stage-card">
-                <span className="stage-no" aria-hidden="true">{ar(i + 1)}</span>
+                <span className="stage-no" aria-hidden="true">{i + 1}</span>
                 {/* غلاف شفّاف (display:contents) — لا أثر له في التخطيط العمودي،
                     ويصير عموداً حقيقياً على الجوال ليقف النصّ بجانب الرقم. */}
                 <div className="stage-body">
                   <h3 className="stage-name">{s.name}</h3>
-                  <span className="stage-tag">المرحلة {ar(i + 1)}</span>
+                  <span className="stage-tag">المرحلة {i + 1}</span>
                   <p className="stage-desc">{s.desc}</p>
                   <span className="stage-points">{s.points}</span>
                 </div>
@@ -173,7 +170,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
                         key={i}
                         className="player"
                         value={p}
-                        placeholder={`اسم اللاعب ${ar(i + 1)}`}
+                        placeholder={`اسم اللاعب ${i + 1}`}
                         onChange={(e) => setPlayer(team, i, e.target.value)}
                       />
                     ))}
@@ -182,7 +179,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
                     <button className="pill" onClick={() => removePlayer(team)} disabled={players[team].length <= MIN}>
                       −
                     </button>
-                    <span>{ar(players[team].length)} لاعبين</span>
+                    <span>{players[team].length} لاعبين</span>
                     <button className="pill" onClick={() => addPlayer(team)} disabled={players[team].length >= MAX}>
                       +
                     </button>

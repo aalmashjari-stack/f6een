@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { GameState } from '../game/session'
-import { STAGE3_TIMER_MS } from '../game/session'
+import { STAGE3_POINTS, STAGE3_TIMER_MS } from '../game/session'
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
@@ -29,12 +29,14 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
       <div className="screen center-col">
         <ScoreBar teams={state.teams} />
         <div className="grow center-all">
-          <div className="s3-ready">
+          {/* رقم الفريق على البطاقة — لتلبس لونَه كما تفعل بقيّة الشاشات،
+              فالهويّة اللونيّة لا تنقطع في المرحلة الحاسمة. */}
+          <div className={'s3-ready team-' + state.s3Team}>
             <div className="s3r-eyebrow">الحق ما تلحق</div>
             <div className="s3r-team">دور {team.name}</div>
             <div className="s3-ready-rules">
-              <span><b className="tabular">30</b> ثانية دون توقف</span>
-              <span><b className="tabular">+5</b> لكل إجابة صحيحة</span>
+              <span><b className="tabular">{STAGE3_TIMER_MS / 1000}</b> ثانية دون توقف</span>
+              <span><b className="tabular">{`+${STAGE3_POINTS}`}</b> لكل إجابة صحيحة</span>
             </div>
           </div>
         </div>
@@ -76,7 +78,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
            زر ثالث بلا نتيجة مختلفة يسرق وقتاً من ساعة لا تتوقف. */
         <div className="s3-verdicts">
           <button className="v correct" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'correct' })}>
-            ✓<span className="v-pts tabular">+5</span>
+            ✓<span className="v-pts tabular">{`+${STAGE3_POINTS}`}</span>
           </button>
           <button className="v wrong" onClick={() => dispatch({ t: 'S3_JUDGE', verdict: 'wrong' })}>
             ✗

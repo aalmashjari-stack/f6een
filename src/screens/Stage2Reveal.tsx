@@ -53,7 +53,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
           const team = ti as TeamId
           const mark = state.s2Marks[team]
           return (
-            <div key={ti} className={'mcard ' + mark}>
+            <div key={ti} className={'mcard team-' + team + ' ' + mark}>
               <span className="mc-team">{state.teams[team].name}</span>
               <span className="mc-name">{nameOf(team)}</span>
 

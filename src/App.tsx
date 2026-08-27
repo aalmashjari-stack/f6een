@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useReducer, useState } from 'react'
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import type { GameState } from './game/session'
 import { persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
+import { useSession } from './lib/auth'
+import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
 import { Splash } from './screens/Splash'
 import { Intro } from './screens/Intro'
 import { Setup } from './screens/Setup'
@@ -68,17 +70,11 @@ function saveSession(state: GameState | null) {
   }
 }
 
-/* مراحل الإقلاع قبل اللعبة: الشعار ثم التعريف ثم الإعداد.
-   الاستئناف يقفز فوق التعريف — من انقطعت جلسته يريد أن يكمل لا أن يُعاد
-   تعليمه القواعد، والشعار وحده يبقى فيراه في كل تشغيل. */
-type Boot = 'splash' | 'intro' | 'ready'
-
 export default function App() {
   const [state, dispatch] = useReducer(reducer, null, loadSession)
-  const [boot, setBoot] = useState<Boot>('splash')
-
-  const leaveSplash = useCallback(() => setBoot(state ? 'ready' : 'intro'), [state])
-  const leaveIntro = useCallback(() => setBoot('ready'), [])
+  const [splashDone, setSplashDone] = useState(false)
+  const session = useSession()
+  const leaveSplash = useCallback(() => setSplashDone(true), [])
 
   useEffect(() => {
     saveSession(state)
@@ -87,12 +83,57 @@ export default function App() {
   /* ذاكرة الأسئلة عبر الجلسات — سجلّ مستقلّ عن لقطة الاستئناف، ولا يُمحى بانتهاء اللعبة.
      مربوط بالمجموعة وحدها لا بالحالة كلها: وإلا أُعيدت كتابة مئات المعرّفات مع كل ضغطة. */
   const used = state?.usedQuestionIds
-  useEffect(() => {
-    if (used) persistUsedIds(used)
-  }, [used])
 
-  if (boot === 'splash') return <Splash onDone={leaveSplash} />
-  if (boot === 'intro') return <Intro onDone={leaveIntro} />
+  /* ما بلغ الخادمَ فعلاً. يمنع إعادة رفع مئات المعرّفات مع كل سؤال، ويجعل
+     الرفعَ الفاشل يُعاد تلقائياً في التغيير التالي لأنّه لا يدخل هنا إلا بعد
+     نجاحه. */
+  const uploaded = useRef<Set<string>>(new Set())
+  const uid = session?.user.id ?? null
+
+  /* مزامنة أولى عند توفّر الحساب — قبل أي لعبة، فالإعداد يقرأ من التخزين
+     المحلّي بعد أن يكون قد اغتنى بما عند الخادم. */
+  useEffect(() => {
+    if (!uid) {
+      uploaded.current = new Set()
+      return
+    }
+    let alive = true
+    syncUsedIds(uid)
+      .then(({ merged }) => {
+        if (alive) uploaded.current = merged
+      })
+      .catch(() => {
+        /* بلا إنترنت أو بخطأ خادم: اللعبة تكمل بذاكرتها المحلّية،
+           وتُعاد المحاولة عند التشغيل القادم. */
+      })
+    return () => {
+      alive = false
+    }
+  }, [uid])
+
+  useEffect(() => {
+    if (!used) return
+    persistUsedIds(used)
+
+    if (!uid) return
+    const fresh = [...used].filter((id) => !uploaded.current.has(id))
+    if (fresh.length === 0) return
+    pushUsedIds(uid, fresh)
+      .then(() => {
+        for (const id of fresh) uploaded.current.add(id)
+      })
+      .catch(() => {
+        /* يبقى خارج `uploaded` فيُعاد رفعه مع السؤال التالي. */
+      })
+  }, [used, uid])
+
+  /* الشعار يبقى حتى تنتهي مدّته **و** تُقرأ الجلسة من المخزن. قراءتها ليست
+     فوريّة، فبدون انتظارها تومض شاشة الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً. */
+  if (!splashDone || session === undefined) return <Splash onDone={leaveSplash} />
+
+  /* لا لعب بلا حساب — SPEC القسم ٩: التسجيل إجباريّ، وعليه تُعلَّق ذاكرة
+     الأسئلة والرصيد. */
+  if (!session) return <Intro />
 
   if (!state) return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
 

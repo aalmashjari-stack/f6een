@@ -1,6 +1,7 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import { STAGES } from '../game/stages'
+import { signInWithGoogle } from '../lib/auth'
 
 /**
  * شاشة التعريف — تلي شاشة الشعار.
@@ -12,16 +13,36 @@ import { STAGES } from '../game/stages'
  * وهي بذلك ثاني شاشة تُمرَّر بعد الإعداد، خارج قاعدة «الشاشة لقطة واحدة»
  * (SPEC القسم ١٢) — استثناء مقصود لا سهو.
  *
+ * ألوانها من رموز «نيو» (--n-*) لا من theme.css: الهويّة ثُبِّتت في ٢٧ أغسطس
+ * ٢٠٢٦، وشاشة جديدة تُبنى عليها مباشرةً لا تُبنى على القديم ثم تُصحَّح.
+ *
  * الشرح مصدره `game/stages.ts` نفسه الذي يغذّي الإعداد، فأرقام التنقيط تتبع
  * ثوابت المحرّك ولا تُكتب هنا بيد.
  *
- * ⚠ **أزرار المزوّدين مؤقّتة.** لا مصادقة بعد ولا خادم، وSPEC القسم ٩ يعلّق
- * على الحساب ذاكرةَ الأسئلة والرصيد. فكلّ زرّ ينادي `onDone` مباشرةً ليبقى
- * الطريق إلى اللعبة مفتوحاً حتى يصل الخادم — عندها يُبدَّل المُعالِج وحده،
- * والتخطيط كما هو. وأسماء المزوّدين اقتراحٌ ينتظر قرار علي.
+ * **غوغل يعمل فعلاً** عبر Supabase. وApple والبريد معطّلان بسببين مختلفين:
+ * آبل تحتاج حساب مطوّر مدفوعاً لم يُسجَّل بعد، والبريد يحتاج شاشة إدخال
+ * ورمز تحقّق لم تُصمَّم. زرٌّ معطّل بسبب مكتوب خيرٌ من زرٍّ يعد بما لا يفي.
+ *
+ * ولم يعد هنا طريق إلى اللعبة بلا حساب: هذا ما يشترطه SPEC القسم ٩
+ * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
  */
-export function Intro({ onDone }: { onDone: () => void }) {
+export function Intro() {
   const signinRef = useRef<HTMLElement>(null)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function google() {
+    setErr(null)
+    setBusy(true)
+    try {
+      await signInWithGoogle()
+      /* لا إفراغ لـbusy عند النجاح: الصفحة تغادر إلى غوغل، وإعادته تُظهر
+         الزرّ نشطاً للحظة قبل أن تختفي الشاشة. */
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'تعذّر فتح دخول غوغل')
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="screen intro">
@@ -59,10 +80,24 @@ export function Intro({ onDone }: { onDone: () => void }) {
         <p className="signin-sub">حسابك يحفظ رصيدك، ولا يعيد عليك سؤالاً سمعته</p>
 
         <div className="signin-methods">
-          <button className="method apple" onClick={onDone}>المتابعة عبر Apple</button>
-          <button className="method google" onClick={onDone}>المتابعة عبر Google</button>
-          <button className="method mail" onClick={onDone}>المتابعة بالبريد</button>
+          <button
+            className="method apple"
+            disabled
+            title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد"
+          >
+            المتابعة عبر Apple
+          </button>
+
+          <button className="method google" onClick={google} disabled={busy}>
+            {busy ? 'جارٍ التحويل…' : 'المتابعة عبر Google'}
+          </button>
+
+          <button className="method mail" disabled title="قريباً">
+            المتابعة بالبريد
+          </button>
         </div>
+
+        {err && <p className="signin-err">{err}</p>}
       </section>
 
       <style>{`
@@ -88,7 +123,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
         .intro-logo { font-size:clamp(34px,7vw,68px); }
         .intro-tag {
           margin:clamp(4px,1vh,10px) 0 0;
-          color:var(--text-2); font-weight:700;
+          color:var(--n-ink-2); font-weight:700;
           font-size:clamp(12px,1.7vw,18px);
         }
 
@@ -102,40 +137,41 @@ export function Intro({ onDone }: { onDone: () => void }) {
         .intro-stage {
           display:grid; grid-template-columns:auto 1fr auto; align-items:center;
           gap:clamp(8px,1.6vw,18px);
-          background:var(--surface); border:1px solid var(--border);
-          border-radius:var(--r-md);
+          background:var(--n-surface); border-radius:var(--n-r2);
+          box-shadow:var(--n-e1);
           padding:clamp(8px,1.5vh,16px) clamp(10px,2vw,20px);
         }
         .intro-no {
-          font-weight:800; color:var(--gold);
+          font-weight:800; color:var(--n-brand);
           font-size:clamp(20px,3.4vw,34px); line-height:1;
           min-width:1.2em; text-align:center;
         }
         .intro-name { margin:0; font-size:clamp(14px,2.1vw,22px); font-weight:800; }
         .intro-desc {
-          margin:2px 0 0; color:var(--text-2); font-weight:600;
+          margin:2px 0 0; color:var(--n-ink-2); font-weight:600;
           font-size:clamp(11px,1.5vw,16px); line-height:1.5;
         }
         .intro-points {
-          font-weight:800; color:var(--gold); white-space:nowrap;
+          font-weight:800; color:var(--n-a); white-space:nowrap;
           font-size:clamp(12px,1.7vw,18px);
         }
 
         .intro-go {
           font:inherit; font-weight:800; cursor:pointer; border:none;
-          border-radius:var(--r-md);
-          background:var(--grad-gold); color:var(--on-gold);
+          border-radius:var(--n-r3);
+          background:var(--n-ink); color:#fff; box-shadow:var(--n-e2);
           padding:clamp(10px,1.8vh,18px) clamp(16px,3vw,34px);
           font-size:clamp(14px,2vw,22px);
           max-width:820px; width:100%; margin-inline:auto;
           transition:transform .15s var(--ease-spring);
         }
-        .intro-go:active { transform:scale(.98); }
+        .intro-go:hover { background:#26262F; transform:translateY(-2px); box-shadow:var(--n-e3); }
+        .intro-go:active { transform:translateY(0) scale(.99); box-shadow:var(--n-e1); }
 
         .signin { justify-content:center; text-align:center; }
-        .signin-title { margin:0; font-size:clamp(20px,3.6vw,36px); font-weight:800; }
+        .signin-title { margin:0; font-size:clamp(20px,3.6vw,36px); font-weight:800; color:var(--n-brand); }
         .signin-sub {
-          margin:0; color:var(--text-2); font-weight:600;
+          margin:0; color:var(--n-ink-2); font-weight:600;
           font-size:clamp(12px,1.7vw,18px);
         }
         .signin-methods {
@@ -144,15 +180,23 @@ export function Intro({ onDone }: { onDone: () => void }) {
         }
         .method {
           font:inherit; font-weight:800; cursor:pointer;
-          border-radius:var(--r-md);
+          border-radius:var(--n-r2);
           padding:clamp(10px,1.8vh,16px) clamp(14px,2.6vw,24px);
           font-size:clamp(13px,1.9vw,19px);
-          border:1px solid var(--border);
-          background:var(--surface); color:var(--cream);
+          border:0; box-shadow:var(--n-e1);
+          background:var(--n-surface); color:var(--n-ink);
           transition:transform .15s var(--ease-spring), border-color .2s ease;
         }
         .method:active { transform:scale(.98); }
-        .method:hover { border-color:var(--gold); }
+        .method:not(:disabled):hover { background:var(--n-surface-2); box-shadow:var(--n-e2); }
+        .method:disabled {
+          background:rgba(23,23,31,.05); color:var(--n-ink-3);
+          box-shadow:none; cursor:not-allowed;
+        }
+        .signin-err {
+          margin:0; color:var(--n-bad); font-weight:700;
+          font-size:clamp(12px,1.6vw,16px);
+        }
 
         /* الجوال الأفقي قصير (ارتفاعه ٤٤٠px) — والشرح هو سبب اللوح الأول،
            فلا يُخفى. ينكمش الشعار والحشو بدله. */
