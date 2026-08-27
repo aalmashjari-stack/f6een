@@ -4,6 +4,7 @@ import { persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
 import { useSession } from './lib/auth'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
+import { QuitGame } from './components/QuitGame'
 import { Splash } from './screens/Splash'
 import { Intro } from './screens/Intro'
 import { Setup } from './screens/Setup'
@@ -150,29 +151,41 @@ export default function App() {
 
   if (!state) return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
 
-  switch (state.phase) {
-    case 'stage1-wheel':
-    case 'stage2-wheel':
-      return <WheelScreen state={state} dispatch={dispatch} />
-    case 'stage1-question':
-      return <Stage1Question state={state} dispatch={dispatch} />
-    case 'stage1-reveal':
-      return <Stage1Reveal state={state} dispatch={dispatch} />
-    case 'interval':
-      return <Interval state={state} dispatch={dispatch} />
-    case 'stage2-selection':
-      return <Stage2Selection state={state} dispatch={dispatch} />
-    case 'stage2-question':
-      return <Stage2Question state={state} dispatch={dispatch} />
-    case 'stage2-reveal':
-      return <Stage2Reveal state={state} dispatch={dispatch} />
-    case 'stage3-play':
-      return <Stage3 state={state} dispatch={dispatch} />
-    case 'tiebreak':
-      return <Tiebreak state={state} dispatch={dispatch} />
-    case 'endgame':
-      return <Endgame state={state} dispatch={dispatch} />
-    default:
-      return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
-  }
+  /* الشاشة تُحسب ثم تُغلَّف: زرّ الخروج يجب أن يظهر فوق كل شاشة لعب، ووضعه
+     هنا يجعله مكاناً واحداً بدل تمريره إلى تسع شاشات. */
+  const screen = (() => {
+    switch (state.phase) {
+      case 'stage1-wheel':
+      case 'stage2-wheel':
+        return <WheelScreen state={state} dispatch={dispatch} />
+      case 'stage1-question':
+        return <Stage1Question state={state} dispatch={dispatch} />
+      case 'stage1-reveal':
+        return <Stage1Reveal state={state} dispatch={dispatch} />
+      case 'interval':
+        return <Interval state={state} dispatch={dispatch} />
+      case 'stage2-selection':
+        return <Stage2Selection state={state} dispatch={dispatch} />
+      case 'stage2-question':
+        return <Stage2Question state={state} dispatch={dispatch} />
+      case 'stage2-reveal':
+        return <Stage2Reveal state={state} dispatch={dispatch} />
+      case 'stage3-play':
+        return <Stage3 state={state} dispatch={dispatch} />
+      case 'tiebreak':
+        return <Tiebreak state={state} dispatch={dispatch} />
+      case 'endgame':
+        return <Endgame state={state} dispatch={dispatch} />
+      default:
+        return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
+    }
+  })()
+
+  return (
+    <>
+      {screen}
+      {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
+      {state.phase !== 'endgame' && <QuitGame onQuit={() => dispatch({ t: 'NEW_GAME' })} />}
+    </>
+  )
 }
