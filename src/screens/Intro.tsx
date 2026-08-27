@@ -26,7 +26,7 @@ import { signInWithGoogle } from '../lib/auth'
  * ولم يعد هنا طريق إلى اللعبة بلا حساب: هذا ما يشترطه SPEC القسم ٩
  * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
  */
-export function Intro() {
+export function Intro({ onDone }: { onDone?: () => void }) {
   const signinRef = useRef<HTMLElement>(null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -79,23 +79,32 @@ export function Intro() {
         <h2 className="signin-title">تسجيل الدخول</h2>
         <p className="signin-sub">حسابك يحفظ رصيدك، ولا يعيد عليك سؤالاً سمعته</p>
 
-        <div className="signin-methods">
-          <button
-            className="method apple"
-            disabled
-            title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد"
-          >
-            المتابعة عبر Apple
-          </button>
+        {onDone ? (
+          /* الدخول موقوف: زرٌّ واحد يمرّ منه، ولا تُعرض أزرار مزوّدين لا تعمل.
+             زرٌّ يعد بما لا يفي أسوأ من زرٍّ غائب. */
+          <div className="signin-methods">
+            <button className="method go-now" onClick={onDone}>ابدأ</button>
+            <p className="signin-note">الدخول موقوف مؤقّتاً</p>
+          </div>
+        ) : (
+          <div className="signin-methods">
+            <button
+              className="method apple"
+              disabled
+              title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد"
+            >
+              المتابعة عبر Apple
+            </button>
 
-          <button className="method google" onClick={google} disabled={busy}>
-            {busy ? 'جارٍ التحويل…' : 'المتابعة عبر Google'}
-          </button>
+            <button className="method google" onClick={google} disabled={busy}>
+              {busy ? 'جارٍ التحويل…' : 'المتابعة عبر Google'}
+            </button>
 
-          <button className="method mail" disabled title="قريباً">
-            المتابعة بالبريد
-          </button>
-        </div>
+            <button className="method mail" disabled title="قريباً">
+              المتابعة بالبريد
+            </button>
+          </div>
+        )}
 
         {err && <p className="signin-err">{err}</p>}
       </section>
@@ -192,6 +201,12 @@ export function Intro() {
         .method:disabled {
           background:rgba(23,23,31,.05); color:var(--n-ink-3);
           box-shadow:none; cursor:not-allowed;
+        }
+        .method.go-now { background:var(--n-ink); color:#fff; box-shadow:var(--n-e2); }
+        .method.go-now:not(:disabled):hover { background:#26262F; box-shadow:var(--n-e3); }
+        .signin-note {
+          margin:0; color:var(--n-ink-3); font-weight:700;
+          font-size:clamp(11px,1.5vw,15px);
         }
         .signin-err {
           margin:0; color:var(--n-bad); font-weight:700;

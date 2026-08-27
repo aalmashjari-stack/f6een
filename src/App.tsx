@@ -70,9 +70,20 @@ function saveSession(state: GameState | null) {
   }
 }
 
+/* **الدخول موقوف مؤقّتاً بطلب علي (٢٧ أغسطس ٢٠٢٦).**
+ *
+ * `false` = يُعرض التعريف ثم يمرّ اللاعب بزرّ «ابدأ» بلا حساب.
+ * `true`  = لا لعب بلا حساب، كما يشترط SPEC القسم ٩ (التسجيل إجباريّ،
+ *           وعليه تُعلَّق ذاكرة الأسئلة والرصيد).
+ *
+ * سطرٌ واحد يعيده. ولا يُحذف كود الدخول: المزوّد مضبوط ومُختبَر، والموقوف
+ * هو الاشتراط لا الآليّة. ومزامنة ذاكرة الأسئلة تبقى تعمل لمن دخل فعلاً. */
+const REQUIRE_LOGIN = false
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, null, loadSession)
   const [splashDone, setSplashDone] = useState(false)
+  const [introDone, setIntroDone] = useState(false)
   const session = useSession()
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
@@ -131,9 +142,11 @@ export default function App() {
      فوريّة، فبدون انتظارها تومض شاشة الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً. */
   if (!splashDone || session === undefined) return <Splash onDone={leaveSplash} />
 
-  /* لا لعب بلا حساب — SPEC القسم ٩: التسجيل إجباريّ، وعليه تُعلَّق ذاكرة
-     الأسئلة والرصيد. */
-  if (!session) return <Intro />
+  /* التعريف يُعرض لمن لا جلسة له. وحين يكون الدخول موقوفاً يمرّ منه بزرّ
+     «ابدأ» بدل المزوّدين — انظر REQUIRE_LOGIN أعلاه. */
+  if (!session && !introDone) {
+    return <Intro onDone={REQUIRE_LOGIN ? undefined : () => setIntroDone(true)} />
+  }
 
   if (!state) return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
 
