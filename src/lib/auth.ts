@@ -56,3 +56,17 @@ export function useSession(): Session | null | undefined {
 
   return session
 }
+
+/**
+ * حذف الحساب نهائياً — شرط متجر آبل، ووعدٌ في سياسة الخصوصيّة المنشورة.
+ *
+ * الحذف يقع في القاعدة عبر `delete_own_account`، ويجرف معه الرصيد وذاكرة
+ * الأسئلة والجلسات بـ`on delete cascade`. ثم يُخرَج المستخدم محلّياً لأنّ
+ * رمز جلسته يبقى في المتصفّح بعد اختفاء الحساب من الخادم — وبدون هذا يظلّ
+ * التطبيق يظنّه داخلاً حتى ينتهي صلاحيّة الرمز.
+ */
+export async function deleteAccount() {
+  const { error } = await supabase.rpc('delete_own_account')
+  if (error) throw error
+  await supabase.auth.signOut()
+}

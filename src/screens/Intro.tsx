@@ -29,7 +29,17 @@ import { signInWithGoogle } from '../lib/auth'
 export function Intro({ onDone }: { onDone?: () => void }) {
   const signinRef = useRef<HTMLElement>(null)
   const [busy, setBusy] = useState(false)
-  const [err, setErr] = useState<string | null>(null)
+  /* رجوعٌ فاشل من غوغل يحمل سببه في العنوان. بدون قراءته يجد اللاعب نفسه
+     في شاشة التعريف ثانيةً بلا كلمة تفسّر — فيظنّ الزرّ معطّلاً. */
+  const [err, setErr] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    const q = new URLSearchParams(window.location.search)
+    const h = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+    const code = q.get('error') ?? h.get('error')
+    if (!code) return null
+    const why = q.get('error_description') ?? h.get('error_description')
+    return why ? decodeURIComponent(why.replace(/\+/g, ' ')) : code
+  })
 
   async function google() {
     setErr(null)

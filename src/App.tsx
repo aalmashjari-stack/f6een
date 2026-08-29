@@ -4,6 +4,7 @@ import { persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
 import { useSession } from './lib/auth'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
+import { AccountMenu } from './components/AccountMenu'
 import { QuitGame } from './components/QuitGame'
 import { Splash } from './screens/Splash'
 import { Intro } from './screens/Intro'
@@ -71,7 +72,7 @@ function saveSession(state: GameState | null) {
   }
 }
 
-/* **الدخول موقوف مؤقّتاً بطلب علي (٢٧ أغسطس ٢٠٢٦).**
+/* **اشتراط الدخول** — أُوقف مؤقّتاً في ٢٧ أغسطس ٢٠٢٦ ثم أُعيد في اليوم نفسه.
  *
  * `false` = يُعرض التعريف ثم يمرّ اللاعب بزرّ «ابدأ» بلا حساب.
  * `true`  = لا لعب بلا حساب، كما يشترط SPEC القسم ٩ (التسجيل إجباريّ،
@@ -79,7 +80,7 @@ function saveSession(state: GameState | null) {
  *
  * سطرٌ واحد يعيده. ولا يُحذف كود الدخول: المزوّد مضبوط ومُختبَر، والموقوف
  * هو الاشتراط لا الآليّة. ومزامنة ذاكرة الأسئلة تبقى تعمل لمن دخل فعلاً. */
-const REQUIRE_LOGIN = false
+const REQUIRE_LOGIN = true
 
 export default function App() {
   const [state, dispatch] = useReducer(reducer, null, loadSession)
@@ -149,7 +150,15 @@ export default function App() {
     return <Intro onDone={REQUIRE_LOGIN ? undefined : () => setIntroDone(true)} />
   }
 
-  if (!state) return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
+  if (!state) {
+    return (
+      <>
+        <Setup onStart={(input) => dispatch({ t: 'START', input })} />
+        {/* خارج اللعب فقط — لا إدارة حساب فوق سؤال مؤقّت. */}
+        {session && <AccountMenu session={session} />}
+      </>
+    )
+  }
 
   /* الشاشة تُحسب ثم تُغلَّف: زرّ الخروج يجب أن يظهر فوق كل شاشة لعب، ووضعه
      هنا يجعله مكاناً واحداً بدل تمريره إلى تسع شاشات. */
