@@ -4,78 +4,76 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>سياسة الخصوصية — فطين</title>
-<meta name="description" content="سياسة خصوصية لعبة فطين: لا نجمع أي بيانات، ولا يغادر جهازك شيء." />
+<meta name="description" content="سياسة خصوصية لعبة فطين: ما يُجمع عند تسجيل الدخول، وما يبقى على جهازك، وأين يُخزَّن." />
 <style>
   @font-face { font-family:'Cairo'; font-style:normal; font-weight:400; font-display:swap;
                src:url('./fonts/cairo-400.woff2') format('woff2'); }
   @font-face { font-family:'Cairo'; font-style:normal; font-weight:800; font-display:swap;
                src:url('./fonts/cairo-800.woff2') format('woff2'); }
 
+  /* رموز هويّة «نيو» — الهويّة المعتمدة منذ ٢٧ أغسطس ٢٠٢٦. */
   :root {
-    --night:#102E43; --night-deep:#071923; --gold:#FFBD59; --cream:#F5EFE3;
-    --coral:#E4674A; --surface:#12364B; --border:#31566A; --text-2:#A8BFCC;
-    --r-md:16px; --r-sm:11px;
+    --bg:#F0EFF7; --surface:#FFFFFF; --ink:#1A1626; --ink-2:#5D5670; --ink-3:#948CA8;
+    --line:#E5E1F0; --brand:#7A3E9D; --brand-tint:#F3EAF8; --accent:#FF6647; --amber:#D97528;
+    --r2:14px; --r3:20px;
+    --e1:0 0 0 1px rgba(23,23,31,.055), 0 1px 2px rgba(23,23,31,.05);
   }
   * { box-sizing:border-box; }
   html { -webkit-text-size-adjust:100%; }
   body {
     margin:0; padding:0;
     font-family:'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    background:radial-gradient(120% 90% at 50% 0%, var(--night) 0%, var(--night-deep) 70%) var(--night-deep);
-    background-attachment:fixed;
-    color:var(--cream);
-    line-height:1.9;
-    font-size:17px;
+    background:var(--bg); color:var(--ink);
+    line-height:1.9; font-size:17px;
   }
   .wrap { max-width:760px; margin:0 auto; padding:clamp(28px,6vw,64px) clamp(20px,5vw,32px) 80px; }
 
   header { text-align:center; margin-bottom:clamp(28px,5vw,48px); }
-  .brand {
-    font-weight:800; font-size:clamp(34px,7vw,52px); letter-spacing:-.01em;
-    color:var(--gold); margin:0 0 6px;
-  }
+  .brand { font-weight:800; font-size:clamp(34px,7vw,52px); color:var(--brand); margin:0 0 6px; }
+  h1 { font-weight:800; font-size:clamp(20px,4vw,26px); margin:0; color:var(--ink); }
   .rule { height:2px; width:120px; margin:18px auto 0;
-          background:linear-gradient(90deg, transparent, var(--gold), transparent); }
-  h1 { font-weight:800; font-size:clamp(20px,4vw,26px); margin:0; color:var(--cream); }
-  .updated { color:var(--text-2); font-size:14px; margin-top:14px; }
+          background:linear-gradient(90deg, transparent, var(--brand), transparent); }
+  .updated { color:var(--ink-3); font-size:14px; margin-top:14px; }
 
   .lede {
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+    background:var(--surface); border-radius:var(--r3); box-shadow:var(--e1);
     padding:clamp(18px,4vw,26px); margin:0 0 34px;
     font-size:clamp(17px,2.4vw,19px);
   }
-  .lede strong { color:var(--gold); font-weight:800; }
+  .lede strong { color:var(--brand); font-weight:800; }
 
-  h2 {
-    font-weight:800; font-size:clamp(18px,3vw,21px); color:var(--gold);
-    margin:38px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border);
-  }
+  h2 { font-weight:800; font-size:clamp(18px,3vw,21px); color:var(--brand);
+       margin:38px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line); }
   p { margin:0 0 14px; }
   ul { margin:0 0 14px; padding-inline-start:22px; }
   li { margin-bottom:10px; }
+  strong { color:var(--ink); }
+  a { color:var(--brand); }
+
   code {
     font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:.88em;
-    background:rgba(255,189,89,.10); color:var(--gold);
-    padding:2px 7px; border-radius:var(--r-sm); direction:ltr; display:inline-block;
-  }
-  a { color:var(--gold); }
-
-  .note {
-    border-inline-start:3px solid var(--coral); background:rgba(228,103,74,.08);
-    padding:14px 18px; border-radius:var(--r-sm); margin:0 0 14px; color:var(--text-2);
+    background:var(--brand-tint); color:var(--brand);
+    padding:2px 7px; border-radius:8px; direction:ltr; display:inline-block;
   }
 
-  footer {
-    margin-top:56px; padding-top:26px; border-top:1px solid var(--border);
-    color:var(--text-2); font-size:14px; text-align:center;
-  }
-  .en {
-    margin-top:44px; padding:clamp(18px,4vw,26px);
-    background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:var(--r-md);
-    direction:ltr; text-align:left; font-size:15px; color:var(--text-2);
-  }
-  .en h2 { margin-top:0; font-size:17px; }
-  .en strong { color:var(--cream); }
+  table { width:100%; border-collapse:collapse; margin:0 0 16px; font-size:15px;
+          background:var(--surface); border-radius:var(--r2); overflow:hidden; box-shadow:var(--e1); }
+  th, td { text-align:start; padding:11px 14px; border-bottom:1px solid var(--line); }
+  th { color:var(--ink-3); font-weight:800; font-size:13px; }
+  tr:last-child td { border-bottom:0; }
+
+  .note { border-inline-start:3px solid var(--accent); background:#FFF1EE;
+          padding:14px 18px; border-radius:10px; margin:0 0 14px; color:var(--ink-2); }
+  .good { border-inline-start:3px solid var(--amber); background:#FDF0E0;
+          padding:14px 18px; border-radius:10px; margin:0 0 14px; color:var(--ink-2); }
+
+  footer { margin-top:56px; padding-top:26px; border-top:1px solid var(--line);
+           color:var(--ink-3); font-size:14px; text-align:center; }
+  .en { margin-top:44px; padding:clamp(18px,4vw,26px);
+        background:var(--surface); border-radius:var(--r3); box-shadow:var(--e1);
+        direction:ltr; text-align:left; font-size:15px; color:var(--ink-2); }
+  .en h2 { margin-top:0; font-size:17px; border:0; padding:0; }
+  .en strong { color:var(--ink); }
 </style>
 </head>
 <body>
@@ -85,100 +83,146 @@
     <p class="brand">فطين</p>
     <h1>سياسة الخصوصية</h1>
     <div class="rule"></div>
-    <p class="updated">آخر تحديث: 26 أغسطس 2026</p>
+    <p class="updated">آخر تحديث: 27 أغسطس 2026</p>
   </header>
 
   <p class="lede">
-    <strong>فطين لا تجمع عنك أي بيانات.</strong>
-    لا حساب، ولا تسجيل دخول، ولا إعلانات، ولا أدوات تتبّع أو تحليلات.
-    كل ما تكتبه في اللعبة يبقى على جهازك وحده، ولا يُرسَل إلينا ولا إلى أي طرف آخر.
+    <strong>اللعبة تعمل بلا حساب.</strong>
+    وإن سجّلت الدخول، فكلّ ما نأخذه هو ما يعطينا إيّاه مزوّد الدخول — بريدك واسمك
+    وصورتك — ومعرّفات الأسئلة التي ظهرت لك، حتى لا تتكرّر عليك. لا إعلانات، ولا
+    أدوات تتبّع، ولا بيع بيانات، ولا مشاركة مع أحد.
   </p>
 
-  <h2>ما لا نجمعه</h2>
-  <p>لا نجمع ولا نخزّن ولا نشارك أياً ممّا يلي:</p>
+  <h2>ما يُجمع إن سجّلت الدخول</h2>
+  <p>تسجيل الدخول اليوم عبر <strong>غوغل</strong>. حين تختار حسابك، تعطينا غوغل ثلاثة أشياء لا غير:</p>
   <ul>
-    <li>الاسم أو البريد الإلكتروني أو رقم الهاتف.</li>
-    <li>الموقع الجغرافي.</li>
-    <li>جهات الاتصال أو الصور أو الملفّات.</li>
-    <li>مُعرّفات الجهاز أو الإعلان.</li>
-    <li>إحصاءات الاستخدام أو تقارير الأعطال.</li>
+    <li><strong>بريدك الإلكتروني</strong> — هويّة الحساب.</li>
+    <li><strong>اسمك</strong> كما هو في حساب غوغل.</li>
+    <li><strong>صورة حسابك</strong> إن كانت لديك واحدة.</li>
   </ul>
   <p>
-    التطبيق لا يطلب من نظام التشغيل أيّ إذن — لا كاميرا، ولا ميكروفون، ولا موقع، ولا إشعارات.
+    نطلب هذين النطاقين فقط (<code>email</code> و<code>profile</code>). لا نصل إلى بريدك
+    ولا جهات اتصالك ولا ملفّاتك ولا أيّ شيء آخر في حسابك، ولا نستطيع ذلك أصلاً.
   </p>
 
-  <h2>ما يُحفَظ على جهازك</h2>
+  <h2>ما يُحفظ على خوادمنا</h2>
+  <table>
+    <tr><th>ماذا</th><th>لماذا</th></tr>
+    <tr><td>بيانات حسابك من غوغل</td><td>ليعرف التطبيق أنّك أنت عند فتحه على جهاز آخر</td></tr>
+    <tr><td>رصيد الألعاب</td><td>عدد الجلسات المتاحة لك</td></tr>
+    <tr><td>معرّفات الأسئلة التي ظهرت لك</td><td>حتى لا يتكرّر عليك سؤال سمعته</td></tr>
+  </table>
   <p>
-    لتعمل اللعبة كما ينبغي، تحفظ في الذاكرة المحلّية للمتصفّح على جهازك أربعة أشياء لا غير:
-  </p>
-  <ul>
-    <li><code>f6een.session</code> — الجلسة الجارية: أسماء الفرق التي كتبتها، والنقاط، وموضعك في اللعبة، حتى تستأنف إن أُغلقت الشاشة.</li>
-    <li><code>f6een.usedQuestionIds</code> — أرقام الأسئلة التي ظهرت، حتى لا تتكرّر عليك.</li>
-    <li><code>f6een.skin</code> — الهويّة البصريّة التي اخترتها.</li>
-    <li><code>f6een.muted</code> — هل الصوت مكتوم أم لا.</li>
-  </ul>
-  <p class="note">
-    أسماء الفرق يكتبها الحكم بنفسه، وقد تكون أسماء أشخاص. هذه الأسماء لا تغادر الجهاز إطلاقاً —
-    تُقرأ محلّياً لعرضها على الشاشة فقط، ولا يملك أحدٌ سوانا… بل لا نملكها نحن أيضاً، فهي لا تصلنا.
+    معرّفات الأسئلة أرقامٌ مثل <code>E001</code> ومتى ظهر كلٌّ منها. لا تحمل إجاباتك،
+    ولا من أصاب ومن أخطأ، ولا نتيجة أيّ لعبة.
   </p>
 
-  <h2>كيف تمسح هذه البيانات</h2>
+  <p class="good">
+    <strong>وأسماء الفرق واللاعبين لا تغادر جهازك.</strong> تكتبها في الإعداد فتُحفظ
+    محلّياً وتُعرض على الشاشة، ولا تُرسَل إلينا ولا تُخزَّن عندنا — تحقّقنا من ذلك في
+    الشيفرة نفسها، لا في نيّتنا: التطبيق لا يرسل إلى الخادم غير معرّفات الأسئلة.
+  </p>
+
+  <h2>ما يبقى على جهازك</h2>
+  <p>في الذاكرة المحلّية للمتصفّح، على جهازك وحده:</p>
   <ul>
-    <li><strong>في التطبيق:</strong> احذف التطبيق من جهازك، فتُمسح معه.</li>
-    <li><strong>في الموقع:</strong> امسح بيانات المواقع لـ <code>f6een.com</code> من إعدادات متصفّحك.</li>
+    <li><code>f6een.session</code> — الجلسة الجارية: أسماء الفرق واللاعبين، والنقاط، وموضعك في اللعبة، لتستأنف إن أُغلقت الشاشة.</li>
+    <li><code>f6een.usedQuestionIds</code> — نسخة من معرّفات الأسئلة التي ظهرت، لتعمل اللعبة بلا إنترنت.</li>
+    <li><code>f6een.muted</code> — هل الصوت مكتوم.</li>
+    <li>وإن سجّلت الدخول: رمز جلستك، لئلّا تُطالَب بالدخول في كل مرّة.</li>
   </ul>
-  <p>وتُمسح الجلسة المحفوظة تلقائياً بعد مضيّ مدّة على آخر لعب، أو عند انتهاء اللعبة.</p>
+
+  <h2>أين تُخزَّن</h2>
+  <p>
+    الحساب وبياناته على <strong>Supabase</strong>، في مركز بيانات في
+    <strong>فرانكفورت بألمانيا</strong> — أي داخل الاتحاد الأوروبي. والموقع نفسه
+    مستضاف على <strong>Railway</strong>، ويمرّ عبر <strong>Cloudflare</strong>.
+    وهؤلاء مزوّدو بنية تحتيّة يعالجون البيانات نيابةً عنّا، لا يستعملونها لأنفسهم.
+  </p>
+
+  <h2>ما لا نفعله</h2>
+  <ul>
+    <li>لا إعلانات، ولا أدوات تحليلات، ولا تتبّع من طرف ثالث — لا في الموقع ولا في التطبيق.</li>
+    <li>لا نبيع بياناتك ولا نشاركها لأغراض تسويقيّة، لا اليوم ولا لاحقاً.</li>
+    <li>لا نطلب من نظام التشغيل أيّ إذن: لا كاميرا، ولا ميكروفون، ولا موقع، ولا جهات اتصال.</li>
+  </ul>
 
   <h2>الاتصال بالإنترنت</h2>
   <p>
-    بعد تحميل اللعبة تعمل بالكامل دون اتصال — الأسئلة والصور والخطوط كلّها بداخلها.
-    التطبيق لا يجري أي اتصال بخوادمنا أو بخوادم غيرنا أثناء اللعب.
-    إذن الإنترنت في نسخة أندرويد موجود لتحميل واجهة اللعبة نفسها لا أكثر.
+    بعد تحميل اللعبة تعمل بلا اتصال — الأسئلة والصور والخطوط كلّها بداخلها. الاتصال
+    بخوادمنا يقع في لحظات معدودة: عند الدخول، وعند مزامنة معرّفات الأسئلة قبل بدء
+    اللعب. ولا شيء منه يقع في أثناء سؤال مؤقّت.
+  </p>
+
+  <h2>الاطّلاع والحذف</h2>
+  <p>
+    راسلنا على <a href="mailto:privacy@f6een.com">privacy@f6een.com</a> من البريد
+    نفسه المرتبط بحسابك، وتطلب:
+  </p>
+  <ul>
+    <li><strong>نسخة</strong> من كل ما نحفظه عنك.</li>
+    <li><strong>حذف حسابك</strong> وكل ما يتعلّق به — ننفّذه خلال ثلاثين يوماً، ويشمل بيانات غوغل والرصيد ومعرّفات الأسئلة، ولا نُبقي نسخة.</li>
+  </ul>
+  <p>
+    ولحذف ما على جهازك وحده: امسح بيانات المواقع لـ<code>f6een.com</code> من إعدادات
+    متصفّحك، أو احذف التطبيق.
+  </p>
+  <p class="note">
+    <strong>ملاحظة صريحة:</strong> لا يوجد اليوم زرّ داخل التطبيق يحذف الحساب — الطريق
+    الوحيد هو البريد أعلاه. سيُضاف الزرّ قبل نشر التطبيق في متجرَي آبل وغوغل.
+  </p>
+
+  <h2>مدّة الحفظ</h2>
+  <p>
+    نحتفظ ببيانات حسابك ما دام الحساب قائماً. ومعرّفات الأسئلة تراكميّة بطبيعتها —
+    فائدتها كلّها أنّها لا تُنسى — وتُحذف مع الحساب.
   </p>
 
   <h2>الأطفال</h2>
   <p>
-    فطين لعبة عائليّة يلعبها الصغار والكبار معاً. ولأنّنا لا نجمع أي بيانات من أي أحد،
-    فنحن لا نجمع بيانات من الأطفال كذلك.
-  </p>
-
-  <h2>خدمات خارجيّة</h2>
-  <p>
-    لا نستخدم أي خدمة تحليلات أو إعلانات أو تتبّع من طرف ثالث.
-    الموقع مستضاف لدى مزوّد استضافة يسجّل — كأي خادم على الإنترنت — سجلّات وصول تقنيّة مؤقّتة
-    (عنوان IP ونوع المتصفّح) لأغراض التشغيل والحماية، ولا نطّلع عليها ولا نربطها بأي شخص.
+    فطين لعبة عائليّة يلعبها الصغار والكبار معاً، وتُلعب على شاشة واحدة يشغّلها
+    شخص واحد. الحساب — إن وُجد — لصاحب الجهاز لا للاعبين، ولا نجمع شيئاً من بقيّة
+    من في المجلس.
   </p>
 
   <h2>تعديل هذه السياسة</h2>
   <p>
-    إن تغيّرت هذه السياسة سيتغيّر معها تاريخ «آخر تحديث» أعلى الصفحة.
-    وإن صار التطبيق يوماً يجمع أي بيانات، فسنقول ذلك هنا صراحةً قبل أن يحدث.
+    إن تغيّرت، تغيّر معها تاريخ «آخر تحديث» أعلى الصفحة. وإن صرنا نجمع شيئاً جديداً،
+    نقوله هنا صراحةً قبل أن يبدأ لا بعده.
   </p>
 
   <h2>التواصل</h2>
   <p>
-    لأي سؤال عن الخصوصيّة، راسلنا على:
-    <a href="mailto:privacy@f6een.com">privacy@f6een.com</a>
+    لأي سؤال عن الخصوصيّة: <a href="mailto:privacy@f6een.com">privacy@f6een.com</a>
   </p>
 
   <div class="en">
     <h2>English summary</h2>
     <p>
-      <strong>فطين (F6een) collects no data.</strong> There are no accounts, no ads, no analytics,
-      and no third-party trackers. The app requests no device permissions.
+      <strong>فطين (F6een) works without an account.</strong> If you do sign in — currently
+      with Google — we receive only your <strong>email, name, and profile picture</strong>
+      (the <code>email</code> and <code>profile</code> scopes). We cannot read your mail,
+      contacts, or files.
     </p>
     <p>
-      Four values are stored locally in your browser's storage and never transmitted anywhere:
-      the current game session (including the team names you type), the IDs of questions already
-      shown, your chosen visual theme, and your mute setting. Uninstalling the app — or clearing
-      site data for f6een.com — removes them.
+      On our servers we keep three things: your account details, your games balance, and the
+      <strong>IDs of questions you have already seen</strong> — so the game never repeats one.
+      Those IDs carry no answers and no scores.
     </p>
     <p>
-      After it loads, the game runs entirely offline. It makes no network requests to our servers
-      or anyone else's. Questions, images, and fonts are all bundled inside it.
+      <strong>Team and player names never leave your device.</strong> They are stored locally
+      and shown on screen; the app sends nothing but question IDs to the server.
     </p>
     <p>
-      Questions about privacy: <a href="mailto:privacy@f6een.com">privacy@f6een.com</a>
+      Data is stored with <strong>Supabase in Frankfurt, Germany</strong> (EU). The site is
+      hosted on Railway behind Cloudflare. There are no ads, no analytics, and no third-party
+      tracking. We never sell or share your data.
+    </p>
+    <p>
+      To get a copy of your data or have your account deleted, email
+      <a href="mailto:privacy@f6een.com">privacy@f6een.com</a> from your account address.
+      Deletion is completed within 30 days. There is currently no in-app delete button; one
+      will be added before the app is published to the App Store and Google Play.
     </p>
   </div>
 
