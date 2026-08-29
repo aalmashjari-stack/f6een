@@ -1,16 +1,41 @@
 import { useState } from 'react'
 import { signInWithEmail, signUpWithEmail } from '../lib/auth'
 
+/* رموز الاتصال — الخليج أوّلاً ثم الأكثر وروداً. الكويت الافتراضيّة. */
+const DIAL_CODES = [
+  { code: '+965', name: 'الكويت' },
+  { code: '+966', name: 'السعودية' },
+  { code: '+971', name: 'الإمارات' },
+  { code: '+974', name: 'قطر' },
+  { code: '+973', name: 'البحرين' },
+  { code: '+968', name: 'عُمان' },
+  { code: '+962', name: 'الأردن' },
+  { code: '+20', name: 'مصر' },
+  { code: '+961', name: 'لبنان' },
+  { code: '+964', name: 'العراق' },
+] as const
+
 const MIN_PASSWORD = 8
+
+/** العمر بالسنوات — بالتاريخ الكامل لا بطرح السنة، وإلا أخطأ بسنة قبل الميلاد. */
+function ageFrom(birth: string): number | null {
+  if (!birth) return null
+  const b = new Date(birth)
+  if (Number.isNaN(b.getTime())) return null
+  const now = new Date()
+  let a = now.getFullYear() - b.getFullYear()
+  const m = now.getMonth() - b.getMonth()
+  if (m < 0 || (m === 0 && now.getDate() < b.getDate())) a--
+  return a
+}
 
 /**
  * إنشاء حساب بالبريد — والدخول بحساب قائم.
  *
- * **الحقول هي ما يُستعمل فعلاً ولا شيء غيره:** بريد وكلمة سرّ. حُذف الاسم
- * وتاريخ الميلاد ورقم الهاتف بقرار علي (٢٧ أغسطس ٢٠٢٦) بعد أن تبيّن أنّ
- * لا شيء في اللعبة يقرؤها: غرض التسجيل في SPEC القسم ٩ هو الرصيد وذاكرة
- * الأسئلة، وكلاهما مربوط بمعرّف الحساب؛ وأسماء اللاعبين تُكتب في الإعداد
- * ولا تغادر الجهاز.
+ * الحقول: اسم أوّل وعائلة، وبريد، وتاريخ ميلاد، ورمز دولة ورقم هاتف، وكلمة
+ * سرّ وتأكيدها. **حُذفت الزائدة ثم أُرجعت بقرار علي (٢٧ أغسطس ٢٠٢٦) لحاجة
+ * مستقبليّة** — ولا يقرؤها شيء في اللعبة اليوم، فتُذكر في سياسة الخصوصيّة
+ * وفي إقرار المتجرين ما دامت تُجمع.
  *
  * وضعان في شاشة واحدة — تسجيل ودخول — لأنّ حقولهما واحدة، وفصلهما يضاعف
  * التخطيط ويربك من أخطأ في الوضع.
@@ -20,7 +45,12 @@ const MIN_PASSWORD = 8
  */
 export function SignUp({ onBack }: { onBack: () => void }) {
   const [mode, setMode] = useState<'signup' | 'signin'>('signup')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [dialCode, setDialCode] = useState('+965')
+  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [agreed, setAgreed] = useState(false)
@@ -32,10 +62,16 @@ export function SignUp({ onBack }: { onBack: () => void }) {
   const signup = mode === 'signup'
 
   function validate(): string | null {
+    if (signup && !firstName.trim()) return 'اكتب اسمك الأول'
+    if (signup && !lastName.trim()) return 'اكتب اسم العائلة'
     if (!email.trim()) return 'اكتب بريدك الإلكتروني'
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return 'البريد غير صحيح'
     if (!password) return 'اكتب كلمة المرور'
     if (!signup) return null
+    if (!birthDate) return 'اكتب تاريخ ميلادك'
+    const age = ageFrom(birthDate)
+    if (age === null || age < 0 || age > 120) return 'تاريخ الميلاد غير صحيح'
+    if (!phone.trim()) return 'اكتب رقم هاتفك'
     if (password.length < MIN_PASSWORD) return `كلمة المرور ${MIN_PASSWORD} أحرف على الأقل`
     if (password !== confirm) return 'كلمتا المرور غير متطابقتين'
     if (!agreed) return 'وافق على سياسة الخصوصية'
@@ -53,7 +89,9 @@ export function SignUp({ onBack }: { onBack: () => void }) {
     setBusy(true)
     try {
       if (signup) {
-        const { needsEmailConfirmation } = await signUpWithEmail(email, password)
+        const { needsEmailConfirmation } = await signUpWithEmail({
+          firstName, lastName, email, birthDate, dialCode, phone, password,
+        })
         if (needsEmailConfirmation) setSent(true)
       } else {
         await signInWithEmail(email, password)
@@ -88,12 +126,41 @@ export function SignUp({ onBack }: { onBack: () => void }) {
         <h1 className="su-title">{signup ? 'إنشاء حساب' : 'تسجيل الدخول'}</h1>
         <p className="su-sub">
           {signup
-            ? 'بريدك وكلمة سرّ — لا نطلب غيرهما'
+            ? 'بياناتك تبقى عندك — لا إعلانات ولا مشاركة'
             : 'بحسابك الذي أنشأته بالبريد'}
         </p>
 
+        {signup && (
+          <div className="su-row">
+            <input className="su-in" placeholder="الاسم الأول" value={firstName}
+                   onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" />
+            <input className="su-in" placeholder="اسم العائلة" value={lastName}
+                   onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" />
+          </div>
+        )}
+
         <input className="su-in" type="email" placeholder="البريد الإلكتروني" value={email}
                onChange={(e) => setEmail(e.target.value)} autoComplete="email" dir="ltr" />
+
+        {signup && (
+          <>
+            {/* حقل تاريخ من النظام لا ثلاث قوائم — أقلّ نقرات وأقلّ خطأ. */}
+            <input className="su-in" type="date" value={birthDate}
+                   max={new Date().toISOString().slice(0, 10)}
+                   onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد" />
+
+            <div className="su-row phone">
+              <select className="su-in" value={dialCode} aria-label="رمز الدولة"
+                      onChange={(e) => setDialCode(e.target.value)}>
+                {DIAL_CODES.map((d) => (
+                  <option key={d.code} value={d.code}>{d.name} ({d.code})</option>
+                ))}
+              </select>
+              <input className="su-in" type="tel" placeholder="رقم التليفون" value={phone}
+                     onChange={(e) => setPhone(e.target.value)} autoComplete="tel" dir="ltr" />
+            </div>
+          </>
+        )}
 
         <input className="su-in" type="password" placeholder="كلمة المرور" value={password}
                onChange={(e) => setPassword(e.target.value)}
@@ -139,10 +206,12 @@ export function SignUp({ onBack }: { onBack: () => void }) {
    يفعله الإعداد. */
 const CSS = `
   body .screen.su { overflow-y:auto; }
-  .su { display:flex; justify-content:center; align-items:center;
+  .su { display:flex; justify-content:center; align-items:flex-start;
         padding:clamp(12px,3vh,32px) clamp(14px,4vw,32px); }
+  .su-row { display:grid; grid-template-columns:1fr 1fr; gap:clamp(8px,1.4vw,12px); }
+  .su-row.phone { grid-template-columns:1.15fr 1fr; }
   .su-card {
-    width:min(440px, 100%); margin-inline:auto;
+    width:min(480px, 100%); margin-inline:auto;
     display:flex; flex-direction:column; gap:clamp(9px,1.5vh,14px);
     background:var(--n-surface,#fff); border-radius:var(--n-r3,20px);
     box-shadow:var(--n-e2); padding:clamp(18px,3.4vw,30px);

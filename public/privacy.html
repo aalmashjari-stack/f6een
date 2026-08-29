@@ -87,28 +87,48 @@
   </header>
 
   <p class="lede">
-    <strong>اللعبة تعمل بلا حساب.</strong>
-    وإن سجّلت الدخول، فكلّ ما نأخذه هو ما يعطينا إيّاه مزوّد الدخول — بريدك واسمك
-    وصورتك — ومعرّفات الأسئلة التي ظهرت لك، حتى لا تتكرّر عليك. لا إعلانات، ولا
-    أدوات تتبّع، ولا بيع بيانات، ولا مشاركة مع أحد.
+    <strong>لا نجمع شيئاً حتى تُنشئ حساباً.</strong>
+    وحين تُنشئه، نأخذ ما تكتبه في نموذج التسجيل أو ما يعطينا إيّاه مزوّد الدخول،
+    ومعرّفات الأسئلة التي ظهرت لك حتى لا تتكرّر عليك. لا إعلانات، ولا أدوات تتبّع،
+    ولا بيع بيانات، ولا مشاركة مع أحد.
   </p>
 
-  <h2>ما يُجمع إن سجّلت الدخول</h2>
-  <p>تسجيل الدخول اليوم عبر <strong>غوغل</strong>. حين تختار حسابك، تعطينا غوغل ثلاثة أشياء لا غير:</p>
+  <h2>ما يُجمع عند إنشاء الحساب</h2>
+
+  <p>للحساب طريقان، وما يُجمع يختلف بينهما:</p>
+
+  <p><strong>١ · التسجيل بالبريد.</strong> تكتب في النموذج:</p>
   <ul>
-    <li><strong>بريدك الإلكتروني</strong> — هويّة الحساب.</li>
-    <li><strong>اسمك</strong> كما هو في حساب غوغل.</li>
-    <li><strong>صورة حسابك</strong> إن كانت لديك واحدة.</li>
+    <li><strong>الاسم الأول واسم العائلة</strong></li>
+    <li><strong>البريد الإلكتروني</strong> — هويّة الحساب، وإليه تصل رسالة التأكيد.</li>
+    <li><strong>تاريخ الميلاد</strong></li>
+    <li><strong>رقم الهاتف</strong> ورمز دولته</li>
+    <li><strong>كلمة المرور</strong> — لا نراها ولا نحفظها نصّاً: تُخزَّن مُعمّاة عند
+      مزوّد المصادقة، ولا يستطيع أحد — نحن أوّلهم — استخراجها.</li>
+  </ul>
+
+  <p class="note">
+    <strong>وبصراحة:</strong> تاريخ الميلاد ورقم الهاتف <strong>لا يُستعملان اليوم في
+    شيء</strong> — لا نرسل رسائل نصّية ولا نبني على العمر ميزةً. حُفظا لخدمات قد
+    تأتي لاحقاً. وإن قرّرنا استعمالهما في شيء جديد، نقول ذلك هنا قبل أن يبدأ.
+  </p>
+
+  <p><strong>٢ · الدخول عبر غوغل.</strong> نطلب نطاقين لا غير
+    (<code>email</code> و<code>profile</code>)، فتعطينا غوغل ثلاثة أشياء:</p>
+  <ul>
+    <li><strong>بريدك الإلكتروني</strong></li>
+    <li><strong>اسمك</strong> كما هو في حساب غوغل</li>
+    <li><strong>صورة حسابك</strong> إن كانت لديك واحدة</li>
   </ul>
   <p>
-    نطلب هذين النطاقين فقط (<code>email</code> و<code>profile</code>). لا نصل إلى بريدك
-    ولا جهات اتصالك ولا ملفّاتك ولا أيّ شيء آخر في حسابك، ولا نستطيع ذلك أصلاً.
+    ولا نصل إلى بريدك ولا جهات اتصالك ولا ملفّاتك ولا أيّ شيء آخر في حسابك، ولا
+    نستطيع ذلك أصلاً.
   </p>
 
   <h2>ما يُحفظ على خوادمنا</h2>
   <table>
     <tr><th>ماذا</th><th>لماذا</th></tr>
-    <tr><td>بيانات حسابك من غوغل</td><td>ليعرف التطبيق أنّك أنت عند فتحه على جهاز آخر</td></tr>
+    <tr><td>بيانات حسابك — من النموذج أو من غوغل</td><td>ليعرف التطبيق أنّك أنت عند فتحه على جهاز آخر</td></tr>
     <tr><td>رصيد الألعاب</td><td>عدد الجلسات المتاحة لك</td></tr>
     <tr><td>معرّفات الأسئلة التي ظهرت لك</td><td>حتى لا يتكرّر عليك سؤال سمعته</td></tr>
   </table>
@@ -199,10 +219,17 @@
   <div class="en">
     <h2>English summary</h2>
     <p>
-      <strong>فطين (F6een) works without an account.</strong> If you do sign in — currently
-      with Google — we receive only your <strong>email, name, and profile picture</strong>
-      (the <code>email</code> and <code>profile</code> scopes). We cannot read your mail,
-      contacts, or files.
+      <strong>فطين (F6een) collects nothing until you create an account.</strong> You can
+      register with <strong>email and password</strong> — giving us your first and last name,
+      email, date of birth, and phone number — or sign in with <strong>Google</strong>, which
+      gives us only your email, name, and profile picture (the <code>email</code> and
+      <code>profile</code> scopes). We cannot read your mail, contacts, or files, and we never
+      see your password: it is stored hashed by our auth provider.
+    </p>
+    <p>
+      <strong>Date of birth and phone number are not used for anything today.</strong> We send
+      no SMS and build no age-based features; they are kept for possible future services. If
+      that changes, this page changes first.
     </p>
     <p>
       On our servers we keep three things: your account details, your games balance, and the

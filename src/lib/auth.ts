@@ -71,22 +71,45 @@ export async function deleteAccount() {
   await supabase.auth.signOut()
 }
 
+/** بيانات التسجيل. الهاتف والميلاد اختياريّان في الاستعمال، مطلوبان في النموذج. */
+export interface SignUpFields {
+  firstName: string
+  lastName: string
+  email: string
+  birthDate: string   // YYYY-MM-DD
+  dialCode: string    // مثل +965
+  phone: string
+  password: string
+}
+
 /**
  * إنشاء حساب بالبريد وكلمة السرّ.
  *
- * **البريد وحده وكلمة السرّ** — لا اسم ولا ميلاد ولا هاتف. غرض التسجيل في
- * SPEC القسم ٩ شيئان: الرصيد وذاكرة الأسئلة، وكلاهما مربوط بمعرّف الحساب
- * لا بصاحبه. وأسماء اللاعبين تُكتب في الإعداد ولا تغادر الجهاز.
+ * **الحقول الزائدة محفوظة لاستعمال لاحق بقرار علي (٢٧ أغسطس ٢٠٢٦)** — لا
+ * يقرؤها شيء في اللعبة اليوم. وموضعها `user_metadata` لا جدولٌ جديد: بيانات
+ * ملفٍّ شخصيّ لا يُستعلَم عنها، فوضعها هنا يوفّر هجرةً وعموداً لكل حقل
+ * يُضاف أو يُحذف. والرصيد وذاكرة الأسئلة تبقى في جداولهما.
  *
- * وما لا يُستعمل لا يُجمع: كل حقل زائد يصير إقراراً في المتجرين، وبنداً في
- * سياسة الخصوصيّة، ومسؤوليّةً عند التسريب. وتاريخ الميلاد خاصّةً يجرّ
- * التزامات بيانات الأطفال بلا مقابل.
+ * وما دامت تُجمع، فهي تُذكر في سياسة الخصوصيّة وفي إقرار المتجرين — وتاريخ
+ * الميلاد خاصّةً يجرّ التزامات بيانات الأطفال.
+ *
+ * ولا يُلمس `profiles`: المُطلِق `handle_new_user` يُنشئ صفّه بالرصيد وحده.
  */
-export async function signUpWithEmail(email: string, password: string) {
+export async function signUpWithEmail(f: SignUpFields) {
   const { data, error } = await supabase.auth.signUp({
-    email: email.trim(),
-    password,
-    options: { emailRedirectTo: window.location.origin },
+    email: f.email.trim(),
+    password: f.password,
+    options: {
+      emailRedirectTo: window.location.origin,
+      data: {
+        first_name: f.firstName.trim(),
+        last_name: f.lastName.trim(),
+        full_name: `${f.firstName.trim()} ${f.lastName.trim()}`.trim(),
+        birth_date: f.birthDate,
+        /* الصفر البادئ يُحذف: من يكتب ٠٥٠… مع رمز دولة يُنتج رقماً خاطئاً. */
+        phone: f.phone.trim() ? `${f.dialCode}${f.phone.trim().replace(/^0+/, '')}` : null,
+      },
+    },
   })
   if (error) throw error
 
