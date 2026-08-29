@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import { STAGES } from '../game/stages'
 import { signInWithGoogle } from '../lib/auth'
+import { SignUp } from './SignUp'
 
 /**
  * شاشة التعريف — تلي شاشة الشعار.
@@ -21,13 +22,15 @@ import { signInWithGoogle } from '../lib/auth'
  *
  * **غوغل يعمل فعلاً** عبر Supabase. وApple والبريد معطّلان بسببين مختلفين:
  * آبل تحتاج حساب مطوّر مدفوعاً لم يُسجَّل بعد، والبريد يحتاج شاشة إدخال
- * ورمز تحقّق لم تُصمَّم. زرٌّ معطّل بسبب مكتوب خيرٌ من زرٍّ يعد بما لا يفي.
+ * ورمز تحقّق. والبريد صار يفتح شاشة `SignUp` (طلب علي ٢٧ أغسطس ٢٠٢٦)،
+ * وبقيت آبل معطّلةً بسبب مكتوب — زرٌّ معطّل بسبب خيرٌ من زرٍّ يعد بما لا يفي.
  *
  * ولم يعد هنا طريق إلى اللعبة بلا حساب: هذا ما يشترطه SPEC القسم ٩
  * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
  */
 export function Intro({ onDone }: { onDone?: () => void }) {
   const signinRef = useRef<HTMLElement>(null)
+  const [email, setEmail] = useState(false)
   const [busy, setBusy] = useState(false)
   /* رجوعٌ فاشل من غوغل يحمل سببه في العنوان. بدون قراءته يجد اللاعب نفسه
      في شاشة التعريف ثانيةً بلا كلمة تفسّر — فيظنّ الزرّ معطّلاً. */
@@ -53,6 +56,8 @@ export function Intro({ onDone }: { onDone?: () => void }) {
       setBusy(false)
     }
   }
+
+  if (email) return <SignUp onBack={() => setEmail(false)} />
 
   return (
     <div className="screen intro">
@@ -110,7 +115,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
               {busy ? 'جارٍ التحويل…' : 'المتابعة عبر Google'}
             </button>
 
-            <button className="method mail" disabled title="قريباً">
+            <button className="method mail" onClick={() => setEmail(true)}>
               المتابعة بالبريد
             </button>
           </div>

@@ -70,3 +70,34 @@ export async function deleteAccount() {
   if (error) throw error
   await supabase.auth.signOut()
 }
+
+/**
+ * إنشاء حساب بالبريد وكلمة السرّ.
+ *
+ * **البريد وحده وكلمة السرّ** — لا اسم ولا ميلاد ولا هاتف. غرض التسجيل في
+ * SPEC القسم ٩ شيئان: الرصيد وذاكرة الأسئلة، وكلاهما مربوط بمعرّف الحساب
+ * لا بصاحبه. وأسماء اللاعبين تُكتب في الإعداد ولا تغادر الجهاز.
+ *
+ * وما لا يُستعمل لا يُجمع: كل حقل زائد يصير إقراراً في المتجرين، وبنداً في
+ * سياسة الخصوصيّة، ومسؤوليّةً عند التسريب. وتاريخ الميلاد خاصّةً يجرّ
+ * التزامات بيانات الأطفال بلا مقابل.
+ */
+export async function signUpWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim(),
+    password,
+    options: { emailRedirectTo: window.location.origin },
+  })
+  if (error) throw error
+
+  /* تأكيد البريد مفعّل في المشروع، فالتسجيل الناجح لا يعطي جلسة بل يرسل
+     رسالة. نُرجع هذا صراحةً كي تقول الشاشة «افحص بريدك» بدل أن تنتظر
+     جلسةً لا تأتي. */
+  return { needsEmailConfirmation: !data.session }
+}
+
+/** الدخول بحساب بريد موجود. */
+export async function signInWithEmail(email: string, password: string) {
+  const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+  if (error) throw error
+}
