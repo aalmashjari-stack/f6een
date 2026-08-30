@@ -22,7 +22,14 @@ const CELEB_IMAGES: Record<string, string> = Object.fromEntries(
   ]),
 )
 
-/** مصدر صورة المفتاح، أو الصورة المؤقتة إن لم يُسجَّل بعد. */
+/**
+ * مصدر صورة المفتاح، أو الصورة المؤقتة إن لم يُسجَّل بعد.
+ *
+ * والرابط الكامل يمرّ كما هو: صورةٌ رفعها المدير من اللوحة تُحفظ في حقل
+ * `image` رابطاً لا مفتاحاً — فمنفذٌ واحد يخدم المشحون والمرفوع، ولا تحتاج
+ * كل شاشةٍ تعرض صورةً أن تعرف الفرق.
+ */
 export function celebSrc(key?: string): string {
+  if (key && /^https?:\/\//.test(key)) return key
   return (key && CELEB_IMAGES[key]) || placeholder
 }

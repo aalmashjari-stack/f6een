@@ -239,11 +239,29 @@ export async function deleteQuestionEdit(id: string): Promise<'override' | 'new'
 
 /* ============================== الفئات ============================== */
 
-/** الفئات المضافة من اللوحة — فئات البنك المشحون ليست هنا. */
-export async function listExtraCategories(): Promise<string[]> {
+export interface CategoryRow {
+  name: string
+  art_url: string | null
+  /** false = صفٌّ لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة، فلا يزيد في القائمة. */
+  is_extra: boolean
+}
+
+/** صفوف جدول الفئات: المضافة، وصفوف الصور البديلة لفئات البنك. */
+export async function listCategoryRows(): Promise<CategoryRow[]> {
   const { data, error } = await supabase.rpc('extra_categories')
   if (error) throw error
-  return ((data ?? []) as { name: string }[]).map((r) => r.name)
+  return (data ?? []) as CategoryRow[]
+}
+
+/** أسماء الفئات المضافة وحدها — لقائمة التصنيف في نموذج السؤال. */
+export async function listExtraCategories(): Promise<string[]> {
+  return (await listCategoryRows()).filter((r) => r.is_extra !== false).map((r) => r.name)
+}
+
+/** تعيين صورة فئة — `null` يعيدها إلى صورتها المشحونة. */
+export async function saveCategoryArt(name: string, url: string | null): Promise<void> {
+  const { error } = await supabase.rpc('admin_set_category_art', { p_name: name, p_url: url })
+  if (error) throw new Error(translate(error.message))
 }
 
 export async function addCategory(name: string): Promise<string> {

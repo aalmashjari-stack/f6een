@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { setExtraCategories, setQuestionOverlay } from '../game/bank'
+import { setCategoryArt } from '../components/categoryArt'
 import type { Level, Question } from '../game/types'
 
 /**
@@ -78,27 +79,48 @@ export async function syncOverlay(): Promise<void> {
  * الثلاثة — الشرط في `playableCategories`، وهو الذي يمنع لعبةً تسقط عند
  * أوّل سؤالٍ «صعب» في فئةٍ ليس فيها صعب.
  */
-function loadCats(): string[] {
+interface CatRow {
+  name: string
+  art_url: string | null
+  is_extra: boolean
+}
+
+function loadCats(): CatRow[] {
   try {
     const raw = localStorage.getItem(CATS_KEY)
-    return raw ? (JSON.parse(raw) as string[]) : []
+    const parsed = raw ? JSON.parse(raw) : []
+    /* الشكل القديم كان مصفوفة أسماء — تُقرأ ولا تُسقط الفئات بتحديث. */
+    return Array.isArray(parsed)
+      ? parsed.map((r) =>
+          typeof r === 'string' ? { name: r, art_url: null, is_extra: true } : (r as CatRow),
+        )
+      : []
   } catch {
     return []
   }
 }
 
+function applyCats(rows: CatRow[]) {
+  /* الصفّ الذي لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة لا يدخل قائمة الفئات —
+     وإلّا ظهرت الفئة مرّتين. */
+  setExtraCategories(rows.filter((r) => r.is_extra !== false).map((r) => r.name))
+  setCategoryArt(
+    Object.fromEntries(rows.filter((r) => r.art_url).map((r) => [r.name, r.art_url as string])),
+  )
+}
+
 export function applyCachedCategories() {
-  setExtraCategories(loadCats())
+  applyCats(loadCats())
 }
 
 export async function syncCategories(): Promise<void> {
   const { data, error } = await supabase.rpc('extra_categories')
   if (error) throw error
-  const names = (data ?? []).map((r: { name: string }) => r.name)
+  const rows = (data ?? []) as CatRow[]
   try {
-    localStorage.setItem(CATS_KEY, JSON.stringify(names))
+    localStorage.setItem(CATS_KEY, JSON.stringify(rows))
   } catch {
     /* تجاهل */
   }
-  setExtraCategories(names)
+  applyCats(rows)
 }

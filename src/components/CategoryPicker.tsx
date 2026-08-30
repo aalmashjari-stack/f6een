@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { displayName, playableCategories } from '../game/bank'
-import { CATEGORY_ART } from './categoryArt'
+import { categoryArt } from './categoryArt'
 import { play } from '../audio/sfx'
 
 /**
@@ -175,8 +175,8 @@ export function CategoryPicker({
                   // طلب المتصفّح مساراً وهمياً وفشل. الصبغة فوق --surface تكفي
                   // ريثما تصل الصورة، فتبقى البطاقة قابلة للّعب لا مكسورة.
                   style={
-                    CATEGORY_ART[cat]
-                      ? ({ '--art': `url(${CATEGORY_ART[cat]})` } as React.CSSProperties)
+                    categoryArt(cat)
+                      ? ({ '--art': `url(${categoryArt(cat)})` } as React.CSSProperties)
                       : undefined
                   }
                 />

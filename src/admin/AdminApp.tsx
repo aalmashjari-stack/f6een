@@ -9,7 +9,9 @@ import type {
   AdminSession,
   AdminStats,
   AdminUser,
+  CategoryRow,
 } from '../lib/admin'
+import { uploadArt } from '../lib/uploads'
 import type { Question } from '../game/types'
 import {
   addCategory,
@@ -21,10 +23,12 @@ import {
   isAdmin,
   listCodes,
   listFlags,
+  listCategoryRows,
   listExtraCategories,
   listQuestionEdits,
   listSessions,
   listUsers,
+  saveCategoryArt,
   saveQuestion,
   setBalance,
   setFlag,
@@ -918,6 +922,15 @@ function Questions() {
   )
 }
 
+/**
+ * صورة السؤال في اللوحة: الرابط المرفوع يُعرض كما هو، والمفتاح المشحون
+ * (`celeb-…`) لا تعرفه اللوحة إلّا بتحميل صور المشاهير كلّها — ولا تستحقّ
+ * معاينةٌ صغيرة ذلك، فيُكتفى بالإطار الفارغ ويبقى المفتاح محفوظاً.
+ */
+function resolveImage(image: string): string | null {
+  return /^https?:\/\//.test(image) ? image : null
+}
+
 function toQuestion(e: AdminQuestionEdit): Question {
   return {
     id: e.question_id,
@@ -956,6 +969,7 @@ function QuestionForm({
   const [topic, setTopic] = useState(base?.topic ?? '')
   const [question, setQuestion] = useState(base?.question ?? '')
   const [answer, setAnswer] = useState(base?.answer ?? '')
+  const [image, setImage] = useState<string | null>(base?.image ?? null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
@@ -971,7 +985,7 @@ function QuestionForm({
         topic,
         question,
         answer,
-        image: base?.image ?? null,
+        image,
       })
       onSaved()
     } catch (e2) {
@@ -1052,11 +1066,27 @@ function QuestionForm({
           />
         </div>
 
-        {base?.image && (
+        <div className="a-field">
+          <label>الصورة</label>
+          <ArtCell
+            src={image ? resolveImage(image) : null}
+            uploaded={image !== null}
+            onPick={async (f) => {
+              setErr(null)
+              try {
+                setImage(await uploadArt(f, 'questions'))
+              } catch (e2) {
+                setErr(e2 instanceof Error ? e2.message : 'تعذّر رفع الصورة')
+              }
+            }}
+            onClear={() => setImage(null)}
+          />
+          {/* الصورة تغيّر شكل السؤال كلّه، لا تزيّنه: `QuestionView` يعرضها
+              بدل النصّ وفوقها «من صاحب الصورة؟». */}
           <p className="a-note" style={{ padding: 0 }}>
-            سؤال صورة — الصورة تبقى كما هي، والنصّ والإجابة وحدهما يُعدَّلان.
+            سؤالٌ بصورة يُعرض صورةً فوقها «من صاحب الصورة؟» — والنصّ لا يظهر، والإجابة اسم صاحبها.
           </p>
-        )}
+        </div>
 
         {err && <p className="a-err">{err}</p>}
 
@@ -1107,27 +1137,45 @@ function QuestionForm({
 function Categories() {
   const bank = useBank()
   const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
-  const { data: extra, err, reload } = useLoad<string[]>(listExtraCategories)
+  const { data: cats, err, reload } = useLoad<CategoryRow[]>(listCategoryRows)
+  const [art, setArt] = useState<Record<string, string> | null>(null)
   const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
+  /* صور الفئات المشحونة تُحمَّل عند فتح اللسان وحده — هي ملفّات صور في
+     الحزمة، ولا معنى لتحميلها لمن جاء يمنح لعبة. */
+  useEffect(() => {
+    let alive = true
+    import('../components/categoryArt').then((m) => {
+      if (alive) setArt(m.CATEGORY_ART)
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
+
   const rows = useMemo(() => {
-    if (!bank || !edits || !extra) return null
+    if (!bank || !edits || !cats) return null
     const merged = merge(bank, edits)
-    const names = [...new Set([...bank.map((b) => b.category), ...extra])]
+    const byName = new Map(cats.map((c) => [c.name, c]))
+    const extraNames = cats.filter((c) => c.is_extra !== false).map((c) => c.name)
+    const names = [...new Set([...bank.map((b) => b.category), ...extraNames])]
     return names.map((cat) => {
       const mine = merged.filter((r) => r.q.category === cat)
       const counts = LEVELS.map((l) => mine.filter((r) => r.q.level === l).length)
+      const row = byName.get(cat)
       return {
         cat,
         counts,
         total: mine.length,
-        added: extra.includes(cat),
+        added: row?.is_extra !== false && byName.has(cat) && extraNames.includes(cat),
+        uploaded: row?.art_url ?? null,
+        shipped: art?.[cat] ?? null,
         missing: LEVELS.filter((_, i) => counts[i] === 0),
       }
     })
-  }, [bank, edits, extra])
+  }, [bank, edits, cats, art])
 
   async function add(e: React.FormEvent) {
     e.preventDefault()
@@ -1156,6 +1204,18 @@ function Categories() {
     }
   }
 
+  async function art_(cat: string, file: File | null) {
+    setMsg(null)
+    try {
+      const url = file ? await uploadArt(file, 'categories') : null
+      await saveCategoryArt(cat, url)
+      setMsg({ ok: true, text: url ? `بُدّلت صورة «${cat}»` : `أُعيدت صورة «${cat}» الأصلية` })
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر رفع الصورة' })
+    }
+  }
+
   if (err) return <p className="a-err">{err}</p>
   if (!rows) return <p className="a-note">…</p>
 
@@ -1178,20 +1238,23 @@ function Categories() {
         {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
       </form>
 
+      {/* الصورة المرفوعة تُجلب من الشبكة بخلاف المشحونة — أوّل عرضٍ لها
+          يحتاج اتّصالاً، ثمّ يخزّنها المتصفّح. */}
       <p className="a-note">
-        الفئة الجديدة بلا صورة: تظهر بطاقتها بلونها واسمها حتى تُضاف صورتها في إصدار قادم.
+        الصورة المفضّلة بنسبة ٣:٢ وعرض ١٠٢٤ بكسلاً. والمرفوعة تحتاج اتّصالاً في أوّل عرض، بخلاف
+        الصور المشحونة مع التطبيق.
       </p>
 
       <div className="a-card a-scroll">
         <table className="a-tbl">
           <thead>
             <tr>
+              <th>الصورة</th>
               <th>الفئة</th>
               <th>المصدر</th>
               <th>سهل</th>
               <th>متوسط</th>
               <th>صعب</th>
-              <th>المجموع</th>
               <th>في العجلة</th>
               <th />
             </tr>
@@ -1199,6 +1262,14 @@ function Categories() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.cat}>
+                <td>
+                  <ArtCell
+                    src={r.uploaded ?? r.shipped}
+                    uploaded={r.uploaded !== null}
+                    onPick={(f) => art_(r.cat, f)}
+                    onClear={() => art_(r.cat, null)}
+                  />
+                </td>
                 <td>
                   <b>{r.cat}</b>
                 </td>
@@ -1212,7 +1283,6 @@ function Categories() {
                     {n}
                   </td>
                 ))}
-                <td className="num">{r.total}</td>
                 <td>
                   {r.missing.length === 0 ? (
                     <span className="tag finished">نعم</span>
@@ -1238,5 +1308,58 @@ function Categories() {
         </table>
       </div>
     </>
+  )
+}
+
+/**
+ * خانة صورة: معاينة، واختيار ملفّ، وإزالة.
+ *
+ * الإزالة تظهر للمرفوعة وحدها — الصورة المشحونة في الحزمة لا تُحذف من هنا،
+ * وأقصى ما يفعله المدير أن يضع فوقها غيرها.
+ */
+function ArtCell({
+  src,
+  uploaded,
+  onPick,
+  onClear,
+}: {
+  src: string | null
+  uploaded: boolean
+  onPick: (f: File) => void
+  onClear: () => void
+}) {
+  const [busy, setBusy] = useState(false)
+
+  async function pick(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    e.target.value = ''
+    if (!f) return
+    setBusy(true)
+    await Promise.resolve(onPick(f))
+    setBusy(false)
+  }
+
+  return (
+    <span className="art-cell">
+      {src ? <img className="art-thumb" src={src} alt="" /> : <span className="art-thumb empty" />}
+      <label className="a-btn art-pick">
+        {busy ? '…' : uploaded ? 'تبديل' : 'رفع'}
+        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={pick} hidden />
+      </label>
+      {uploaded && (
+        <button className="a-btn danger" onClick={onClear}>
+          إزالة
+        </button>
+      )}
+      <style>{`
+        .art-cell { display:inline-flex; align-items:center; gap:6px; }
+        .art-thumb {
+          width:56px; height:38px; object-fit:cover; border-radius:8px;
+          background:var(--n-surface-2); display:block;
+        }
+        .art-thumb.empty { box-shadow:inset 0 0 0 1px var(--n-line); }
+        .art-pick { cursor:pointer; }
+      `}</style>
+    </span>
   )
 }

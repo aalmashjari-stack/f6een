@@ -39,3 +39,22 @@ export const CATEGORY_ART: Record<string, string> = {
   // أُضيفت في ٢٣ أغسطس ٢٠٢٦ مع فئة الأمثال والألغاز — ٣:٢ أصلاً فلا تُقصّ
   'أمثال وألغاز': proverbsRiddles,
 }
+
+/* ===================== الصور المرفوعة من اللوحة ===================== */
+/**
+ * صورة فئة رفعها المدير — تعلو على المشحونة إن وُجدت، وتملأ فراغ الفئة
+ * الجديدة التي لا صورة لها في الحزمة.
+ *
+ * **المشحون هو الافتراض والمرفوع هو الاستثناء المعكوس هنا عمداً:** من بدّل
+ * صورةً من اللوحة يريد الجديدة لا القديمة، وإلّا لم يكن للتبديل معنى.
+ * وحذف الرابط يعيد المشحونة كما كانت.
+ */
+let uploaded: Record<string, string> = {}
+
+export function setCategoryArt(map: Record<string, string>) {
+  uploaded = map
+}
+
+export function categoryArt(cat: string): string | undefined {
+  return uploaded[cat] ?? CATEGORY_ART[cat]
+}
