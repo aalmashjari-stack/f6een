@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { deleteAccount, signOut } from '../lib/auth'
+import { day } from '../lib/date'
 import type { GameSummary, Profile } from '../lib/games'
 import { fetchMyGames, fetchProfile, gamesLabel, redeemGiftCode } from '../lib/games'
 
@@ -419,15 +420,4 @@ function GameRow({ game }: { game: GameSummary }) {
 
 function str(v: unknown): string {
   return typeof v === 'string' ? v.trim() : ''
-}
-
-/**
- * تاريخ بأرقام لاتينية — `toLocaleDateString` العربيّ يعطي ٠١٢٣، وكلّ رقم في
- * واجهة فطين لاتينيّ (انظر الأرقام في الختام والعجلة).
- */
-function day(iso: string): string {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return iso
-  const p = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())}`
 }

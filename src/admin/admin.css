@@ -1,0 +1,133 @@
+/* لوحة الإدارة — ورقة مستقلّة.
+ *
+ * لا تشارك `theme.css` ولا `showtime.css`: تلك للمجلس على شاشة كبيرة من
+ * بعيد (خطّ ضخم، ألوان مسرح، قاعدة الشاشة الواحدة)، وهذه جدولٌ كثيف يُقرأ
+ * من نصف متر ويتمرّر بحرّية. خلطهما يفسد الاثنتين.
+ *
+ * والرموز من «نيو» نفسها (`src/skins/neo.css`) كي لا تصير اللوحة تطبيقاً
+ * آخر بصرياً.
+ */
+
+:root {
+  --n-bg: #F0EFF7;
+  --n-surface: #FFFFFF;
+  --n-surface-2: #F8F7FC;
+  --n-ink: #1A1626;
+  --n-ink-2: #5D5670;
+  --n-ink-3: #948CA8;
+  --n-line: #E5E1F0;
+  --n-brand: #7A3E9D;
+  --n-brand-tint: #F3EAF8;
+  --n-bad: #DC4033;
+  --n-good: #2F9E63;
+  --n-warn: #D97528;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--n-bg);
+  color: var(--n-ink);
+  font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  -webkit-text-size-adjust: 100%;
+}
+
+.a-wrap { max-width: 1180px; margin: 0 auto; padding: 18px clamp(10px, 2vw, 24px) 60px; }
+
+/* ── الرأس ── */
+.a-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-block-end: 16px;
+}
+.a-title { margin: 0; font-size: 20px; font-weight: 900; }
+.a-title span { color: var(--n-brand); }
+.a-who { display: flex; align-items: center; gap: 10px; }
+.a-mail { font-size: 13px; font-weight: 700; color: var(--n-ink-3); direction: ltr; }
+
+/* ── البطاقات ── */
+.a-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.a-tile {
+  background: var(--n-surface); border-radius: 12px; padding: 11px 13px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.a-tile b { display: block; font-size: 20px; font-weight: 900; color: var(--n-brand);
+  font-variant-numeric: tabular-nums; }
+.a-tile span { font-size: 12px; font-weight: 700; color: var(--n-ink-3); }
+
+/* ── الألسنة ── */
+.a-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 10px; }
+.a-tab {
+  font: inherit; font-weight: 800; font-size: 13px; cursor: pointer;
+  padding: 8px 14px; border: 0; border-radius: 999px;
+  background: var(--n-surface); color: var(--n-ink-2);
+}
+.a-tab.on { background: var(--n-brand); color: #fff; }
+
+/* ── الجدول ──
+   الغلاف وحده يتمرّر أفقياً: الصفحة نفسها لا تنزلق تحت الإصبع، وأعمدة
+   الحسابات تسعة لا تدخل في جوال. */
+.a-card { background: var(--n-surface); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+.a-scroll { overflow-x: auto; }
+table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
+.a-tbl th, .a-tbl td { padding: 9px 12px; text-align: start; }
+.a-tbl th {
+  font-size: 11px; font-weight: 900; color: var(--n-ink-3);
+  border-block-end: 1px solid var(--n-line); position: sticky; inset-block-start: 0;
+  background: var(--n-surface);
+}
+.a-tbl td { font-size: 13px; font-weight: 700; color: var(--n-ink-2);
+  border-block-end: 1px solid var(--n-line); }
+.a-tbl tr:last-child td { border-block-end: 0; }
+.a-tbl tr:hover td { background: var(--n-surface-2); }
+.num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+.ltr { direction: ltr; unicode-bidi: isolate; text-align: start; }
+.muted { color: var(--n-ink-3); font-weight: 700; }
+
+/* ── الحالات ── */
+.tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;
+  background: var(--n-surface-2); color: var(--n-ink-3); }
+.tag.open { color: var(--n-brand); background: var(--n-brand-tint); }
+.tag.abandoned { color: var(--n-warn); }
+.tag.finished { color: var(--n-good); }
+
+/* ── الحقول والأزرار ── */
+.a-in, .a-num {
+  font: inherit; font-weight: 700; font-size: 13px;
+  padding: 8px 11px; border-radius: 9px;
+  border: 1px solid var(--n-line); background: var(--n-surface-2); color: var(--n-ink);
+}
+.a-num { width: 72px; text-align: center; font-variant-numeric: tabular-nums; }
+.a-in:focus, .a-num:focus { outline: none; border-color: var(--n-brand); background: #fff; }
+.a-btn {
+  font: inherit; font-weight: 800; font-size: 13px; cursor: pointer;
+  padding: 8px 13px; border: 0; border-radius: 9px;
+  background: var(--n-surface-2); color: var(--n-ink);
+}
+.a-btn.go { background: var(--n-brand); color: #fff; }
+.a-btn.danger { color: var(--n-bad); }
+.a-btn:disabled { opacity: .45; cursor: default; }
+
+.a-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-block-end: 10px; }
+.a-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: end;
+  padding: 12px; background: var(--n-surface); border-radius: 14px; margin-block-end: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+.a-field { display: flex; flex-direction: column; gap: 4px; }
+.a-field label { font-size: 11px; font-weight: 800; color: var(--n-ink-3); }
+
+.a-note { font-size: 13px; font-weight: 700; color: var(--n-ink-3); padding: 14px; margin: 0; }
+.a-err { font-size: 13px; font-weight: 800; color: var(--n-bad); margin: 0; }
+.a-ok { font-size: 13px; font-weight: 800; color: var(--n-good); margin: 0; }
+
+/* ── بوّابة الدخول ── */
+.a-gate {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.a-gate-card {
+  width: min(360px, 100%); display: flex; flex-direction: column; gap: 10px;
+  background: var(--n-surface); padding: 20px; border-radius: 16px;
+  box-shadow: 0 22px 50px rgba(0,0,0,.10);
+}
+.a-gate-card h1 { margin: 0 0 4px; font-size: 18px; font-weight: 900; }
