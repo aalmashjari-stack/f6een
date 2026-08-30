@@ -1460,7 +1460,7 @@ function ImportDialog({
           {/* نموذجٌ بأعمدته الصحيحة أقصرُ من شرحها: يُفتح في إكسل ويُملأ.
               وعلامة ترتيب البايتات في أوّله تجعل إكسل يقرأ العربية صحيحة. */}
           <button className="a-btn" type="button" onClick={template}>
-            نزّل نموذجاً
+            حمّل نموذجاً
           </button>
           {plan && (
             <span className="muted">
