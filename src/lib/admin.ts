@@ -106,16 +106,39 @@ export async function deleteCode(code: string): Promise<void> {
   if (error) throw new Error(translate(error.message))
 }
 
-export interface AdminReport {
+export type FlagStatus = 'pending' | 'ok' | 'disabled'
+
+export interface AdminFlag {
   question_id: string
+  status: FlagStatus
   reports: number
+  first_at: string
   last_at: string
+  note: string | null
+  reviewed_at: string | null
 }
 
-export async function listReports(): Promise<AdminReport[]> {
-  const { data, error } = await supabase.rpc('admin_reports')
+/** طابور المراجعة — المحجوز أوّلاً، ثمّ الأحدث بلاغاً. */
+export async function listFlags(): Promise<AdminFlag[]> {
+  const { data, error } = await supabase.rpc('admin_flags')
   if (error) throw error
-  return (data ?? []) as AdminReport[]
+  return (data ?? []) as AdminFlag[]
+}
+
+/**
+ * قرار المراجعة. `ok` يعيد السؤال إلى السحب، و`disabled` يلغيه نهائياً،
+ * و`pending` يعيد حجزه.
+ *
+ * ولا يُعدَّل نصّ السؤال من هنا: البنك ملفٌّ يُشحن مع التطبيق، فالتصحيح يقع
+ * فيه ويصل الأجهزة مع التحديث — والقرار المسجَّل بعده `ok`.
+ */
+export async function setFlag(questionId: string, status: FlagStatus, note?: string) {
+  const { error } = await supabase.rpc('admin_set_flag', {
+    p_question_id: questionId,
+    p_status: status,
+    p_note: note ?? null,
+  })
+  if (error) throw new Error(translate(error.message))
 }
 
 export interface AdminStats {
@@ -145,6 +168,7 @@ const ERRORS: Record<string, string> = {
   bad_games: 'عدد الألعاب واحد فأكثر',
   code_exists: 'هذا الكود موجود',
   code_not_found: 'هذا الكود غير موجود',
+  bad_status: 'حالة غير معروفة',
 }
 
 function translate(msg: string): string {

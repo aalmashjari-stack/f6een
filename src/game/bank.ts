@@ -64,12 +64,37 @@ for (const q of ALL_QUESTIONS) {
   byLevel.get(q.level)!.push(q)
 }
 
+/* ===================== الأسئلة المحجوزة — بلاغات اللاعبين ===================== */
+/**
+ * معرّفات لا تُسحب: سؤال بُلّغ عنه محجوز حتى يراجعه المدير، أو ملغى نهائياً
+ * (`question_flags` في القاعدة).
+ *
+ * **الترشيح هنا لا في `drawOne`** لأنّ هذه هي المنابع كلّها: السحب العاديّ،
+ * وطابور الحق ما تلحق، وحتى «الأقدم استخداماً» حين ينفد المستوى. لو رُشّح
+ * في السحب وحده لعاد السؤال المعطوب من باب التنازل الأخير.
+ *
+ * ومجموعة في الذاكرة لا نداء شبكة: القائمة تُقرأ مرّة عند الإقلاع وتُخزَّن
+ * محلّياً (`src/lib/questionFlags.ts`) — واللعبة تعمل بلا إنترنت (SPEC ٦).
+ */
+let blocked: Set<string> = new Set()
+
+export function setBlockedQuestionIds(ids: Iterable<string>) {
+  blocked = new Set(ids)
+}
+
+export function blockedQuestionIds(): Set<string> {
+  return blocked
+}
+
+const allowed = (list: Question[]): Question[] =>
+  blocked.size === 0 ? list : list.filter((q) => !blocked.has(q.id))
+
 export function poolByCatLevel(category: string, level: Level): Question[] {
-  return byCatLevel.get(key(category, level)) ?? []
+  return allowed(byCatLevel.get(key(category, level)) ?? [])
 }
 
 export function poolByLevels(levels: Level[]): Question[] {
-  return levels.flatMap((l) => byLevel.get(l) ?? [])
+  return allowed(levels.flatMap((l) => byLevel.get(l) ?? []))
 }
 
 /* ========================= عائلات القوالب ========================= */

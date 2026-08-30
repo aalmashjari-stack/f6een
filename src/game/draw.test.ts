@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { drawOne, drawStage3Queue } from './draw'
-import { familyOf, poolByCatLevel, poolByLevels } from './bank'
+import { familyOf, poolByCatLevel, poolByLevels, setBlockedQuestionIds } from './bank'
 import type { Level } from './types'
 
 const CAT = 'جغرافيا ومعالم'
@@ -106,5 +106,40 @@ describe('drawStage3Queue', () => {
 
   it('من مستويَي سهل ومتوسط فقط — لا صعب في سباق الثلاثين ثانية', () => {
     for (const q of drawStage3Queue(40, new Set())) expect(q.level).not.toBe('صعب')
+  })
+})
+
+/**
+ * السؤال المبلَّغ عنه محجوز حتى يراجعه المدير — ولا يعود من باب التنازل.
+ *
+ * الترشيح في `poolByCatLevel`/`poolByLevels` لا في `drawOne`، لأنّ السحب
+ * يتنازل عند ضيق المخزون حتى يصل إلى الخلية كاملة (`cell`). الاختبار يحجز
+ * الخلية كلّها إلّا سؤالاً واحداً ويسحب مئة مرّة: بترشيحٍ في السحب وحده
+ * كانت المحجوزة تعود هنا.
+ */
+describe('الأسئلة المحجوزة لا تُسحب', () => {
+  it('لا يسحب محجوزاً ولو نفد ما سواه', () => {
+    const cell = poolByCatLevel(CAT, LEVEL)
+    const keep = cell[0].id
+    setBlockedQuestionIds(cell.slice(1).map((q) => q.id))
+    try {
+      for (let i = 0; i < 100; i++) {
+        expect(drawOne(CAT, LEVEL, new Set(cell.map((q) => q.id))).id).toBe(keep)
+      }
+    } finally {
+      setBlockedQuestionIds([])
+    }
+  })
+
+  it('طابور الحق ما تلحق لا يحمل محجوزاً', () => {
+    const pool = poolByLevels(['سهل', 'متوسط'])
+    const blocked = new Set(pool.slice(0, 40).map((q) => q.id))
+    setBlockedQuestionIds(blocked)
+    try {
+      const queue = drawStage3Queue(40, new Set())
+      expect(queue.some((q) => blocked.has(q.id))).toBe(false)
+    } finally {
+      setBlockedQuestionIds([])
+    }
   })
 })

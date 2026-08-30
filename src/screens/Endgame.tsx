@@ -366,7 +366,7 @@ function ReportPanel({
           </button>
         </header>
 
-        <p className="rp-sub">اختر السؤال المعطوب — يُعلَّم للتصحيح.</p>
+        <p className="rp-sub">اختر السؤال المعطوب — يُحجز فوراً فلا يُسحب حتى تُراجعه الإدارة.</p>
 
         {asked.length === 0 ? (
           <p className="rp-sub">لا أسئلة في هذه الجلسة.</p>

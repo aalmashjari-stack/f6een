@@ -2,17 +2,18 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { signInWithEmail, signInWithGoogle, signOut, useSession } from '../lib/auth'
 import { day, stamp } from '../lib/date'
-import type { AdminCode, AdminReport, AdminSession, AdminStats, AdminUser } from '../lib/admin'
+import type { AdminCode, AdminFlag, AdminSession, AdminStats, AdminUser } from '../lib/admin'
 import {
   createCode,
   deleteCode,
   fetchStats,
   isAdmin,
   listCodes,
-  listReports,
+  listFlags,
   listSessions,
   listUsers,
   setBalance,
+  setFlag,
 } from '../lib/admin'
 
 /**
@@ -590,49 +591,110 @@ function useBank() {
   return bank
 }
 
+const FLAG_LABEL: Record<AdminFlag['status'], string> = {
+  pending: 'محجوز',
+  ok: 'يُسحب',
+  disabled: 'ملغى',
+}
+
 function Reports() {
-  const { data, err } = useLoad<AdminReport[]>(listReports)
+  const { data, err, reload } = useLoad<AdminFlag[]>(listFlags)
   const bank = useBank()
+  const [busy, setBusy] = useState<string | null>(null)
+  const [msg, setMsg] = useState<string | null>(null)
+
+  async function decide(id: string, status: AdminFlag['status']) {
+    setBusy(id)
+    setMsg(null)
+    try {
+      await setFlag(id, status)
+      reload()
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : 'تعذّر الحفظ')
+    } finally {
+      setBusy(null)
+    }
+  }
 
   if (err) return <p className="a-err">{err}</p>
   if (!data) return <p className="a-note">…</p>
   if (data.length === 0) return <p className="a-note">لا بلاغات.</p>
 
   return (
-    <div className="a-card a-scroll">
-      <table className="a-tbl">
-        <thead>
-          <tr>
-            <th>المعرّف</th>
-            <th>السؤال</th>
-            <th>الإجابة</th>
-            <th>التصنيف</th>
-            <th>بلاغات</th>
-            <th>آخر بلاغ</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((r) => {
-            const q = bank?.get(r.question_id)
-            return (
-              <tr key={r.question_id}>
-                <td className="ltr">{r.question_id}</td>
-                <td style={{ whiteSpace: 'normal', maxWidth: 460 }}>
-                  {q ? (
-                    q.question
-                  ) : (
-                    <span className="muted">{bank ? 'ليس في البنك الحاليّ' : '…'}</span>
-                  )}
-                </td>
-                <td>{q?.answer ?? '—'}</td>
-                <td>{q ? `${q.category} · ${q.level}` : '—'}</td>
-                <td className="num">{r.reports}</td>
-                <td className="num">{day(r.last_at)}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {msg && <p className="a-err">{msg}</p>}
+      {/* المحجوز لا يُسحب لأحد حتى يُراجَع — والصفّ يقول ذلك صراحةً كي لا
+          يُترك الطابور بظنّ أنّ البلاغ مجرّد ملاحظة. */}
+      <p className="a-note">
+        السؤال المحجوز لا يظهر لأيّ لاعب. «يُسحب» يعيده، و«ملغى» يمنعه نهائياً.
+      </p>
+      <div className="a-card a-scroll">
+        <table className="a-tbl">
+          <thead>
+            <tr>
+              <th>الحالة</th>
+              <th>السؤال</th>
+              <th>الإجابة</th>
+              <th>التصنيف</th>
+              <th>بلاغات</th>
+              <th>آخر بلاغ</th>
+              <th>القرار</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((f) => {
+              const q = bank?.get(f.question_id)
+              return (
+                <tr key={f.question_id}>
+                  <td>
+                    <span className={'tag ' + (f.status === 'pending' ? 'open' : f.status === 'disabled' ? 'abandoned' : 'finished')}>
+                      {FLAG_LABEL[f.status]}
+                    </span>
+                  </td>
+                  <td style={{ whiteSpace: 'normal', maxWidth: 420 }}>
+                    {q ? (
+                      q.question
+                    ) : (
+                      <span className="muted">{bank ? f.question_id : '…'}</span>
+                    )}
+                  </td>
+                  <td>{q?.answer ?? '—'}</td>
+                  <td>{q ? `${q.category} · ${q.level}` : '—'}</td>
+                  <td className="num">{f.reports}</td>
+                  <td className="num">{day(f.last_at)}</td>
+                  <td>
+                    <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+                      <button
+                        className="a-btn go"
+                        disabled={busy === f.question_id || f.status === 'ok'}
+                        onClick={() => decide(f.question_id, 'ok')}
+                      >
+                        أعِده
+                      </button>
+                      <button
+                        className="a-btn danger"
+                        disabled={busy === f.question_id || f.status === 'disabled'}
+                        onClick={() => decide(f.question_id, 'disabled')}
+                      >
+                        ألغِه
+                      </button>
+                      {f.status !== 'pending' && (
+                        <button
+                          className="a-btn"
+                          disabled={busy === f.question_id}
+                          onClick={() => decide(f.question_id, 'pending')}
+                        >
+                          احجزه
+                        </button>
+                      )}
+                    </span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }

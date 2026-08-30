@@ -11,6 +11,7 @@ import {
   startSession,
 } from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
+import { applyCachedBlocked, reportQuestion, syncBlocked } from './lib/questionFlags'
 import { AccountMenu } from './components/AccountMenu'
 import { QuitGame } from './components/QuitGame'
 import { Splash } from './screens/Splash'
@@ -26,6 +27,11 @@ import { Stage2Reveal } from './screens/Stage2Reveal'
 import { Stage3 } from './screens/Stage3'
 import { Tiebreak } from './screens/Tiebreak'
 import { Endgame } from './screens/Endgame'
+
+/* قائمة المحجوز المخزّنة تُطبَّق قبل أوّل سحب — عند تحميل الوحدة لا داخل
+   أثر: `createSession` قد تُنادى في أوّل رسمة، وأثرٌ يجري بعدها يصل متأخّراً
+   بسؤالٍ محجوز في الطابور. */
+applyCachedBlocked()
 
 /* حفظ محلي واستئناف خلال ٢٤ ساعة — نافذة الاستكمال (القسم ٩). */
 const SAVE_KEY = 'f6een.session'
@@ -137,6 +143,9 @@ export default function App() {
         /* بلا إنترنت أو بخطأ خادم: اللعبة تكمل بذاكرتها المحلّية،
            وتُعاد المحاولة عند التشغيل القادم. */
       })
+    /* وقائمة المحجوز معها — والمخزّنة منها مطبَّقة قبل هذا السطر أصلاً،
+       فالفشل هنا لا يعيد سؤالاً محجوزاً إلى السحب. */
+    syncBlocked().catch(() => {})
     return () => {
       alive = false
     }
@@ -225,6 +234,25 @@ export default function App() {
       /* تبقى مفتوحة، فيستأنفها أوّل بدءٍ قادم بلا خصم — لا خسارة على اللاعب. */
     })
   }, [state, sessionId])
+
+  /**
+   * البلاغ يُرفع إلى القاعدة فيُحجز السؤال عن الجميع حتى يراجعه المدير.
+   *
+   * المرجع يمنع الإرسال مرّتين: الحالة تُرسَم مرّات، والقائمة تُقرأ كاملة في
+   * كل مرّة. وفشل الشبكة يُبتلع — البلاغ محفوظ في حالة الجلسة فيصل مع
+   * لقطتها، والحجز المحلّي وقع أصلاً.
+   */
+  const sent = useRef(new Set<string>())
+  useEffect(() => {
+    if (!uid || !state) return
+    for (const id of state.reportedQuestionIds) {
+      if (sent.current.has(id)) continue
+      sent.current.add(id)
+      reportQuestion(id, sessionId ?? closedId.current).catch(() => {
+        sent.current.delete(id)
+      })
+    }
+  }, [state, uid, sessionId])
 
   /**
    * البلاغات تقع **بعد** الإغلاق — زرّ التبليغ في شاشة الختام نفسها.
