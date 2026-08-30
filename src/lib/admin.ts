@@ -169,9 +169,66 @@ const ERRORS: Record<string, string> = {
   code_exists: 'هذا الكود موجود',
   code_not_found: 'هذا الكود غير موجود',
   bad_status: 'حالة غير معروفة',
+  empty_question: 'السؤال والإجابة لا يكونان فارغين',
+  no_category: 'اختر تصنيفاً',
+  bad_level: 'المستوى: سهل أو متوسط أو صعب',
+  no_such_question: 'لا تعديل محفوظاً لهذا السؤال',
 }
 
 function translate(msg: string): string {
   for (const [key, ar] of Object.entries(ERRORS)) if (msg.includes(key)) return ar
   return msg
+}
+
+/* ===================== الأسئلة — التعديل والإضافة ===================== */
+
+export interface AdminQuestionEdit {
+  question_id: string
+  category: string
+  level: string
+  topic: string | null
+  question: string
+  answer: string
+  image: string | null
+  origin: 'override' | 'new'
+  updated_at: string
+}
+
+/** ما عُدّل أو أُضيف وحده. البنك المشحون تحمله اللوحة في المتصفّح وتدمجه. */
+export async function listQuestionEdits(): Promise<AdminQuestionEdit[]> {
+  const { data, error } = await supabase.rpc('admin_questions')
+  if (error) throw error
+  return (data ?? []) as AdminQuestionEdit[]
+}
+
+export interface QuestionInput {
+  id?: string | null
+  category: string
+  level: string
+  topic?: string | null
+  question: string
+  answer: string
+  image?: string | null
+}
+
+/** معرّف فارغ = سؤال جديد يُولَّد له `ADM####`. يُرجع المعرّف. */
+export async function saveQuestion(q: QuestionInput): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_save_question', {
+    p_id: q.id ?? null,
+    p_category: q.category,
+    p_level: q.level,
+    p_topic: q.topic ?? null,
+    p_question: q.question,
+    p_answer: q.answer,
+    p_image: q.image ?? null,
+  })
+  if (error) throw new Error(translate(error.message))
+  return data as string
+}
+
+/** حذف صفّ الطبقة: تراجعٌ إلى الأصل لسؤال البنك، ومحوٌ للسؤال المضاف. */
+export async function deleteQuestionEdit(id: string): Promise<'override' | 'new'> {
+  const { data, error } = await supabase.rpc('admin_delete_question', { p_id: id })
+  if (error) throw new Error(translate(error.message))
+  return data as 'override' | 'new'
 }

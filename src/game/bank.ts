@@ -40,6 +40,11 @@ export const EXCLUDED_OBSCURE_CELEBRITY_IDS = new Set([
 ])
 
 export const CATEGORIES: string[] = [...bank.categories, ...extra.categories]
+
+/**
+ * البنك المشحون مع التطبيق — الأساس الذي لا يتغيّر إلّا بإصدار جديد.
+ * تحرسه `bank.test.ts`، ويبقى مرجعاً لِما كان عليه سؤالٌ قبل تعديله.
+ */
 export const ALL_QUESTIONS: Question[] = [
   ...bank.questions,
   ...extra.questions.filter(
@@ -49,6 +54,19 @@ export const ALL_QUESTIONS: Question[] = [
   ),
 ]
 
+/* ================= طبقة اللوحة — التعديل والإضافة فوق البنك ================= */
+/**
+ * ما عدّلته لوحة الإدارة أو أضافته (`question_overrides` في القاعدة).
+ *
+ * صفٌّ بمعرّفٍ من البنك **يحلّ محلّه**، وصفٌّ بمعرّفٍ جديد يُضاف. والبنك
+ * المشحون لا يُمسّ، فحذف الصفّ يعيد الأصل — التعديل قابل للتراجع دائماً.
+ *
+ * والفهارس والعائلات تُعاد بناءً كلّما تغيّرت الطبقة: عائلةُ سؤالٍ مشتقّة
+ * من أوّل أربع كلمات من نصّه، فتعديل النصّ ينقله من عائلة إلى أخرى.
+ */
+let overlay: Question[] = []
+let effective: Question[] = ALL_QUESTIONS
+
 /** فهرسة: تصنيف × مستوى ← أسئلة. جوهر السحب في القسم ٨. */
 const byCatLevel = new Map<string, Question[]>()
 /** فهرسة بالمستوى فقط — لسحب الحق ما تلحق (بلا تصنيف). */
@@ -56,12 +74,34 @@ const byLevel = new Map<Level, Question[]>()
 
 const key = (category: string, level: Level) => `${category}|${level}`
 
-for (const q of ALL_QUESTIONS) {
-  const k = key(q.category, q.level)
-  if (!byCatLevel.has(k)) byCatLevel.set(k, [])
-  byCatLevel.get(k)!.push(q)
-  if (!byLevel.has(q.level)) byLevel.set(q.level, [])
-  byLevel.get(q.level)!.push(q)
+function rebuild() {
+  const byId = new Map(overlay.map((q) => [q.id, q]))
+  /* ترتيب البنك محفوظ والمضاف في آخره: الترتيب لا يؤثّر في السحب (عشوائيّ)
+     لكنّه يجعل اللوحة تعرض قائمة ثابتة بين تحديث وآخر. */
+  effective = ALL_QUESTIONS.map((q) => byId.get(q.id) ?? q)
+  const seen = new Set(ALL_QUESTIONS.map((q) => q.id))
+  for (const q of overlay) if (!seen.has(q.id)) effective.push(q)
+
+  byCatLevel.clear()
+  byLevel.clear()
+  for (const q of effective) {
+    const k = key(q.category, q.level)
+    if (!byCatLevel.has(k)) byCatLevel.set(k, [])
+    byCatLevel.get(k)!.push(q)
+    if (!byLevel.has(q.level)) byLevel.set(q.level, [])
+    byLevel.get(q.level)!.push(q)
+  }
+  rebuildFamilies()
+}
+
+/** الأسئلة كما يراها اللعب الآن: البنك بعد تركيب الطبقة عليه. */
+export function allQuestions(): Question[] {
+  return effective
+}
+
+export function setQuestionOverlay(rows: Question[]) {
+  overlay = rows
+  rebuild()
 }
 
 /* ===================== الأسئلة المحجوزة — بلاغات اللاعبين ===================== */
@@ -121,12 +161,14 @@ const prefixKey = (q: Question) =>
   normalizeAr(q.question).split(/\s+/).slice(0, FAMILY_PREFIX_WORDS).join(' ')
 
 const familyById = new Map<string, string>()
-{
+
+function rebuildFamilies() {
+  familyById.clear()
   const counts = new Map<string, number>()
   // أسئلة الصور («من صاحب الصورة؟») نصّها واحد فتتجمّع كلّها في عائلة واحدة
   // فيُسمح بواحدة في الجلسة — وهو خطأ: العبرة بالصورة لا بالنصّ. تُستثنى فلا
   // عائلة لها، وتمييزها بالصورة يحرسه المحرك (لا صورة تتكرّر عبر عدم التكرار).
-  const textual = ALL_QUESTIONS.filter((q) => !q.image)
+  const textual = effective.filter((q) => !q.image)
   for (const q of textual) {
     const k = prefixKey(q)
     counts.set(k, (counts.get(k) ?? 0) + 1)
@@ -136,6 +178,9 @@ const familyById = new Map<string, string>()
     if ((counts.get(k) ?? 0) >= FAMILY_MIN_SIZE) familyById.set(q.id, k)
   }
 }
+
+/* البناء الأوّل بالبنك وحده — الطبقة تصل من القاعدة بعد الإقلاع. */
+rebuild()
 
 /** مفتاح عائلة السؤال، أو null إن لم ينتمِ إلى قالب متكرّر. */
 export function familyOf(q: Question): string | null {

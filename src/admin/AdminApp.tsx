@@ -2,16 +2,27 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { signInWithEmail, signInWithGoogle, signOut, useSession } from '../lib/auth'
 import { day, stamp } from '../lib/date'
-import type { AdminCode, AdminFlag, AdminSession, AdminStats, AdminUser } from '../lib/admin'
+import type {
+  AdminCode,
+  AdminFlag,
+  AdminQuestionEdit,
+  AdminSession,
+  AdminStats,
+  AdminUser,
+} from '../lib/admin'
+import type { Question } from '../game/types'
 import {
   createCode,
   deleteCode,
   fetchStats,
   isAdmin,
+  deleteQuestionEdit,
   listCodes,
   listFlags,
+  listQuestionEdits,
   listSessions,
   listUsers,
+  saveQuestion,
   setBalance,
   setFlag,
 } from '../lib/admin'
@@ -127,13 +138,14 @@ function NotAdmin({ email }: { email: string }) {
 
 /* ================================ اللوحة ================================ */
 
-type Tab = 'users' | 'sessions' | 'codes' | 'reports'
+type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'questions'
 
 const TABS: [Tab, string][] = [
   ['users', 'الحسابات'],
   ['sessions', 'الجلسات'],
   ['codes', 'أكواد الهدية'],
   ['reports', 'بلاغات الأسئلة'],
+  ['questions', 'الأسئلة'],
 ]
 
 function Dashboard({ session }: { session: Session }) {
@@ -189,6 +201,7 @@ function Dashboard({ session }: { session: Session }) {
       {tab === 'sessions' && <Sessions />}
       {tab === 'codes' && <Codes onChanged={reloadStats} />}
       {tab === 'reports' && <Reports />}
+      {tab === 'questions' && <Questions />}
     </div>
   )
 }
@@ -576,13 +589,11 @@ function CodeRow({ code, onDelete }: { code: AdminCode; onDelete: () => void }) 
  * يعيش في الملفّ المشحون (`data/questions-bank-v5.json`).
  */
 function useBank() {
-  const [bank, setBank] = useState<Map<string, { question: string; answer: string; category: string; level: string }> | null>(
-    null,
-  )
+  const [bank, setBank] = useState<Question[] | null>(null)
   useEffect(() => {
     let alive = true
     import('../game/bank').then((m) => {
-      if (alive) setBank(new Map(m.ALL_QUESTIONS.map((q) => [q.id, q])))
+      if (alive) setBank(m.ALL_QUESTIONS)
     })
     return () => {
       alive = false
@@ -599,7 +610,8 @@ const FLAG_LABEL: Record<AdminFlag['status'], string> = {
 
 function Reports() {
   const { data, err, reload } = useLoad<AdminFlag[]>(listFlags)
-  const bank = useBank()
+  const list = useBank()
+  const bank = useMemo(() => (list ? new Map(list.map((q) => [q.id, q])) : null), [list])
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
 
@@ -696,5 +708,372 @@ function Reports() {
         </table>
       </div>
     </>
+  )
+}
+
+/* ================================ الأسئلة ================================ */
+
+const LEVELS = ['سهل', 'متوسط', 'صعب']
+const PAGE = 60
+
+type Source = 'bank' | 'edited' | 'added'
+
+interface Row {
+  q: Question
+  source: Source
+  origin?: AdminQuestionEdit['origin']
+}
+
+const SOURCE_LABEL: Record<Source, string> = {
+  bank: 'البنك',
+  edited: 'معدَّل',
+  added: 'مضاف',
+}
+
+/**
+ * كل الأسئلة: البنك المشحون مدموجاً بما عُدّل وأُضيف.
+ *
+ * **الدمج في المتصفّح لا في القاعدة.** البنك ملفٌّ تحمله هذه الصفحة أصلاً،
+ * والقاعدة لا تعرف منه شيئاً — فيها الفرق وحده. ولو أُرسل البنك كلّه إلى
+ * القاعدة ليُدمج هناك لصار لكل سؤالٍ نسختان تفترقان عند أوّل إصدار.
+ */
+function Questions() {
+  const bank = useBank()
+  const { data: edits, err, reload } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const [q, setQ] = useState('')
+  const [cat, setCat] = useState('')
+  const [level, setLevel] = useState('')
+  const [source, setSource] = useState<Source | ''>('')
+  const [limit, setLimit] = useState(PAGE)
+  const [editing, setEditing] = useState<Row | 'new' | null>(null)
+  const [msg, setMsg] = useState<string | null>(null)
+
+  const rows: Row[] | null = useMemo(() => {
+    if (!bank || !edits) return null
+    const byId = new Map(edits.map((e) => [e.question_id, e]))
+    const out: Row[] = bank.map((base) => {
+      const e = byId.get(base.id)
+      if (!e) return { q: base, source: 'bank' as const }
+      return { q: toQuestion(e), source: 'edited' as const, origin: e.origin }
+    })
+    for (const e of edits) {
+      if (e.origin === 'new') out.push({ q: toQuestion(e), source: 'added', origin: 'new' })
+    }
+    return out
+  }, [bank, edits])
+
+  const shown = useMemo(() => {
+    if (!rows) return null
+    const needle = q.trim()
+    return rows.filter(
+      (r) =>
+        (!needle || r.q.question.includes(needle) || r.q.answer.includes(needle) || r.q.id === needle) &&
+        (!cat || r.q.category === cat) &&
+        (!level || r.q.level === level) &&
+        (!source || r.source === source),
+    )
+  }, [rows, q, cat, level, source])
+
+  async function remove(row: Row) {
+    setMsg(null)
+    try {
+      const kind = await deleteQuestionEdit(row.q.id)
+      setMsg(kind === 'new' ? 'حُذف السؤال المضاف' : 'أُعيد سؤال البنك كما كان')
+      reload()
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : 'تعذّر الحذف')
+    }
+  }
+
+  if (err) return <p className="a-err">{err}</p>
+  if (!shown) return <p className="a-note">…</p>
+
+  const categories = bank ? [...new Set(bank.map((b) => b.category))] : []
+
+  return (
+    <>
+      <div className="a-bar">
+        <input
+          className="a-in"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="بحث في السؤال أو الإجابة أو المعرّف"
+        />
+        <select className="a-in" value={cat} onChange={(e) => setCat(e.target.value)}>
+          <option value="">كل التصنيفات</option>
+          {categories.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <select className="a-in" value={level} onChange={(e) => setLevel(e.target.value)}>
+          <option value="">كل المستويات</option>
+          {LEVELS.map((l) => (
+            <option key={l} value={l}>
+              {l}
+            </option>
+          ))}
+        </select>
+        <select
+          className="a-in"
+          value={source}
+          onChange={(e) => setSource(e.target.value as Source | '')}
+        >
+          <option value="">الكلّ</option>
+          <option value="bank">البنك</option>
+          <option value="edited">معدَّل</option>
+          <option value="added">مضاف</option>
+        </select>
+        <span className="muted num">{shown.length}</span>
+        <button className="a-btn go" onClick={() => setEditing('new')}>
+          سؤال جديد
+        </button>
+      </div>
+
+      {msg && <p className="a-note">{msg}</p>}
+
+      <div className="a-card a-scroll">
+        <table className="a-tbl">
+          <thead>
+            <tr>
+              <th>المصدر</th>
+              <th>السؤال</th>
+              <th>الإجابة</th>
+              <th>التصنيف</th>
+              <th>المستوى</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {shown.slice(0, limit).map((r) => (
+              <tr key={r.q.id}>
+                <td>
+                  <span className={'tag' + (r.source === 'bank' ? '' : ' open')}>
+                    {SOURCE_LABEL[r.source]}
+                  </span>
+                </td>
+                <td style={{ whiteSpace: 'normal', maxWidth: 460 }}>
+                  {r.q.image ? <span className="muted">[صورة] </span> : null}
+                  {r.q.question}
+                </td>
+                <td style={{ whiteSpace: 'normal', maxWidth: 220 }}>{r.q.answer}</td>
+                <td>{r.q.category}</td>
+                <td>{r.q.level}</td>
+                <td>
+                  <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+                    <button className="a-btn" onClick={() => setEditing(r)}>
+                      تعديل
+                    </button>
+                    {r.source !== 'bank' && (
+                      <button className="a-btn danger" onClick={() => remove(r)}>
+                        {r.source === 'added' ? 'حذف' : 'أعِد الأصل'}
+                      </button>
+                    )}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {shown.length > limit && (
+        <div className="a-bar" style={{ marginBlockStart: 10 }}>
+          <button className="a-btn" onClick={() => setLimit((n) => n + PAGE * 4)}>
+            عرض المزيد ({shown.length - limit})
+          </button>
+        </div>
+      )}
+
+      {editing && (
+        <QuestionForm
+          row={editing === 'new' ? null : editing}
+          categories={categories}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null)
+            setMsg('حُفظ — يصل اللاعبين عند فتحهم اللعبة')
+            reload()
+          }}
+        />
+      )}
+    </>
+  )
+}
+
+function toQuestion(e: AdminQuestionEdit): Question {
+  return {
+    id: e.question_id,
+    category: e.category,
+    level: e.level as Question['level'],
+    topic: e.topic ?? '',
+    question: e.question,
+    answer: e.answer,
+    ...(e.image ? { image: e.image } : {}),
+  }
+}
+
+/**
+ * نموذج التعديل والإضافة.
+ *
+ * التصنيف قائمةٌ لا حقل حرّ: العجلة اثنا عشر تصنيفاً ثابتاً (SPEC ٧)، وتصنيف
+ * جديد يعني سؤالاً لا تصل إليه العجلة أبداً.
+ *
+ * ومفتاح الصورة يُحمل كما هو ولا يُحرَّر: الصور مُجمَّعة في حزمة التطبيق،
+ * فمفتاحٌ لا ملفّ له يعرض صورة العنصر النائب.
+ */
+function QuestionForm({
+  row,
+  categories,
+  onClose,
+  onSaved,
+}: {
+  row: Row | null
+  categories: string[]
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const base = row?.q
+  const [category, setCategory] = useState(base?.category ?? categories[0] ?? '')
+  const [level, setLevel] = useState(base?.level ?? 'متوسط')
+  const [topic, setTopic] = useState(base?.topic ?? '')
+  const [question, setQuestion] = useState(base?.question ?? '')
+  const [answer, setAnswer] = useState(base?.answer ?? '')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault()
+    setBusy(true)
+    setErr(null)
+    try {
+      await saveQuestion({
+        id: base?.id ?? null,
+        category,
+        level,
+        topic,
+        question,
+        answer,
+        image: base?.image ?? null,
+      })
+      onSaved()
+    } catch (e2) {
+      setErr(e2 instanceof Error ? e2.message : 'تعذّر الحفظ')
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="q-veil" onClick={onClose}>
+      <form className="q-box" onClick={(e) => e.stopPropagation()} onSubmit={save}>
+        <header className="a-top" style={{ margin: 0 }}>
+          <b>{base ? 'تعديل سؤال' : 'سؤال جديد'}</b>
+          {base && <span className="muted ltr">{base.id}</span>}
+        </header>
+
+        <div className="a-bar">
+          <div className="a-field">
+            <label htmlFor="q-cat">التصنيف</label>
+            <select
+              id="q-cat"
+              className="a-in"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="a-field">
+            <label htmlFor="q-lvl">المستوى</label>
+            <select
+              id="q-lvl"
+              className="a-in"
+              value={level}
+              onChange={(e) => setLevel(e.target.value as Question['level'])}
+            >
+              {LEVELS.map((l) => (
+                <option key={l} value={l}>
+                  {l}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="a-field">
+            <label htmlFor="q-topic">الموضوع</label>
+            <input
+              id="q-topic"
+              className="a-in"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="اختياري"
+            />
+          </div>
+        </div>
+
+        <div className="a-field">
+          <label htmlFor="q-text">السؤال</label>
+          <textarea
+            id="q-text"
+            className="a-in"
+            rows={3}
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+        </div>
+
+        <div className="a-field">
+          <label htmlFor="q-ans">الإجابة</label>
+          <input
+            id="q-ans"
+            className="a-in"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+          />
+        </div>
+
+        {base?.image && (
+          <p className="a-note" style={{ padding: 0 }}>
+            سؤال صورة — الصورة تبقى كما هي، والنصّ والإجابة وحدهما يُعدَّلان.
+          </p>
+        )}
+
+        {err && <p className="a-err">{err}</p>}
+
+        <div className="a-bar" style={{ marginBlockEnd: 0 }}>
+          <button className="a-btn go" type="submit" disabled={busy || !question.trim() || !answer.trim()}>
+            {busy ? '…' : 'حفظ'}
+          </button>
+          <button className="a-btn" type="button" onClick={onClose}>
+            إلغاء
+          </button>
+        </div>
+      </form>
+
+      <style>{`
+        .q-veil {
+          position:fixed; inset:0; z-index:70;
+          display:flex; align-items:center; justify-content:center; padding:16px;
+          background:rgba(10,8,20,.5);
+        }
+        .q-box {
+          display:flex; flex-direction:column; gap:10px;
+          width:min(680px, 100%); max-height:min(88vh, 760px); overflow:auto;
+          padding:16px; border-radius:16px;
+          background:var(--n-surface); color:var(--n-ink);
+          box-shadow:0 24px 60px rgba(0,0,0,.28);
+        }
+        .q-box textarea.a-in { font:inherit; font-size:14px; line-height:1.7; resize:vertical; }
+        /* الحقول الطويلة (السؤال والإجابة) تملأ العرض، والثلاثة القصيرة
+           تتقاسم صفّاً — بقاعدةٍ واحدة على كل الحقول كانت تنزل ثلاثة أسطر. */
+        .q-box > .a-field { width:100%; }
+        .q-box .a-bar .a-field { flex:1 1 190px; }
+        .q-box .a-in, .q-box select.a-in, .q-box textarea.a-in { width:100%; }
+      `}</style>
+    </div>
   )
 }

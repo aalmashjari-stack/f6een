@@ -1,11 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   ALL_QUESTIONS,
   CATEGORIES,
   EXCLUDED_OBSCURE_CELEBRITY_IDS,
   EXCLUDED_POLITICAL_CELEBRITY_IDS,
+  allQuestions,
   familyOf,
   poolByCatLevel,
+  setQuestionOverlay,
 } from './bank'
 import type { Level } from './types'
 
@@ -108,5 +110,56 @@ describe('عائلات القوالب', () => {
     // ينتمي لعائلة «ما أطول نهر في» — نتحقّق أن سؤالاً بصيغة فريدة لا ينتمي لشيء
     const unique = ALL_QUESTIONS.filter((q) => familyOf(q) === null)
     expect(unique.length).toBeGreaterThan(ALL_QUESTIONS.length / 2)
+  })
+})
+
+/**
+ * طبقة اللوحة: تعديل سؤال أو إضافة سؤال بلا مسّ الملفّ المشحون.
+ *
+ * الضمانة التي تحرسها هذه الاختبارات أنّ **الأصل يعود** — لو أفسد تعديلٌ
+ * سؤالاً، حذفُ صفّه في القاعدة يرجع السؤال المشحون كما كان. ولو كانت
+ * الطبقة تكتب فوق البنك في الذاكرة لضاع الأصل حتى يُعاد تحميل الصفحة.
+ */
+describe('طبقة التعديل والإضافة', () => {
+  const base = ALL_QUESTIONS[0]
+
+  afterEach(() => setQuestionOverlay([]))
+
+  it('التعديل يحلّ محلّ سؤال البنك في مجموعته، والأصل باقٍ', () => {
+    setQuestionOverlay([{ ...base, question: 'نصّ معدَّل', answer: 'إجابة معدَّلة' }])
+    const pool = poolByCatLevel(base.category, base.level)
+    const found = pool.find((q) => q.id === base.id)!
+    expect(found.question).toBe('نصّ معدَّل')
+    expect(ALL_QUESTIONS[0].question).toBe(base.question)
+    expect(allQuestions().filter((q) => q.id === base.id)).toHaveLength(1)
+  })
+
+  it('التراجع يعيد السؤال المشحون', () => {
+    setQuestionOverlay([{ ...base, question: 'نصّ معدَّل' }])
+    setQuestionOverlay([])
+    expect(poolByCatLevel(base.category, base.level).find((q) => q.id === base.id)!.question).toBe(
+      base.question,
+    )
+  })
+
+  it('السؤال المضاف يدخل مجموعة تصنيفه ومستواه', () => {
+    const added = {
+      id: 'ADM0001',
+      category: base.category,
+      level: base.level,
+      topic: '',
+      question: 'سؤال أضافته اللوحة',
+      answer: 'إجابته',
+    }
+    setQuestionOverlay([added])
+    expect(poolByCatLevel(base.category, base.level).some((q) => q.id === 'ADM0001')).toBe(true)
+    expect(allQuestions()).toHaveLength(ALL_QUESTIONS.length + 1)
+  })
+
+  it('تعديل التصنيف ينقل السؤال بين المجموعتين', () => {
+    const other = CATEGORIES.find((c) => c !== base.category)!
+    setQuestionOverlay([{ ...base, category: other }])
+    expect(poolByCatLevel(base.category, base.level).some((q) => q.id === base.id)).toBe(false)
+    expect(poolByCatLevel(other, base.level).some((q) => q.id === base.id)).toBe(true)
   })
 })

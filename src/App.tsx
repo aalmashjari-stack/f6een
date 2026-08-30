@@ -12,6 +12,7 @@ import {
 } from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
 import { applyCachedBlocked, reportQuestion, syncBlocked } from './lib/questionFlags'
+import { applyCachedOverlay, syncOverlay } from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
 import { QuitGame } from './components/QuitGame'
 import { Splash } from './screens/Splash'
@@ -32,6 +33,7 @@ import { Endgame } from './screens/Endgame'
    أثر: `createSession` قد تُنادى في أوّل رسمة، وأثرٌ يجري بعدها يصل متأخّراً
    بسؤالٍ محجوز في الطابور. */
 applyCachedBlocked()
+applyCachedOverlay()
 
 /* حفظ محلي واستئناف خلال ٢٤ ساعة — نافذة الاستكمال (القسم ٩). */
 const SAVE_KEY = 'f6een.session'
@@ -146,6 +148,8 @@ export default function App() {
     /* وقائمة المحجوز معها — والمخزّنة منها مطبَّقة قبل هذا السطر أصلاً،
        فالفشل هنا لا يعيد سؤالاً محجوزاً إلى السحب. */
     syncBlocked().catch(() => {})
+    /* وطبقة التعديلات معها — سؤالٌ صُحّح في اللوحة يصل الأجهزة هنا. */
+    syncOverlay().catch(() => {})
     return () => {
       alive = false
     }
