@@ -104,6 +104,34 @@ export function setQuestionOverlay(rows: Question[]) {
   rebuild()
 }
 
+/* ===================== الفئات المضافة من اللوحة ===================== */
+let extra_: string[] = []
+
+export function setExtraCategories(names: string[]) {
+  extra_ = names
+}
+
+/** فئات البنك المشحون ثمّ المضافة — بلا تكرار، وبترتيب ثابت. */
+export function allCategories(): string[] {
+  return [...CATEGORIES, ...extra_.filter((c) => !CATEGORIES.includes(c))]
+}
+
+const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+
+/**
+ * الفئات التي تدخل العجلة — **ما اكتملت مستوياتها الثلاثة وحده**.
+ *
+ * السحب يقع على (فئة، مستوى)، والمستوى يتبع موضع السؤال في الجلسة لا
+ * اختيار الحكم (SPEC ٨). ففئةٌ بلا سؤال «صعب» تُسقط اللعبة عند السؤال
+ * السابع من الجولة الجماعية: `drawOne` يعود من مجموعة فارغة بلا سؤال.
+ *
+ * وهذا يحرس فئةً أُضيفت من اللوحة قبل أن تُملأ، ويحرس أيضاً فئةً مشحونة
+ * حُجز آخرُ أسئلتها في مستوى ببلاغات — الخطر نفسه من بابين.
+ */
+export function playableCategories(): string[] {
+  return allCategories().filter((c) => LEVELS.every((l) => poolByCatLevel(c, l).length > 0))
+}
+
 /* ===================== الأسئلة المحجوزة — بلاغات اللاعبين ===================== */
 /**
  * معرّفات لا تُسحب: سؤال بُلّغ عنه محجوز حتى يراجعه المدير، أو ملغى نهائياً

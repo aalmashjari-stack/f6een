@@ -4,9 +4,12 @@ import {
   CATEGORIES,
   EXCLUDED_OBSCURE_CELEBRITY_IDS,
   EXCLUDED_POLITICAL_CELEBRITY_IDS,
+  allCategories,
   allQuestions,
   familyOf,
+  playableCategories,
   poolByCatLevel,
+  setExtraCategories,
   setQuestionOverlay,
 } from './bank'
 import type { Level } from './types'
@@ -161,5 +164,62 @@ describe('طبقة التعديل والإضافة', () => {
     setQuestionOverlay([{ ...base, category: other }])
     expect(poolByCatLevel(base.category, base.level).some((q) => q.id === base.id)).toBe(false)
     expect(poolByCatLevel(other, base.level).some((q) => q.id === base.id)).toBe(true)
+  })
+})
+
+/**
+ * فئة جديدة لا تدخل العجلة حتى تكتمل مستوياتها الثلاثة.
+ *
+ * الخطر الذي تحرسه: السحب يقع على (فئة، مستوى) والمستوى يتبع موضع السؤال
+ * لا اختيار الحكم، ففئةٌ بلا «صعب» تُسقط اللعبة عند السؤال السابع من
+ * الجولة الجماعية — بعد عشر دقائق من اللعب أمام المجلس.
+ */
+describe('الفئات المضافة', () => {
+  const NEW = 'فئة تجريبيّة'
+
+  afterEach(() => {
+    setExtraCategories([])
+    setQuestionOverlay([])
+  })
+
+  it('تظهر في قائمة الفئات ولا تدخل العجلة وهي فارغة', () => {
+    setExtraCategories([NEW])
+    expect(allCategories()).toContain(NEW)
+    expect(playableCategories()).not.toContain(NEW)
+  })
+
+  it('تنقص مستوى واحد فلا تدخل', () => {
+    setExtraCategories([NEW])
+    setQuestionOverlay(
+      (['سهل', 'متوسط'] as Level[]).map((level, i) => ({
+        id: `ADM900${i}`,
+        category: NEW,
+        level,
+        topic: '',
+        question: `سؤال ${i}`,
+        answer: 'إجابة',
+      })),
+    )
+    expect(playableCategories()).not.toContain(NEW)
+  })
+
+  it('تكتمل المستويات الثلاثة فتدخل', () => {
+    setExtraCategories([NEW])
+    setQuestionOverlay(
+      LEVELS.map((level, i) => ({
+        id: `ADM910${i}`,
+        category: NEW,
+        level,
+        topic: '',
+        question: `سؤال ${i}`,
+        answer: 'إجابة',
+      })),
+    )
+    expect(playableCategories()).toContain(NEW)
+    expect(poolByCatLevel(NEW, 'صعب')).toHaveLength(1)
+  })
+
+  it('كل فئات البنك المشحون صالحة للّعب', () => {
+    expect(playableCategories()).toEqual(CATEGORIES)
   })
 })

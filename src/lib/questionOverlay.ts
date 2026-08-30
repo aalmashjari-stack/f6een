@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { setQuestionOverlay } from '../game/bank'
+import { setExtraCategories, setQuestionOverlay } from '../game/bank'
 import type { Level, Question } from '../game/types'
 
 /**
@@ -12,6 +12,7 @@ import type { Level, Question } from '../game/types'
  */
 
 const KEY = 'f6een.questionOverlay'
+const CATS_KEY = 'f6een.extraCategories'
 
 interface Row {
   question_id: string
@@ -69,4 +70,35 @@ export async function syncOverlay(): Promise<void> {
     /* تجاهل — الطبقة تُطبَّق في هذه الجلسة على أي حال. */
   }
   apply(rows)
+}
+
+/* ========================= الفئات المضافة ========================= */
+/**
+ * فئة أضافها المدير من اللوحة. لا تدخل العجلة إلّا حين تكتمل مستوياتها
+ * الثلاثة — الشرط في `playableCategories`، وهو الذي يمنع لعبةً تسقط عند
+ * أوّل سؤالٍ «صعب» في فئةٍ ليس فيها صعب.
+ */
+function loadCats(): string[] {
+  try {
+    const raw = localStorage.getItem(CATS_KEY)
+    return raw ? (JSON.parse(raw) as string[]) : []
+  } catch {
+    return []
+  }
+}
+
+export function applyCachedCategories() {
+  setExtraCategories(loadCats())
+}
+
+export async function syncCategories(): Promise<void> {
+  const { data, error } = await supabase.rpc('extra_categories')
+  if (error) throw error
+  const names = (data ?? []).map((r: { name: string }) => r.name)
+  try {
+    localStorage.setItem(CATS_KEY, JSON.stringify(names))
+  } catch {
+    /* تجاهل */
+  }
+  setExtraCategories(names)
 }

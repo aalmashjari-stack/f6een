@@ -12,7 +12,12 @@ import {
 } from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
 import { applyCachedBlocked, reportQuestion, syncBlocked } from './lib/questionFlags'
-import { applyCachedOverlay, syncOverlay } from './lib/questionOverlay'
+import {
+  applyCachedCategories,
+  applyCachedOverlay,
+  syncCategories,
+  syncOverlay,
+} from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
 import { QuitGame } from './components/QuitGame'
 import { Splash } from './screens/Splash'
@@ -34,6 +39,7 @@ import { Endgame } from './screens/Endgame'
    بسؤالٍ محجوز في الطابور. */
 applyCachedBlocked()
 applyCachedOverlay()
+applyCachedCategories()
 
 /* حفظ محلي واستئناف خلال ٢٤ ساعة — نافذة الاستكمال (القسم ٩). */
 const SAVE_KEY = 'f6een.session'
@@ -150,6 +156,9 @@ export default function App() {
     syncBlocked().catch(() => {})
     /* وطبقة التعديلات معها — سؤالٌ صُحّح في اللوحة يصل الأجهزة هنا. */
     syncOverlay().catch(() => {})
+    /* والفئات معها — الترتيب لا يهمّ: العجلة تُبنى عند فتح شاشة اللفّ،
+       بعد أن يكون الاثنان قد وصلا أو بقيا على المخزّن. */
+    syncCategories().catch(() => {})
     return () => {
       alive = false
     }

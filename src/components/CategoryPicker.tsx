@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { CATEGORIES, displayName } from '../game/bank'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { displayName, playableCategories } from '../game/bank'
 import { CATEGORY_ART } from './categoryArt'
 import { play } from '../audio/sfx'
 
@@ -38,12 +38,16 @@ export function CategoryPicker({
    */
   auto?: boolean
 }) {
+  /* تُحسب مرّة عند التركيب: الشبكة يجب ألّا تتغيّر تحت عين المجلس بين
+     لفّةٍ وأخرى لو وصلت فئةٌ جديدة من الخادم في أثناء الجلسة. */
+  const cats = useMemo<string[]>(playableCategories, [])
+
   const [cursor, setCursor] = useState<number | null>(null)
   const [landed, setLanded] = useState<string | null>(null)
   const [running, setRunning] = useState(false)
   const timers = useRef<number[]>([])
 
-  const available = CATEGORIES.filter((c) => !spent.includes(c))
+  const available = cats.filter((c) => !spent.includes(c))
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
@@ -52,10 +56,10 @@ export function CategoryPicker({
     setRunning(true)
 
     const target = available[Math.floor(Math.random() * available.length)]
-    const targetIdx = CATEGORIES.indexOf(target)
+    const targetIdx = cats.indexOf(target)
 
     // الضوء ينطّ على المتاح عشوائياً، ويتباطأ تدريجياً حتى يقف على الهدف.
-    const availIdx = CATEGORIES.map((c, i) => (spent.includes(c) ? -1 : i)).filter((i) => i >= 0)
+    const availIdx = cats.map((c, i) => (spent.includes(c) ? -1 : i)).filter((i) => i >= 0)
     const laps = 2
     const steps = laps * availIdx.length
 
@@ -145,12 +149,12 @@ export function CategoryPicker({
               // نستهدف ثلاثة صفوف دائماً: الأعمدة تكبر مع الفئات فتبقى البطاقة
               // بحجمها ولا تُقصّ الأسماء. ‏١٢ فئة ← ٤ أعمدة (٤×٣ كما أُقرّت)،
               // ‏١٣ ← ٥ أعمدة (٥+٥+٣) بدل صفٍّ رابع فيه بطاقة يتيمة.
-              '--cols': Math.ceil(CATEGORIES.length / 3),
-              '--rows': Math.ceil(CATEGORIES.length / Math.ceil(CATEGORIES.length / 3)),
+              '--cols': Math.ceil(cats.length / 3),
+              '--rows': Math.ceil(cats.length / Math.ceil(cats.length / 3)),
             } as React.CSSProperties
           }
         >
-          {CATEGORIES.map((cat, i) => {
+          {cats.map((cat, i) => {
             const isSpent = spent.includes(cat)
             const isCursor = cursor === i && !landed
             const isLanded = landed === cat

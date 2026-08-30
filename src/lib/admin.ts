@@ -173,6 +173,10 @@ const ERRORS: Record<string, string> = {
   no_category: 'اختر تصنيفاً',
   bad_level: 'المستوى: سهل أو متوسط أو صعب',
   no_such_question: 'لا تعديل محفوظاً لهذا السؤال',
+  name_too_short: 'اسم الفئة حرفان فأكثر',
+  category_exists: 'هذه الفئة موجودة',
+  category_in_use: 'الفئة تحمل أسئلة — انقلها أو احذفها أوّلاً',
+  no_such_category: 'لا فئة بهذا الاسم',
 }
 
 function translate(msg: string): string {
@@ -231,4 +235,25 @@ export async function deleteQuestionEdit(id: string): Promise<'override' | 'new'
   const { data, error } = await supabase.rpc('admin_delete_question', { p_id: id })
   if (error) throw new Error(translate(error.message))
   return data as 'override' | 'new'
+}
+
+/* ============================== الفئات ============================== */
+
+/** الفئات المضافة من اللوحة — فئات البنك المشحون ليست هنا. */
+export async function listExtraCategories(): Promise<string[]> {
+  const { data, error } = await supabase.rpc('extra_categories')
+  if (error) throw error
+  return ((data ?? []) as { name: string }[]).map((r) => r.name)
+}
+
+export async function addCategory(name: string): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_add_category', { p_name: name })
+  if (error) throw new Error(translate(error.message))
+  return data as string
+}
+
+/** يُرفض ما دامت الفئة تحمل أسئلة — وإلّا ضاعت أسئلتها بلا عجلةٍ تصل إليها. */
+export async function deleteCategory(name: string): Promise<void> {
+  const { error } = await supabase.rpc('admin_delete_category', { p_name: name })
+  if (error) throw new Error(translate(error.message))
 }

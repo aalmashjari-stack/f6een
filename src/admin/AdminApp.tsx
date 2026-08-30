@@ -12,13 +12,16 @@ import type {
 } from '../lib/admin'
 import type { Question } from '../game/types'
 import {
+  addCategory,
   createCode,
+  deleteCategory,
   deleteCode,
+  deleteQuestionEdit,
   fetchStats,
   isAdmin,
-  deleteQuestionEdit,
   listCodes,
   listFlags,
+  listExtraCategories,
   listQuestionEdits,
   listSessions,
   listUsers,
@@ -138,7 +141,7 @@ function NotAdmin({ email }: { email: string }) {
 
 /* ================================ اللوحة ================================ */
 
-type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'questions'
+type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'questions' | 'categories'
 
 const TABS: [Tab, string][] = [
   ['users', 'الحسابات'],
@@ -146,6 +149,7 @@ const TABS: [Tab, string][] = [
   ['codes', 'أكواد الهدية'],
   ['reports', 'بلاغات الأسئلة'],
   ['questions', 'الأسئلة'],
+  ['categories', 'الفئات'],
 ]
 
 function Dashboard({ session }: { session: Session }) {
@@ -202,6 +206,7 @@ function Dashboard({ session }: { session: Session }) {
       {tab === 'codes' && <Codes onChanged={reloadStats} />}
       {tab === 'reports' && <Reports />}
       {tab === 'questions' && <Questions />}
+      {tab === 'categories' && <Categories />}
     </div>
   )
 }
@@ -737,9 +742,25 @@ const SOURCE_LABEL: Record<Source, string> = {
  * والقاعدة لا تعرف منه شيئاً — فيها الفرق وحده. ولو أُرسل البنك كلّه إلى
  * القاعدة ليُدمج هناك لصار لكل سؤالٍ نسختان تفترقان عند أوّل إصدار.
  */
+/** البنك المشحون بعد تركيب التعديلات — نفس دمج المحرّك، بمصدر كل صفّ. */
+function merge(bank: Question[], edits: AdminQuestionEdit[]): Row[] {
+  const byId = new Map(edits.map((e) => [e.question_id, e]))
+  const out: Row[] = bank.map((base) => {
+    const e = byId.get(base.id)
+    return e
+      ? { q: toQuestion(e), source: 'edited' as const, origin: e.origin }
+      : { q: base, source: 'bank' as const }
+  })
+  for (const e of edits) {
+    if (e.origin === 'new') out.push({ q: toQuestion(e), source: 'added', origin: 'new' })
+  }
+  return out
+}
+
 function Questions() {
   const bank = useBank()
   const { data: edits, err, reload } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: extra } = useLoad<string[]>(listExtraCategories)
   const [q, setQ] = useState('')
   const [cat, setCat] = useState('')
   const [level, setLevel] = useState('')
@@ -748,19 +769,10 @@ function Questions() {
   const [editing, setEditing] = useState<Row | 'new' | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
 
-  const rows: Row[] | null = useMemo(() => {
-    if (!bank || !edits) return null
-    const byId = new Map(edits.map((e) => [e.question_id, e]))
-    const out: Row[] = bank.map((base) => {
-      const e = byId.get(base.id)
-      if (!e) return { q: base, source: 'bank' as const }
-      return { q: toQuestion(e), source: 'edited' as const, origin: e.origin }
-    })
-    for (const e of edits) {
-      if (e.origin === 'new') out.push({ q: toQuestion(e), source: 'added', origin: 'new' })
-    }
-    return out
-  }, [bank, edits])
+  const rows: Row[] | null = useMemo(
+    () => (bank && edits ? merge(bank, edits) : null),
+    [bank, edits],
+  )
 
   const shown = useMemo(() => {
     if (!rows) return null
@@ -788,7 +800,11 @@ function Questions() {
   if (err) return <p className="a-err">{err}</p>
   if (!shown) return <p className="a-note">…</p>
 
-  const categories = bank ? [...new Set(bank.map((b) => b.category))] : []
+  /* فئات البنك ثمّ المضافة: النموذج يجب أن يعرض فئةً أُنشئت للتوّ وهي بعد
+     فارغة — وإلّا لم يكن لإنشائها معنى. */
+  const categories = [
+    ...new Set([...(bank ?? []).map((b) => b.category), ...(extra ?? [])]),
+  ]
 
   return (
     <>
@@ -1075,5 +1091,152 @@ function QuestionForm({
         .q-box .a-in, .q-box select.a-in, .q-box textarea.a-in { width:100%; }
       `}</style>
     </div>
+  )
+}
+
+/* ================================ الفئات ================================ */
+
+/**
+ * الفئات: المشحونة مع التطبيق والمضافة من هنا، ومعها ما ينقص كلَّ واحدة.
+ *
+ * **الرقم الذي يهمّ هو «هل تدخل العجلة؟»** لا عدد أسئلتها: السحب يقع على
+ * (فئة، مستوى) والمستوى يتبع موضع السؤال في الجلسة لا اختيار الحكم، ففئةٌ
+ * بلا سؤال «صعب» تُسقط اللعبة عند السؤال السابع. ولهذا لا تدخل العجلة حتى
+ * تكتمل مستوياتها الثلاثة — والجدول يقول صراحةً ما الناقص.
+ */
+function Categories() {
+  const bank = useBank()
+  const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: extra, err, reload } = useLoad<string[]>(listExtraCategories)
+  const [name, setName] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  const rows = useMemo(() => {
+    if (!bank || !edits || !extra) return null
+    const merged = merge(bank, edits)
+    const names = [...new Set([...bank.map((b) => b.category), ...extra])]
+    return names.map((cat) => {
+      const mine = merged.filter((r) => r.q.category === cat)
+      const counts = LEVELS.map((l) => mine.filter((r) => r.q.level === l).length)
+      return {
+        cat,
+        counts,
+        total: mine.length,
+        added: extra.includes(cat),
+        missing: LEVELS.filter((_, i) => counts[i] === 0),
+      }
+    })
+  }, [bank, edits, extra])
+
+  async function add(e: React.FormEvent) {
+    e.preventDefault()
+    setBusy(true)
+    setMsg(null)
+    try {
+      const made = await addCategory(name)
+      setName('')
+      setMsg({ ok: true, text: `أُضيفت «${made}» — تدخل العجلة حين تكتمل مستوياتها الثلاثة` })
+      reload()
+    } catch (e2) {
+      setMsg({ ok: false, text: e2 instanceof Error ? e2.message : 'تعذّرت الإضافة' })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function remove(cat: string) {
+    setMsg(null)
+    try {
+      await deleteCategory(cat)
+      setMsg({ ok: true, text: `حُذفت «${cat}»` })
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الحذف' })
+    }
+  }
+
+  if (err) return <p className="a-err">{err}</p>
+  if (!rows) return <p className="a-note">…</p>
+
+  return (
+    <>
+      <form className="a-form" onSubmit={add}>
+        <div className="a-field">
+          <label htmlFor="cat-name">فئة جديدة</label>
+          <input
+            id="cat-name"
+            className="a-in"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="اسم الفئة كما يظهر في العجلة"
+          />
+        </div>
+        <button className="a-btn go" type="submit" disabled={busy || name.trim().length < 2}>
+          {busy ? '…' : 'إضافة'}
+        </button>
+        {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
+      </form>
+
+      <p className="a-note">
+        الفئة الجديدة بلا صورة: تظهر بطاقتها بلونها واسمها حتى تُضاف صورتها في إصدار قادم.
+      </p>
+
+      <div className="a-card a-scroll">
+        <table className="a-tbl">
+          <thead>
+            <tr>
+              <th>الفئة</th>
+              <th>المصدر</th>
+              <th>سهل</th>
+              <th>متوسط</th>
+              <th>صعب</th>
+              <th>المجموع</th>
+              <th>في العجلة</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.cat}>
+                <td>
+                  <b>{r.cat}</b>
+                </td>
+                <td>
+                  <span className={'tag' + (r.added ? ' open' : '')}>
+                    {r.added ? 'مضافة' : 'البنك'}
+                  </span>
+                </td>
+                {r.counts.map((n, i) => (
+                  <td key={i} className={'num' + (n === 0 ? ' muted' : '')}>
+                    {n}
+                  </td>
+                ))}
+                <td className="num">{r.total}</td>
+                <td>
+                  {r.missing.length === 0 ? (
+                    <span className="tag finished">نعم</span>
+                  ) : (
+                    <span className="tag abandoned">ينقصها {r.missing.join(' و')}</span>
+                  )}
+                </td>
+                <td>
+                  {r.added && (
+                    <button
+                      className="a-btn danger"
+                      disabled={r.total > 0}
+                      title={r.total > 0 ? 'انقل أسئلتها أو احذفها أوّلاً' : undefined}
+                      onClick={() => remove(r.cat)}
+                    >
+                      حذف
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }

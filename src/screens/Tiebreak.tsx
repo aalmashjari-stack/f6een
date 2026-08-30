@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
-import { CATEGORIES, displayName } from '../game/bank'
+import { displayName, playableCategories } from '../game/bank'
 import { ScoreBar } from '../components/ScoreBar'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
@@ -15,7 +15,8 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
   useEffect(() => {
     if (!state.currentQuestion && !drawnRef.current) {
       drawnRef.current = true
-      const cat = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)]
+      const cats = playableCategories()
+      const cat = cats[Math.floor(Math.random() * cats.length)]
       dispatch({ t: 'TIEBREAK_SPIN', category: cat })
     }
     if (state.currentQuestion) drawnRef.current = false
