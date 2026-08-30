@@ -128,3 +128,59 @@ export function gamesLabel(n: number): string {
   if (n >= 3 && n <= 10) return `${n} ألعاب`
   return `${n} لعبة`
 }
+
+/* ======================= صفحة الحساب — البيانات والألعاب ======================= */
+
+/** بيانات صفّ الحساب. `createdAt` هو «عضو منذ» — تاريخ إنشاء الحساب لا أوّل لعبة. */
+export interface Profile {
+  balance: number
+  createdAt: string
+}
+
+export async function fetchProfile(): Promise<Profile> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('games_balance, created_at')
+    .single()
+  if (error) throw error
+  return { balance: data.games_balance as number, createdAt: data.created_at as string }
+}
+
+export interface GameSummary {
+  id: string
+  status: 'open' | 'finished' | 'abandoned'
+  createdAt: string
+  /** أسماء الفريقين ونتيجتهما. `null` لجلسةٍ حُفظت بشكل حالةٍ لا يحمل الفرق. */
+  teams: { name: string; score: number }[] | null
+}
+
+/**
+ * ألعاب الحساب — الأحدث أوّلاً.
+ *
+ * **لا يُقرأ عمود `state` كاملاً.** فيه طابور المرحلة الثالثة (أربعون سؤالاً
+ * بنصوصها) وذاكرة الأسئلة (مئات المعرّفات)، فقراءته لثلاثين جلسة تنقل
+ * ميغابايتات لعرض سطرٍ فيه اسمان ورقمان. المسار `state->teams` يقتطع في
+ * القاعدة ما يُعرض وحده.
+ *
+ * والسقف خمسون: صفحة الحساب تُقرأ لا تُدرَس، ومن تجاوزها فأقدم ألعابه لا
+ * تُسأل عنها — ولو صارت تُسأل فالحلّ ترقيم لا رفع السقف.
+ */
+export async function fetchMyGames(limit = 50): Promise<GameSummary[]> {
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('id, status, created_at, teams:state->teams')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  return (data ?? []).map((r) => ({
+    id: r.id as string,
+    status: r.status as GameSummary['status'],
+    createdAt: r.created_at as string,
+    teams: Array.isArray(r.teams)
+      ? (r.teams as { name: string; score: number }[]).map((t) => ({
+          name: String(t?.name ?? ''),
+          score: Number(t?.score ?? 0),
+        }))
+      : null,
+  }))
+}
