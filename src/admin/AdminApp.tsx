@@ -1120,26 +1120,6 @@ function QuestionForm({
         </div>
       </form>
 
-      <style>{`
-        .q-veil {
-          position:fixed; inset:0; z-index:70;
-          display:flex; align-items:center; justify-content:center; padding:16px;
-          background:rgba(10,8,20,.5);
-        }
-        .q-box {
-          display:flex; flex-direction:column; gap:10px;
-          width:min(680px, 100%); max-height:min(88vh, 760px); overflow:auto;
-          padding:16px; border-radius:16px;
-          background:var(--n-surface); color:var(--n-ink);
-          box-shadow:0 24px 60px rgba(0,0,0,.28);
-        }
-        .q-box textarea.a-in { font:inherit; font-size:14px; line-height:1.7; resize:vertical; }
-        /* الحقول الطويلة (السؤال والإجابة) تملأ العرض، والثلاثة القصيرة
-           تتقاسم صفّاً — بقاعدةٍ واحدة على كل الحقول كانت تنزل ثلاثة أسطر. */
-        .q-box > .a-field { width:100%; }
-        .q-box .a-bar .a-field { flex:1 1 190px; }
-        .q-box .a-in, .q-box select.a-in, .q-box textarea.a-in { width:100%; }
-      `}</style>
     </div>
   )
 }
