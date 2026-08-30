@@ -13,9 +13,12 @@ import { fetchBalance, gamesLabel, redeemGiftCode } from '../lib/games'
  * الخصوصيّة المنشورة. فهو بضغطتين ولونٍ صريح في الثانية — لا يُبلَغ سهواً،
  * ولا يُخفى خلف بريد يُراسَل.
  *
- * والرصيد وكود الهدية هنا بنصّ SPEC القسم ٩: «الحقل في شاشة حسابي باسم
- * استبدال كود هدية، **لا** في شاشة الشراء جنب الأسعار مع مجموع متغيّر».
- * واللفظ «هدية» و«استبدال» — ولا كلمة «خصم» ولا «كوبون» في أيّ نصّ.
+ * والرصيد وكود الهدية هنا بموضع SPEC القسم ٩: «الحقل في شاشة حسابي، **لا**
+ * في شاشة الشراء جنب الأسعار مع مجموع متغيّر».
+ *
+ * أمّا اللفظ فـ«إضافة» لا «استبدال» بقرار علي (٣٠ أغسطس ٢٠٢٦) — يخالف نصّ
+ * SPEC ٩ الذي يفرض «استبدال»، والقرار له. ويبقى المحظور محظوراً: لا «خصم»
+ * ولا «كوبون» في أيّ نصّ، فهما ما يخرجان باللعبة من قواعد آبل.
  */
 export function AccountMenu({
   session,
@@ -61,7 +64,7 @@ export function AccountMenu({
          عند أوّل استبدالٍ من جهازٍ آخر. */
       if (onBalance) fetchBalance().then(onBalance).catch(() => {})
     } catch (e2) {
-      setGift({ ok: false, msg: e2 instanceof Error ? e2.message : 'تعذّر الاستبدال' })
+      setGift({ ok: false, msg: e2 instanceof Error ? e2.message : 'تعذّرت الإضافة' })
     } finally {
       setRedeeming(false)
     }
@@ -91,7 +94,7 @@ export function AccountMenu({
               dir="ltr"
             />
             <button className="acct-act" type="submit" disabled={redeeming || !code.trim()}>
-              {redeeming ? '…' : 'استبدال'}
+              {redeeming ? '…' : 'إضافة'}
             </button>
           </form>
           {gift && <p className={gift.ok ? 'acct-ok' : 'acct-err'}>{gift.msg}</p>}

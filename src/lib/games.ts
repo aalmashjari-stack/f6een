@@ -101,11 +101,11 @@ export async function closeSession(
 const GIFT_ERRORS: Record<string, string> = {
   code_not_found: 'هذا الكود غير موجود',
   code_expired: 'انتهت صلاحية هذا الكود',
-  code_exhausted: 'اكتمل عدد استبدالات هذا الكود',
-  code_already_used: 'استبدلت هذا الكود من قبل',
+  code_exhausted: 'اكتمل عدد إضافات هذا الكود',
+  code_already_used: 'أضفت هذا الكود من قبل',
 }
 
-/** استبدال كود هدية — يُرجع عدد الألعاب الممنوحة. */
+/** إضافة كود هدية — يُرجع عدد الألعاب الممنوحة. */
 export async function redeemGiftCode(code: string): Promise<number> {
   const { data, error } = await supabase.rpc('redeem_gift_code', { p_code: code.trim() })
   if (error) {

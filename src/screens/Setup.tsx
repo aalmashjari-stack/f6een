@@ -126,7 +126,7 @@ export function Setup({
     } catch (e) {
       setErr(
         e instanceof Error && e.message === 'no_balance'
-          ? 'انتهى رصيدك — استبدل كود هدية من «حسابي»'
+          ? 'انتهى رصيدك — أضف كود هدية من «حسابي»'
           : 'تعذّر بدء اللعبة، تحقّق من اتصالك',
       )
       setBusy(false)
@@ -231,7 +231,7 @@ export function Setup({
               <div className="toss-result missing">{err}</div>
             ) : noBalance ? (
               /* الرصيد أسبق من نقص الأسماء: إكمالها لن يفتح الزرّ. */
-              <div className="toss-result missing">انتهى رصيدك — استبدل كود هدية من «حسابي»</div>
+              <div className="toss-result missing">انتهى رصيدك — أضف كود هدية من «حسابي»</div>
             ) : tossing ? (
               <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
             ) : !namesReady ? (
