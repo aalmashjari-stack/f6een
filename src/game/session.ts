@@ -45,6 +45,13 @@ export interface GameState {
    */
   spentFamilies: string[]
 
+  /**
+   * معرّفات ما عُرض في **هذه الجلسة** بترتيب عرضه — لا ما عرفه الحساب.
+   * `usedQuestionIds` تراكميّة عبر الجلسات (مئات)، وشاشة الختام تحتاج ثلاثة
+   * عشر سؤالاً بعينها ليختار المبلِّغ منها المعطوب (SPEC ١٠).
+   */
+  askedQuestionIds: string[]
+
   /** تصنيفات خرجت من العجلة في المرحلة الحالية (تُصفّر عند بداية الديربي). */
   spentCategories: string[]
   currentCategory: string | null
@@ -117,6 +124,7 @@ export function createSession(input: SetupInput): GameState {
     teams,
     startingTeam: input.startingTeam,
     usedQuestionIds: used,
+    askedQuestionIds: [],
     spentFamilies: [],
     spentCategories: [],
     currentCategory: null,

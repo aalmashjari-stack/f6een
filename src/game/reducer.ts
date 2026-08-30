@@ -54,9 +54,12 @@ const guardedFamilies = (s: GameState): Set<string> => {
 }
 
 /**
- * يحرق سؤالاً عُرض للتوّ: معرّفه وقالبه.
+ * يحرق سؤالاً عُرض للتوّ: معرّفه وقالبه وموضعه في سجلّ الجلسة.
  * بمجموعة جديدة لا بتعديل القديمة — المحرك نقيّ، والحفظ في التخزين أثرٌ
  * جانبي يقع في App عند تغيّر الحالة، لا هنا.
+ *
+ * وهي **النقطة الوحيدة** التي يمرّ بها كل سؤال يُعرض، في المراحل الثلاث
+ * وفي سؤال الحسم — فسجلّ «أسئلة هذه الجلسة» يُبنى هنا لا في كل شاشة.
  */
 const burn = (s: GameState, q: Question): GameState => {
   const usedQuestionIds = new Set(s.usedQuestionIds)
@@ -64,7 +67,10 @@ const burn = (s: GameState, q: Question): GameState => {
   const fam = familyOf(q)
   const spentFamilies =
     fam === null || s.spentFamilies.includes(fam) ? s.spentFamilies : [...s.spentFamilies, fam]
-  return { ...s, usedQuestionIds, spentFamilies }
+  const askedQuestionIds = s.askedQuestionIds.includes(q.id)
+    ? s.askedQuestionIds
+    : [...s.askedQuestionIds, q.id]
+  return { ...s, usedQuestionIds, askedQuestionIds, spentFamilies }
 }
 
 /** كل نقطة تُسجَّل مرّتين: في مجموع الفريق، وفي عمود مرحلتها لشاشة الختام. */

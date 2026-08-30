@@ -26,9 +26,9 @@ const freeCategory = (s: GameState) => {
 /**
  * يلعب جلسة كاملة عبر المحرك نفسه — لا محاكاة تعيد كتابة منطقه — ويعيد
  * كل سؤال عُرض على الشاشة بالترتيب: ٦ في الجولة الجماعية، ٤ في الديربي،
- * و١٢ لكل فريق في الحق ما تلحق.
+ * و١٢ لكل فريق في الحق ما تلحق، ومعها الحالة الأخيرة.
  */
-function playSession(): Question[] {
+function playSession(): { shown: Question[]; state: GameState } {
   const shown: Question[] = []
   let s = createSession(INPUT)
 
@@ -55,10 +55,15 @@ function playSession(): Question[] {
       s = step(s, { t: 'S3_REVEAL' })
       s = step(s, { t: 'S3_JUDGE', verdict: k % 3 === 0 ? 'wrong' : 'correct' })
     }
-    if (turn === 0) s = step(s, { t: 'S3_END_TURN' })
+    /* السؤال المعروض لحظة انتهاء الوقت ظهر على الشاشة أيضاً، والمحرك يحرقه
+       عند إنهاء الدور — فيُحسب فيما عُرض. */
+    if (turn === 0) {
+      shown.push(s.s3Queue[s.s3Pos])
+      s = step(s, { t: 'S3_END_TURN' })
+    }
   }
 
-  return shown
+  return { shown, state: s }
 }
 
 /**
@@ -71,7 +76,7 @@ describe('الجلسة الكاملة عبر المحرك', () => {
 
   it('لا سؤال يظهر مرّتين في الجلسة الواحدة', () => {
     for (let n = 0; n < SESSIONS; n++) {
-      const ids = playSession().map((q) => q.id)
+      const ids = playSession().shown.map((q) => q.id)
       expect(new Set(ids).size, `الجلسة ${n}`).toBe(ids.length)
     }
   })
@@ -79,7 +84,7 @@ describe('الجلسة الكاملة عبر المحرك', () => {
   it('لا قالبان من عائلة واحدة في الجلسة الواحدة', () => {
     for (let n = 0; n < SESSIONS; n++) {
       const fams = playSession()
-        .map(familyOf)
+        .shown.map(familyOf)
         .filter((f): f is string => f !== null)
       expect(new Set(fams).size, `الجلسة ${n}`).toBe(fams.length)
     }
@@ -94,6 +99,27 @@ describe('الجلسة الكاملة عبر المحرك', () => {
       s = step(s, { t: 'S1_SCORE', outcome: 'none' })
     }
     expect([...s.usedQuestionIds].sort()).toEqual([...shown].sort())
+  })
+
+  /**
+   * سجلّ الجلسة هو ما تعرضه لوحة التبليغ في الختام. `usedQuestionIds`
+   * تراكميّة عبر الجلسات فلا تصلح: من لعب عشر جلسات يجد فيها مئتي سؤال لم
+   * يُسأل عنها الليلة.
+   */
+  it('سجلّ أسئلة الجلسة هو ما عُرض فيها، بترتيبه', () => {
+    const { shown, state } = playSession()
+    expect(state.askedQuestionIds).toEqual(shown.map((q) => q.id))
+  })
+
+  it('التبليغ يسجّل مرّة واحدة مهما تكرّرت الضغطة', () => {
+    const { shown, state } = playSession()
+    const id = shown[0].id
+    const once = reducer(state, { t: 'REPORT_QUESTION', id })!
+    const twice = reducer(once, { t: 'REPORT_QUESTION', id })!
+    expect(once.reportedQuestionIds).toEqual([id])
+    expect(twice.reportedQuestionIds).toEqual([id])
+    /* الحالة نفسها تُعاد لا نسخة جديدة — فلا تُعاد الشاشة رسماً بلا تغيير. */
+    expect(twice).toBe(once)
   })
 })
 

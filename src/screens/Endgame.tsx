@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GameState } from '../game/session'
 import { leader, playerStats } from '../game/session'
+import { ALL_QUESTIONS } from '../game/bank'
+import { gamesLabel } from '../lib/games'
 import type { Action } from '../game/reducer'
 import { Confetti } from '../components/Confetti'
 import { useCountUp } from '../components/useCountUp'
@@ -23,8 +25,20 @@ function signed(n: number) {
 /**
  * الختام — الشاشة ٨. الفائز، النتيجة، أفضل لاعب، سطر لكل لاعب.
  * زر التبليغ يعيش هنا فقط. الرصيد بخط صغير لا كإعلان.
+ *
+ * و`balance` قد يكون `null` — «لم يُقرأ بعد» لا «صفر». حتى ٣٠ أغسطس ٢٠٢٦
+ * كان السطر يقول «لديك 3 ألعاب» لكل لاعب مهما كان رصيده: رقمٌ مكتوب باليد
+ * في نسخة أولى بقي بعد أن صار الرصيد حقيقياً.
  */
-export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
+export function Endgame({
+  state,
+  dispatch,
+  balance,
+}: {
+  state: GameState
+  dispatch: (a: Action) => void
+  balance?: number | null
+}) {
   const [reportOpen, setReportOpen] = useState(false)
   const win = leader(state.teams)
   const stats = playerStats(state).sort((a, b) => b.correct - a.correct || a.wrong - b.wrong)
@@ -170,18 +184,20 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
       </button>
 
       <div className="foot">
-        <button className="foot-link" onClick={() => setReportOpen((v) => !v)}>
+        <button className="foot-link" onClick={() => setReportOpen(true)}>
           بلّغ عن سؤال
+          {state.reportedQuestionIds.length > 0 && ` (${state.reportedQuestionIds.length})`}
         </button>
-        <span className="foot-sep">·</span>
-        <span className="foot-balance">لديك 3 ألعاب</span>
+        {balance !== null && balance !== undefined && (
+          <>
+            <span className="foot-sep">·</span>
+            <span className="foot-balance">لديك {gamesLabel(balance)}</span>
+          </>
+        )}
       </div>
 
       {reportOpen && (
-        <div className="report-note">
-          في النسخة الكاملة يفتح هذا قائمة أسئلة الجلسة لتعليم المعطوب واستبعاده من سحوباتك.
-          {state.reportedQuestionIds.length > 0 && ` (بُلّغ عن ${state.reportedQuestionIds.length})`}
-        </div>
+        <ReportPanel state={state} dispatch={dispatch} onClose={() => setReportOpen(false)} />
       )}
 
       <style>{`
@@ -308,6 +324,124 @@ export function Endgame({ state, dispatch }: { state: GameState; dispatch: (a: A
         .foot { display:flex; align-items:center; gap:10px; color:var(--text-3); font-size:13px; }
         .foot-link { background:none; border:none; color:var(--text-2); font-family:inherit; font-size:13px; cursor:pointer; text-decoration:underline; }
         .report-note { max-width:560px; color:var(--text-2); font-size:13px; line-height:1.6; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 16px; }
+      `}</style>
+    </div>
+  )
+}
+
+/**
+ * لوحة التبليغ — أسئلة هذه الجلسة وحدها.
+ *
+ * **الشاشة خلفها لا تتمدّد.** الختام يُقرأ في لقطة واحدة (`overflow:hidden`)،
+ * فاللوحة طبقةٌ فوقه بارتفاع مقيَّد تتمرّر في داخلها — لا قسمٌ يُضاف أسفله
+ * فيدفع الجدول خارج الشاشة.
+ *
+ * والنصّ يُحلّ من البنك المشحون: القاعدة تحفظ المعرّف وحده (`admin_reports`)،
+ * ونسخُ نصّ السؤال في الحالة يضاعف حجم كل جلسة محفوظة بلا فائدة.
+ */
+function ReportPanel({
+  state,
+  dispatch,
+  onClose,
+}: {
+  state: GameState
+  dispatch: (a: Action) => void
+  onClose: () => void
+}) {
+  const bank = useMemo(() => new Map(ALL_QUESTIONS.map((q) => [q.id, q])), [])
+  const asked = state.askedQuestionIds
+
+  return (
+    <div className="rp-veil" onClick={onClose}>
+      <div
+        className="rp"
+        role="dialog"
+        aria-label="بلّغ عن سؤال"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className="rp-head">
+          <b>بلّغ عن سؤال</b>
+          <button className="rp-x" onClick={onClose} aria-label="إغلاق">
+            ×
+          </button>
+        </header>
+
+        <p className="rp-sub">اختر السؤال المعطوب — يُعلَّم للتصحيح.</p>
+
+        {asked.length === 0 ? (
+          <p className="rp-sub">لا أسئلة في هذه الجلسة.</p>
+        ) : (
+          <ul className="rp-list">
+            {asked.map((id) => {
+              const q = bank.get(id)
+              const done = state.reportedQuestionIds.includes(id)
+              return (
+                <li key={id} className="rp-row">
+                  <span className="rp-q">
+                    <span className="rp-cat">{q?.category ?? '—'}</span>
+                    {q?.question ?? id}
+                  </span>
+                  {/* المبلَّغ عنه لا يُلغى: الإلغاء يفتح باب الضغط المتكرّر
+                      على زرٍّ لا أثر ظاهر له، والبلاغ الزائد أرخص من واجهة
+                      حالتين. */}
+                  <button
+                    className={'rp-btn' + (done ? ' done' : '')}
+                    disabled={done}
+                    onClick={() => dispatch({ t: 'REPORT_QUESTION', id })}
+                  >
+                    {done ? 'بُلّغ' : 'بلّغ'}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
+
+      <style>{`
+        /* رموز «نيو» صراحةً لا رموز المسرح (--gold و--surface): تلك تُترجَم
+           في نيو إلى حبرٍ داكن، فتصير اللوحة نصّاً فاتحاً على أبيض وزرّاً
+           أسود بنصٍّ بنّي. جُرِّب فبان. */
+        .rp-veil {
+          position:fixed; inset:0; z-index:80;
+          display:flex; align-items:center; justify-content:center; padding:16px;
+          background:rgba(10,8,20,.5);
+        }
+        .rp {
+          display:flex; flex-direction:column; gap:8px;
+          width:min(760px, 100%); max-height:min(84vh, 720px);
+          padding:16px; overflow:hidden;
+          background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
+          border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.28);
+          text-align:start;
+        }
+        .rp-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+        .rp-head b { font-size:17px; font-weight:900; color:var(--n-ink, #1A1626); }
+        .rp-x {
+          font:inherit; font-size:20px; font-weight:800; line-height:1; cursor:pointer;
+          width:32px; height:32px; border:0; border-radius:999px;
+          background:var(--n-surface-2, #F8F7FC); color:var(--n-ink-2, #5D5670);
+        }
+        .rp-sub { margin:0; font-size:13px; font-weight:700; color:var(--n-ink-3, #948CA8); }
+        .rp-list {
+          list-style:none; margin:4px 0 0; padding:0; overflow:auto;
+          display:flex; flex-direction:column; gap:6px;
+        }
+        .rp-row {
+          display:flex; align-items:center; justify-content:space-between; gap:12px;
+          padding:9px 11px; border-radius:10px; background:var(--n-surface-2, #F8F7FC);
+        }
+        .rp-q { font-size:14px; font-weight:700; line-height:1.5; color:var(--n-ink, #1A1626); }
+        .rp-cat {
+          display:block; font-size:11px; font-weight:800; color:var(--n-ink-3, #948CA8);
+        }
+        .rp-btn {
+          flex:0 0 auto; font:inherit; font-weight:800; font-size:13px; cursor:pointer;
+          padding:7px 14px; border:0; border-radius:999px;
+          background:var(--n-brand, #7A3E9D); color:#fff;
+        }
+        .rp-btn.done { background:transparent; color:var(--n-ink-3, #948CA8);
+          box-shadow:inset 0 0 0 1px currentColor; cursor:default; }
       `}</style>
     </div>
   )

@@ -34,7 +34,7 @@ const RESUME_WINDOW_MS = 24 * 60 * 60 * 1000
 /* يُرفع كلما تغيّر شكل الحالة المحفوظة. جلسة حُفظت بنسخة أقدم تنقصها حقول
    تعتمد عليها النسخة الحالية، فاستئنافها يُسقط التطبيق في منتصف اللعب.
    الأسلم أن تُطرح ويُستأنف من الإعداد — وهذا لا يكلّف لعبة لأن الخصم عند الإنشاء. */
-const SAVE_VERSION = 3
+const SAVE_VERSION = 4
 
 interface Saved {
   savedAt: number
@@ -215,14 +215,33 @@ export default function App() {
   }, [state, sessionId, uid])
 
   /* الختام يُغلق الجلسة — وبه وحده يستطيع الحساب بدء لعبةٍ بعدها. */
+  const closedId = useRef<string | null>(null)
   useEffect(() => {
     if (!sessionId || state?.phase !== 'endgame') return
     const id = sessionId
     setSessionId(null)
+    closedId.current = id
     closeSession(id, 'finished', encodeState(state)).catch(() => {
       /* تبقى مفتوحة، فيستأنفها أوّل بدءٍ قادم بلا خصم — لا خسارة على اللاعب. */
     })
   }, [state, sessionId])
+
+  /**
+   * البلاغات تقع **بعد** الإغلاق — زرّ التبليغ في شاشة الختام نفسها.
+   *
+   * ولحظة الإغلاق تُفرغ `sessionId`، فحفظُ الحالة المؤجَّل لا يعمل بعدها
+   * ولا يصل بلاغٌ إلى القاعدة أبداً. هذا الأثر يكتب اللقطة على الجلسة
+   * المغلقة (سياسة «التعديل لصاحبها» لا تشترط أن تكون مفتوحة)، فيقرأها
+   * `admin_reports` في اللوحة.
+   */
+  const reported = state?.reportedQuestionIds.length ?? 0
+  useEffect(() => {
+    if (!closedId.current || reported === 0 || !state) return
+    saveSessionState(closedId.current, encodeState(state)).catch(() => {})
+    /* العدد وحده هو المحرّك: كل بلاغ يزيده، وتغيّرات الحالة الأخرى بعد
+       الختام لا شيء منها يستحقّ طلباً. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reported])
 
   /**
    * بدء اللعبة — نقطة الخصم الوحيدة.
@@ -260,6 +279,7 @@ export default function App() {
       )
       setSessionId(null)
     }
+    closedId.current = null
     dispatch({ t: 'NEW_GAME' })
   }, [sessionId])
 
@@ -309,7 +329,7 @@ export default function App() {
       case 'tiebreak':
         return <Tiebreak state={state} dispatch={dispatch} />
       case 'endgame':
-        return <Endgame state={state} dispatch={dispatch} />
+        return <Endgame state={state} dispatch={dispatch} balance={balance} />
       default:
         return <Setup onStart={begin} balance={balance} />
     }
