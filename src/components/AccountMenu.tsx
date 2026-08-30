@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { deleteAccount, signOut } from '../lib/auth'
 import { day } from '../lib/date'
+import { isAdmin } from '../lib/admin'
 import type { GameSummary, Profile } from '../lib/games'
 import { fetchMyGames, fetchProfile, gamesLabel, redeemGiftCode } from '../lib/games'
 
@@ -44,6 +45,7 @@ export function AccountMenu({
   const [redeeming, setRedeeming] = useState(false)
 
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [admin, setAdmin] = useState(false)
   const [games, setGames] = useState<GameSummary[] | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
 
@@ -73,6 +75,12 @@ export function AccountMenu({
       .catch((e) => {
         if (alive) setLoadErr(e instanceof Error ? e.message : 'تعذّرت القراءة')
       })
+    /* منفصلة عن الأولى: من ليس مديراً — وهو كل اللاعبين — يردّ الخادم عليه
+       بخطأ صلاحية، ولو كان في نفس `Promise.all` لابتلع الخطأُ الرصيدَ
+       والألعاب معه فرأى اللاعب صفحة فارغة. */
+    isAdmin()
+      .then((v) => alive && setAdmin(v))
+      .catch(() => {})
     return () => {
       alive = false
     }
@@ -199,6 +207,15 @@ export function AccountMenu({
             </div>
 
             <footer className="acct-foot">
+              {/* لا يظهر إلّا لمن تقول القاعدة إنّه مدير — والزرّ راحةٌ لا
+                  حراسة: من كتب العنوان بيده يصل إلى الصفحة نفسها، ولا يرى
+                  فيها شيئاً ما لم يكن صفّه في `admins`. */}
+              {admin && (
+                <a className="acct-act admin" href="./admin.html" target="_blank" rel="noreferrer">
+                  لوحة الإدارة
+                </a>
+              )}
+
               <button className="acct-act" disabled={busy} onClick={() => run(signOut)}>
                 الخروج من الحساب
               </button>
@@ -334,6 +351,9 @@ export function AccountMenu({
           transition:background .2s ease, color .2s ease;
         }
         .acct-act:disabled { opacity:.5; cursor:default; }
+        /* الرابط يلبس زيّ الأزرار: هو في صفٍّ معها، وفرقُ شكله يقرأ عطلاً. */
+        a.acct-act { text-decoration:none; text-align:center; }
+        .acct-act.admin { color:var(--n-brand, #7A3E9D); }
         .acct-act.danger { color:var(--n-bad, #DC4033); }
         /* الحالة المسلَّحة صريحة اللون: لا تُضغط وهي بلون الحياد. */
         .acct-act.danger.armed { background:var(--n-bad, #DC4033); color:#fff; }
