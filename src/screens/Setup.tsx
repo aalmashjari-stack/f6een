@@ -20,7 +20,20 @@ const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
 /* نسيج الخلفية يعيش في `body::after` بـ theme.css فيشمل كل الشاشات.
    تكراره هنا كان يضاعفه تحت الشعار ويزحمه. */
 
-export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
+/**
+ * `onStart` غير متزامنة لأنّها تعبر الخادم: هناك يقع الخصم وإنشاء الجلسة
+ * (SPEC ٩). فالزرّ ينتظر الردّ، والخطأ يُعرض هنا لا في وحدة التحكّم.
+ *
+ * و`balance` قد تكون `null` — «لم يُقرأ» لا «صفر»، فلا تمنع البدء: القاعدة
+ * هي التي تمنع، ومنعُ من رصيده سليم لأنّ الشبكة تأخّرت خطأٌ في الاتّجاه الأسوأ.
+ */
+export function Setup({
+  onStart,
+  balance,
+}: {
+  onStart: (input: SetupInput) => Promise<void> | void
+  balance?: number | null
+}) {
   const [names, setNames] = useState<[string, string]>(['', ''])
   const [players, setPlayers] = useState<[string[], string[]]>([
     ['', ''],
@@ -30,6 +43,13 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  /* الرصيد صفر: الزرّ يُقفل هنا بدل أن يُترك يرحل إلى الخادم ويعود بخطأ —
+     والحكم يعرف قبل أن يكتب اثني عشر اسماً لا بعده. */
+  const noBalance = balance === 0
+  const lastGame = balance === 1
 
   /** الكتم يُضبط مرّة قبل الجلسة ويبقى محفوظاً — لا يعود الحكم إليه أثناء اللعب. */
   function toggleMute() {
@@ -88,16 +108,29 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
     }, 110)
   }
 
-  function start() {
-    if (starter === null || !namesReady) return
-    onStart({
-      teamNames: [teamLabel(0), teamLabel(1)],
-      players: [
-        players[0].map((p, i) => p.trim() || `لاعب ${i + 1}`),
-        players[1].map((p, i) => p.trim() || `لاعب ${i + 1}`),
-      ],
-      startingTeam: starter,
-    })
+  async function start() {
+    if (starter === null || !namesReady || busy || noBalance) return
+    setErr(null)
+    setBusy(true)
+    try {
+      await onStart({
+        teamNames: [teamLabel(0), teamLabel(1)],
+        players: [
+          players[0].map((p, i) => p.trim() || `لاعب ${i + 1}`),
+          players[1].map((p, i) => p.trim() || `لاعب ${i + 1}`),
+        ],
+        startingTeam: starter,
+      })
+      /* لا إفراغ لـbusy عند النجاح: الشاشة تتبدّل إلى العجلة، وإفراغه يُعيد
+         الزرّ نشطاً للحظة فيُضغط مرّتين — وكل ضغطة جلسة. */
+    } catch (e) {
+      setErr(
+        e instanceof Error && e.message === 'no_balance'
+          ? 'انتهى رصيدك — استبدل كود هدية من «حسابي»'
+          : 'تعذّر بدء اللعبة، تحقّق من اتصالك',
+      )
+      setBusy(false)
+    }
   }
 
   return (
@@ -194,7 +227,12 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             لا سطران يطفوان في الفراغ. */}
         <div className="setup-foot">
           <div className="toss">
-            {tossing ? (
+            {err ? (
+              <div className="toss-result missing">{err}</div>
+            ) : noBalance ? (
+              /* الرصيد أسبق من نقص الأسماء: إكمالها لن يفتح الزرّ. */
+              <div className="toss-result missing">انتهى رصيدك — استبدل كود هدية من «حسابي»</div>
+            ) : tossing ? (
               <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
             ) : !namesReady ? (
               /* بلا هذا السطر يبقى الزرّ رمادياً بلا سبب ظاهر، فيظنّه الحكم عطلاً. */
@@ -202,6 +240,8 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             ) : starter !== null ? (
               <div className="toss-result">
                 يبدأ: <b>{teamLabel(starter)}</b>
+                {/* آخر لعبة تُقال قبل الضغطة لا بعدها — الخصم عند البدء. */}
+                {lastGame && <span className="toss-note"> · آخر لعبة في رصيدك</span>}
               </div>
             ) : null}
           </div>
@@ -210,8 +250,12 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
             <button className="action ghost" onClick={toss} disabled={tossing}>
               {starter !== null ? 'إعادة القرعة' : 'قرعة البدء'}
             </button>
-            <button className="action" disabled={starter === null || !namesReady} onClick={start}>
-              ابدأ اللعبة
+            <button
+              className="action"
+              disabled={starter === null || !namesReady || busy || noBalance}
+              onClick={start}
+            >
+              {busy ? 'لحظة…' : 'ابدأ اللعبة'}
             </button>
           </div>
         </div>
@@ -505,6 +549,7 @@ export function Setup({ onStart }: { onStart: (input: SetupInput) => void }) {
         .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
         .toss-result b { color:var(--gold); }
         .toss-result.missing { color:var(--text-2); font-weight:700; }
+        .toss-note { color:var(--text-2); font-weight:700; font-size:.72em; }
 
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
            فيبقى الفعل الأساسي هو الأكبر، والقرعة إلى جانبه لا فوقه. */

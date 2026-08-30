@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { deleteAccount, signOut } from '../lib/auth'
+import { fetchBalance, gamesLabel, redeemGiftCode } from '../lib/games'
 
 /**
  * حساب اللاعب — الخروج والحذف.
@@ -11,12 +12,27 @@ import { deleteAccount, signOut } from '../lib/auth'
  * وحذف الحساب **شرط متجر آبل** لكل تطبيق يسمح بإنشائه، ووعدٌ صريح في سياسة
  * الخصوصيّة المنشورة. فهو بضغطتين ولونٍ صريح في الثانية — لا يُبلَغ سهواً،
  * ولا يُخفى خلف بريد يُراسَل.
+ *
+ * والرصيد وكود الهدية هنا بنصّ SPEC القسم ٩: «الحقل في شاشة حسابي باسم
+ * استبدال كود هدية، **لا** في شاشة الشراء جنب الأسعار مع مجموع متغيّر».
+ * واللفظ «هدية» و«استبدال» — ولا كلمة «خصم» ولا «كوبون» في أيّ نصّ.
  */
-export function AccountMenu({ session }: { session: Session }) {
+export function AccountMenu({
+  session,
+  balance,
+  onBalance,
+}: {
+  session: Session
+  balance?: number | null
+  onBalance?: (n: number) => void
+}) {
   const [open, setOpen] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+  const [code, setCode] = useState('')
+  const [gift, setGift] = useState<{ ok: boolean; msg: string } | null>(null)
+  const [redeeming, setRedeeming] = useState(false)
 
   const email = session.user.email ?? 'حساب مجهول'
 
@@ -32,6 +48,25 @@ export function AccountMenu({ session }: { session: Session }) {
     }
   }
 
+  async function redeem(e: React.FormEvent) {
+    e.preventDefault()
+    if (!code.trim() || redeeming) return
+    setGift(null)
+    setRedeeming(true)
+    try {
+      const games = await redeemGiftCode(code)
+      setCode('')
+      setGift({ ok: true, msg: `أُضيفت ${gamesLabel(games)} إلى رصيدك` })
+      /* الرصيد يُقرأ من الخادم لا يُجمع هنا: الجمع المحلّي يفترق عن الحقيقة
+         عند أوّل استبدالٍ من جهازٍ آخر. */
+      if (onBalance) fetchBalance().then(onBalance).catch(() => {})
+    } catch (e2) {
+      setGift({ ok: false, msg: e2 instanceof Error ? e2.message : 'تعذّر الاستبدال' })
+    } finally {
+      setRedeeming(false)
+    }
+  }
+
   return (
     <>
       <button className="acct-tab" onClick={() => setOpen((v) => !v)} title={email}>
@@ -41,6 +76,25 @@ export function AccountMenu({ session }: { session: Session }) {
       {open && (
         <div className="acct-panel" role="dialog" aria-label="حسابي">
           <p className="acct-mail">{email}</p>
+
+          <p className="acct-bal">
+            الرصيد: <b>{balance === null || balance === undefined ? '…' : gamesLabel(balance)}</b>
+          </p>
+
+          <form className="acct-gift" onSubmit={redeem}>
+            <input
+              className="acct-in"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="كود هدية"
+              aria-label="كود هدية"
+              dir="ltr"
+            />
+            <button className="acct-act" type="submit" disabled={redeeming || !code.trim()}>
+              {redeeming ? '…' : 'استبدال'}
+            </button>
+          </form>
+          {gift && <p className={gift.ok ? 'acct-ok' : 'acct-err'}>{gift.msg}</p>}
 
           <button className="acct-act" disabled={busy} onClick={() => run(signOut)}>
             الخروج من الحساب
@@ -94,6 +148,17 @@ export function AccountMenu({ session }: { session: Session }) {
           color:var(--n-ink-3, #948CA8);
           overflow-wrap:anywhere; direction:ltr; text-align:start;
         }
+        .acct-bal { margin:0; font-size:14px; font-weight:700; color:var(--n-ink-2, #5D5670); }
+        .acct-bal b { color:var(--n-brand, #7A3E9D); }
+        .acct-gift { display:grid; grid-template-columns:1fr auto; gap:8px; }
+        .acct-in {
+          font:inherit; font-weight:700; font-size:14px; width:100%;
+          padding:9px 12px; border-radius:10px;
+          border:1px solid var(--n-line, #E5E1F0);
+          background:var(--n-surface-2, #F8F7FC); color:var(--n-ink, #1A1626);
+        }
+        .acct-in::placeholder { color:var(--n-ink-3, #948CA8); font-weight:700; }
+        .acct-in:focus { outline:none; border-color:var(--n-brand, #7A3E9D); background:#fff; }
         .acct-act {
           font:inherit; font-weight:800; cursor:pointer;
           font-size:14px; padding:9px 12px;
@@ -110,6 +175,10 @@ export function AccountMenu({ session }: { session: Session }) {
         }
         .acct-warn { color:var(--n-ink-2, #5D5670); }
         .acct-err { color:var(--n-bad, #DC4033); }
+        .acct-ok {
+          margin:0; font-size:12px; font-weight:800; line-height:1.6;
+          color:var(--n-good, #2F9E63);
+        }
       `}</style>
     </>
   )

@@ -13,8 +13,12 @@ import { useEffect, useState } from 'react'
  *
  * ولا نافذة `confirm` من النظام: تقطع المشهد بصندوق أبيض غريب عن الهويّة،
  * وبعض حاويات الويب تحجبها أصلاً.
+ *
+ * و`charged` تكشف الثمن قبل الضغطة الثانية: اللعبة تُخصم عند إنشاء الجلسة
+ * ولا تُعاد بالانسحاب (SPEC ٣). إخفاء ذلك يجعل الزرّ فخّاً — ولا يُقال إلا
+ * حين يكون صحيحاً، فجلسةٌ بلا خصم لا تُخوَّف بثمنٍ لم يُدفع.
  */
-export function QuitGame({ onQuit }: { onQuit: () => void }) {
+export function QuitGame({ onQuit, charged = false }: { onQuit: () => void; charged?: boolean }) {
   const [asking, setAsking] = useState(false)
 
   useEffect(() => {
@@ -32,6 +36,8 @@ export function QuitGame({ onQuit }: { onQuit: () => void }) {
       >
         {asking ? 'تأكيد الإنهاء' : 'إنهاء'}
       </button>
+
+      {asking && charged && <p className="quit-warn">اللعبة مخصومة ولا تُعاد</p>}
 
       <style>{`
         .quit-game {
@@ -52,6 +58,18 @@ export function QuitGame({ onQuit }: { onQuit: () => void }) {
         .quit-game.asking {
           opacity:1;
           background:var(--n-bad, #DC4033); color:#fff;
+        }
+        /* تحت الزرّ لا داخله: الشريط حبّةٌ صغيرة، وتوسيعها بالنصّ يزحم الشاشة
+           أثناء اللعب — والتحذير لا يظهر إلا في اللحظة التي يُقرأ فيها. */
+        .quit-warn {
+          position:fixed; inset-block-start:clamp(30px,4.6vh,44px);
+          inset-inline-start:clamp(6px,1.2vw,16px);
+          z-index:50; margin:0;
+          font-weight:800; font-size:clamp(9px,1.15vw,12px);
+          padding:clamp(3px,.6vh,6px) clamp(7px,1.2vw,12px);
+          border-radius:999px;
+          background:var(--n-surface, #fff); color:var(--n-bad, #DC4033);
+          box-shadow:var(--n-e1, 0 1px 2px rgba(0,0,0,.08));
         }
       `}</style>
     </>

@@ -18,6 +18,11 @@ import {
 
 export type Action =
   | { t: 'START'; input: SetupInput }
+  /* حالةٌ جاهزة تحلّ محلّ القائمة — استئنافُ جلسةٍ من الخادم، أو بدءُ جلسةٍ
+     أنشأها `start_session` بعد الخصم. الحالة المعادة منه قد تكون جلسةً
+     مفتوحةً سابقة لا التي أُرسلت (نافذة الاستكمال)، ولهذا تُبنى الحالة
+     خارج المخفّض ثمّ تُسلَّم إليه بدل أن يبنيها من المدخلات. */
+  | { t: 'RESUME'; state: GameState }
   | { t: 'SPIN_DONE'; category: string } // العجلة توقّفت على تصنيف
   | { t: 'S1_TO_REVEAL' } // انتهت مهلة الفريق الآخر ← كشف تلقائي
   | { t: 'S1_SCORE'; outcome: 'owner' | 'rival' | 'none' }
@@ -75,6 +80,9 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
   switch (action.t) {
     case 'START':
       return createSession(action.input)
+
+    case 'RESUME':
+      return action.state
 
     case 'NEW_GAME':
       return null

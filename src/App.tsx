@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
-import type { GameState } from './game/session'
-import { persistUsedIds } from './game/session'
+import type { GameState, SetupInput, StoredState } from './game/session'
+import { createSession, decodeState, encodeState, persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
 import { useSession } from './lib/auth'
+import {
+  closeSession,
+  fetchBalance,
+  fetchOpenSession,
+  saveSessionState,
+  startSession,
+} from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
 import { AccountMenu } from './components/AccountMenu'
 import { QuitGame } from './components/QuitGame'
@@ -32,10 +39,12 @@ const SAVE_VERSION = 3
 interface Saved {
   savedAt: number
   version?: number
-  state: Omit<GameState, 'usedQuestionIds'> & { usedQuestionIds: string[] }
+  /** صفّ الجلسة على الخادم — الذي خُصمت له لعبة، والذي يُغلَق عند الختام. */
+  sessionId?: string | null
+  state: StoredState
 }
 
-function loadSession(): GameState | null {
+function loadSaved(): { state: GameState; sessionId: string | null } | null {
   try {
     const raw = localStorage.getItem(SAVE_KEY)
     if (!raw) return null
@@ -49,13 +58,13 @@ function loadSession(): GameState | null {
       return null
     }
     if (saved.state.phase === 'endgame') return null
-    return { ...saved.state, usedQuestionIds: new Set(saved.state.usedQuestionIds) }
+    return { state: decodeState(saved.state), sessionId: saved.sessionId ?? null }
   } catch {
     return null
   }
 }
 
-function saveSession(state: GameState | null) {
+function saveSession(state: GameState | null, sessionId: string | null) {
   try {
     if (!state) {
       localStorage.removeItem(SAVE_KEY)
@@ -64,13 +73,17 @@ function saveSession(state: GameState | null) {
     const payload: Saved = {
       savedAt: Date.now(),
       version: SAVE_VERSION,
-      state: { ...state, usedQuestionIds: [...state.usedQuestionIds] },
+      sessionId,
+      state: encodeState(state),
     }
     localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
   } catch {
     /* تجاهل */
   }
 }
+
+/** تأجيل حفظ الحالة على الخادم — الحفظ المحلّي فوريّ، وهذا يلحق به. */
+const SERVER_SAVE_DELAY_MS = 2500
 
 /* **اشتراط الدخول** — أُوقف مؤقّتاً في ٢٧ أغسطس ٢٠٢٦ ثم أُعيد في اليوم نفسه.
  *
@@ -83,15 +96,20 @@ function saveSession(state: GameState | null) {
 const REQUIRE_LOGIN = true
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, null, loadSession)
+  const [state, dispatch] = useReducer(reducer, null, () => loadSaved()?.state ?? null)
+  /* صفّ الجلسة على الخادم. يُقرأ من الحفظ المحلّي كي ينجو من إغلاق المتصفّح:
+     بدونه تبقى الجلسة مفتوحة على الخادم بعد أن تنتهي على الجهاز، فيردّها
+     `start_session` بدل أن يبدأ لعبةً جديدة. */
+  const [sessionId, setSessionId] = useState<string | null>(() => loadSaved()?.sessionId ?? null)
+  const [balance, setBalance] = useState<number | null>(null)
   const [splashDone, setSplashDone] = useState(false)
   const [introDone, setIntroDone] = useState(false)
   const session = useSession()
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
   useEffect(() => {
-    saveSession(state)
-  }, [state])
+    saveSession(state, sessionId)
+  }, [state, sessionId])
 
   /* ذاكرة الأسئلة عبر الجلسات — سجلّ مستقلّ عن لقطة الاستئناف، ولا يُمحى بانتهاء اللعبة.
      مربوط بالمجموعة وحدها لا بالحالة كلها: وإلا أُعيدت كتابة مئات المعرّفات مع كل ضغطة. */
@@ -140,6 +158,111 @@ export default function App() {
       })
   }, [used, uid])
 
+  /* ================== الرصيد والجلسة على الخادم — SPEC ٣ و٩ ================== */
+
+  /* المرجع يُقرأ داخل نداءات غير متزامنة، فيرى الحالة لحظةَ وصول الردّ لا
+     لحظةَ انطلاق الطلب — والفرق هو ما يمنع استئنافاً متأخّراً من أن يقتحم
+     لعبةً بدأها اللاعب في الأثناء. */
+  const stateRef = useRef(state)
+  stateRef.current = state
+
+  const refreshBalance = useCallback(() => {
+    fetchBalance()
+      .then(setBalance)
+      .catch(() => {
+        /* يبقى `null` — و«غير معروف» لا يمنع البدء، القاعدة هي التي تمنع. */
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!uid) {
+      setBalance(null)
+      return
+    }
+    refreshBalance()
+  }, [uid, refreshBalance])
+
+  /* استئناف جلسة مفتوحة من الخادم — للجهاز الذي لا لقطة محلّية عنده.
+     الحفظ المحلّي أسبق لأنّه أحدث دائماً (يُكتب مع كل ضغطة، والخادم مؤجَّل). */
+  useEffect(() => {
+    if (!uid || stateRef.current) return
+    let alive = true
+    fetchOpenSession()
+      .then((row) => {
+        if (!alive || !row || stateRef.current) return
+        setSessionId(row.id)
+        dispatch({ t: 'RESUME', state: decodeState(row.state) })
+      })
+      .catch(() => {
+        /* بلا شبكة: يبدأ من الإعداد، والجلسة المفتوحة تُردّ إليه في أوّل بدء. */
+      })
+    return () => {
+      alive = false
+    }
+  }, [uid])
+
+  /* رفع لقطة الحالة مؤجَّلاً: طلبٌ لكل ضغطة حكمٍ إغراقٌ بلا فائدة، والقيمة
+     كلّها في آخر لقطة لا في تسلسلها. */
+  useEffect(() => {
+    if (!sessionId || !state || !uid) return
+    const snapshot = state
+    const t = setTimeout(() => {
+      saveSessionState(sessionId, encodeState(snapshot)).catch(() => {
+        /* المحلّي هو الأساس — واللقطة التالية تحمل ما فات هذه. */
+      })
+    }, SERVER_SAVE_DELAY_MS)
+    return () => clearTimeout(t)
+  }, [state, sessionId, uid])
+
+  /* الختام يُغلق الجلسة — وبه وحده يستطيع الحساب بدء لعبةٍ بعدها. */
+  useEffect(() => {
+    if (!sessionId || state?.phase !== 'endgame') return
+    const id = sessionId
+    setSessionId(null)
+    closeSession(id, 'finished', encodeState(state)).catch(() => {
+      /* تبقى مفتوحة، فيستأنفها أوّل بدءٍ قادم بلا خصم — لا خسارة على اللاعب. */
+    })
+  }, [state, sessionId])
+
+  /**
+   * بدء اللعبة — نقطة الخصم الوحيدة.
+   *
+   * الحالة تُبنى هنا ثمّ تُرسل، لأنّ `start_session` قد يردّ جلسةً مفتوحة
+   * سابقةً بدل التي أُرسلت (نافذة الاستكمال) — فما يُعتمد هو ما رجع لا ما ذهب.
+   *
+   * والخطأ يُترك يصعد إلى شاشة الإعداد: هي صاحبة الزرّ، وهي التي تعرض
+   * «انتهى رصيدك» في مكانه.
+   */
+  const begin = useCallback(
+    async (input: SetupInput) => {
+      const fresh = createSession(input)
+      /* بلا حساب لا خصم ولا جلسة خادم — مسار `REQUIRE_LOGIN = false` وحده. */
+      if (!uid) {
+        dispatch({ t: 'RESUME', state: fresh })
+        return
+      }
+      const row = await startSession(encodeState(fresh))
+      setSessionId(row.id)
+      dispatch({ t: 'RESUME', state: decodeState(row.state) })
+      refreshBalance()
+    },
+    [uid, refreshBalance],
+  )
+
+  /* الانسحاب يُغلق الجلسة ولا يُعيد الرصيد — «الخصم عند الإنشاء لا عند
+     الإتمام» (SPEC ٣). ولو بقيت مفتوحة لعاد إليها أوّل بدءٍ بعدها، فوجد
+     اللاعب لعبةً هجرها تُفرض عليه. */
+  const quit = useCallback(() => {
+    if (sessionId) {
+      const snapshot = stateRef.current
+      closeSession(sessionId, 'abandoned', snapshot ? encodeState(snapshot) : undefined).catch(
+        () => {},
+      )
+      setSessionId(null)
+    }
+    dispatch({ t: 'NEW_GAME' })
+  }, [sessionId])
+
   /* الشعار يبقى حتى تنتهي مدّته **و** تُقرأ الجلسة من المخزن. قراءتها ليست
      فوريّة، فبدون انتظارها تومض شاشة الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً. */
   if (!splashDone || session === undefined) return <Splash onDone={leaveSplash} />
@@ -153,9 +276,11 @@ export default function App() {
   if (!state) {
     return (
       <>
-        <Setup onStart={(input) => dispatch({ t: 'START', input })} />
+        <Setup onStart={begin} balance={balance} />
         {/* خارج اللعب فقط — لا إدارة حساب فوق سؤال مؤقّت. */}
-        {session && <AccountMenu session={session} />}
+        {session && (
+          <AccountMenu session={session} balance={balance} onBalance={setBalance} />
+        )}
       </>
     )
   }
@@ -186,7 +311,7 @@ export default function App() {
       case 'endgame':
         return <Endgame state={state} dispatch={dispatch} />
       default:
-        return <Setup onStart={(input) => dispatch({ t: 'START', input })} />
+        return <Setup onStart={begin} balance={balance} />
     }
   })()
 
@@ -194,7 +319,7 @@ export default function App() {
     <>
       {screen}
       {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
-      {state.phase !== 'endgame' && <QuitGame onQuit={() => dispatch({ t: 'NEW_GAME' })} />}
+      {state.phase !== 'endgame' && <QuitGame onQuit={quit} charged={sessionId !== null} />}
     </>
   )
 }

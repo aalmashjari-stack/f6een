@@ -1,0 +1,130 @@
+import { supabase } from './supabase'
+import type { StoredState } from '../game/session'
+
+/**
+ * الرصيد والجلسات — SPEC القسمان ٣ و٩.
+ *
+ * **الخصم عند إنشاء الجلسة لا عند إتمامها.** والقاعدة كلّها مفروضة في
+ * `start_session` داخل القاعدة لا هنا: هذا الملفّ ينادي ويترجم، ولا يقرّر.
+ * لو وُضع الفحص هنا لكفى تعديلُ نداءٍ في المتصفّح لتخطّيه — ولهذا لا سياسة
+ * كتابة على `profiles` أصلاً، ولا سياسة إضافة على `sessions`.
+ */
+
+/** الرصيد الحالي. `null` لا تعني صفراً بل «لم يُقرأ بعد» — والفرق يقرّر هل يُمنع البدء. */
+export async function fetchBalance(): Promise<number> {
+  const { data, error } = await supabase.from('profiles').select('games_balance').single()
+  if (error) throw error
+  return data.games_balance as number
+}
+
+export interface ServerSession {
+  id: string
+  state: StoredState
+}
+
+/**
+ * الجلسة المفتوحة إن وُجدت — نافذة الاستكمال عبر الأجهزة.
+ *
+ * الحفظ المحلّي يكفي على الجهاز نفسه، وهذه للحالة التي لا يغطّيها: جهاز آخر،
+ * أو متصفّح مُسِح تخزينه. بدونها يجد اللاعب لعبةً مخصومة لا يصل إليها،
+ * وجلستُه المفتوحة تمنعه من بدء غيرها (فهرس «مفتوحة واحدة لكل حساب»).
+ */
+export async function fetchOpenSession(): Promise<ServerSession | null> {
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('id, state')
+    .eq('status', 'open')
+    .maybeSingle()
+  if (error) throw error
+  return data ? { id: data.id as string, state: data.state as StoredState } : null
+}
+
+/** يُرفع حين يردّ `start_session` بـ`no_balance` — ليفرزه النداء عن أعطال الشبكة. */
+export class NoBalanceError extends Error {
+  constructor() {
+    super('no_balance')
+    this.name = 'NoBalanceError'
+  }
+}
+
+/**
+ * بدء جلسة: استئنافٌ بلا خصم إن كانت هناك مفتوحة، وإلّا خصمُ لعبةٍ وإنشاء.
+ *
+ * القرار كلّه في القاعدة، والحالة المعادة قد لا تكون التي أُرسلت — فمن بدأ
+ * جلسةً على جهاز ونسيها يستأنفها هنا بدل أن يُخصم مرّتين.
+ */
+export async function startSession(state: StoredState): Promise<ServerSession> {
+  const { data, error } = await supabase.rpc('start_session', { initial_state: state })
+  if (error) {
+    if (error.message.includes('no_balance')) throw new NoBalanceError()
+    throw error
+  }
+  return { id: data.id as string, state: data.state as StoredState }
+}
+
+/**
+ * حفظ لقطة الحالة على الخادم.
+ *
+ * الحفظ المحلّي هو الأساس وهذا فوقه، فالفشل هنا يُبتلع عند النداء: لعبةٌ
+ * قائمة لا تتوقّف لأنّ الشبكة انقطعت.
+ */
+export async function saveSessionState(id: string, state: StoredState): Promise<void> {
+  const { error } = await supabase
+    .from('sessions')
+    .update({ state, updated_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) throw error
+}
+
+/**
+ * إغلاق الجلسة — وهو ما يُطلق الحساب ليبدأ التالية.
+ *
+ * بدونه تبقى الجلسة مفتوحة أبداً، فيردّ `start_session` نفسَها في كل مرّة
+ * ولا يبدأ اللاعب لعبةً جديدة ولو دفع. ولقطة الحالة تُكتب مع الإغلاق في
+ * طلبٍ واحد كي لا تضيع نتيجة الختام في مؤقّت الحفظ المؤجَّل.
+ *
+ * و`abandoned` لا تُعيد الرصيد: «الخصم عند الإنشاء لا عند الإتمام» (SPEC ٣).
+ */
+export async function closeSession(
+  id: string,
+  status: 'finished' | 'abandoned',
+  state?: StoredState,
+): Promise<void> {
+  const patch: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+  if (state) patch.state = state
+  const { error } = await supabase.from('sessions').update(patch).eq('id', id)
+  if (error) throw error
+}
+
+/* رسائل أخطاء `redeem_gift_code` — تُترجَم هنا لا تُعرض خاماً: اللاعب لا
+   يفهم `code_exhausted`، ونصُّ القاعدة إنجليزيّ بطبعه. */
+const GIFT_ERRORS: Record<string, string> = {
+  code_not_found: 'هذا الكود غير موجود',
+  code_expired: 'انتهت صلاحية هذا الكود',
+  code_exhausted: 'اكتمل عدد استبدالات هذا الكود',
+  code_already_used: 'استبدلت هذا الكود من قبل',
+}
+
+/** استبدال كود هدية — يُرجع عدد الألعاب الممنوحة. */
+export async function redeemGiftCode(code: string): Promise<number> {
+  const { data, error } = await supabase.rpc('redeem_gift_code', { p_code: code.trim() })
+  if (error) {
+    for (const [key, msg] of Object.entries(GIFT_ERRORS)) {
+      if (error.message.includes(key)) throw new Error(msg)
+    }
+    throw error
+  }
+  return data as number
+}
+
+/**
+ * «لعبة» و«لعبتان» و«ألعاب» — العربية تُثنّي وتَجمع جمع قلّة، و«2 لعبة» ركيك
+ * في شاشةٍ كلُّ نصّها عربيّ. والرقم يبقى لاتينياً كبقيّة أرقام الواجهة.
+ */
+export function gamesLabel(n: number): string {
+  if (n <= 0) return 'لا شيء'
+  if (n === 1) return 'لعبة واحدة'
+  if (n === 2) return 'لعبتان'
+  if (n >= 3 && n <= 10) return `${n} ألعاب`
+  return `${n} لعبة`
+}

@@ -141,6 +141,30 @@ export function createSession(input: SetupInput): GameState {
   }
 }
 
+/* ===================== الحالة خارج الذاكرة — الحفظ والاستئناف ===================== */
+
+/**
+ * شكل الحالة حين تخرج من الذاكرة — إلى `localStorage` أو إلى عمود `state`
+ * في جدول `sessions`.
+ *
+ * الفرق الوحيد أنّ `usedQuestionIds` مصفوفة لا `Set`: الـ`Set` يخرج من
+ * `JSON.stringify` كائناً فارغاً `{}`، فتعود الجلسة المستأنَفة بذاكرة صفر
+ * وتُعيد أسئلةً سُمعت.
+ *
+ * وشكلٌ واحد للوجهتين عمداً: لو افترق المحلّي عن الخادميّ لاختلفت الجلسة
+ * المستأنَفة على الجهاز عن المستأنَفة عليه من حساب آخر — والفرق لا يظهر إلا
+ * بعد الاستئناف.
+ */
+export type StoredState = Omit<GameState, 'usedQuestionIds'> & { usedQuestionIds: string[] }
+
+export function encodeState(s: GameState): StoredState {
+  return { ...s, usedQuestionIds: [...s.usedQuestionIds] }
+}
+
+export function decodeState(s: StoredState): GameState {
+  return { ...s, usedQuestionIds: new Set(s.usedQuestionIds) }
+}
+
 /* ======================= الذاكرة عبر الجلسات — القسم ٨ ======================= */
 const USED_KEY = 'f6een.usedQuestionIds'
 
