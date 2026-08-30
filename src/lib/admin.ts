@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import type { ImportRow } from './importQuestions'
 
 /**
  * لوحة الإدارة — نداءات القاعدة.
@@ -177,6 +178,8 @@ const ERRORS: Record<string, string> = {
   category_exists: 'هذه الفئة موجودة',
   category_in_use: 'الفئة تحمل أسئلة — انقلها أو احذفها أوّلاً',
   no_such_category: 'لا فئة بهذا الاسم',
+  bad_payload: 'صيغة الدفعة غير صالحة',
+  too_many_rows: 'الرزمة فوق ألف صفّ',
 }
 
 function translate(msg: string): string {
@@ -274,4 +277,32 @@ export async function addCategory(name: string): Promise<string> {
 export async function deleteCategory(name: string): Promise<void> {
   const { error } = await supabase.rpc('admin_delete_category', { p_name: name })
   if (error) throw new Error(translate(error.message))
+}
+
+/**
+ * رفع دفعة أسئلة — تُقسَّم إلى رزم.
+ *
+ * كل رزمة معاملةٌ واحدة في القاعدة، ورزمةٌ من ثلاثمئة صفٍّ حمولةُ طلبٍ
+ * معقولة. والألف حدُّ الدالّة نفسها، فالتقسيم هنا يحفظ الحدّ ويجعل شريط
+ * التقدّم يتحرّك بدل أن يقف على ملفّ من ألفٍ وخمسمئة.
+ */
+export async function importQuestions(
+  rows: ImportRow[],
+  onProgress?: (done: number, total: number) => void,
+): Promise<{ added: number; updated: number }> {
+  const CHUNK = 300
+  let added = 0
+  let updated = 0
+
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const slice = rows.slice(i, i + CHUNK)
+    const { data, error } = await supabase.rpc('admin_import_questions', { p_rows: slice })
+    if (error) throw new Error(translate(error.message))
+    const res = data as { added: number; updated: number }
+    added += res.added
+    updated += res.updated
+    onProgress?.(Math.min(i + CHUNK, rows.length), rows.length)
+  }
+
+  return { added, updated }
 }
