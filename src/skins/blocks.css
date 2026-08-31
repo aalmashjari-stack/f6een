@@ -208,17 +208,32 @@ html[data-skin='blocks'] .action.ghost {
 html[data-skin='blocks'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); }
 html[data-skin='blocks'] .action.coral { background: var(--n-bad); box-shadow: 4px 5px 0 rgba(34,32,28,.3); }
 
-/* ─── ٥ب. رأس الإعداد بلا بانر ───────────────────────────────────────── */
-/* أزال علي البانر (١ سبتمبر ٢٠٢٦). نيو والورقيّة تصبغان الرأس بطاقةً —
-   خلفيّة وظلّ وانحناء وارتفاعات دنيا — وكلّها صُمّمت حول صورةٍ لم تعد.
-   هنا يُصفَّر كل ذلك: الشعار على أرضيّة الصفحة مباشرةً. */
-html[data-skin='blocks'] .screen.setup .hero,
-html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
+/* ─── ٥ب. رأس الإعداد: شريطٌ بقائمة، بلا بانر ────────────────────────── */
+/* أزال علي البانر ثم طلب الرأسَ شريطاً بدرجةٍ أدفأ (١ سبتمبر ٢٠٢٦).
+   بطاقة نيو والورقيّة حول الرأس — ظلّ وانحناء وارتفاعات صُمّمت حول
+   صورةٍ لم تعد — تُصفَّر، ويُصبغ الشريط ويُرسم حدّه هنا حيث الرموز. */
+/* حشوة الغلاف العلويّة تُصفَّر ليلامس الشريطُ أعلى النافذة */
+html[data-skin='blocks'] .screen.setup { padding-top: 0; }
+html[data-skin='blocks'] .screen.setup .hero {
   min-height: 0;
-  background: transparent;
+  margin-top: 0;
+  /* درجة الهويّة الدافئة لا درجة الأسطح: الفرق عن الأرضيّة يجب أن يُرى،
+     و‎--n-surface-2‎ كانت أقرب إلى القشدة من أن تُقرأ شريطاً. */
+  background: var(--n-brand-tint);
   border: 0;
+  border-bottom: 2.5px solid var(--n-ink);
   border-radius: 0;
   box-shadow: none;
+}
+/* الشعار علامةُ نصٍّ لا صورة — عرضُ الغلاف لا يقيّده، فحجمه من خطّه.
+   أصغر ممّا كان بطلب علي، ومسقوفٌ بارتفاع الشريط فلا يفيض عنه. */
+html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
+  width: max-content;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: clamp(26px, 6vh, 46px);
+  padding: .14em .1em .06em;
 }
 html[data-skin='blocks'] .screen.setup .mute-toggle {
   background: var(--n-surface);

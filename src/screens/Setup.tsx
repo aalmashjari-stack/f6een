@@ -25,9 +25,12 @@ const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
 export function Setup({
   onStart,
   balance,
+  onNav,
 }: {
   onStart: (input: SetupInput) => Promise<void> | void
   balance?: number | null
+  /** قائمة الرأس: شراء الألعاب · حسابي · تواصل معنا — تُفتح صفحاتها في App. */
+  onNav?: (page: 'buy' | 'account' | 'contact') => void
 }) {
   const [names, setNames] = useState<[string, string]>(['', ''])
   const [players, setPlayers] = useState<[string[], string[]]>([
@@ -130,13 +133,22 @@ export function Setup({
 
   return (
     <div className="screen setup">
-      {/* رأسٌ بلا بانر — أزال علي صورةَ المجلس (١ سبتمبر ٢٠٢٦): الشعار
-          يقف على أرضيّة الصفحة نفسها، ومعه مربّعان من مربّعات الشعار
-          يكرّران لعبته بلا أصلٍ جديد. */}
+      {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
+          يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
       <div className="hero">
         <span className="hero-bit hero-bit-a" aria-hidden="true" />
         <span className="hero-bit hero-bit-b" aria-hidden="true" />
         <BrandLogo className="hero-logo" />
+
+        {onNav && (
+          <nav className="hero-nav" aria-label="القائمة">
+            {/* الشراء أوّلاً وبلون الهويّة: هو النداء التجاريّ الوحيد في
+                الشاشة. والاثنان الآخران كبسولتان محايدتان. */}
+            <button className="hnav hnav-buy" onClick={() => onNav('buy')}>شراء الألعاب</button>
+            <button className="hnav" onClick={() => onNav('account')}>حسابي</button>
+            <button className="hnav" onClick={() => onNav('contact')}>تواصل معنا</button>
+          </nav>
+        )}
         {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
             الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
         <button
@@ -261,39 +273,61 @@ export function Setup({
            شبكة أمان لا الوضع الطبيعي. */
         .setup { overflow-y:auto; }
 
-        /* رأسٌ خفيف على أرضيّة الصفحة — لا صورة ولا بطاقة: شاشة الإعداد
-           شاشةُ إدخال، والشعار يعرّف ويمضي. */
-        .hero {
+        /* الرأس شريطٌ بدرجةٍ أدفأ من أرضيّة الصفحة، بحدّ حبرٍ سفليّ —
+           يمتصّ حشوة .screen ليمتدّ من حافّة إلى حافّة، ويحمل الشعار
+           والقائمة. البدائل بعد كل متغيّر لأنّ رموز الهويّة لا تُعرَّف
+           إلا تحت سمتها. */
+        body .screen.setup .hero {
           position:relative; flex:none;
-          display:flex; justify-content:center; align-items:center;
-          height:clamp(84px, 13vh, 150px);
+          /* امتدادٌ إلى حافّتي النافذة لا يطارد حشوة الغلاف: نصف عرض
+             النافذة ناقص نصف عرض المحتوى — يصحّ مهما تغيّرت الحشوات. */
+          margin:0 calc(50% - 50vw);
+          padding:0 clamp(16px,2.6vw,36px);
+          display:flex !important; justify-content:space-between; align-items:center;
+          gap:clamp(8px,1.4vw,18px);
+          height:clamp(64px, 11vh, 120px);
+          background:var(--n-surface-2, #FFF3E0);
+          border-bottom:2.5px solid var(--n-ink, #22201C);
         }
+
+        /* القائمة: الشراء كتلة الهويّة، والبقيّة كبسولات بيضاء بحدّ حبر */
+        body .screen.setup .hero-nav { display:flex; align-items:center; gap:clamp(6px,1vw,12px); flex-wrap:wrap; }
+        body .screen.setup .hnav {
+          font:inherit; font-weight:800; cursor:pointer;
+          font-size:clamp(11px,1.4vw,15px);
+          padding:clamp(5px,.9vh,9px) clamp(11px,1.6vw,18px);
+          border:0; border-radius:999px;
+          background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
+          transition:transform .15s var(--ease-spring), box-shadow .15s ease;
+        }
+        body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:0 0 0 2px var(--n-ink,#22201C), 2px 3px 0 var(--n-ink,#22201C); }
+        body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:#fff; }
 
         /* مربّعا زينة من مفردات الشعار نفسه — يدوران حوله كما تدور
            مربّعاته الصغيرة حول حروفه. زخرفةٌ لا أصل، فلا تعتمد صورة. */
-        .hero-bit {
+        body .screen.setup .hero-bit {
           position:absolute; z-index:0;
           width:clamp(12px,1.6vw,20px); aspect-ratio:1;
           border:2.5px solid var(--n-ink, #22201C);
           border-radius:4px;
         }
-        .hero-bit-a {
+        body .screen.setup .hero-bit-a {
           background:var(--n-a-tint, #FFCE3C);
-          inset-inline-start:18%; top:24%;
+          inset-inline-start:clamp(200px, 24%, 300px); top:22%;
           transform:rotate(14deg);
         }
-        .hero-bit-b {
+        body .screen.setup .hero-bit-b {
           background:var(--n-b-tint, #7BD3D0);
-          inset-inline-end:20%; bottom:18%;
+          inset-inline-start:clamp(230px, 27%, 340px); bottom:20%;
           width:clamp(9px,1.2vw,15px);
           transform:rotate(-11deg);
         }
 
         /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
            فلا تعترض العين وهي تنزل من الشعار إلى بطاقتي الفريقين. */
-        .mute-toggle {
-          position:absolute; z-index:2;
-          top:clamp(10px,1.8vh,18px); inset-inline-end:clamp(10px,2vw,20px);
+        body .screen.setup .mute-toggle {
+          flex:none;
           display:flex; align-items:center; gap:7px;
           padding:8px 14px; border-radius:999px;
           border:1px solid var(--border); background:rgba(15,44,66,.6);
@@ -307,9 +341,9 @@ export function Setup({
         /* الأيقونة وحدها على الجوال — الكلمة تزاحم الشعار في العرض الضيّق */
         @media (max-width:560px) { .mt-label { display:none; } }
 
-        .hero-logo {
+        body .screen.setup .hero-logo {
           position:relative; z-index:1;
-          width:min(55%, 520px); height:auto; max-height:85%; object-fit:contain;
+          width:min(26%, 240px); height:auto; max-height:78%; object-fit:contain;
           /* لا ظلّ: كان لقراءة الشعار فوق صورةٍ داكنة، وعلى القشدة لطخة. */
           animation:brand-in .7s var(--ease-spring) both;
         }
@@ -549,7 +583,7 @@ export function Setup({
           /* على الجوال تعطي نسبة الصورة شريطاً بارتفاع ٧٦px — رفيعاً تضيع
              فيه العائلة. فيُفرض ارتفاع أعلى، و cover يقصّ الأطراف ويُبقي
              التلفاز ومن حوله. */
-          .hero { height:clamp(110px, 17vh, 170px); }
+          .hero { height:clamp(84px, 14vh, 130px); }
 
           .stage-card {
             flex-direction:row; align-items:flex-start; text-align:start;
@@ -565,7 +599,7 @@ export function Setup({
         @media (max-height:560px) {
           /* الشاشة القصيرة لا تحتمل نسبة الصورة كاملةً (٢٠٪ من العرض)،
              فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
-          .hero { height:clamp(64px, 12vh, 100px); }
+          .hero { height:clamp(52px, 11vh, 84px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
           .setup-body { --gap-block:clamp(6px,1.4vh,14px); --gap-in:clamp(5px,1vh,10px); margin-top:0; }

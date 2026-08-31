@@ -31,12 +31,17 @@ export function AccountMenu({
   session,
   balance,
   onBalance,
+  open,
+  onClose,
 }: {
   session: Session
   balance?: number | null
   onBalance?: (n: number) => void
+  /* الفتح بيد قائمة الرأس في شاشة الإعداد (١ سبتمبر ٢٠٢٦) — كان هنا زرّ
+     «حسابي» عائم في الزاوية، وصار بنداً في القائمة مع الشراء والتواصل. */
+  open: boolean
+  onClose: () => void
 }) {
-  const [open, setOpen] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -90,11 +95,11 @@ export function AccountMenu({
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open])
+  }, [open, onClose])
 
   async function run(fn: () => Promise<void>) {
     setErr(null)
@@ -136,12 +141,8 @@ export function AccountMenu({
 
   return (
     <>
-      <button className="acct-tab" onClick={() => setOpen(true)} title={email}>
-        حسابي
-      </button>
-
       {open && (
-        <div className="acct-veil" onClick={() => setOpen(false)}>
+        <div className="acct-veil" onClick={onClose}>
           <div
             className="acct-panel"
             role="dialog"
@@ -150,7 +151,7 @@ export function AccountMenu({
           >
             <header className="acct-head">
               <h2 className="acct-title">حسابي</h2>
-              <button className="acct-x" onClick={() => setOpen(false)} aria-label="إغلاق">
+              <button className="acct-x" onClick={onClose} aria-label="إغلاق">
                 ×
               </button>
             </header>
@@ -240,20 +241,6 @@ export function AccountMenu({
       )}
 
       <style>{`
-        .acct-tab {
-          position:fixed; inset-block-end:clamp(6px,1.2vh,14px);
-          inset-inline-start:clamp(6px,1.2vw,16px);
-          z-index:50;
-          font:inherit; font-weight:800; cursor:pointer;
-          font-size:clamp(10px,1.3vw,14px);
-          padding:clamp(4px,.8vh,8px) clamp(8px,1.4vw,14px);
-          border:0; border-radius:999px;
-          background:var(--n-surface, #fff); color:var(--n-ink-3, #948CA8);
-          box-shadow:var(--n-e1, 0 1px 2px rgba(0,0,0,.08));
-          opacity:.55; transition:opacity .2s ease;
-        }
-        .acct-tab:hover { opacity:1; }
-
         /* الغطاء يُغلق بالضغط خارج الصفحة — المخرج نفسه الذي يتوقّعه الإبهام. */
         .acct-veil {
           position:fixed; inset:0; z-index:60;

@@ -19,6 +19,7 @@ import {
   syncOverlay,
 } from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
+import { ContactPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
@@ -121,6 +122,9 @@ export default function App() {
      تبدأ «منتهية»، فلا يُصيَّر الشعار أصلاً ولا يعمل مؤقّته. */
   const [splashDone, setSplashDone] = useState(!isNativeApp)
   const [introDone, setIntroDone] = useState(false)
+  /* صفحة القائمة المفتوحة خارج اللعب: شراء الألعاب · حسابي · تواصل معنا.
+     واحدة في كل لحظة، وتعيش هنا لأنّ «حسابي» يحتاج الجلسة والرصيد. */
+  const [navPage, setNavPage] = useState<'buy' | 'account' | 'contact' | null>(null)
   const session = useSession()
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
@@ -352,11 +356,20 @@ export default function App() {
   if (!state) {
     return (
       <>
-        <Setup onStart={begin} balance={balance} />
-        {/* خارج اللعب فقط — لا إدارة حساب فوق سؤال مؤقّت. */}
+        <Setup onStart={begin} balance={balance} onNav={setNavPage} />
+        {/* خارج اللعب فقط — لا إدارة حساب فوق سؤال مؤقّت. والفتح بيد
+            قائمة الرأس في شاشة الإعداد. */}
         {session && (
-          <AccountMenu session={session} balance={balance} onBalance={setBalance} />
+          <AccountMenu
+            session={session}
+            balance={balance}
+            onBalance={setBalance}
+            open={navPage === 'account'}
+            onClose={() => setNavPage(null)}
+          />
         )}
+        {navPage === 'buy' && <ShopPanel onClose={() => setNavPage(null)} />}
+        {navPage === 'contact' && <ContactPanel onClose={() => setNavPage(null)} />}
       </>
     )
   }
