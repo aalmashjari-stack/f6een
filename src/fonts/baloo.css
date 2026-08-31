@@ -1,0 +1,17 @@
+/* Baloo Bhaijaan 2 — خطّ هويّة «البلوكات»، برخصة SIL OFL 1.1 (OFL.txt جنبه).
+   مدوّر ممتلئ يحمل مزاج الحدود السميكة والظلال الصلبة، ويغطّي العربية
+   واللاتينية معاً فلا ينكسر رقمٌ وسط اسم.
+
+   ملفٌّ متغيّر الوزن واحد (400–800) لا أربعة أوزان مفردة كخط Cairo:
+   الملف كان موجوداً أصلاً في المستودع، والوزن المتغيّر يعطي 700 و800
+   الحقيقيّين بلا اصطناع متصفّح.
+
+   محليّ لا من Google Fonts — اللعبة تعمل بلا إنترنت (SPEC §٦)، والتطبيق
+   الأصليّ يحمل خطوطه معه. */
+@font-face {
+  font-family: 'Baloo Bhaijaan 2';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('./baloo-bhaijaan-2/BalooBhaijaan2-wght.ttf') format('truetype-variations');
+}

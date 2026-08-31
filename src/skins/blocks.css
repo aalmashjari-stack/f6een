@@ -1,0 +1,432 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   فطين — هويّة «البلوكات». اعتمدها علي في ٣١ أغسطس ٢٠٢٦ من معاينة ثلاثة
+   اتّجاهات (المسرح / الصحيفة / البلوكات).
+
+   اللغة: ألوانٌ مشبعة، حدودُ حبرٍ سميكة، ظلالٌ صلبة بلا تدرّج، زوايا
+   كبيرة، وميلٌ خفيف يبثّ الحياة. خطّها Baloo Bhaijaan 2 المدوّر.
+
+   البنية: هذا الملف طبقةٌ فوق skins/neo.css (القاعدة الحديثة، محدّدها
+   html[data-skin] فيشمل هذه الهويّة). كلُّ ما هنا إمّا إعادةُ تعريف رموزٍ
+   ‎--n-*‎ فينساب اللون والظلّ والزاوية إلى مئتي قاعدة دفعةً واحدة، وإمّا
+   تجاوزٌ موضعيّ بمحدّد html[data-skin='blocks'] — نفس وزن القاعدة (0,1,1)
+   وترتيبُ الاستيراد في main.tsx يحسم له.
+
+   لا تكتب قاعدة بلا بادئة html[data-skin='blocks']: القاعدة العامّة ملكُ
+   كلّ الهويّات، والخاصّ هنا.
+
+   ── قواعد لا تُكسر ──
+   ١. السؤال أكبر عنصر على الشاشة (SPEC §١) — يُقرأ من آخر المجلس.
+   ٢. لون الفريق ثابت عبر الجلسة: الأول أصفر والثاني تركوازيّ.
+   ٣. الأخضر والأحمر محجوزان للصحّ والغلط، لا يلبسهما فريق.
+   ٤. الميل زينةُ الشاشات الواسعة: يُلغى تحت 480px ارتفاعاً، فهناك كلُّ
+      بكسل محسوب والبطاقات المائلة تتلامس.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── ١. الرموز ──────────────────────────────────────────────────────── */
+html[data-skin='blocks'] {
+  /* الأرضية قشدة دافئة والأسطح بيضاء — البطاقة تقفز بحدّها لا بظلّ رمادي */
+  --n-bg: #FFF8EE;
+  --n-surface: #FFFFFF;
+  --n-surface-2: #FFF3E0;
+  --n-ink: #22201C;
+  --n-ink-2: #57524A;
+  --n-ink-3: #8A8578;
+  --n-line: #E8E0D0;
+
+  /* البرتقاليّ الأحمر هو صوت الهويّة: العناوين، الإجابة المكشوفة، «ضد».
+     لا يلبسه فريق ولا يحمل حكماً — فلا يلتبس بأحمر الغلط (‎--n-bad‎ أدكن
+     وأبرد منه عمداً). */
+  --n-brand: #E8542F;
+  --n-brand-tint: #FFE3D6;
+  --n-accent: #E8542F;
+
+  /* الفريقان: أصفر وتركواز مشبعان — كتلٌ لا مساحيق. نصّاهما بدرجتين
+     داكنتين منهما يقرآن على الأبيض وعلى الكتلة معاً، والفصل بينهما في
+     الإضاءة أيضاً فيصمد لعمى الألوان. */
+  --n-a: #9A6B00;
+  --n-a-tint: #FFCE3C;
+  --n-a-line: #22201C;
+  --n-b: #147370;
+  --n-b-tint: #7BD3D0;
+  --n-b-line: #22201C;
+
+  /* الحكم — كما في كلّ الهويّات: محجوزان */
+  --n-good: #1D9E5F;
+  --n-good-tint: #DDF5E7;
+  --n-bad: #CE2F1E;
+  --n-bad-tint: #FADFDA;
+
+  --n-r1: 12px;
+  --n-r2: 18px;
+  --n-r3: 22px;
+  --n-r4: 26px;
+
+  /* سُلّم الارتفاع هو جوهر الهويّة: حدُّ حبرٍ (حلقة صلبة) + ظلٌّ صلب
+     مزاح — لا ضبابيّة إطلاقاً. الدرجة الأعلى حدُّها أسمك وظلّها أبعد.
+     الحلقة بدل border فلا تدخل في حساب التخطيط — نفس حيلة نيو. */
+  --n-e1: 0 0 0 2px var(--n-ink), 3px 3px 0 var(--n-ink);
+  --n-e2: 0 0 0 2.5px var(--n-ink), 5px 6px 0 var(--n-ink);
+  --n-e3: 0 0 0 3px var(--n-ink), 7px 8px 0 var(--n-ink);
+
+  /* رموز المحرّك المعادُ ربطها (Timer.tsx يقرأها inline) */
+  --gold: var(--n-ink);
+  --coral: var(--n-bad);
+  --border: var(--n-line);
+  --lift: var(--n-e2);
+  --spent: #F0E9DB;
+  --spent-text: #A39C8D;
+
+  /* زنبركٌ خفيف يعود: هويّة مرحة تحتمل ارتداداً لا تحتمله نيو الهادئة */
+  --ease-spring: cubic-bezier(.3, 1.4, .5, 1);
+}
+
+/* ─── ٢. الخطّ والأرضية ──────────────────────────────────────────────── */
+html[data-skin='blocks'] body {
+  font-family: 'Baloo Bhaijaan 2', 'Cairo', 'Segoe UI', system-ui, sans-serif;
+  background: var(--n-bg);
+}
+/* أرضية مسطّحة تماماً — الكتل هي الحدث، ووهجُ نيو تحتها ضجيج */
+html[data-skin='blocks'] body::before { background: var(--n-bg); }
+
+/* Baloo لا يحمل أرقاماً جدوليّة، فيرتجف رقم المؤقّت النازل والعدّاد
+   الصاعد مع كل تغيّر خانة. الأرقام المتحرّكة وحدها تلبس Cairo — ثابتة
+   العرض — ولا يلحظ أحد الانتقال لأنّها أرقام لا حروف. */
+html[data-skin='blocks'] .ring-timer .secs,
+html[data-skin='blocks'] .scorebar .team .pts,
+html[data-skin='blocks'] .screen.end .final-score,
+html[data-skin='blocks'] .screen.end .es-num {
+  font-family: 'Cairo', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── ٣. شريط النتيجة ────────────────────────────────────────────────── */
+/* بطاقتا الفريقين كتلتان بلونيهما الكاملين — لا صبغة باهتة. والميل
+   المتعاكس (‎-.6/+.6‎ درجة) توقيع الهويّة. */
+html[data-skin='blocks'] .scorebar .team {
+  border-radius: var(--n-r2);
+  box-shadow: var(--n-e2);
+}
+html[data-skin='blocks'] .scorebar .team-0 { transform: rotate(-.6deg); }
+html[data-skin='blocks'] .scorebar .team-1 { transform: rotate(.6deg); }
+/* المتقدّم لا يخلع كتلته: قاعدة lead الورقيّة تبيّضه بوزن (0,4,1) —
+   ‏`body .screen .scorebar .team.lead` — وقاعدة الفريق في نيو أخفّ منها
+   درجةً فتخسر. هنا الوزن يُطابَق (.team-0.lead تعطي 0,4,1 أيضاً) وترتيبُ
+   الاستيراد يحسم. في نيو كان العيب خفيّاً — أبيض على صبغةٍ شاحبة — وفي
+   الكتل المشبعة صار صارخاً. */
+html[data-skin='blocks'] .scorebar .team-0.lead { background: var(--n-a-tint); }
+html[data-skin='blocks'] .scorebar .team-1.lead { background: var(--n-b-tint); }
+/* الاسم حبرٌ على الكتلة المشبعة — النصّ الملوّن على لونٍ مشبع لا يُقرأ */
+html[data-skin='blocks'] .scorebar .team .name,
+html[data-skin='blocks'] .scorebar .team.lead .name { color: var(--n-ink); font-weight: 800; }
+html[data-skin='blocks'] .scorebar .team-kicker,
+html[data-skin='blocks'] .scorebar .team.turn .team-kicker { color: rgba(34,32,28,.62); }
+/* القرص أبيض بحدّ حبر، والرقم حبرٌ — كما في المعاينة المعتمدة */
+html[data-skin='blocks'] .scorebar .team .pts-disc {
+  background: #fff;
+  box-shadow: inset 0 0 0 2.5px var(--n-ink);
+}
+html[data-skin='blocks'] .scorebar .team-0 .pts,
+html[data-skin='blocks'] .scorebar .team-0.lead .pts,
+html[data-skin='blocks'] .scorebar .team-1 .pts,
+html[data-skin='blocks'] .scorebar .team-1.lead .pts { color: var(--n-ink); }
+/* الدور: الكتلة تنهض — تستقيم من ميلها وترتفع بظلٍّ أبعد. إشارةٌ تُرى
+   من آخر المجلس بلا حلقةٍ رابعة تزاحم الحدّ والظلّ. */
+html[data-skin='blocks'] .scorebar .team-0.turn,
+html[data-skin='blocks'] .scorebar .team-1.turn,
+html[data-skin='blocks'] .scorebar .team-0.lead.turn,
+html[data-skin='blocks'] .scorebar .team-1.lead.turn {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow: var(--n-e3);
+}
+html[data-skin='blocks'] .scorebar .team-0.turn .team-kicker,
+html[data-skin='blocks'] .scorebar .team-1.turn .team-kicker { color: var(--n-ink); font-weight: 800; }
+html[data-skin='blocks'] .scorebar .team.lead { box-shadow: var(--n-e2); }
+/* الوسط: كتلة حبرٍ صغيرة مائلة بنصٍّ أبيض */
+html[data-skin='blocks'] .scorebar .mid {
+  background: var(--n-ink);
+  color: #fff;
+  border-radius: var(--n-r2);
+  box-shadow: none;
+  transform: rotate(1deg);
+  font-weight: 800;
+}
+html[data-skin='blocks'] .mid-dot { background: var(--n-a-tint); }
+
+/* ─── ٤. سياق الجولة ─────────────────────────────────────────────────── */
+html[data-skin='blocks'] .rd-title { color: var(--n-brand); font-weight: 800; }
+html[data-skin='blocks'] .rd-chip,
+html[data-skin='blocks'] .rd-chip:nth-child(even) {
+  border-radius: 999px;
+  background: var(--n-surface);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  color: var(--n-ink);
+  font-weight: 800;
+}
+html[data-skin='blocks'] .rd-chip.turn { background: var(--n-ink); color: #fff; }
+
+/* ─── ٥. الأزرار ─────────────────────────────────────────────────────── */
+/* زرّ الحكم كتلة حبرٍ بظلّ باهت (ظلُّ الحبر على حبرٍ لا يُرى، فيُصبغ
+   بشفافيته) — والضغط يدفع الكتلة في ظلّها: إزاحةٌ لا انكماش. */
+html[data-skin='blocks'] .action {
+  border-radius: var(--n-r2);
+  background: var(--n-ink);
+  color: #fff;
+  box-shadow: 4px 5px 0 rgba(34,32,28,.22);
+  font-weight: 800;
+}
+html[data-skin='blocks'] .action:hover:not(:disabled) {
+  background: #2E2B26;
+  transform: translateY(-2px);
+  box-shadow: 5px 7px 0 rgba(34,32,28,.25);
+}
+html[data-skin='blocks'] .action:active:not(:disabled) {
+  transform: translate(2px, 3px);
+  box-shadow: 1px 1px 0 rgba(34,32,28,.22);
+}
+html[data-skin='blocks'] .action:disabled {
+  background: var(--spent);
+  color: var(--spent-text);
+  box-shadow: none;
+}
+html[data-skin='blocks'] .action.ghost {
+  background: var(--n-surface);
+  color: var(--n-ink);
+  box-shadow: var(--n-e1);
+}
+html[data-skin='blocks'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); }
+html[data-skin='blocks'] .action.coral { background: var(--n-bad); box-shadow: 4px 5px 0 rgba(34,32,28,.3); }
+
+/* ─── ٦. السؤال والمؤقّت ─────────────────────────────────────────────── */
+/* بطاقة السؤال أكبر كتلة على الشاشة: حدٌّ سميك وظلٌّ بعيد — البطل. */
+html[data-skin='blocks'] .q-box,
+html[data-skin='blocks'] .s3-q,
+html[data-skin='blocks'] .rv-card,
+html[data-skin='blocks'] .reveal-a {
+  border-radius: var(--n-r4);
+  background: var(--n-surface);
+  box-shadow: var(--n-e3);
+}
+html[data-skin='blocks'] .q-text { font-weight: 800; }
+/* المؤقّت رقمٌ ضخم وشريطُ كتلةٍ محدّد تحته — لا شريط شعريّ رمادي */
+html[data-skin='blocks'] .timer-progress {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--n-surface);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  overflow: hidden;
+}
+/* ‎!important‎ ضرورة لا عادة: Timer.tsx يصبغ الامتلاء inline من ‎--gold‎،
+   وهي في هذه الهويّة حبرٌ (ليبقى الرقم الضخم مقروءاً) — فيخرج الشريط
+   كتلةً سوداء. الأصفر هنا، والأحمر حيث العداء مع الوقت. */
+html[data-skin='blocks'] .timer-progress > span { background: var(--n-a-tint) !important; }
+html[data-skin='blocks'] .screen:has(.s3-q) .timer-progress > span,
+html[data-skin='blocks'] .ring-timer.low .timer-progress > span { background: var(--n-bad) !important; }
+
+/* ─── ٧. كبسولتا الفريقين في الجولة الجماعية ─────────────────────────── */
+/* صاحب الدور كتلةٌ بيضاء ناهضة والآخر غائر — لا لونَي فريقين هنا:
+   الكبسولتان مرتّبتان صاحبَ الدور أوّلاً والدور يتناوب كل سؤال، فأيّ
+   تلوين بالموضع يقلب لوني الفريقين ثماني مرّات في الجولة (فخّ نيو
+   الموثّق مع بطاقات «من أصاب؟»). */
+html[data-skin='blocks'] .tpill { border-radius: var(--n-r2); }
+html[data-skin='blocks'] .tpill.owner {
+  background: var(--n-surface);
+  box-shadow: var(--n-e2);
+  color: var(--n-ink);
+  transform: rotate(-.4deg);
+}
+html[data-skin='blocks'] .tpill.rival {
+  background: var(--n-bg);
+  box-shadow: 0 0 0 2px rgba(34,32,28,.25);
+  transform: rotate(.4deg);
+}
+html[data-skin='blocks'] .tpill.rival.active {
+  background: var(--n-surface);
+  box-shadow: var(--n-e2);
+  color: var(--n-ink);
+}
+html[data-skin='blocks'] .rival-hint {
+  background: var(--n-surface);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  color: var(--n-ink);
+  font-weight: 800;
+}
+
+/* ─── ٨. الكشف والتنقيط ──────────────────────────────────────────────── */
+/* الإجابة بصوت الهويّة البرتقاليّ */
+html[data-skin='blocks'] .rv-a,
+html[data-skin='blocks'] .reveal-a .a-text,
+html[data-skin='blocks'] .s3-answer { color: var(--n-brand); font-weight: 800; }
+/* بطاقتا «من أصاب؟» بكتلتي الفريقين الكاملتين ونصٍّ حبريّ */
+html[data-skin='blocks'] .pick,
+html[data-skin='blocks'] .mark-cards .mcard { border-radius: var(--n-r3); box-shadow: var(--n-e1); }
+html[data-skin='blocks'] .pick.team-0,
+html[data-skin='blocks'] .mark-cards .mcard.team-0 { background: var(--n-a-tint); box-shadow: var(--n-e2); }
+html[data-skin='blocks'] .pick.team-1,
+html[data-skin='blocks'] .mark-cards .mcard.team-1 { background: var(--n-b-tint); box-shadow: var(--n-e2); }
+html[data-skin='blocks'] .pick.team-0 .pk-name,
+html[data-skin='blocks'] .pick.team-1 .pk-name,
+html[data-skin='blocks'] .mark-cards .mcard.team-0 .mc-name,
+html[data-skin='blocks'] .mark-cards .mcard.team-1 .mc-name { color: var(--n-ink); }
+html[data-skin='blocks'] .pick.team-0 .pk-role,
+html[data-skin='blocks'] .pick.team-1 .pk-role,
+html[data-skin='blocks'] .mark-cards .mcard.team-0 .mc-team,
+html[data-skin='blocks'] .mark-cards .mcard.team-1 .mc-team { color: rgba(34,32,28,.6); }
+html[data-skin='blocks'] .pick:hover { transform: translateY(-3px); box-shadow: var(--n-e3); }
+html[data-skin='blocks'] .pick.team-0:hover,
+html[data-skin='blocks'] .pick.team-1:hover { box-shadow: var(--n-e3); }
+/* مربّعا الحكم داخل بطاقة الديربي — على كتلةٍ ملوّنة فحدُّهما ضروريّ */
+html[data-skin='blocks'] .mark-cards .choice {
+  border-radius: var(--n-r1);
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--n-ink);
+  color: var(--n-ink);
+  font-weight: 800;
+}
+html[data-skin='blocks'] .mark-cards .choice.ok.on { background: var(--n-good); color: #fff; }
+html[data-skin='blocks'] .mark-cards .choice.no.on { background: var(--n-bad); color: #fff; }
+
+/* ─── ٩. الفئات (العجلة) ─────────────────────────────────────────────── */
+/* البطاقة تحمل حدّ الهويّة، والضوء المارّ برتقاليّ، والاستقرار كتلةٌ
+   ناهضة بظلّ الهويّة الصلب. الرسمات نفسها معتمدة فلا تُمسّ. */
+html[data-skin='blocks'] body .screen .cat {
+  border-radius: var(--n-r2);
+  box-shadow: 0 0 0 2px var(--n-ink);
+}
+html[data-skin='blocks'] body .screen .cat.spent {
+  background: var(--n-bg);
+  box-shadow: 0 0 0 2px rgba(34,32,28,.18);
+}
+html[data-skin='blocks'] body .screen .cat.cursor {
+  box-shadow: 0 0 0 3px var(--n-brand), 5px 6px 0 var(--n-brand);
+}
+html[data-skin='blocks'] body .screen .cat.landed {
+  box-shadow: 0 0 0 3px var(--n-ink), 7px 8px 0 var(--n-ink);
+}
+
+/* ─── ١٠. الفاصل والديربي ────────────────────────────────────────────── */
+html[data-skin='blocks'] .interval-card { box-shadow: var(--n-e3); border-radius: var(--n-r4); }
+html[data-skin='blocks'] .il-eyebrow {
+  background: var(--n-brand);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--n-ink);
+  transform: rotate(-1deg);
+}
+html[data-skin='blocks'] .il-stage-no { color: rgba(232,84,47,.12); }
+html[data-skin='blocks'] .s2-versus { box-shadow: 0 0 0 2px var(--n-ink); }
+html[data-skin='blocks'] .s2-versus .vs { color: var(--n-brand); }
+/* اسما المتواجهين بلوني فريقيهما الداكنين (المشبع لا يُقرأ نصّاً كبيراً) */
+html[data-skin='blocks'] .vs-wrap.settled .vs-slot:first-of-type .vs-player { color: var(--n-a); }
+html[data-skin='blocks'] .vs-wrap.settled .vs-slot:last-of-type .vs-player { color: var(--n-b); }
+html[data-skin='blocks'] .vs-wrap .vs-word {
+  background: var(--n-brand);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  transform: rotate(-2deg);
+}
+html[data-skin='blocks'] .not-picked .np-col { box-shadow: inset 0 0 0 2px var(--n-line); border-radius: var(--n-r2); }
+
+/* ─── ١١. الحق ما تلحق ───────────────────────────────────────────────── */
+html[data-skin='blocks'] .s3-ready {
+  border-radius: var(--n-r4);
+  background: var(--n-surface);
+  box-shadow: var(--n-e3);
+}
+/* كتلة الاستعداد بلون الفريق الواقف على الخطّ */
+html[data-skin='blocks'] .s3-ready.team-0 { background: var(--n-a-tint); }
+html[data-skin='blocks'] .s3-ready.team-1 { background: var(--n-b-tint); }
+html[data-skin='blocks'] .s3-ready.team-0 .s3r-team,
+html[data-skin='blocks'] .s3-ready.team-1 .s3r-team { color: var(--n-ink); }
+html[data-skin='blocks'] .s3r-eyebrow {
+  background: var(--n-bad);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--n-ink);
+}
+html[data-skin='blocks'] .s3r-eyebrow::before { background: #fff; }
+html[data-skin='blocks'] .s3-ready-rules span {
+  border-radius: var(--n-r1);
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--n-ink);
+  color: var(--n-ink);
+}
+html[data-skin='blocks'] .s3-verdicts .v {
+  border-radius: var(--n-r2);
+  box-shadow: 3px 4px 0 rgba(34,32,28,.3);
+}
+html[data-skin='blocks'] .s3-verdicts .v:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(34,32,28,.3); }
+html[data-skin='blocks'] .tb { box-shadow: var(--n-e1); }
+
+/* ─── ١٢. الإعداد ────────────────────────────────────────────────────── */
+html[data-skin='blocks'] .screen.setup .stage-card,
+html[data-skin='blocks'] .screen.setup .team-card {
+  border-radius: var(--n-r3);
+  box-shadow: var(--n-e1);
+}
+/* بطاقتا الفريقين بكتلتيهما منذ أوّل شاشة — اللون يبدأ هنا ويرافقهما */
+html[data-skin='blocks'] .screen.setup .team-card:first-child { background: var(--n-a-tint); box-shadow: var(--n-e2); transform: rotate(-.4deg); }
+html[data-skin='blocks'] .screen.setup .team-card:last-child { background: var(--n-b-tint); box-shadow: var(--n-e2); transform: rotate(.4deg); }
+html[data-skin='blocks'] .screen.setup .team-card:first-child .team-badge,
+html[data-skin='blocks'] .screen.setup .team-card:last-child .team-badge {
+  background: #fff;
+  color: var(--n-ink);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  font-weight: 800;
+}
+html[data-skin='blocks'] .screen.setup .team-card.starter {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow: var(--n-e3);
+}
+/* الحقول بيضاء على الكتلة الملوّنة */
+html[data-skin='blocks'] .screen.setup .player,
+html[data-skin='blocks'] .screen.setup .team-card.starter .player {
+  background: rgba(255,255,255,.72);
+  border-radius: var(--n-r1);
+}
+html[data-skin='blocks'] .screen.setup .player:focus {
+  background: #fff;
+  box-shadow: 0 0 0 2.5px var(--n-ink);
+}
+html[data-skin='blocks'] .screen.setup .team-name { border-bottom: 2px solid rgba(34,32,28,.3); }
+html[data-skin='blocks'] .screen.setup .counter { border-top: 2px solid rgba(34,32,28,.18); color: var(--n-ink-2); }
+html[data-skin='blocks'] .screen.setup .pill { background: #fff; box-shadow: 0 0 0 2px var(--n-ink); }
+html[data-skin='blocks'] .screen.setup .pill:disabled { box-shadow: 0 0 0 2px rgba(34,32,28,.2); background: transparent; }
+
+/* ─── ١٣. الختام ─────────────────────────────────────────────────────── */
+html[data-skin='blocks'] .screen.end .winner {
+  border-radius: var(--n-r4);
+  box-shadow: var(--n-e3);
+  transform: rotate(-.5deg);
+}
+html[data-skin='blocks'] .screen.end .winner-stamp {
+  background: var(--n-brand);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--n-ink);
+  transform: rotate(1.2deg);
+  font-weight: 800;
+}
+html[data-skin='blocks'] .screen.end .es-table { box-shadow: var(--n-e1); border-radius: var(--n-r2); }
+html[data-skin='blocks'] .screen.end .es-row { border-top: 2px solid var(--n-line); }
+html[data-skin='blocks'] .screen.end .es-row:first-child { border-top: 0; }
+html[data-skin='blocks'] .screen.end .es-row > .es-num.up:first-child { color: var(--n-a); }
+html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: var(--n-b); }
+html[data-skin='blocks'] .screen.end .best { background: var(--n-surface); box-shadow: 0 0 0 2px var(--n-ink); color: var(--n-ink); }
+
+/* ─── ١٤. الشاشات القصيرة ────────────────────────────────────────────── */
+/* الميل والظلال البعيدة زينةُ المتّسع. على الجوال الأفقي (تحت 480px)
+   كلُّ بكسل محسوب: تستقيم الكتل، ويقترب الظلّ درجة، ويرقّ الحدّ. */
+@media (max-height: 480px) {
+  html[data-skin='blocks'] .scorebar .team-0,
+  html[data-skin='blocks'] .scorebar .team-1,
+  html[data-skin='blocks'] .scorebar .mid,
+  html[data-skin='blocks'] .tpill.owner,
+  html[data-skin='blocks'] .tpill.rival,
+  html[data-skin='blocks'] .il-eyebrow,
+  html[data-skin='blocks'] .screen.setup .team-card:first-child,
+  html[data-skin='blocks'] .screen.setup .team-card:last-child,
+  html[data-skin='blocks'] .screen.end .winner,
+  html[data-skin='blocks'] .screen.end .winner-stamp { transform: none; }
+  html[data-skin='blocks'] .scorebar .team-0.turn,
+  html[data-skin='blocks'] .scorebar .team-1.turn { transform: translateY(-1px); }
+  html[data-skin='blocks'] .scorebar .team { box-shadow: 0 0 0 2px var(--n-ink), 2px 3px 0 var(--n-ink); }
+  html[data-skin='blocks'] .q-box,
+  html[data-skin='blocks'] .s3-q { box-shadow: 0 0 0 2px var(--n-ink), 4px 5px 0 var(--n-ink); }
+  html[data-skin='blocks'] .timer-progress { height: 8px; }
+}

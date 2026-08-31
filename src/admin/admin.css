@@ -4,23 +4,25 @@
  * بعيد (خطّ ضخم، ألوان مسرح، قاعدة الشاشة الواحدة)، وهذه جدولٌ كثيف يُقرأ
  * من نصف متر ويتمرّر بحرّية. خلطهما يفسد الاثنتين.
  *
- * والرموز من «نيو» نفسها (`src/skins/neo.css`) كي لا تصير اللوحة تطبيقاً
- * آخر بصرياً.
+ * والرموز من «البلوكات» نفسها (`src/skins/blocks.css`) كي لا تصير اللوحة
+ * تطبيقاً آخر بصرياً — لوّحت بنفسجيّ نيو حتى ٣١ أغسطس ٢٠٢٦ ثم تبعت
+ * الهويّة المعتمدة. والخطّ يبقى Cairo لا Baloo: جدولٌ كثيف بخانات 13px
+ * يُقرأ بخطّ البيانات لا بخطّ المسرح.
  */
 
 :root {
-  --n-bg: #F0EFF7;
+  --n-bg: #FFF8EE;
   --n-surface: #FFFFFF;
-  --n-surface-2: #F8F7FC;
-  --n-ink: #1A1626;
-  --n-ink-2: #5D5670;
-  --n-ink-3: #948CA8;
-  --n-line: #E5E1F0;
-  --n-brand: #7A3E9D;
-  --n-brand-tint: #F3EAF8;
-  --n-bad: #DC4033;
-  --n-good: #2F9E63;
-  --n-warn: #D97528;
+  --n-surface-2: #FFF3E0;
+  --n-ink: #22201C;
+  --n-ink-2: #57524A;
+  --n-ink-3: #8A8578;
+  --n-line: #E8E0D0;
+  --n-brand: #E8542F;
+  --n-brand-tint: #FFE3D6;
+  --n-bad: #CE2F1E;
+  --n-good: #1D9E5F;
+  --n-warn: #9A6B00;
 }
 
 * { box-sizing: border-box; }
@@ -50,7 +52,8 @@ body {
 .a-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
 .a-tile {
   background: var(--n-surface); border-radius: 12px; padding: 11px 13px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  /* حلقة حبرٍ رقيقة لا ظلّ رمادي — نسخة هادئة من كتل الهويّة تليق بلوحةٍ كثيفة */
+  box-shadow: 0 0 0 1.5px var(--n-ink), 2px 2px 0 var(--n-ink);
 }
 .a-tile b { display: block; font-size: 20px; font-weight: 900; color: var(--n-brand);
   font-variant-numeric: tabular-nums; }
@@ -69,7 +72,7 @@ body {
    الغلاف وحده يتمرّر أفقياً: الصفحة نفسها لا تنزلق تحت الإصبع، وأعمدة
    الحسابات تسعة لا تدخل في جوال. */
 .a-card { background: var(--n-surface); border-radius: 14px; overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  box-shadow: 0 0 0 1.5px var(--n-ink), 3px 3px 0 var(--n-ink); }
 .a-scroll { overflow-x: auto; }
 table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
 .a-tbl th, .a-tbl td { padding: 9px 12px; text-align: start; }
@@ -113,7 +116,7 @@ table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
 .a-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-block-end: 10px; }
 .a-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: end;
   padding: 12px; background: var(--n-surface); border-radius: 14px; margin-block-end: 10px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  box-shadow: 0 0 0 1.5px var(--n-ink), 2px 2px 0 var(--n-ink); }
 .a-field { display: flex; flex-direction: column; gap: 4px; }
 .a-field label { font-size: 11px; font-weight: 800; color: var(--n-ink-3); }
 

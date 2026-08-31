@@ -1,7 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   فطين — الهوية الجديدة «نيو». واجهة فاتحة، بسيطة، ٢٠٢٦.
+   فطين — القاعدة الحديثة (وُلدت هويّةَ «نيو»، ثم عُمّمت في ٣١ أغسطس ٢٠٢٦).
 
-   كل قاعدة هنا مسبوقة بـ html[data-skin='neo']. هذه البادئة تزن (0,1,1)،
+   كل قاعدة هنا مسبوقة بـ html[data-skin] — أي «أيّ هويّة حديثة»، لا نيو
+   وحدها. الملف يحمل شيئين: شكلَ نيو الفاتح الهادئ، وإصلاحاتٍ بنيويّةً
+   (نموّ بطاقة السؤال، subgrid جدول الختام، قياس أسماء الديربي، طبقات
+   الشاشات القصيرة) دُفعت أثمانها بالقياس ولا يصحّ دفعها مرّتين. فالهويّة
+   الجديدة («البلوكات» في skins/blocks.css) تركب فوقه بملفٍّ يُستورد بعده
+   ويعيد تعريف الرموز والتجاوزات بمحدّد html[data-skin='blocks'] — نفس
+   الوزن (0,1,1)، وترتيبُ المصدر يحسم لصالحها.
+
+   هذه البادئة تزن (0,1,1)،
    فتتفوّق دائماً على نظيرتها في showtime.css بلا !important وبلا اعتماد على
    ترتيب الاستيراد. ولأن الشكل القديم = غياب السمة، فحذفها يوقف هذا الملف
    كلَّه دفعةً واحدة ويرجع القديم كما كان — لا نسخةً عنه بل هو نفسه.
@@ -17,7 +25,7 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ─── ١. الرموز ──────────────────────────────────────────────────────── */
-html[data-skin='neo'] {
+html[data-skin] {
   /* الأرضية والأسطح — مسحة بنفسجية باردة لا رماديّ ميت، والبطاقات بيضاء
      فوقها فتقفز بلا إطار. الرمادي الخالص كان يقتل الحياة في الشاشة. */
   --n-bg: #F0EFF7;
@@ -90,13 +98,13 @@ html[data-skin='neo'] {
 }
 
 /* ─── ٢. الأرضية ─────────────────────────────────────────────────────── */
-html[data-skin='neo'] body {
+html[data-skin] body {
   background: var(--n-bg);
   color: var(--n-ink);
 }
 /* وهجٌ واحد باردٌ من الأعلى يرفع الوسط عن الأطراف — بديل النقاط والبقع.
    بلا حركة: الخلفية المتحرّكة تسحب العين من السؤال. */
-html[data-skin='neo'] body::before {
+html[data-skin] body::before {
   inset: 0;
   transform: none;
   animation: none;
@@ -111,16 +119,16 @@ html[data-skin='neo'] body::before {
     radial-gradient(48% 44% at 8% 96%, rgba(255,102,71,.10), transparent 68%),
     var(--n-bg);
 }
-html[data-skin='neo'] body::after { display: none; }
+html[data-skin] body::after { display: none; }
 
 /* شريطا الزاوية («اللاصقتان») — زينةٌ تنافس المحتوى على شاشةٍ عرضها ٤١٤px */
-html[data-skin='neo'] .screen:not(.setup)::before,
-html[data-skin='neo'] .screen:not(.setup)::after { display: none; }
+html[data-skin] .screen:not(.setup)::before,
+html[data-skin] .screen:not(.setup)::after { display: none; }
 
-html[data-skin='neo'] .screen { color: var(--n-ink); }
+html[data-skin] .screen { color: var(--n-ink); }
 
 /* ─── ٣. شريط النتيجة ────────────────────────────────────────────────── */
-html[data-skin='neo'] .scorebar .team {
+html[data-skin] .scorebar .team {
   min-height: clamp(54px, 7.4vh, 76px);
   align-items: center;
   padding: 8px clamp(10px, 1.6vw, 18px);
@@ -132,66 +140,66 @@ html[data-skin='neo'] .scorebar .team {
   transition: box-shadow .2s ease, transform .2s var(--ease-spring);
 }
 /* لون الفريق يسكن قرصَ نقاطه فقط، فلا تتغيّر بطاقته حين يتغيّر دوره. */
-html[data-skin='neo'] .scorebar .team-0 { background: var(--n-a-tint); }
-html[data-skin='neo'] .scorebar .team-1 { background: var(--n-b-tint); }
-html[data-skin='neo'] .scorebar .team-0 .pts-disc { background: #fff; box-shadow: inset 0 0 0 1px var(--n-a-line); }
-html[data-skin='neo'] .scorebar .team-1 .pts-disc { background: #fff; box-shadow: inset 0 0 0 1px var(--n-b-line); }
-html[data-skin='neo'] .scorebar .team-0 .pts,
-html[data-skin='neo'] .scorebar .team-0.lead .pts { color: var(--n-a); }
-html[data-skin='neo'] .scorebar .team-1 .pts,
-html[data-skin='neo'] .scorebar .team-1.lead .pts { color: var(--n-b); }
+html[data-skin] .scorebar .team-0 { background: var(--n-a-tint); }
+html[data-skin] .scorebar .team-1 { background: var(--n-b-tint); }
+html[data-skin] .scorebar .team-0 .pts-disc { background: #fff; box-shadow: inset 0 0 0 1px var(--n-a-line); }
+html[data-skin] .scorebar .team-1 .pts-disc { background: #fff; box-shadow: inset 0 0 0 1px var(--n-b-line); }
+html[data-skin] .scorebar .team-0 .pts,
+html[data-skin] .scorebar .team-0.lead .pts { color: var(--n-a); }
+html[data-skin] .scorebar .team-1 .pts,
+html[data-skin] .scorebar .team-1.lead .pts { color: var(--n-b); }
 /* قطر القرص مقاسٌ واحد يُشتقّ منه حجمُ الرقم — لا رقمان مستقلّان.
    نيو صغّرت القرص (٦٦ ← ٥٢، و٤٨ ← ٣٨) وتركت حجم الخطّ لـshowtime، وهو
    مضبوطٌ على القرص الأكبر ومربوطٌ بمحورٍ آخر: القطر من `vh` والخطّ من
    `min(vw,vh)`. فعلى الشاشة العريضة القصيرة — ١١٥٢ إلى ١٦٠٠ عرضاً، وهي
    أكثر شاشات اللابتوب — يكبر الرقمُ أسرع من قرصه فيفيض عنه إلى اسم الفريق.
    نتيجةٌ من ثلاث خانات تكفي: ١٨٥ نقطة جلسةٌ عاديّة لا حالة قصوى. */
-html[data-skin='neo'] .scorebar .team .pts-disc {
+html[data-skin] .scorebar .team .pts-disc {
   --pts-d: clamp(38px, 5.2vh, 52px);
   width: var(--pts-d);
   height: var(--pts-d);
   border: 0;
 }
-html[data-skin='neo'] .scorebar .team .pts,
-html[data-skin='neo'] .scorebar .team.lead .pts {
+html[data-skin] .scorebar .team .pts,
+html[data-skin] .scorebar .team.lead .pts {
   font-weight: 800;
   font-size: calc(var(--pts-d) * .50);
 }
 /* النِّسب مقيسة على أرقام Cairo الجدوليّة (نحو ٠٫٦em للخانة): ثلاث خانات
    عند ٠٫٣٨ تشغل ٠٫٦٨ من القطر، وأربع عند ٠٫٣٠ تشغل ٠٫٧٢ — داخل الدائرة
    المحيطة بهامش في الحالتين. والسالب يُعدّ خانةً: «−١٠» ثلاثٌ لا اثنتان. */
-html[data-skin='neo'] .scorebar .team .pts.digits-3 { font-size: calc(var(--pts-d) * .38); }
-html[data-skin='neo'] .scorebar .team .pts.digits-4 { font-size: calc(var(--pts-d) * .30); }
-html[data-skin='neo'] .scorebar .team .name,
-html[data-skin='neo'] .scorebar .team.lead .name {
+html[data-skin] .scorebar .team .pts.digits-3 { font-size: calc(var(--pts-d) * .38); }
+html[data-skin] .scorebar .team .pts.digits-4 { font-size: calc(var(--pts-d) * .30); }
+html[data-skin] .scorebar .team .name,
+html[data-skin] .scorebar .team.lead .name {
   color: var(--n-ink);
   font-size: clamp(14px, 1.7vw, 20px);
   font-weight: 700;
   letter-spacing: -.01em;
 }
-html[data-skin='neo'] .scorebar .team-kicker,
-html[data-skin='neo'] .scorebar .team.turn .team-kicker {
+html[data-skin] .scorebar .team-kicker,
+html[data-skin] .scorebar .team.turn .team-kicker {
   color: var(--n-ink-3);
   font-size: clamp(9px, .95vw, 11px) !important;
   font-weight: 700;
   letter-spacing: .04em;
 }
 /* الدور: حلقةٌ بلون الفريق حول بطاقته. إشارةٌ مضافة لا لونٌ مستبدَل. */
-html[data-skin='neo'] .scorebar .team-0.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e2); }
-html[data-skin='neo'] .scorebar .team-1.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e2); }
-html[data-skin='neo'] .scorebar .team-0.turn .team-kicker { color: var(--n-a); }
-html[data-skin='neo'] .scorebar .team-1.turn .team-kicker { color: var(--n-b); }
+html[data-skin] .scorebar .team-0.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e2); }
+html[data-skin] .scorebar .team-1.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e2); }
+html[data-skin] .scorebar .team-0.turn .team-kicker { color: var(--n-a); }
+html[data-skin] .scorebar .team-1.turn .team-kicker { color: var(--n-b); }
 /* التقدّم لا يستحقّ لوناً ثالثاً — يكفي أن ترتفع البطاقة عن الورقة.
    الإطار والظلّ يُصفَّران صراحةً: الورقيّة تصبغ المتقدّم بمرجانيّها، وهو
    لونٌ ثالث يزاحم لونَي الفريقين على شريطٍ عرضه ٤١٤px. */
-html[data-skin='neo'] .scorebar .team.lead {
+html[data-skin] .scorebar .team.lead {
   border: 0;
   box-shadow: var(--n-e2);
   transform: none;
 }
-html[data-skin='neo'] .scorebar .team-0.lead.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e2); }
-html[data-skin='neo'] .scorebar .team-1.lead.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e2); }
-html[data-skin='neo'] .scorebar .mid {
+html[data-skin] .scorebar .team-0.lead.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e2); }
+html[data-skin] .scorebar .team-1.lead.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e2); }
+html[data-skin] .scorebar .mid {
   min-width: 0;
   align-items: center;
   padding: 6px clamp(10px, 1.4vw, 16px);
@@ -204,7 +212,7 @@ html[data-skin='neo'] .scorebar .mid {
   font-size: clamp(10px, 1.2vw, 13px);
   font-weight: 700;
 }
-html[data-skin='neo'] .mid-dot {
+html[data-skin] .mid-dot {
   width: 6px;
   height: 6px;
   background: var(--n-accent);
@@ -212,23 +220,23 @@ html[data-skin='neo'] .mid-dot {
 }
 
 /* ─── ٤. سياق الجولة ─────────────────────────────────────────────────── */
-html[data-skin='neo'] .rd-mark { display: none; }
-html[data-skin='neo'] .rd {
+html[data-skin] .rd-mark { display: none; }
+html[data-skin] .rd {
   grid-template-columns: auto 1fr;
   gap: clamp(8px, 1.2vw, 14px);
 }
-html[data-skin='neo'] .rd-title {
+html[data-skin] .rd-title {
   color: var(--n-brand);
   font-size: clamp(15px, 1.9vw, 22px);
   font-weight: 800;
   letter-spacing: -.01em;
 }
-html[data-skin='neo'] .rd-meta {
+html[data-skin] .rd-meta {
   padding-bottom: 0;
   border-bottom: 0;
 }
-html[data-skin='neo'] .rd-chip,
-html[data-skin='neo'] .rd-chip:nth-child(even) {
+html[data-skin] .rd-chip,
+html[data-skin] .rd-chip:nth-child(even) {
   padding: 3px 10px;
   border: 0;
   border-radius: 999px;
@@ -238,7 +246,7 @@ html[data-skin='neo'] .rd-chip:nth-child(even) {
   font-weight: 700;
   transform: none;
 }
-html[data-skin='neo'] .rd-chip.turn {
+html[data-skin] .rd-chip.turn {
   background: var(--n-ink);
   color: #fff;
   transform: none;
@@ -248,7 +256,7 @@ html[data-skin='neo'] .rd-chip.turn {
 /* الفعل الأساسي بحبرٍ ممتلئ لا بلون فريق ولا بلون حكم: على شاشةٍ فيها
    بطاقتا فريقين وزرّا صحّ وغلط، اللونُ الوحيد الباقي بلا معنى هو الحبر —
    فلا يلتبس الزرّ ببطاقةٍ فوقه كما كان يقع في الجولة الجماعية. */
-html[data-skin='neo'] .action {
+html[data-skin] .action {
   border: 0;
   border-radius: var(--n-r3);
   background: var(--n-ink);
@@ -257,40 +265,40 @@ html[data-skin='neo'] .action {
   letter-spacing: -.005em;
   transition: transform .18s var(--ease-spring), box-shadow .18s ease, background .18s ease;
 }
-html[data-skin='neo'] .action:hover:not(:disabled) {
+html[data-skin] .action:hover:not(:disabled) {
   background: #26262F;
   transform: translateY(-2px);
   box-shadow: var(--n-e3);
 }
-html[data-skin='neo'] .action:active:not(:disabled) {
+html[data-skin] .action:active:not(:disabled) {
   transform: translateY(0) scale(.99);
   box-shadow: var(--n-e1);
 }
-html[data-skin='neo'] .action:disabled {
+html[data-skin] .action:disabled {
   background: rgba(23,23,31,.07);
   color: var(--n-ink-3);
   box-shadow: none;
 }
-html[data-skin='neo'] .action.coral { background: var(--n-bad); color: #fff; box-shadow: var(--n-e2); }
-html[data-skin='neo'] .action.coral:hover:not(:disabled) { background: #C2382A; }
-html[data-skin='neo'] .action.ghost {
+html[data-skin] .action.coral { background: var(--n-bad); color: #fff; box-shadow: var(--n-e2); }
+html[data-skin] .action.coral:hover:not(:disabled) { background: #C2382A; }
+html[data-skin] .action.ghost {
   background: var(--n-surface);
   color: var(--n-ink);
   box-shadow: var(--n-e1);
 }
-html[data-skin='neo'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); }
-html[data-skin='neo'] .action.sub {
+html[data-skin] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); }
+html[data-skin] .action.sub {
   background: transparent;
   color: var(--n-ink-2);
   box-shadow: none;
 }
-html[data-skin='neo'] .action-note { color: var(--n-ink-3); }
+html[data-skin] .action-note { color: var(--n-ink-3); }
 /* «الجولة التالية» كان يأخذ عرض الشاشة وارتفاعاً يزاحم بطاقتَي اللاعبين،
    وهو خطوةُ انتقال لا قرار — فيكفيه مقاسُ نصّه.
    والقيد على شاشة الديربي وحدها: صنف ‎.compact‎ يحمله أيضاً زرُّ حكم الجولة
    الجماعية («انتهى التشاور — إجابة فلان»)، وذاك قرارٌ يُضغط في كل سؤال فلا
    يُصغَّر. أرضية ٤٤px تحفظ هدف الإبهام. */
-html[data-skin='neo'] .screen.s2-reveal-screen .action.compact {
+html[data-skin] .screen.s2-reveal-screen .action.compact {
   align-self: center;
   width: auto;
   min-width: clamp(150px, 22vw, 240px);
@@ -306,10 +314,10 @@ html[data-skin='neo'] .screen.s2-reveal-screen .action.compact {
    ‎.q-box‎ على ارتفاع محتواه — فيقيس useFitText صندوقاً ضيّقاً ويهبط بالنصّ
    إلى أرضيته (٥٥٪ من المقاس) وإن كانت نصف الشاشة ورقاً فارغاً تحته.
    فالنموّ ينتقل إلى صندوق السؤال، ويأخذ المؤقّت مقاسَ محتواه. */
-html[data-skin='neo'] .q-box,
-html[data-skin='neo'] .s3-q,
-html[data-skin='neo'] .rv-card,
-html[data-skin='neo'] .reveal-a {
+html[data-skin] .q-box,
+html[data-skin] .s3-q,
+html[data-skin] .rv-card,
+html[data-skin] .reveal-a {
   overflow: hidden;
   border: 0;
   border-radius: var(--n-r4);
@@ -318,10 +326,10 @@ html[data-skin='neo'] .reveal-a {
   box-shadow: 0 0 0 1px rgba(122,62,157,.07), 0 2px 6px rgba(26,22,38,.045), 0 12px 28px rgba(122,62,157,.09);
   animation: none;
 }
-html[data-skin='neo'] .q-box::before,
-html[data-skin='neo'] .q-box::after,
-html[data-skin='neo'] .s3-q::before,
-html[data-skin='neo'] .s3-q::after { content: none; display: none; }
+html[data-skin] .q-box::before,
+html[data-skin] .q-box::after,
+html[data-skin] .s3-q::before,
+html[data-skin] .s3-q::after { content: none; display: none; }
 
 /* ‏.s1-question-body غلافٌ بلا صندوق (`display:contents`) — أبناؤه يصيرون
    أبناءَ ‎.screen‎ مباشرةً. أوّلُ محاولةٍ هنا جعلته `display:flex` فوُلد له
@@ -329,14 +337,14 @@ html[data-skin='neo'] .s3-q::after { content: none; display: none; }
    وانسحقت الصورة إلى أربعين بكسلاً. فيبقى الغلافُ على حاله، ويُصحَّح
    الميلُ عند صاحبه: صندوقُ السؤال هو من ينمو، والمؤقّت يأخذ مقاسَ محتواه.
    وسؤال الصورة لا يُمَسّ — له حسابُه في Stage1Question.tsx. */
-html[data-skin='neo'] .q-box.s1q:not(.s1q-photo) {
+html[data-skin] .q-box.s1q:not(.s1q-photo) {
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
   place-items: center;
 }
-html[data-skin='neo'] .timer-stage.grow { flex: 0 0 auto; }
-html[data-skin='neo'] .s3-q {
+html[data-skin] .timer-stage.grow { flex: 0 0 auto; }
+html[data-skin] .s3-q {
   flex: 1 1 auto;
   min-height: 0;
 }
@@ -344,22 +352,22 @@ html[data-skin='neo'] .s3-q {
 /* المقاسات نزلت درجةً بعد تجربة علي على الجهاز: كان السؤال يملأ البطاقة
    حافّةً إلى حافّة فيُقرأ كصياح لا كسؤال، والفراغُ حول النصّ جزءٌ من قراءته.
    ما زالت فوق مقاس الورقية بكثير — الشكوى كانت الإفراط لا الحجم. */
-html[data-skin='neo'] .q-text {
+html[data-skin] .q-text {
   color: var(--n-ink);
   font-size: clamp(17px, min(3vw, 5.2vh), 34px);
   font-weight: 700;
   line-height: 1.5;
   letter-spacing: -.008em;
 }
-html[data-skin='neo'] .q-text.long { font-size: clamp(15px, min(2.6vw, 4.5vh), 29px); }
-html[data-skin='neo'] .q-text.xlong { font-size: clamp(14px, min(2.2vw, 3.9vh), 25px); }
-html[data-skin='neo'] body .screen .q-prompt {
+html[data-skin] .q-text.long { font-size: clamp(15px, min(2.6vw, 4.5vh), 29px); }
+html[data-skin] .q-text.xlong { font-size: clamp(14px, min(2.2vw, 3.9vh), 25px); }
+html[data-skin] body .screen .q-prompt {
   color: var(--n-ink-2);
   font-size: clamp(13px, min(1.8vw, 2.6vh), 20px);
   font-weight: 700;
 }
-html[data-skin='neo'] .q-hint { color: var(--n-ink-3); }
-html[data-skin='neo'] .q-photo {
+html[data-skin] .q-hint { color: var(--n-ink-3); }
+html[data-skin] .q-photo {
   border: 0;
   border-radius: var(--n-r3);
   box-shadow: var(--n-e1);
@@ -368,7 +376,7 @@ html[data-skin='neo'] .q-photo {
 /* ─── ٧. المؤقّت ─────────────────────────────────────────────────────── */
 /* رقمٌ عارٍ وشريطٌ رفيع تحته — لا بطاقة ولا إطار. المؤقّت يقول الوقت ولا
    ينافس السؤال على الانتباه. */
-html[data-skin='neo'] .ring-timer {
+html[data-skin] .ring-timer {
   width: auto;
   height: auto;
   min-width: clamp(150px, 22vw, 280px);
@@ -382,8 +390,8 @@ html[data-skin='neo'] .ring-timer {
   box-shadow: none;
   transform: none;
 }
-html[data-skin='neo'] .ring-timer svg { display: none; }
-html[data-skin='neo'] .ring-timer .secs {
+html[data-skin] .ring-timer svg { display: none; }
+html[data-skin] .ring-timer .secs {
   position: static;
   grid-row: 1;
   font-size: clamp(30px, 6.4vh, 62px);
@@ -399,10 +407,10 @@ html[data-skin='neo'] .ring-timer .secs {
 /* الحق ما تلحق أحمر دائماً — المرحلة الوحيدة التي فيها عداء مع الوقت
    (SPEC §١٠). القاعدة موجودة في Timer.tsx (coral) لكن ‎!important‎ الورقيّة
    كانت تدهسها، فتظهر بلون كلّ مرحلةٍ أخرى. */
-html[data-skin='neo'] .screen:has(.s3-q) .ring-timer .secs { color: var(--n-bad) !important; }
-html[data-skin='neo'] .ring-timer.low .secs { color: var(--n-bad) !important; animation: none; }
-html[data-skin='neo'] .timer-unit { display: none; }
-html[data-skin='neo'] .timer-progress {
+html[data-skin] .screen:has(.s3-q) .ring-timer .secs { color: var(--n-bad) !important; }
+html[data-skin] .ring-timer.low .secs { color: var(--n-bad) !important; animation: none; }
+html[data-skin] .timer-unit { display: none; }
+html[data-skin] .timer-progress {
   grid-row: 2;
   width: 100%;
   height: 6px;
@@ -410,32 +418,32 @@ html[data-skin='neo'] .timer-progress {
   border-radius: 999px;
   background: rgba(23,23,31,.08);
 }
-html[data-skin='neo'] .timer-progress > span { border-radius: 999px; }
+html[data-skin] .timer-progress > span { border-radius: 999px; }
 
 /* ─── ٨. كبسولتا الفريقين في الجولة الجماعية ─────────────────────────── */
-html[data-skin='neo'] .tpill {
+html[data-skin] .tpill {
   border: 0;
   border-radius: var(--n-r2);
   box-shadow: var(--n-e1);
   transform: none;
 }
-html[data-skin='neo'] .tpill.owner {
+html[data-skin] .tpill.owner {
   background: var(--n-surface);
   color: var(--n-ink);
   box-shadow: 0 0 0 2px var(--n-ink), var(--n-e1);
 }
-html[data-skin='neo'] .tpill.rival {
+html[data-skin] .tpill.rival {
   background: var(--n-surface);
   color: var(--n-ink-2);
 }
-html[data-skin='neo'] .tpill.rival.active {
+html[data-skin] .tpill.rival.active {
   background: var(--n-surface);
   color: var(--n-ink);
   box-shadow: 0 0 0 2px var(--n-ink), var(--n-e1);
 }
-html[data-skin='neo'] .role { color: var(--n-ink-3); font-weight: 700; letter-spacing: .03em; }
-html[data-skin='neo'] .tname { font-weight: 800; letter-spacing: -.01em; }
-html[data-skin='neo'] .rival-hint {
+html[data-skin] .role { color: var(--n-ink-3); font-weight: 700; letter-spacing: .03em; }
+html[data-skin] .tname { font-weight: 800; letter-spacing: -.01em; }
+html[data-skin] .rival-hint {
   border: 0;
   border-radius: 999px;
   background: rgba(23,23,31,.05);
@@ -443,48 +451,48 @@ html[data-skin='neo'] .rival-hint {
   transform: none;
   font-weight: 600;
 }
-html[data-skin='neo'] .rival-rule { color: var(--n-ink-3); }
+html[data-skin] .rival-rule { color: var(--n-ink-3); }
 
 /* ─── ٩. الكشف والتنقيط ──────────────────────────────────────────────── */
-html[data-skin='neo'] .rv-card,
-html[data-skin='neo'] .reveal-a {
+html[data-skin] .rv-card,
+html[data-skin] .reveal-a {
   border: 0;
   border-radius: var(--n-r4);
   background: var(--n-surface);
   box-shadow: var(--n-e2);
 }
 /* السؤال ينكمش ويبهت لكنه يبقى، والإجابة أكبر منه — نصّ SPEC §١٠ حرفياً. */
-html[data-skin='neo'] .rv-q,
-html[data-skin='neo'] .reveal-q {
+html[data-skin] .rv-q,
+html[data-skin] .reveal-q {
   color: var(--n-ink-3);
   font-weight: 600;
 }
 /* الإجابة تبقى أكبر من السؤال (SPEC §١٠) لكن بفارقٍ محسوب لا بقفزة.
    وبالبنفسجي: هي لحظة الكشف، فتُقرأ بلونها قبل أن تُقرأ بحجمها. */
-html[data-skin='neo'] .rv-a,
-html[data-skin='neo'] .reveal-a .a-text,
-html[data-skin='neo'] .s3-answer {
+html[data-skin] .rv-a,
+html[data-skin] .reveal-a .a-text,
+html[data-skin] .s3-answer {
   color: var(--n-brand);
   font-size: clamp(21px, min(3.6vw, 6.2vh), 40px);
   font-weight: 800;
   line-height: 1.22;
   letter-spacing: -.018em;
 }
-html[data-skin='neo'] .a-label { color: var(--n-ink-3); font-size: .42em; font-weight: 700; }
-html[data-skin='neo'] .s3-answer .a-label { color: var(--n-ink-3); font-size: .46em; }
+html[data-skin] .a-label { color: var(--n-ink-3); font-size: .42em; font-weight: 700; }
+html[data-skin] .s3-answer .a-label { color: var(--n-ink-3); font-size: .46em; }
 
 /* الورقيّة تُنزل البطاقة الثانية سبعةَ بكسلات وتُميلها نصفَ درجة
    (`.mcard:nth-child(2){transform:translateY(7px) rotate(.5deg)}` — وزنُها
    0-4-1). قاعدتي الأولى كانت 0-3-1 فخسرت، فظهر المربّعان غير متوازيين على
    جهاز علي: واحدٌ صاعد وواحدٌ نازل. هذه تطابق محدّدها فتتفوّق. */
-html[data-skin='neo'] .pick:first-child,
-html[data-skin='neo'] .pick:nth-child(2),
-html[data-skin='neo'] .mark-cards .mcard:first-child,
-html[data-skin='neo'] .mark-cards .mcard:nth-child(2) { transform: none; }
+html[data-skin] .pick:first-child,
+html[data-skin] .pick:nth-child(2),
+html[data-skin] .mark-cards .mcard:first-child,
+html[data-skin] .mark-cards .mcard:nth-child(2) { transform: none; }
 
-html[data-skin='neo'] .pick,
-html[data-skin='neo'] .mark-cards .mcard,
-html[data-skin='neo'] .not-picked .np-col {
+html[data-skin] .pick,
+html[data-skin] .mark-cards .mcard,
+html[data-skin] .not-picked .np-col {
   border: 0;
   border-radius: var(--n-r3);
   background: var(--n-surface);
@@ -496,16 +504,16 @@ html[data-skin='neo'] .not-picked .np-col {
 /* اللون يتبع رقم الفريق لا ترتيبَ البطاقة على الشاشة. بطاقتا «من أصاب؟»
    مرتّبتان بصاحب الدور أوّلاً، والدور يتناوب كل سؤال — فـnth-child كان يقلب
    لونَي الفريقين ثماني مرّات في الجولة الواحدة. */
-html[data-skin='neo'] .pick.team-0,
-html[data-skin='neo'] .mark-cards .mcard.team-0 { background: var(--n-a-tint); box-shadow: inset 0 0 0 1px var(--n-a-line), var(--n-e1); }
-html[data-skin='neo'] .pick.team-1,
-html[data-skin='neo'] .mark-cards .mcard.team-1 { background: var(--n-b-tint); box-shadow: inset 0 0 0 1px var(--n-b-line), var(--n-e1); }
-html[data-skin='neo'] .pick.team-0 .pk-name { color: var(--n-a); }
-html[data-skin='neo'] .pick.team-1 .pk-name { color: var(--n-b); }
-html[data-skin='neo'] .mark-cards .mcard.team-0 .mc-name { color: var(--n-a); }
-html[data-skin='neo'] .mark-cards .mcard.team-1 .mc-name { color: var(--n-b); }
-html[data-skin='neo'] .pick:hover { transform: translateY(-2px); box-shadow: var(--n-e2); }
-html[data-skin='neo'] .none-btn {
+html[data-skin] .pick.team-0,
+html[data-skin] .mark-cards .mcard.team-0 { background: var(--n-a-tint); box-shadow: inset 0 0 0 1px var(--n-a-line), var(--n-e1); }
+html[data-skin] .pick.team-1,
+html[data-skin] .mark-cards .mcard.team-1 { background: var(--n-b-tint); box-shadow: inset 0 0 0 1px var(--n-b-line), var(--n-e1); }
+html[data-skin] .pick.team-0 .pk-name { color: var(--n-a); }
+html[data-skin] .pick.team-1 .pk-name { color: var(--n-b); }
+html[data-skin] .mark-cards .mcard.team-0 .mc-name { color: var(--n-a); }
+html[data-skin] .mark-cards .mcard.team-1 .mc-name { color: var(--n-b); }
+html[data-skin] .pick:hover { transform: translateY(-2px); box-shadow: var(--n-e2); }
+html[data-skin] .none-btn {
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -513,15 +521,15 @@ html[data-skin='neo'] .none-btn {
   box-shadow: none;
   font-weight: 600;
 }
-html[data-skin='neo'] .none-btn:hover { background: rgba(23,23,31,.05); color: var(--n-ink); }
-html[data-skin='neo'] .pk-role { color: var(--n-ink-3); }
-html[data-skin='neo'] .pk-name { color: var(--n-ink); font-weight: 800; }
-html[data-skin='neo'] .pk-from { color: var(--n-ink-3); }
-html[data-skin='neo'] .pk-to { color: var(--n-good); font-weight: 800; }
-html[data-skin='neo'] .pk-arrow { color: var(--n-ink-3); }
+html[data-skin] .none-btn:hover { background: rgba(23,23,31,.05); color: var(--n-ink); }
+html[data-skin] .pk-role { color: var(--n-ink-3); }
+html[data-skin] .pk-name { color: var(--n-ink); font-weight: 800; }
+html[data-skin] .pk-from { color: var(--n-ink-3); }
+html[data-skin] .pk-to { color: var(--n-good); font-weight: 800; }
+html[data-skin] .pk-arrow { color: var(--n-ink-3); }
 
 /* مربّعا الديربي — أخضر للصحّ وأحمر للغلط، وهما اللونان المحجوزان للحكم */
-html[data-skin='neo'] .mark-cards .choice {
+html[data-skin] .mark-cards .choice {
   border: 0;
   border-radius: var(--n-r1);
   background: rgba(23,23,31,.045);
@@ -530,8 +538,8 @@ html[data-skin='neo'] .mark-cards .choice {
   font-weight: 700;
   transition: background .16s ease, color .16s ease;
 }
-html[data-skin='neo'] .mark-cards .choice.ok.on { background: var(--n-good); color: #fff; }
-html[data-skin='neo'] .mark-cards .choice.no.on { background: var(--n-bad); color: #fff; }
+html[data-skin] .mark-cards .choice.ok.on { background: var(--n-good); color: #fff; }
+html[data-skin] .mark-cards .choice.no.on { background: var(--n-bad); color: #fff; }
 
 /* ─── ١٠. الفئات ─────────────────────────────────────────────────────── */
 /* ملاحظة على الوزن: محدّدات هذا القسم تحمل `body .screen` زيادةً على
@@ -548,7 +556,7 @@ html[data-skin='neo'] .mark-cards .choice.no.on { background: var(--n-bad); colo
    والبطاقة تُبنى من جديد: الرسمة تملأها حافّةً إلى حافّة، والاسم يطفو على
    تدرّجٍ داكن أسفلها. التدرّج شرط تشغيل لا زينة — الرسمات فاتحة متباينة،
    والاسمُ عليها بلا حجابٍ يضيع في نصفها. */
-html[data-skin='neo'] body .screen .cat {
+html[data-skin] body .screen .cat {
   position: relative;
   display: block;
   overflow: hidden;
@@ -560,7 +568,7 @@ html[data-skin='neo'] body .screen .cat {
   transform: none !important;
   transition: box-shadow .22s ease, opacity .22s ease;
 }
-html[data-skin='neo'] body .screen .cat-img {
+html[data-skin] body .screen .cat-img {
   display: block;
   position: absolute;
   inset: 0;
@@ -576,7 +584,7 @@ html[data-skin='neo'] body .screen .cat-img {
   filter: none;
   transition: transform .45s var(--ease-spring), filter .25s ease;
 }
-html[data-skin='neo'] body .screen .cat-name {
+html[data-skin] body .screen .cat-name {
   position: absolute;
   z-index: 2;
   inset-inline: 0;
@@ -590,11 +598,11 @@ html[data-skin='neo'] body .screen .cat-name {
   text-shadow: 0 1px 3px rgba(0,0,0,.45);
   text-align: center;
 }
-html[data-skin='neo'] body .screen .cat-index { display: none; }
+html[data-skin] body .screen .cat-index { display: none; }
 /* الشارة على المستهلك وحده: أربع عشرة رقاقةً تقول «متاحة» لا تفرّق بين
    شيء — والمعلومة هي الخروج لا البقاء (SPEC §٧). */
-html[data-skin='neo'] body .screen .cat:not(.spent) .cat-status { display: none; }
-html[data-skin='neo'] body .screen .cat-status {
+html[data-skin] body .screen .cat:not(.spent) .cat-status { display: none; }
+html[data-skin] body .screen .cat-status {
   position: absolute;
   z-index: 3;
   top: 6px;
@@ -611,32 +619,32 @@ html[data-skin='neo'] body .screen .cat-status {
 }
 /* المستهلك رماديّ ظاهر لا مخفيّ (SPEC §٧): يفقد لونه ويغور تحت السطح،
    ويبقى اسمه مقروءاً — القائمة شفافيةٌ للمجلس لا زينة. */
-html[data-skin='neo'] body .screen .cat.spent {
+html[data-skin] body .screen .cat.spent {
   opacity: 1;
   filter: none;
   background: var(--n-bg);
   box-shadow: inset 0 0 0 1px var(--n-line);
 }
-html[data-skin='neo'] body .screen .cat.spent .cat-img { filter: grayscale(1) brightness(1.12) contrast(.72); opacity: .3; }
-html[data-skin='neo'] body .screen .cat.spent .cat-name {
+html[data-skin] body .screen .cat.spent .cat-img { filter: grayscale(1) brightness(1.12) contrast(.72); opacity: .3; }
+html[data-skin] body .screen .cat.spent .cat-name {
   background: none;
   color: var(--n-ink-3);
   text-shadow: none;
 }
 /* الضوء المارّ أثناء السحب — يُتابَع من آخر المجلس، فالفرق حلقةٌ كاملة
    وزحفٌ في الرسمة لا درجةٌ أفتح بقليل. */
-html[data-skin='neo'] body .screen .cat.cursor {
+html[data-skin] body .screen .cat.cursor {
   background: var(--n-surface);
   box-shadow: 0 0 0 3px var(--n-brand), 0 10px 24px rgba(122,62,157,.28);
 }
-html[data-skin='neo'] body .screen .cat.cursor .cat-img { transform: scale(1.09); }
+html[data-skin] body .screen .cat.cursor .cat-img { transform: scale(1.09); }
 /* الاستقرار: أعلى لحظة في الشاشة — حلقة حبرٍ سميكة وظلٌّ يرفعها عن أخواتها */
-html[data-skin='neo'] body .screen .cat.landed {
+html[data-skin] body .screen .cat.landed {
   background: var(--n-surface);
   box-shadow: 0 0 0 4px var(--n-ink), 0 14px 34px rgba(26,22,38,.30);
 }
-html[data-skin='neo'] body .screen .cat.landed .cat-img { transform: scale(1.12); }
-html[data-skin='neo'] body .screen .cat.landed .cat-name {
+html[data-skin] body .screen .cat.landed .cat-img { transform: scale(1.12); }
+html[data-skin] body .screen .cat.landed .cat-name {
   background: linear-gradient(to top, rgba(14,11,22,.92) 0%, rgba(14,11,22,.7) 46%, rgba(14,11,22,0) 100%);
   color: #fff;
 }
@@ -645,41 +653,41 @@ html[data-skin='neo'] body .screen .cat.landed .cat-name {
    ارتفاعٍ لم يعد قائماً. وتحت ٣٣٠px تُخفى فعلاً: هناك تنزل البطاقة دون
    الستّين فيصير الاسمُ على الرسمة زحاماً لا معلومة. */
 @media (max-height: 480px) and (min-height: 331px) {
-  html[data-skin='neo'] body .screen .cat-img { display: block; }
-  html[data-skin='neo'] body .screen .cat-name { position: absolute; }
+  html[data-skin] body .screen .cat-img { display: block; }
+  html[data-skin] body .screen .cat-name { position: absolute; }
 }
 @media (max-height: 330px) {
-  html[data-skin='neo'] body .screen .cat-img { display: none; }
-  html[data-skin='neo'] body .screen .cat {
+  html[data-skin] body .screen .cat-img { display: none; }
+  html[data-skin] body .screen .cat {
     display: grid;
     place-items: center;
     background: var(--n-surface);
   }
-  html[data-skin='neo'] body .screen .cat-name {
+  html[data-skin] body .screen .cat-name {
     position: static;
     padding: 0 4px;
     background: none;
     color: var(--n-ink);
     text-shadow: none;
   }
-  html[data-skin='neo'] body .screen .cat.spent .cat-name { color: var(--n-ink-3); }
+  html[data-skin] body .screen .cat.spent .cat-name { color: var(--n-ink-3); }
 }
 
 /* ─── ١١. الفاصل والديربي ────────────────────────────────────────────── */
-html[data-skin='neo'] .interval-card,
-html[data-skin='neo'] .interval-card.tie {
+html[data-skin] .interval-card,
+html[data-skin] .interval-card.tie {
   border: 0;
   border-radius: var(--n-r4);
   background: var(--n-surface);
   box-shadow: var(--n-e2);
 }
-html[data-skin='neo'] .il-title,
-html[data-skin='neo'] .interval-card.tie .il-title {
+html[data-skin] .il-title,
+html[data-skin] .interval-card.tie .il-title {
   color: var(--n-ink);
   font-weight: 800;
   letter-spacing: -.02em;
 }
-html[data-skin='neo'] .il-eyebrow {
+html[data-skin] .il-eyebrow {
   align-self: center;
   padding: 4px 13px;
   border-radius: 999px;
@@ -692,12 +700,12 @@ html[data-skin='neo'] .il-eyebrow {
    «قاعدة الصمت في الديربي تُخالَف عادةً من فريق لم يستوعب أن القواعد
    تغيّرت» (SPEC §١٠). فالاسمُ ينزل درجةً والقاعدةُ ترتفع درجتين، ويبقى
    الاسمُ الأكبر لأنه العنوان — لكن بفارقٍ يُقرأ لا بفارقٍ يسحق. */
-html[data-skin='neo'] .il-title {
+html[data-skin] .il-title {
   color: var(--n-ink);
   font-size: clamp(26px, min(4.6vw, 9vh), 52px);
   text-shadow: none;
 }
-html[data-skin='neo'] .il-rule {
+html[data-skin] .il-rule {
   max-width: 46ch;
   align-self: center;
   color: var(--n-ink);
@@ -707,18 +715,18 @@ html[data-skin='neo'] .il-rule {
 }
 /* الرقم كان ٣٧٣px بشفافية ٤٪ — لا يُقرأ رقماً ولا يغيب، فيبقى لطخةً خلف
    النصّ. يصغر ويشتدّ قليلاً فيصير رقماً مقصوداً في الزاوية. */
-html[data-skin='neo'] .il-stage-no {
+html[data-skin] .il-stage-no {
   bottom: -.18em;
   color: rgba(122,62,157,.10);
   font-size: min(20vw, 34vh, 190px);
 }
-html[data-skin='neo'] .interval-card {
+html[data-skin] .interval-card {
   padding: clamp(20px, 4.5vh, 46px) clamp(24px, 5vw, 60px);
 }
-html[data-skin='neo'] .il-live { color: var(--n-ink-3); font-weight: 700; }
-html[data-skin='neo'] .il-live span { background: var(--n-bad); animation: none; }
+html[data-skin] .il-live { color: var(--n-ink-3); font-weight: 700; }
+html[data-skin] .il-live span { background: var(--n-bad); animation: none; }
 
-html[data-skin='neo'] .s2-versus {
+html[data-skin] .s2-versus {
   border: 0;
   border-radius: 999px;
   background: var(--n-surface);
@@ -727,15 +735,15 @@ html[data-skin='neo'] .s2-versus {
 }
 /* «ضد» مرجانية بين الاسمين — نصّ SPEC §١٠ حرفياً. كانت رماديّةً خافتة
    فقُرئت فاصلاً مطبعياً لا إعلانَ مواجهة. */
-html[data-skin='neo'] .s2-versus .vs { color: var(--n-accent); font-weight: 800; }
+html[data-skin] .s2-versus .vs { color: var(--n-accent); font-weight: 800; }
 /* اللاعبان يأخذان لون فريقيهما — لا لوناً واحداً لكليهما كما كان */
 /* المسبار يحمل حجم نيو كي يقيس عليه، فيتقلّص الاسم الطويل كما ينبغي.
    بدونه كان القياس يجري على مقاس القديم بينما يُرسم الاسم بمقاس نيو، فيفيض
    الاسم الطويل عرضاً ولا يُقلَّص. */
-html[data-skin='neo'] .vs-wrap .vs-probe {
+html[data-skin] .vs-wrap .vs-probe {
   font-size: clamp(34px, min(7vw, 15vh), 92px);
 }
-html[data-skin='neo'] .vs-wrap .vs-player {
+html[data-skin] .vs-wrap .vs-player {
   color: var(--n-ink-3);
   /* --vs-size هو ناتج القياس: يحترمه الاسم، ولا يسقط إلى صيغة نيو إلا قبل
      أوّل قياس. */
@@ -743,10 +751,10 @@ html[data-skin='neo'] .vs-wrap .vs-player {
   font-weight: 800;
   letter-spacing: -.03em;
 }
-html[data-skin='neo'] .vs-wrap.settled .vs-slot:first-child .vs-player,
-html[data-skin='neo'] .vs-wrap.settled .vs-player { text-shadow: none; }
-html[data-skin='neo'] .vs-wrap.settled .vs-slot:first-of-type .vs-player { color: var(--n-a); }
-html[data-skin='neo'] .vs-wrap.settled .vs-slot:last-of-type .vs-player { color: var(--n-b); }
+html[data-skin] .vs-wrap.settled .vs-slot:first-child .vs-player,
+html[data-skin] .vs-wrap.settled .vs-player { text-shadow: none; }
+html[data-skin] .vs-wrap.settled .vs-slot:first-of-type .vs-player { color: var(--n-a); }
+html[data-skin] .vs-wrap.settled .vs-slot:last-of-type .vs-player { color: var(--n-b); }
 /* `.vs-word` أدناه بـ`em`، و`.vs` بلا حجم خطّ — فكانت النسبة تُحسب على خطّ
    الجسم وتخرج «ضد» بسبع بكسلات. إعطاؤها حجم الاسم يُرجع النسبة إلى مرادها:
    الشارة جزءٌ من الاسمين لا رقمٌ ثابت، فتكبر وتصغر معهما. */
@@ -757,15 +765,15 @@ html[data-skin='neo'] .vs-wrap.settled .vs-slot:last-of-type .vs-player { color:
    «علي»، تنزل .46em تحت خطّ الأساس عند وزن ٨٠٠ — فالسفليّ .50 يتجاوزها.
    وهما غير متساويتين عمداً: البكرة تهبط من أعلى، فالاقتصاص العلويّ هو
    وظيفة الخانة ويبقى ضيّقاً، والسفليّ لا يخدم شيئاً سوى بتر الذيول. */
-html[data-skin='neo'] .vs-slot {
+html[data-skin] .vs-slot {
   padding-block:
     calc(var(--vs-size, clamp(34px, min(7vw, 15vh), 92px)) * .12)
     calc(var(--vs-size, clamp(34px, min(7vw, 15vh), 92px)) * .50);
 }
-html[data-skin='neo'] .vs-wrap .vs {
+html[data-skin] .vs-wrap .vs {
   font-size: var(--vs-size, clamp(34px, min(7vw, 15vh), 92px));
 }
-html[data-skin='neo'] .vs-wrap .vs-word {
+html[data-skin] .vs-wrap .vs-word {
   padding: 9px 17px;
   border: 0;
   border-radius: 999px;
@@ -779,14 +787,14 @@ html[data-skin='neo'] .vs-wrap .vs-word {
 /* لوحُ «لم يُختر بعد» يخدم شفافية الدورة الكاملة، لكنه كان بطاقةً بيضاء
    مرفوعة بحجم بطاقات القرار — وهو سطرُ حالةٍ لا قرار. يخفّ إلى إطارٍ شعريّ
    فيرجع الثقلُ إلى الاسمين، وهما موضوع الشاشة. */
-html[data-skin='neo'] .not-picked .np-col {
+html[data-skin] .not-picked .np-col {
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--n-line);
 }
-html[data-skin='neo'] .np-title { color: var(--n-ink-3); font-weight: 700; }
-html[data-skin='neo'] .np-names { color: var(--n-ink-2); }
-html[data-skin='neo'] .mc-team { color: var(--n-ink-3); }
-html[data-skin='neo'] .mc-name { color: var(--n-ink); font-weight: 800; }
+html[data-skin] .np-title { color: var(--n-ink-3); font-weight: 700; }
+html[data-skin] .np-names { color: var(--n-ink-2); }
+html[data-skin] .mc-team { color: var(--n-ink-3); }
+html[data-skin] .mc-name { color: var(--n-ink); font-weight: 800; }
 
 /* ─── ١٢. الحق ما تلحق ───────────────────────────────────────────────── */
 /* شاشة الاستعداد كانت لوحاً أبيض سادة، وهي أهمّ لحظة توتّر في اللعبة:
@@ -794,7 +802,7 @@ html[data-skin='neo'] .mc-name { color: var(--n-ink); font-weight: 800; }
    وهجٌ أحمر يزحف من أسفلها (لون العداء مع الوقت في هذه المرحلة وحدها،
    SPEC §١٠)، وقرصُ ساعةٍ شبحيّ في زاويتها مرسومٌ بتدرّجٍ مخروطيّ لا برقمٍ
    مكتوبٍ بيد — فلا يتكرّر ثابتُ الثلاثين خارج المحرّك. */
-html[data-skin='neo'] .s3-ready {
+html[data-skin] .s3-ready {
   position: relative;
   overflow: hidden;
   border: 0;
@@ -806,7 +814,7 @@ html[data-skin='neo'] .s3-ready {
   box-shadow: 0 0 0 1px rgba(220,64,51,.10), 0 6px 16px rgba(26,22,38,.06), 0 20px 46px rgba(220,64,51,.13);
 }
 /* قرص الساعة: حلقةٌ ناقصة وعقربٌ واحد — يُقرأ كساعةٍ بلمحة ولا يزاحم الاسم */
-html[data-skin='neo'] .s3-ready::before {
+html[data-skin] .s3-ready::before {
   content: '';
   position: absolute;
   z-index: 0;
@@ -823,10 +831,10 @@ html[data-skin='neo'] .s3-ready::before {
   mask-image: radial-gradient(circle, transparent 0 61%, #000 62%);
   pointer-events: none;
 }
-html[data-skin='neo'] .s3-ready > * { position: relative; z-index: 1; }
+html[data-skin] .s3-ready > * { position: relative; z-index: 1; }
 
 /* الشارة العلوية تحمل نقطةً حمراء نابضة — الساعة على وشك أن تبدأ */
-html[data-skin='neo'] .s3r-eyebrow {
+html[data-skin] .s3r-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -838,7 +846,7 @@ html[data-skin='neo'] .s3r-eyebrow {
   font-weight: 800;
   letter-spacing: .04em;
 }
-html[data-skin='neo'] .s3r-eyebrow::before {
+html[data-skin] .s3r-eyebrow::before {
   content: '';
   width: 7px;
   height: 7px;
@@ -851,18 +859,18 @@ html[data-skin='neo'] .s3r-eyebrow::before {
   50%      { opacity: .35; transform: scale(.7); }
 }
 @media (prefers-reduced-motion: reduce) {
-  html[data-skin='neo'] .s3r-eyebrow::before { animation: none; }
+  html[data-skin] .s3r-eyebrow::before { animation: none; }
 }
 
 /* اسم الفريق بلونه — الهويّة اللونيّة لا تنقطع في المرحلة الحاسمة */
-html[data-skin='neo'] .s3r-team { color: var(--n-ink); font-weight: 800; letter-spacing: -.025em; }
-html[data-skin='neo'] .s3-ready.team-0 .s3r-team { color: var(--n-a); }
-html[data-skin='neo'] .s3-ready.team-1 .s3r-team { color: var(--n-b); }
+html[data-skin] .s3r-team { color: var(--n-ink); font-weight: 800; letter-spacing: -.025em; }
+html[data-skin] .s3-ready.team-0 .s3r-team { color: var(--n-a); }
+html[data-skin] .s3-ready.team-1 .s3r-team { color: var(--n-b); }
 
 /* القاعدتان بطاقتان بيضاوان مرفوعتان لا رقاقتان رماديّتان: هما نصُّ الفاصل
    كلُّه (SPEC §١٠)، والفريق الثاني يصل هنا بعد دور خصمه كاملاً فيقرأهما
    من جديد. */
-html[data-skin='neo'] .s3-ready-rules span {
+html[data-skin] .s3-ready-rules span {
   display: inline-flex;
   align-items: baseline;
   gap: 7px;
@@ -874,7 +882,7 @@ html[data-skin='neo'] .s3-ready-rules span {
   color: var(--n-ink-2);
   font-weight: 700;
 }
-html[data-skin='neo'] .s3-ready-rules b {
+html[data-skin] .s3-ready-rules b {
   color: var(--n-bad);
   font-size: 1.28em;
   font-weight: 800;
@@ -888,8 +896,8 @@ html[data-skin='neo'] .s3-ready-rules b {
    لكن الارتفاع كان يتمدّد بما يفضل من العمود فيبتلع ثلث الشاشة ويقزّم
    السؤال فوقه. سقفٌ ثابت يردّ الفائض إلى بطاقة السؤال، وأرضية ٥٢px تبقى
    فوق حدّ هدف اللمس المريح. */
-html[data-skin='neo'] .s3-verdicts { flex: none; }
-html[data-skin='neo'] .s3-verdicts .v {
+html[data-skin] .s3-verdicts { flex: none; }
+html[data-skin] .s3-verdicts .v {
   flex: 1 1 0;
   min-height: 52px;
   max-height: clamp(52px, 13vh, 76px);
@@ -901,12 +909,12 @@ html[data-skin='neo'] .s3-verdicts .v {
   font-weight: 800;
   transition: transform .14s var(--ease-spring), box-shadow .14s ease;
 }
-html[data-skin='neo'] .v-pts { font-size: .72em; }
-html[data-skin='neo'] .s3-verdicts .v:active { transform: scale(.98); box-shadow: none; }
-html[data-skin='neo'] .s3-verdicts .v.correct { background: var(--n-good); color: #fff; }
-html[data-skin='neo'] .s3-verdicts .v.wrong { background: var(--n-bad); color: #fff; }
-html[data-skin='neo'] .v-pts { opacity: .85; font-weight: 700; }
-html[data-skin='neo'] .tb {
+html[data-skin] .v-pts { font-size: .72em; }
+html[data-skin] .s3-verdicts .v:active { transform: scale(.98); box-shadow: none; }
+html[data-skin] .s3-verdicts .v.correct { background: var(--n-good); color: #fff; }
+html[data-skin] .s3-verdicts .v.wrong { background: var(--n-bad); color: #fff; }
+html[data-skin] .v-pts { opacity: .85; font-weight: 700; }
+html[data-skin] .tb {
   border: 0;
   border-radius: var(--n-r3);
   background: var(--n-surface);
@@ -915,7 +923,7 @@ html[data-skin='neo'] .tb {
 }
 
 /* ─── ١٣. الإعداد ────────────────────────────────────────────────────── */
-html[data-skin='neo'] .screen.setup .hero {
+html[data-skin] .screen.setup .hero {
   border: 0;
   border-radius: 0 0 var(--n-r4) var(--n-r4);
   background: var(--n-surface);
@@ -926,20 +934,20 @@ html[data-skin='neo'] .screen.setup .hero {
    تشبّعٌ أقلّ ودفءٌ أخفّ ليقترب من اللوحة، ثم تدرّجان يذيبان حافّتيه في
    سطح البطاقة فلا تُقرأ له حدود. سقفُ ارتفاعه ينزل أيضاً: الإعداد شاشةُ
    إدخال، والصورة تُنظر مرّة. */
-html[data-skin='neo'] .screen.setup .hero {
+html[data-skin] .screen.setup .hero {
   max-height: min(300px, 34vh);
   background: var(--n-surface);
 }
-html[data-skin='neo'] .screen.setup .hero-scene img {
+html[data-skin] .screen.setup .hero-scene img {
   filter: saturate(.72) contrast(.94) brightness(1.06);
 }
-html[data-skin='neo'] .screen.setup .hero-scene::after {
+html[data-skin] .screen.setup .hero-scene::after {
   background:
     linear-gradient(90deg, rgba(255,255,255,0) 0 34%, rgba(255,255,255,.80) 66%, #fff 100%),
     linear-gradient(180deg, rgba(255,255,255,.34) 0, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 62%, rgba(255,255,255,.72) 100%);
 }
-html[data-skin='neo'] .screen.setup .hero-logo { filter: none; }
-html[data-skin='neo'] .screen.setup .mute-toggle {
+html[data-skin] .screen.setup .hero-logo { filter: none; }
+html[data-skin] .screen.setup .mute-toggle {
   border: 0;
   border-radius: 999px;
   background: rgba(255,255,255,.9);
@@ -947,25 +955,25 @@ html[data-skin='neo'] .screen.setup .mute-toggle {
   box-shadow: var(--n-e1);
   backdrop-filter: blur(6px);
 }
-html[data-skin='neo'] .screen.setup .stage-card,
-html[data-skin='neo'] .screen.setup .team-card,
-html[data-skin='neo'] .screen.setup .stage-card:nth-child(1),
-html[data-skin='neo'] .screen.setup .stage-card:nth-child(2),
-html[data-skin='neo'] .screen.setup .stage-card:nth-child(3),
-html[data-skin='neo'] .screen.setup .team-card:first-child,
-html[data-skin='neo'] .screen.setup .team-card:last-child {
+html[data-skin] .screen.setup .stage-card,
+html[data-skin] .screen.setup .team-card,
+html[data-skin] .screen.setup .stage-card:nth-child(1),
+html[data-skin] .screen.setup .stage-card:nth-child(2),
+html[data-skin] .screen.setup .stage-card:nth-child(3),
+html[data-skin] .screen.setup .team-card:first-child,
+html[data-skin] .screen.setup .team-card:last-child {
   border: 0;
   border-radius: var(--n-r3);
   background: var(--n-surface);
   box-shadow: var(--n-e1);
   transform: none;
 }
-html[data-skin='neo'] .screen.setup .stage-no { color: var(--n-ink-3); font-weight: 800; }
-html[data-skin='neo'] .screen.setup .stage-tag { color: var(--n-ink-3); letter-spacing: .05em; }
-html[data-skin='neo'] .screen.setup .stage-name { color: var(--n-ink); font-weight: 800; letter-spacing: -.01em; }
-html[data-skin='neo'] .screen.setup .stage-desc { color: var(--n-ink-2); }
-html[data-skin='neo'] .screen.setup .stage-points,
-html[data-skin='neo'] .screen.setup .team-badge {
+html[data-skin] .screen.setup .stage-no { color: var(--n-ink-3); font-weight: 800; }
+html[data-skin] .screen.setup .stage-tag { color: var(--n-ink-3); letter-spacing: .05em; }
+html[data-skin] .screen.setup .stage-name { color: var(--n-ink); font-weight: 800; letter-spacing: -.01em; }
+html[data-skin] .screen.setup .stage-desc { color: var(--n-ink-2); }
+html[data-skin] .screen.setup .stage-points,
+html[data-skin] .screen.setup .team-badge {
   border: 0;
   border-radius: 999px;
   background: rgba(23,23,31,.05);
@@ -973,59 +981,59 @@ html[data-skin='neo'] .screen.setup .team-badge {
   font-weight: 700;
 }
 /* بطاقة كل فريق بلونه — وهو اللون نفسه الذي يرافقه إلى شاشة الختام */
-html[data-skin='neo'] .screen.setup .team-card:first-child { box-shadow: inset 0 0 0 1px var(--n-a-line), var(--n-e1); }
-html[data-skin='neo'] .screen.setup .team-card:last-child { box-shadow: inset 0 0 0 1px var(--n-b-line), var(--n-e1); }
-html[data-skin='neo'] .screen.setup .team-card:first-child .team-badge { background: var(--n-a-tint); color: var(--n-a); }
-html[data-skin='neo'] .screen.setup .team-card:last-child .team-badge { background: var(--n-b-tint); color: var(--n-b); }
+html[data-skin] .screen.setup .team-card:first-child { box-shadow: inset 0 0 0 1px var(--n-a-line), var(--n-e1); }
+html[data-skin] .screen.setup .team-card:last-child { box-shadow: inset 0 0 0 1px var(--n-b-line), var(--n-e1); }
+html[data-skin] .screen.setup .team-card:first-child .team-badge { background: var(--n-a-tint); color: var(--n-a); }
+html[data-skin] .screen.setup .team-card:last-child .team-badge { background: var(--n-b-tint); color: var(--n-b); }
 /* البادئ: حلقةُ حبرٍ حول البطاقة، فيبقى لون الفريق ظاهراً تحتها */
-html[data-skin='neo'] .screen.setup .team-card.starter {
+html[data-skin] .screen.setup .team-card.starter {
   background: var(--n-surface);
   box-shadow: 0 0 0 2px var(--n-ink), var(--n-e2);
 }
-html[data-skin='neo'] .screen.setup .team-name {
+html[data-skin] .screen.setup .team-name {
   color: var(--n-ink);
   border-bottom: 1px solid var(--n-line);
   font-weight: 800;
 }
-html[data-skin='neo'] .screen.setup .team-name::placeholder { color: var(--n-ink-3); font-weight: 600; }
-html[data-skin='neo'] .screen.setup .player,
-html[data-skin='neo'] .screen.setup .team-card.starter .player {
+html[data-skin] .screen.setup .team-name::placeholder { color: var(--n-ink-3); font-weight: 600; }
+html[data-skin] .screen.setup .player,
+html[data-skin] .screen.setup .team-card.starter .player {
   border: 0;
   border-radius: var(--n-r1);
   background: var(--n-bg);
   color: var(--n-ink);
   box-shadow: none;
 }
-html[data-skin='neo'] .screen.setup .player::placeholder { color: var(--n-ink-3); }
-html[data-skin='neo'] .screen.setup .player:focus {
+html[data-skin] .screen.setup .player::placeholder { color: var(--n-ink-3); }
+html[data-skin] .screen.setup .player:focus {
   background: var(--n-surface);
   box-shadow: 0 0 0 2px var(--n-ink);
   outline: none;
 }
-html[data-skin='neo'] .screen.setup .counter {
+html[data-skin] .screen.setup .counter {
   color: var(--n-ink-2);
   border-top: 1px solid var(--n-line);
 }
-html[data-skin='neo'] .screen.setup .pill {
+html[data-skin] .screen.setup .pill {
   border: 0;
   border-radius: 50%;
   background: rgba(23,23,31,.06);
   color: var(--n-ink);
 }
-html[data-skin='neo'] .screen.setup .pill:disabled { color: var(--n-ink-3); background: rgba(23,23,31,.03); }
-html[data-skin='neo'] .screen.setup .setup-rule { color: var(--n-ink-3); }
-html[data-skin='neo'] .screen.setup .setup-rule::before,
-html[data-skin='neo'] .screen.setup .setup-rule::after { height: 1px; background: var(--n-line); }
-html[data-skin='neo'] .screen.setup .stages-intro { color: var(--n-ink-2); }
-html[data-skin='neo'] .screen.setup .brand-inline { color: var(--n-ink); }
-html[data-skin='neo'] .toss-result { color: var(--n-ink-2); }
+html[data-skin] .screen.setup .pill:disabled { color: var(--n-ink-3); background: rgba(23,23,31,.03); }
+html[data-skin] .screen.setup .setup-rule { color: var(--n-ink-3); }
+html[data-skin] .screen.setup .setup-rule::before,
+html[data-skin] .screen.setup .setup-rule::after { height: 1px; background: var(--n-line); }
+html[data-skin] .screen.setup .stages-intro { color: var(--n-ink-2); }
+html[data-skin] .screen.setup .brand-inline { color: var(--n-ink); }
+html[data-skin] .toss-result { color: var(--n-ink-2); }
 
 /* ─── ١٤. الختام ─────────────────────────────────────────────────────── */
 /* البطاقة كانت ٧٦٠px ثابتة تحمل عموداً عرضُه مئتان — لوحٌ أبيض ثلثاه
    فراغ على شاشة الجهاز الواسعة (٩٣٢×٤٣٠ على 14 Pro Max). تأخذ الآن مقاسَ
    محتواها وتتوسّط، فتُقرأ بطاقةَ تتويجٍ مقصودة لا خلفيّةً امتدّت بلا سبب.
    والسقف يبقى فلا تتمدّد على اسم فريقٍ طويل. */
-html[data-skin='neo'] .screen.end .winner {
+html[data-skin] .screen.end .winner {
   width: max-content;
   max-width: min(100%, 760px);
   align-self: center;
@@ -1036,12 +1044,12 @@ html[data-skin='neo'] .screen.end .winner {
   box-shadow: var(--n-e2);
   transform: none;
 }
-html[data-skin='neo'] .screen.end .w-title {
+html[data-skin] .screen.end .w-title {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-html[data-skin='neo'] .screen.end .winner-stamp {
+html[data-skin] .screen.end .winner-stamp {
   border: 0;
   border-radius: 999px;
   background: rgba(23,23,31,.05);
@@ -1050,28 +1058,28 @@ html[data-skin='neo'] .screen.end .winner-stamp {
   letter-spacing: .04em;
   transform: none;
 }
-html[data-skin='neo'] .screen.end .w-eyebrow { color: var(--n-ink-3); letter-spacing: .06em; }
-html[data-skin='neo'] .screen.end .w-title {
+html[data-skin] .screen.end .w-eyebrow { color: var(--n-ink-3); letter-spacing: .06em; }
+html[data-skin] .screen.end .w-title {
   color: var(--n-ink);
   font-weight: 800;
   letter-spacing: -.025em;
 }
 /* نتيجة الليلة هي ما يسأل عنه المجلس — كانت ١٦px تحت اسمٍ ضخم */
-html[data-skin='neo'] .screen.end .final-score {
+html[data-skin] .screen.end .final-score {
   color: var(--n-ink);
   font-size: clamp(30px, min(5.4vw, 9vh), 64px);
   font-weight: 800;
   letter-spacing: -.02em;
 }
-html[data-skin='neo'] .screen.end .best {
+html[data-skin] .screen.end .best {
   border: 0;
   border-radius: 999px;
   background: rgba(23,23,31,.05);
   color: var(--n-ink-2);
   box-shadow: none;
 }
-html[data-skin='neo'] .screen.end .best b { color: var(--n-ink); font-weight: 800; }
-html[data-skin='neo'] .screen.end .es-title {
+html[data-skin] .screen.end .best b { color: var(--n-ink); font-weight: 800; }
+html[data-skin] .screen.end .es-title {
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -1083,50 +1091,50 @@ html[data-skin='neo'] .screen.end .es-title {
 }
 /* الجدول كان رصّةَ كبسولاتٍ لكلٍّ منها إطارٌ وظلّ — تسعةُ إطارات متنافسة.
    الآن لوحٌ واحد، والصفوف تفصلها خطوطٌ شعرية كما في أي جدولٍ يُقرأ. */
-html[data-skin='neo'] .screen.end .es-table {
+html[data-skin] .screen.end .es-table {
   gap: 0;
   overflow: hidden;
   border-radius: var(--n-r2);
   background: var(--n-surface);
   box-shadow: var(--n-e1);
 }
-html[data-skin='neo'] .screen.end .es-row {
+html[data-skin] .screen.end .es-row {
   border: 0;
   border-radius: 0;
   border-top: 1px solid var(--n-line);
   background: transparent;
   color: var(--n-ink);
 }
-html[data-skin='neo'] .screen.end .es-row:first-child {
+html[data-skin] .screen.end .es-row:first-child {
   border-top: 0;
   color: var(--n-ink-3);
   font-size: .88em;
   font-weight: 700;
 }
-html[data-skin='neo'] .screen.end .es-row.total,
-html[data-skin='neo'] .screen.end .es-row.total .es-num,
-html[data-skin='neo'] .screen.end .es-row.total .es-label {
+html[data-skin] .screen.end .es-row.total,
+html[data-skin] .screen.end .es-row.total .es-num,
+html[data-skin] .screen.end .es-row.total .es-label {
   background: var(--n-surface-2);
   color: var(--n-ink);
   font-weight: 800;
 }
-html[data-skin='neo'] .screen.end .es-label { color: var(--n-ink-2); }
+html[data-skin] .screen.end .es-label { color: var(--n-ink-2); }
 /* سطر «الحق ما تلحق» كان `1fr auto` واسمُ الفريق فيه `white-space:nowrap`،
    وأصغرُ مقاسٍ لعمود 1fr هو محتواه — فالاسم الطويل لا يتنازل عن بكسل
    ويدفع الرقاقتين خارج البطاقة. قِسته على مقاس جهاز علي: سطر «م قة» يسع
    (٢٠١=٢٠١) وسطر «الفريق الثاني» يفيض سبعةَ بكسلات (٢٠٨>٢٠١) — فتُقصّ
    «خاطئة» وحدها، وهو ما ظهر في لقطته. ‏minmax(0,1fr) يرفع هذه الأرضية
    ويجعل الاسمَ هو من ينكمش بثلاث نقاط، والرقاقتان لا تنضغطان. */
-html[data-skin='neo'] .screen.end .es-row.s3 { grid-template-columns: minmax(0, 1fr) auto; }
+html[data-skin] .screen.end .es-row.s3 { grid-template-columns: minmax(0, 1fr) auto; }
 /* والاسم يلتفّ ولا يُبتر: «الفريق الثاني» بثلاث نقاط يصير «الفري…» فيضيع
    أيُّ صفٍّ هو — والجدول سطران اثنان، فسطرٌ ثانٍ أرخص من معلومةٍ ضائعة. */
-html[data-skin='neo'] .screen.end .es-row.s3 .es-label {
+html[data-skin] .screen.end .es-row.s3 .es-label {
   min-width: 0;
   white-space: normal;
   overflow-wrap: anywhere;
   line-height: 1.3;
 }
-html[data-skin='neo'] .screen.end .es-chips { flex: none; }
+html[data-skin] .screen.end .es-chips { flex: none; }
 /* الأرقام كانت مشرشرة، والعلّة ليست في محاذاتها بل في أن كل سطر شبكةٌ
    مستقلّة عمودها الأوسط `auto` — فيتمدّد بعرض اسم المرحلة وحده:
 
@@ -1142,37 +1150,37 @@ html[data-skin='neo'] .screen.end .es-chips { flex: none; }
    الأسطر. والسطر يبقى صندوقاً حقيقياً فلا يضيع خطُّه الفاصل (بخلاف
    display:contents). القيد ‎:has(.es-row.total)‎ يحصر هذا في جدول النقاط
    ثلاثيّ الأعمدة، فلا يمسّ جدول اللاعبين ذا العمودين. */
-html[data-skin='neo'] .screen.end .es-table:has(.es-row.total) {
+html[data-skin] .screen.end .es-table:has(.es-row.total) {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
 }
-html[data-skin='neo'] .screen.end .es-table:has(.es-row.total) .es-row {
+html[data-skin] .screen.end .es-table:has(.es-row.total) .es-row {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: subgrid;
 }
-html[data-skin='neo'] .screen.end .es-num,
-html[data-skin='neo'] .screen.end .es-row.head span {
+html[data-skin] .screen.end .es-num,
+html[data-skin] .screen.end .es-row.head span {
   min-width: 3.2ch;
   color: var(--n-ink);
   font-weight: 700;
   text-align: center;
 }
 /* الأعلى في المرحلة بلون فريقه لا بلونٍ واحد للاثنين */
-html[data-skin='neo'] .screen.end .es-row > .es-num.up:first-child { color: var(--n-a); }
-html[data-skin='neo'] .screen.end .es-row > .es-num.up:last-child { color: var(--n-b); }
-html[data-skin='neo'] .screen.end .chip.ok { color: var(--n-good); border-color: var(--n-good); }
-html[data-skin='neo'] .screen.end .chip.no { color: var(--n-bad); border-color: var(--n-bad); }
-html[data-skin='neo'] .screen.end .report-note {
+html[data-skin] .screen.end .es-row > .es-num.up:first-child { color: var(--n-a); }
+html[data-skin] .screen.end .es-row > .es-num.up:last-child { color: var(--n-b); }
+html[data-skin] .screen.end .chip.ok { color: var(--n-good); border-color: var(--n-good); }
+html[data-skin] .screen.end .chip.no { color: var(--n-bad); border-color: var(--n-bad); }
+html[data-skin] .screen.end .report-note {
   border: 0;
   border-radius: var(--n-r2);
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--n-line);
   color: var(--n-ink-2);
 }
-html[data-skin='neo'] .screen.end .foot,
-html[data-skin='neo'] .screen.end .foot-link { color: var(--n-ink-3); }
-html[data-skin='neo'] .screen.end .foot-link { text-decoration: underline; text-underline-offset: 3px; }
+html[data-skin] .screen.end .foot,
+html[data-skin] .screen.end .foot-link { color: var(--n-ink-3); }
+html[data-skin] .screen.end .foot-link { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ─── ١٥. الشاشات القصيرة ────────────────────────────────────────────── */
 /* شاشة الختام كانت تفيض عن الشاشة فيُقصّ زرّ «لعبة جديدة» — قِستُ الفيض
@@ -1180,37 +1188,37 @@ html[data-skin='neo'] .screen.end .foot-link { text-decoration: underline; text-
    عيبٌ قديم لا جديد، لكن القاعدة أن تسع كلُّ شاشةٍ نظرةً واحدة. الاقتطاع
    يتوزّع على الشعار والبطاقة والجداول معاً بدل أن يحمله عنصرٌ واحد فيُشوَّه. */
 @media (max-height: 480px) {
-  html[data-skin='neo'] .screen.end { gap: clamp(6px, 1.2vh, 12px); }
-  html[data-skin='neo'] .screen.end .brand .f6een-mark { font-size: clamp(26px, 5.6vh, 44px); }
-  html[data-skin='neo'] .screen.end .winner {
+  html[data-skin] .screen.end { gap: clamp(6px, 1.2vh, 12px); }
+  html[data-skin] .screen.end .brand .f6een-mark { font-size: clamp(26px, 5.6vh, 44px); }
+  html[data-skin] .screen.end .winner {
     padding: clamp(8px, 1.6vh, 16px) clamp(24px, 5vw, 60px);
     gap: 2px;
   }
-  html[data-skin='neo'] .screen.end .winner-stamp { font-size: 10px; padding: 2px 9px; }
-  html[data-skin='neo'] .screen.end .w-eyebrow { font-size: clamp(10px, 2.4vh, 14px); }
-  html[data-skin='neo'] .screen.end .w-title { font-size: clamp(18px, 5.4vh, 30px); }
-  html[data-skin='neo'] .screen.end .final-score { font-size: clamp(22px, 6.6vh, 40px); }
-  html[data-skin='neo'] .screen.end .es-block { gap: clamp(4px, .8vh, 8px); }
-  html[data-skin='neo'] .screen.end .es-row { padding-block: clamp(2px, .5vh, 5px); }
-  html[data-skin='neo'] .screen.end .es-num { font-size: clamp(12px, 3.2vh, 20px); }
-  html[data-skin='neo'] .screen.end .es-row.total .es-num { font-size: clamp(13px, 3.6vh, 23px); }
-  html[data-skin='neo'] .screen.end .action { padding-block: 10px; font-size: clamp(14px, 3.6vh, 22px); }
-  html[data-skin='neo'] .screen.end .foot { font-size: 10px; }
+  html[data-skin] .screen.end .winner-stamp { font-size: 10px; padding: 2px 9px; }
+  html[data-skin] .screen.end .w-eyebrow { font-size: clamp(10px, 2.4vh, 14px); }
+  html[data-skin] .screen.end .w-title { font-size: clamp(18px, 5.4vh, 30px); }
+  html[data-skin] .screen.end .final-score { font-size: clamp(22px, 6.6vh, 40px); }
+  html[data-skin] .screen.end .es-block { gap: clamp(4px, .8vh, 8px); }
+  html[data-skin] .screen.end .es-row { padding-block: clamp(2px, .5vh, 5px); }
+  html[data-skin] .screen.end .es-num { font-size: clamp(12px, 3.2vh, 20px); }
+  html[data-skin] .screen.end .es-row.total .es-num { font-size: clamp(13px, 3.6vh, 23px); }
+  html[data-skin] .screen.end .action { padding-block: 10px; font-size: clamp(14px, 3.6vh, 22px); }
+  html[data-skin] .screen.end .foot { font-size: 10px; }
 }
 
 
 @media (max-height: 480px) {
-  html[data-skin='neo'] .scorebar .team {
+  html[data-skin] .scorebar .team {
     min-height: 44px;
     border-radius: var(--n-r1);
     box-shadow: var(--n-e1);
   }
-  html[data-skin='neo'] .scorebar .team-0.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e1); }
-  html[data-skin='neo'] .scorebar .team-1.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e1); }
+  html[data-skin] .scorebar .team-0.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e1); }
+  html[data-skin] .scorebar .team-1.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e1); }
   /* القطر وحده — والرقم يتبعه بالنِّسب أعلاه. */
-  html[data-skin='neo'] .scorebar .team .pts-disc { --pts-d: 34px; }
-  html[data-skin='neo'] .ring-timer { min-width: 104px; gap: 5px; }
-  html[data-skin='neo'] .ring-timer .secs { font-size: clamp(24px, 7.5vh, 52px); }
-  html[data-skin='neo'] .timer-progress { height: 5px; }
-  html[data-skin='neo'] .q-box, html[data-skin='neo'] .s3-q { border-radius: var(--n-r3); }
+  html[data-skin] .scorebar .team .pts-disc { --pts-d: 34px; }
+  html[data-skin] .ring-timer { min-width: 104px; gap: 5px; }
+  html[data-skin] .ring-timer .secs { font-size: clamp(24px, 7.5vh, 52px); }
+  html[data-skin] .timer-progress { height: 5px; }
+  html[data-skin] .q-box, html[data-skin] .s3-q { border-radius: var(--n-r3); }
 }
