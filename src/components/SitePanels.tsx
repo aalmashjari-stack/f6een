@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { sendMessage } from '../lib/messages'
+
 /**
  * صفحتا القائمة خارج اللعب: «شراء الألعاب» و«تواصل معنا» (١ سبتمبر ٢٠٢٦).
  *
@@ -7,8 +10,9 @@
  * القائم فعلاً: كود الهدية من «حسابي». حين يُحسم المسار يستبدل الزرُّ
  * الموقوف نداءَ الدفع ولا يتغيّر سواه.
  *
- * والتواصل بريدٌ واحد هو الموجود فعلاً على النطاق (privacy@ — أُنشئ لصفحة
- * الخصوصية). حين يُنشأ صندوق دعمٍ مستقلّ يتبدّل سطرٌ واحد هنا.
+ * والتواصل **نموذجٌ** لا رابط بريد: `mailto:` يفتح تطبيق بريد الجهاز،
+ * وأكثر اللاعبين على الجوال بلا حسابٍ مضبوط فيه — فلا الرسالة تصل ولا
+ * المرسِل يعلم. النموذج يكتب في القاعدة (`send_message`) ويؤكّد فوراً.
  */
 
 const PACKS = [
@@ -18,7 +22,6 @@ const PACKS = [
   { games: 10, price: '13.500', per: '1.350' },
 ]
 
-const CONTACT_EMAIL = 'privacy@f6een.com'
 
 function Veil({ onClose, label, children }: { onClose: () => void; label: string; children: React.ReactNode }) {
   return (
@@ -83,14 +86,40 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-note { margin:0; text-align:center; font-size:clamp(12px,1.5vw,14px); font-weight:700; color:var(--n-ink-2, #57524A); line-height:1.8; }
         .sp-note b { color:var(--n-ink, #22201C); }
 
-        .sp-mail {
+        .sp-form { display:flex; flex-direction:column; gap:clamp(8px,1.6vh,14px); }
+        .sp-field { display:flex; flex-direction:column; gap:5px; }
+        .sp-field > span { font-weight:800; font-size:clamp(12px,1.4vw,14px); color:var(--n-ink-2, #57524A); }
+        .sp-in {
+          font:inherit; font-weight:700; font-size:clamp(13px,1.5vw,16px);
+          padding:10px 14px; border:0; border-radius:12px;
+          background:var(--n-bg, #FFF8EE); color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
+        }
+        .sp-in::placeholder { color:var(--n-ink-3, #8A8578); font-weight:600; }
+        .sp-in:focus { outline:none; box-shadow:0 0 0 2.5px var(--n-brand, #E8542F); background:#fff; }
+        .sp-area { resize:vertical; min-height:110px; line-height:1.7; }
+        .sp-send {
           align-self:center;
-          display:inline-block;
-          padding:10px 22px; border-radius:14px;
+          font:inherit; font-weight:800; font-size:clamp(14px,1.8vw,17px); cursor:pointer;
+          padding:10px 34px; border:0; border-radius:14px;
           background:var(--n-brand, #E8542F); color:#fff;
           box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
-          font-weight:800; font-size:clamp(14px,1.8vw,17px);
-          text-decoration:none; direction:ltr;
+          transition:transform .14s var(--ease-spring), box-shadow .14s ease;
+        }
+        .sp-send:active:not(:disabled) { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink,#22201C); }
+        .sp-send:disabled { background:var(--spent, #F0E9DB); color:var(--spent-text, #A39C8D); box-shadow:0 0 0 2px var(--n-ink,#22201C); cursor:default; }
+        .sp-err { margin:0; text-align:center; font-weight:800; font-size:clamp(12px,1.5vw,14px); color:var(--n-bad, #CE2F1E); }
+        .sp-done { margin:0; text-align:center; font-weight:800; font-size:clamp(18px,2.4vw,24px); color:var(--n-good, #1D9E5F); }
+
+        /* الجوال الأفقيّ: حقل النصّ ذو الارتفاع الثابت كان يدفع زرَّ «أرسل»
+           خارج اللوحة فيُقصّ — والزرّ هو الغرض كلّه. يتنازل الحقل عن
+           ارتفاعه ويرقّ الحشو، فيبقى الزرّ ظاهراً بلا تمرير. */
+        @media (max-height: 480px) {
+          .sp-panel { gap:8px; padding:10px clamp(14px,2.6vw,22px); }
+          .sp-form { gap:7px; }
+          .sp-area { min-height:0; height:clamp(52px, 15vh, 88px); }
+          .sp-note { line-height:1.5; }
+          .sp-send { padding:8px 30px; }
         }
       `}</style>
     </div>
@@ -119,13 +148,86 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
   )
 }
 
-export function ContactPanel({ onClose }: { onClose: () => void }) {
+/** حدّ القاعدة نفسه — يُفرض هناك، ويُعرض هنا كي لا يفاجئ الكاتبَ رفضٌ متأخّر. */
+const MAX_BODY = 4000
+
+export function ContactPanel({ onClose, email }: { onClose: () => void; email?: string }) {
+  const [body, setBody] = useState('')
+  const [from, setFrom] = useState(email ?? '')
+  const [busy, setBusy] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault()
+    if (busy || !body.trim()) return
+    setBusy(true)
+    setErr(null)
+    try {
+      await sendMessage(body, from)
+      setSent(true)
+    } catch (e2) {
+      /* رسائل القاعدة تُترجم هنا: نصّها إنجليزيّ تقنيّ لا يُعرض للاعب. */
+      const m = e2 instanceof Error ? e2.message : ''
+      setErr(
+        m.includes('too_many_messages')
+          ? 'وصلتنا رسائلك — أمهلنا ساعةً قبل رسالةٍ أخرى'
+          : m.includes('not_authenticated')
+            ? 'سجّل دخولك أولاً لتصلنا رسالتك'
+            : 'تعذّر الإرسال، تحقّق من اتصالك',
+      )
+      setBusy(false)
+    }
+  }
+
+  /* بعد الإرسال تُستبدل الشاشة كلّها: إبقاءُ النموذج مملوءاً يُغري بضغطةٍ
+     ثانية، وهي رسالةٌ مكرّرة تُحسب على سقف الساعة. */
+  if (sent) {
+    return (
+      <Veil onClose={onClose} label="تواصل معنا">
+        <p className="sp-done">وصلتنا رسالتك</p>
+        <p className="sp-note">سنقرأها ونردّ عليك على بريدك.</p>
+        <button className="sp-send" onClick={onClose}>تمام</button>
+      </Veil>
+    )
+  }
+
   return (
     <Veil onClose={onClose} label="تواصل معنا">
-      <p className="sp-note">
-        ملاحظة، مشكلة، أو فكرة — راسلنا وسنردّ عليك:
-      </p>
-      <a className="sp-mail" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+      <p className="sp-note">ملاحظة، مشكلة، أو فكرة — اكتبها وسنردّ عليك.</p>
+
+      <form className="sp-form" onSubmit={submit}>
+        <label className="sp-field">
+          <span>بريدك للردّ</span>
+          <input
+            className="sp-in"
+            type="email"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            placeholder="you@example.com"
+            dir="ltr"
+          />
+        </label>
+
+        <label className="sp-field">
+          <span>رسالتك</span>
+          <textarea
+            className="sp-in sp-area"
+            value={body}
+            maxLength={MAX_BODY}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="اكتب هنا…"
+            rows={5}
+            required
+          />
+        </label>
+
+        {err && <p className="sp-err">{err}</p>}
+
+        <button className="sp-send" type="submit" disabled={busy || !body.trim()}>
+          {busy ? 'يُرسل…' : 'أرسل'}
+        </button>
+      </form>
     </Veil>
   )
 }

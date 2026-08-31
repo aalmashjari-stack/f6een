@@ -369,7 +369,9 @@ export default function App() {
           />
         )}
         {navPage === 'buy' && <ShopPanel onClose={() => setNavPage(null)} />}
-        {navPage === 'contact' && <ContactPanel onClose={() => setNavPage(null)} />}
+        {navPage === 'contact' && (
+          <ContactPanel onClose={() => setNavPage(null)} email={session?.user.email ?? undefined} />
+        )}
       </>
     )
   }
