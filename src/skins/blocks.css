@@ -217,9 +217,10 @@ html[data-skin='blocks'] .screen.setup { padding-top: 0; }
 html[data-skin='blocks'] .screen.setup .hero {
   min-height: 0;
   margin-top: 0;
-  /* درجة الهويّة الدافئة لا درجة الأسطح: الفرق عن الأرضيّة يجب أن يُرى،
-     و‎--n-surface-2‎ كانت أقرب إلى القشدة من أن تُقرأ شريطاً. */
-  background: var(--n-brand-tint);
+  /* أبيض الأسطح: درجةُ الأسطح الدافئة ذابت في القشدة، والخوخيّ لم يعجب
+     عليّاً (١ سبتمبر ٢٠٢٦). الأبيض بحدّ الحبر يُقرأ شريطاً من أوّل نظرة،
+     ويترك برتقاليّ «شراء الألعاب» ينفرد بالصوت. */
+  background: var(--n-surface);
   border: 0;
   border-bottom: 2.5px solid var(--n-ink);
   border-radius: 0;

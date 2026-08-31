@@ -283,7 +283,7 @@ export function Setup({
              النافذة ناقص نصف عرض المحتوى — يصحّ مهما تغيّرت الحشوات. */
           margin:0 calc(50% - 50vw);
           padding:0 clamp(16px,2.6vw,36px);
-          display:flex !important; justify-content:space-between; align-items:center;
+          display:flex !important; align-items:center;
           gap:clamp(8px,1.4vw,18px);
           height:clamp(64px, 11vh, 120px);
           background:var(--n-surface-2, #FFF3E0);
@@ -291,7 +291,9 @@ export function Setup({
         }
 
         /* القائمة: الشراء كتلة الهويّة، والبقيّة كبسولات بيضاء بحدّ حبر */
-        body .screen.setup .hero-nav { display:flex; align-items:center; gap:clamp(6px,1vw,12px); flex-wrap:wrap; }
+        /* القائمة إلى يسار الشريط (طلب علي) — تدفع نفسها وزرَّ الصوت إلى
+           الطرف المقابل للشعار، ويبقى الشعار وحده في اليمين. */
+        body .screen.setup .hero-nav { display:flex; align-items:center; gap:clamp(6px,1vw,12px); flex-wrap:wrap; margin-inline-start:auto; }
         body .screen.setup .hnav {
           font:inherit; font-weight:800; cursor:pointer;
           font-size:clamp(11px,1.4vw,15px);
