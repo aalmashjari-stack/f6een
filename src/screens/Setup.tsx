@@ -4,11 +4,6 @@ import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
-// مشهد المجلس — عائلة أمام شاشة واحدة، وهي صورة اللعبة نفسها. نسبتها
-// ٤٫٩٤:١ فتملأ الشريط كاملةً بلا قصّ. JPEG لا PNG: رسمٌ بلا شفافية،
-// فحجمه الرُبع (القسم ١١ من SPEC).
-import bannerUrl from '../../assets/f6een-banner-festival.jpg'
-
 const MIN = 2
 const MAX = 6
 
@@ -135,13 +130,12 @@ export function Setup({
 
   return (
     <div className="screen setup">
+      {/* رأسٌ بلا بانر — أزال علي صورةَ المجلس (١ سبتمبر ٢٠٢٦): الشعار
+          يقف على أرضيّة الصفحة نفسها، ومعه مربّعان من مربّعات الشعار
+          يكرّران لعبته بلا أصلٍ جديد. */}
       <div className="hero">
-        {/* المشهد خلفيةً مطلقة — لا يكلّف الشريط ارتفاعاً، فيبقى ارتفاعه
-            محكوماً بنسبة الصورة وحدها. */}
-        <div className="hero-scene" aria-hidden="true">
-          <img src={bannerUrl} alt="" />
-        </div>
-
+        <span className="hero-bit hero-bit-a" aria-hidden="true" />
+        <span className="hero-bit hero-bit-b" aria-hidden="true" />
         <BrandLogo className="hero-logo" />
         {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
             الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
@@ -267,50 +261,32 @@ export function Setup({
            شبكة أمان لا الوضع الطبيعي. */
         .setup { overflow-y:auto; }
 
-        /* الهيرو يبتلع حشوة .screen ليلامس حافّتي الشاشة وأعلاها،
-           وينتهي بانحناء سفلي فيقرأ كمنصّة يقف عليها الشعار لا كشريط. */
+        /* رأسٌ خفيف على أرضيّة الصفحة — لا صورة ولا بطاقة: شاشة الإعداد
+           شاشةُ إدخال، والشعار يعرّف ويمضي. */
         .hero {
           position:relative; flex:none;
-          margin:calc(-1 * clamp(16px,3vw,40px)) calc(-1 * clamp(16px,3vw,40px)) 0;
-          padding:0 clamp(16px,3vw,40px);
-          display:flex; justify-content:flex-start; align-items:center;
-          /* نسبة ملف البانر — تُذكر هنا وحدها، فالشريط يأخذ ارتفاعه منها
-             وتظهر الصورة كاملةً بلا قصّ. تبديل الصورة = تعديل هذا السطر
-             فقط. والسقف يمنعها من ابتلاع الشاشة على العروض الضخمة. */
-          --banner-ratio:2448 / 496;
-          aspect-ratio:var(--banner-ratio);
-          /* السقف بالارتفاع لا بالبكسل وحده: نسبة الصورة على شاشة عريضة
-             تعطي شريطاً بارتفاع ٢٦٠px، وهو وحده ثلث لابتوب ٧٢٠. */
-          max-height:min(300px, 24vh);
-          border-radius:0 0 clamp(34px,6vw,76px) clamp(34px,6vw,76px);
-          overflow:hidden;
-          /* يبقى احتياطاً لو تعذّر تحميل الصورة. */
-          background:linear-gradient(180deg,
-            color-mix(in srgb, var(--surface) 62%, var(--night-deep)),
-            var(--night-deep));
+          display:flex; justify-content:center; align-items:center;
+          height:clamp(84px, 13vh, 150px);
         }
 
-        /* ─── مشهد المجلس ─────────────────────────────────────────────── */
-        .hero-scene { position:absolute; inset:0; overflow:hidden; }
-        /* نسبة الشريط = نسبة الصورة، فـcover لا يقصّ شيئاً في الحالة
-           العادية. ويبقى موجوداً ليقصّ بلطف حين يُفرَض ارتفاع آخر (شاشة
-           قصيرة أو جوال) بدل أن تتشوّه الصورة. */
-        /* الإظلام على الصورة نفسها بـfilter لا بطبقة لون شفّافة فوقها:
-           الطبقة الشفّافة تسحب الألوان نحو لونها فيصير المشهد النهاريّ
-           طيناً، أما brightness فيخفض الإضاءة ويُبقي فروق الألوان. */
-        .hero-scene img {
-          position:absolute; inset:0;
-          width:100%; height:100%;
-          object-fit:cover; object-position:center 45%;
-          filter:brightness(.5) saturate(.88);
+        /* مربّعا زينة من مفردات الشعار نفسه — يدوران حوله كما تدور
+           مربّعاته الصغيرة حول حروفه. زخرفةٌ لا أصل، فلا تعتمد صورة. */
+        .hero-bit {
+          position:absolute; z-index:0;
+          width:clamp(12px,1.6vw,20px); aspect-ratio:1;
+          border:2.5px solid var(--n-ink, #22201C);
+          border-radius:4px;
         }
-        /* صبغة ليلية تسحب دفء المشهد نحو أزرق الصفحة فلا يبقى جزيرة
-           برتقالية فوقها، وذوبانٌ سفليّ ينهي الشريط في أرضية الصفحة
-           بلا حدّ ظاهر. */
-        .hero-scene::after {
-          content:''; position:absolute; inset:0;
-          background:
-            linear-gradient(180deg, rgba(10,28,43,.32), rgba(10,28,43,.27) 52%, var(--night-deep));
+        .hero-bit-a {
+          background:var(--n-a-tint, #FFCE3C);
+          inset-inline-start:18%; top:24%;
+          transform:rotate(14deg);
+        }
+        .hero-bit-b {
+          background:var(--n-b-tint, #7BD3D0);
+          inset-inline-end:20%; bottom:18%;
+          width:clamp(9px,1.2vw,15px);
+          transform:rotate(-11deg);
         }
 
         /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
@@ -334,7 +310,7 @@ export function Setup({
         .hero-logo {
           position:relative; z-index:1;
           width:min(55%, 520px); height:auto; max-height:85%; object-fit:contain;
-          filter:drop-shadow(0 12px 30px rgba(0,0,0,.45));
+          /* لا ظلّ: كان لقراءة الشعار فوق صورةٍ داكنة، وعلى القشدة لطخة. */
           animation:brand-in .7s var(--ease-spring) both;
         }
         @keyframes brand-in {
@@ -573,7 +549,7 @@ export function Setup({
           /* على الجوال تعطي نسبة الصورة شريطاً بارتفاع ٧٦px — رفيعاً تضيع
              فيه العائلة. فيُفرض ارتفاع أعلى، و cover يقصّ الأطراف ويُبقي
              التلفاز ومن حوله. */
-          .hero { aspect-ratio:auto; height:clamp(150px, 21vh, 200px); }
+          .hero { height:clamp(110px, 17vh, 170px); }
 
           .stage-card {
             flex-direction:row; align-items:flex-start; text-align:start;
@@ -589,7 +565,7 @@ export function Setup({
         @media (max-height:560px) {
           /* الشاشة القصيرة لا تحتمل نسبة الصورة كاملةً (٢٠٪ من العرض)،
              فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
-          .hero { aspect-ratio:auto; height:clamp(92px, 15vh, 120px); }
+          .hero { height:clamp(64px, 12vh, 100px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
           .setup-body { --gap-block:clamp(6px,1.4vh,14px); --gap-in:clamp(5px,1vh,10px); margin-top:0; }

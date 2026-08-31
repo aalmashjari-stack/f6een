@@ -103,6 +103,7 @@ html[data-skin='blocks'] .screen.end .es-num {
 /* بطاقتا الفريقين كتلتان بلونيهما الكاملين — لا صبغة باهتة. والميل
    المتعاكس (‎-.6/+.6‎ درجة) توقيع الهويّة. */
 html[data-skin='blocks'] .scorebar .team {
+  min-height: clamp(58px, 8.2vh, 86px);
   border-radius: var(--n-r2);
   box-shadow: var(--n-e2);
 }
@@ -153,7 +154,18 @@ html[data-skin='blocks'] .scorebar .mid {
 html[data-skin='blocks'] .mid-dot { background: var(--n-a-tint); }
 
 /* ─── ٤. سياق الجولة ─────────────────────────────────────────────────── */
-html[data-skin='blocks'] .rd-title { color: var(--n-brand); font-weight: 800; }
+/* اسم المرحلة كتلةٌ برتقالية مائلة بحدّ حبر — كما في المعاينة المعتمدة،
+   لا نصّاً ملوّناً يذوب في الزاوية. */
+html[data-skin='blocks'] .rd-title {
+  padding: 2px 15px 4px;
+  border-radius: 999px;
+  background: var(--n-brand);
+  color: #fff;
+  box-shadow: 0 0 0 2px var(--n-ink);
+  transform: rotate(-1deg);
+  font-weight: 800;
+  font-size: clamp(13px, 1.6vw, 19px);
+}
 html[data-skin='blocks'] .rd-chip,
 html[data-skin='blocks'] .rd-chip:nth-child(even) {
   border-radius: 999px;
@@ -196,6 +208,24 @@ html[data-skin='blocks'] .action.ghost {
 html[data-skin='blocks'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); }
 html[data-skin='blocks'] .action.coral { background: var(--n-bad); box-shadow: 4px 5px 0 rgba(34,32,28,.3); }
 
+/* ─── ٥ب. رأس الإعداد بلا بانر ───────────────────────────────────────── */
+/* أزال علي البانر (١ سبتمبر ٢٠٢٦). نيو والورقيّة تصبغان الرأس بطاقةً —
+   خلفيّة وظلّ وانحناء وارتفاعات دنيا — وكلّها صُمّمت حول صورةٍ لم تعد.
+   هنا يُصفَّر كل ذلك: الشعار على أرضيّة الصفحة مباشرةً. */
+html[data-skin='blocks'] .screen.setup .hero,
+html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
+  min-height: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+html[data-skin='blocks'] .screen.setup .mute-toggle {
+  background: var(--n-surface);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  color: var(--n-ink);
+}
+
 /* ─── ٦. السؤال والمؤقّت ─────────────────────────────────────────────── */
 /* بطاقة السؤال أكبر كتلة على الشاشة: حدٌّ سميك وظلٌّ بعيد — البطل. */
 html[data-skin='blocks'] .q-box,
@@ -206,12 +236,39 @@ html[data-skin='blocks'] .reveal-a {
   background: var(--n-surface);
   box-shadow: var(--n-e3);
 }
-html[data-skin='blocks'] .q-text { font-weight: 800; }
-/* المؤقّت رقمٌ ضخم وشريطُ كتلةٍ محدّد تحته — لا شريط شعريّ رمادي */
+/* السؤال أكبر ممّا في نيو — مقاس المعاينة المعتمدة (46px عند 1280).
+   هذه سقوفٌ لا فرض: fitText يهبط عنها متى ضاق الصندوق. */
+html[data-skin='blocks'] .q-text {
+  font-weight: 800;
+  font-size: clamp(18px, min(3.5vw, 6vh), 44px);
+}
+html[data-skin='blocks'] .q-text.long { font-size: clamp(16px, min(3vw, 5.2vh), 38px); }
+html[data-skin='blocks'] .q-text.xlong { font-size: clamp(15px, min(2.5vw, 4.4vh), 31px); }
+
+/* المؤقّت كتلةٌ برتقالية مائلة والرقم أبيض بداخلها — تكوين المعاينة
+   المعتمدة حرفيّاً، لا رقماً عارياً فوق شريط. وفي «الحق ما تلحق» وعند
+   اشتداد الوقت تحمرّ الكتلة كلّها: العداء مع الوقت يُرى من آخر المجلس. */
+html[data-skin='blocks'] .ring-timer {
+  min-width: clamp(140px, 19vw, 240px);
+  padding: clamp(8px, 1.6vh, 16px) clamp(18px, 2.4vw, 30px) clamp(12px, 2vh, 20px);
+  border-radius: var(--n-r3);
+  background: var(--n-brand);
+  box-shadow: var(--n-e2);
+  transform: rotate(.8deg);
+  gap: clamp(6px, 1.1vh, 10px);
+}
+/* ‎!important‎ يقابل !important القاعدة الحديثة التي تصبغ الرقم حبراً. */
+html[data-skin='blocks'] .ring-timer .secs { color: #FFF8EE !important; }
+html[data-skin='blocks'] .screen:has(.s3-q) .ring-timer,
+html[data-skin='blocks'] .ring-timer.low { background: var(--n-bad); }
+html[data-skin='blocks'] .screen:has(.s3-q) .ring-timer .secs { color: #FFF8EE !important; }
+html[data-skin='blocks'] .ring-timer.low .secs { color: #FFF8EE !important; }
+/* الشريط داخل الكتلة: مسارٌ قشديّ بحدّ حبر، وامتلاؤه أصفر فوق البرتقالي
+   والأحمر معاً. */
 html[data-skin='blocks'] .timer-progress {
   height: 12px;
   border-radius: 999px;
-  background: var(--n-surface);
+  background: #FFF8EE;
   box-shadow: 0 0 0 2px var(--n-ink);
   overflow: hidden;
 }
@@ -429,4 +486,11 @@ html[data-skin='blocks'] .screen.end .best { background: var(--n-surface); box-s
   html[data-skin='blocks'] .q-box,
   html[data-skin='blocks'] .s3-q { box-shadow: 0 0 0 2px var(--n-ink), 4px 5px 0 var(--n-ink); }
   html[data-skin='blocks'] .timer-progress { height: 8px; }
+  html[data-skin='blocks'] .ring-timer,
+  html[data-skin='blocks'] .rd-title { transform: none; }
+  html[data-skin='blocks'] .ring-timer {
+    min-width: 116px;
+    padding: 4px 14px 8px;
+    box-shadow: 0 0 0 2px var(--n-ink), 2px 3px 0 var(--n-ink);
+  }
 }
