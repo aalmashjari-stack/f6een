@@ -20,7 +20,8 @@ import {
 } from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
 import { QuitGame } from './components/QuitGame'
-import { Splash } from './screens/Splash'
+import { BootHold, Splash } from './screens/Splash'
+import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
 import { Setup } from './screens/Setup'
 import { WheelScreen } from './screens/WheelScreen'
@@ -116,7 +117,9 @@ export default function App() {
      `start_session` بدل أن يبدأ لعبةً جديدة. */
   const [sessionId, setSessionId] = useState<string | null>(() => loadSaved()?.sessionId ?? null)
   const [balance, setBalance] = useState<number | null>(null)
-  const [splashDone, setSplashDone] = useState(false)
+  /* شاشة الشعار للتطبيق المثبَّت وحده — انظر `isNativeApp`. في المتصفّح
+     تبدأ «منتهية»، فلا يُصيَّر الشعار أصلاً ولا يعمل مؤقّته. */
+  const [splashDone, setSplashDone] = useState(!isNativeApp)
   const [introDone, setIntroDone] = useState(false)
   const session = useSession()
   const leaveSplash = useCallback(() => setSplashDone(true), [])
@@ -324,9 +327,21 @@ export default function App() {
     dispatch({ t: 'NEW_GAME' })
   }, [sessionId])
 
-  /* الشعار يبقى حتى تنتهي مدّته **و** تُقرأ الجلسة من المخزن. قراءتها ليست
-     فوريّة، فبدون انتظارها تومض شاشة الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً. */
-  if (!splashDone || session === undefined) return <Splash onDone={leaveSplash} />
+  /* الانتظار قبل أوّل شاشة له سببان لا واحد:
+     ١. **التعريف** — الشعار. للتطبيق المثبَّت وحده: يقلع من الصفر في كل مرّة،
+        فيعرّف بنفسه. والموقع لا يحتاجه — صاحبه جاء من رابطٍ يعرفه، وشعارُ
+        التعريف في الموقع ضريبةٌ على كل فتح بلا مقابل (قرار علي).
+     ٢. **قراءة الجلسة** من المخزن، وليست فوريّة — وبدون انتظارها تومض شاشة
+        الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً.
+     الأول اختياريّ بالمنصّة، والثاني لازمٌ في الاثنين. فحين لا شعار، يُنتظر
+     بسطحٍ صامت بلون الهويّة: لا وميض ولا علامة تحميل تُقلق قبل أن يلزم. */
+  if (!splashDone || session === undefined) {
+    return isNativeApp ? (
+      <Splash onDone={leaveSplash} />
+    ) : (
+      <BootHold />
+    )
+  }
 
   /* التعريف يُعرض لمن لا جلسة له. وحين يكون الدخول موقوفاً يمرّ منه بزرّ
      «ابدأ» بدل المزوّدين — انظر REQUIRE_LOGIN أعلاه. */
