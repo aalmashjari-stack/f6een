@@ -140,13 +140,28 @@ html[data-skin='neo'] .scorebar .team-0 .pts,
 html[data-skin='neo'] .scorebar .team-0.lead .pts { color: var(--n-a); }
 html[data-skin='neo'] .scorebar .team-1 .pts,
 html[data-skin='neo'] .scorebar .team-1.lead .pts { color: var(--n-b); }
+/* قطر القرص مقاسٌ واحد يُشتقّ منه حجمُ الرقم — لا رقمان مستقلّان.
+   نيو صغّرت القرص (٦٦ ← ٥٢، و٤٨ ← ٣٨) وتركت حجم الخطّ لـshowtime، وهو
+   مضبوطٌ على القرص الأكبر ومربوطٌ بمحورٍ آخر: القطر من `vh` والخطّ من
+   `min(vw,vh)`. فعلى الشاشة العريضة القصيرة — ١١٥٢ إلى ١٦٠٠ عرضاً، وهي
+   أكثر شاشات اللابتوب — يكبر الرقمُ أسرع من قرصه فيفيض عنه إلى اسم الفريق.
+   نتيجةٌ من ثلاث خانات تكفي: ١٨٥ نقطة جلسةٌ عاديّة لا حالة قصوى. */
 html[data-skin='neo'] .scorebar .team .pts-disc {
-  width: clamp(38px, 5.2vh, 52px);
-  height: clamp(38px, 5.2vh, 52px);
+  --pts-d: clamp(38px, 5.2vh, 52px);
+  width: var(--pts-d);
+  height: var(--pts-d);
   border: 0;
 }
 html[data-skin='neo'] .scorebar .team .pts,
-html[data-skin='neo'] .scorebar .team.lead .pts { font-weight: 800; }
+html[data-skin='neo'] .scorebar .team.lead .pts {
+  font-weight: 800;
+  font-size: calc(var(--pts-d) * .50);
+}
+/* النِّسب مقيسة على أرقام Cairo الجدوليّة (نحو ٠٫٦em للخانة): ثلاث خانات
+   عند ٠٫٣٨ تشغل ٠٫٦٨ من القطر، وأربع عند ٠٫٣٠ تشغل ٠٫٧٢ — داخل الدائرة
+   المحيطة بهامش في الحالتين. والسالب يُعدّ خانةً: «−١٠» ثلاثٌ لا اثنتان. */
+html[data-skin='neo'] .scorebar .team .pts.digits-3 { font-size: calc(var(--pts-d) * .38); }
+html[data-skin='neo'] .scorebar .team .pts.digits-4 { font-size: calc(var(--pts-d) * .30); }
 html[data-skin='neo'] .scorebar .team .name,
 html[data-skin='neo'] .scorebar .team.lead .name {
   color: var(--n-ink);
@@ -1192,7 +1207,8 @@ html[data-skin='neo'] .screen.end .foot-link { text-decoration: underline; text-
   }
   html[data-skin='neo'] .scorebar .team-0.turn { box-shadow: 0 0 0 2px var(--n-a), var(--n-e1); }
   html[data-skin='neo'] .scorebar .team-1.turn { box-shadow: 0 0 0 2px var(--n-b), var(--n-e1); }
-  html[data-skin='neo'] .scorebar .team .pts-disc { width: 34px; height: 34px; }
+  /* القطر وحده — والرقم يتبعه بالنِّسب أعلاه. */
+  html[data-skin='neo'] .scorebar .team .pts-disc { --pts-d: 34px; }
   html[data-skin='neo'] .ring-timer { min-width: 104px; gap: 5px; }
   html[data-skin='neo'] .ring-timer .secs { font-size: clamp(24px, 7.5vh, 52px); }
   html[data-skin='neo'] .timer-progress { height: 5px; }
