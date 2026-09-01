@@ -564,3 +564,75 @@ html[data-skin='blocks'] .screen.end .best { background: var(--n-surface); box-s
     box-shadow: 0 0 0 2px var(--n-ink), 2px 3px 0 var(--n-ink);
   }
 }
+
+/* ─── بوّابة الاتجاه ─────────────────────────────────────────────────── */
+/* متصفّحُ الجوال وحده يراها: التطبيق مقفولٌ أفقياً من النظام فلا يبلغ
+   الوضعَ الطوليّ أصلاً. وكانت أيقونةً رفيعةً ونصّاً على فراغ — بلا شعارٍ
+   ولا أثرٍ من الهويّة، وسهمُها يدور مع الجهاز فيتداخلان (طلب علي،
+   ٢ سبتمبر ٢٠٢٦). */
+@media (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  html[data-skin='blocks'] #rotate-gate {
+    gap: clamp(18px, 5vh, 34px);
+    background: var(--n-bg);
+    color: var(--n-ink);
+  }
+
+  /* الشعار أوّلَ ما تقع عليه العين: الشاشةُ الوحيدة التي قد يفتحها لاعبٌ
+     لا يعرف اللعبة بعد. */
+  html[data-skin='blocks'] #rotate-gate .rotate-gate-logo {
+    font-size: clamp(46px, 17vw, 86px);
+    /* الحشوةُ الأصليّة تبقى: الطاءُ مكبَّرةٌ `scale(1.2)` فتفيض فوق سطر
+       الحروف، وإلغاءُ الحشوة يقصّ تاجَها (قِيس: فيضٌ ١٢px). */
+  }
+
+  /* كتلةٌ بحدّ حبرٍ وظلٍّ صلب — توقيعُ الهويّة نفسُه في بطاقات المراحل. */
+  html[data-skin='blocks'] #rotate-gate .rotate-gate-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 2.4vh, 18px);
+    padding: clamp(20px, 5vw, 32px) clamp(24px, 7vw, 40px);
+    border: 3px solid var(--n-ink);
+    border-radius: 22px 6px 22px 6px;
+    background: var(--n-surface);
+    box-shadow: 7px 8px 0 var(--n-ink);
+  }
+  html[data-skin='blocks'] #rotate-gate .rotate-gate-icon {
+    width: clamp(76px, 24vw, 104px);
+    height: auto;
+    color: var(--n-ink);
+    animation: none;
+  }
+  html[data-skin='blocks'] #rotate-gate .rgi-arc { stroke: var(--n-accent, #E8542F); }
+  html[data-skin='blocks'] #rotate-gate .rgi-phone {
+    stroke: var(--n-ink);
+    fill: #FFCE3C;
+    transform-origin: 60px 82px;
+    animation: rotate-gate-turn 2.4s ease-in-out infinite;
+  }
+  html[data-skin='blocks'] #rotate-gate p {
+    margin: 0;
+    font-size: clamp(15px, 4.6vw, 20px);
+    font-weight: 800;
+    color: var(--n-ink);
+  }
+
+  /* شريطُ السدو على الحافّة السفلى — كما في شريط الرأس. */
+  html[data-skin='blocks'] #rotate-gate .rotate-gate-sadu {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    height: 26px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='18'%3E%3Cpath d='M0 9 L9 0 L18 9 L9 18 Z' fill='%23FFCE3C' opacity='.55'/%3E%3Cpath d='M18 9 L27 0 L36 9 L27 18 Z' fill='none' stroke='%2322201C' stroke-width='1.5' opacity='.34'/%3E%3Cpath d='M36 9 L45 0 L54 9 L45 18 Z' fill='%237BD3D0' opacity='.5'/%3E%3Cpath d='M54 9 L63 0 L72 9 L63 18 Z' fill='none' stroke='%23E8542F' stroke-width='1.5' opacity='.4'/%3E%3Cpath d='M9 4.5 L9 13.5 M27 4.5 L27 13.5 M45 4.5 L45 13.5 M63 4.5 L63 13.5' stroke='%2322201C' stroke-width='1' opacity='.16'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 104px 26px;
+  }
+}
+
+/* الجهازُ يميل ويعود، والسهمُ ثابت: الحركةُ تقول «أدِرْه» لا «كلُّ شيء
+   يدور». والوقفةُ في الطرفين تمنح العينَ لحظةَ قراءة. */
+@keyframes rotate-gate-turn {
+  0%, 22% { transform: rotate(0deg); }
+  48%, 78% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
