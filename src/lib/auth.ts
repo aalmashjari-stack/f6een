@@ -55,25 +55,53 @@ export async function signInWithGoogle() {
  * اختياريّ هنا: الحزمة لا تطلبه إلّا لوضع offline (طلبِ `serverAuthCode`)،
  * وهو ما لا نستعمله.
  *
- * ولا نمرّر `nonce`: غوغل يُدرجه في الرمز كما هو بينما تُهشّئه منصّاتٌ
- * أخرى، فاختلافُ الصيغتين يُفشل المطابقة عند Supabase بخطأٍ غامض. تركُه
- * يترك التحقّق لتوقيع الرمز و`aud` و`exp` — وهي الحارس الفعليّ هنا.
+ * و`nonce` صيغتان: **البصمة** إلى غوغل — يمرّرها `GIDSignIn` كما هي
+ * ويُدرجها غوغل في الرمز كما هي — و**الخام** إلى Supabase، فهو يهشّئ ما
+ * يستلمه (SHA-256 ستّ‑عشريّاً) ويقارن الناتج بما في الرمز. تمريرُ القيمة
+ * نفسها للطرفين يُخرج `x` في الرمز و`SHA256(x)` في المقارنة، فلا يلتقيان.
+ *
+ * وأضلّتني **الجلسة المخزَّنة** قبل أن يستقيم هذا: كلُّ محاولةٍ كانت
+ * تُقاس على رمزٍ قديم من محاولةٍ سابقة، فبدا السلوك متناقضاً — مرّةً
+ * UUID ومرّةً بصمة — فطاردتُ ترميزاً لا وجود له، وحكمتُ على هذا الترتيب
+ * نفسِه بالفشل وهو صحيح. لم يستقم القياس إلّا بعد `logout` قبل كلّ دخول.
+ *
+ * والحاسمُ كان التشخيصَ الذي يعرض المُرسَل وما في الرمز معاً: حين
+ * تطابقا حرفاً بحرف وبقي الخطأ، لم يبقَ إلّا أنّ الطرف الآخر يهشّئ.
  */
 async function signInWithGoogleNative() {
   if (!IOS_CLIENT_ID) {
     throw new Error('ينقص VITE_GOOGLE_IOS_CLIENT_ID في .env')
   }
   await initSocial()
-  const res = await SocialLogin.login({ provider: 'google', options: {} })
+  /* خروجٌ قبل الدخول: GIDSignIn يحتفظ بجلسة غوغل في Keychain — تبقى بعد
+     حذف التطبيق نفسه — فيردّ رمزاً مخزَّناً بـ`nonce` محاولةٍ سابقة بدل
+     أن يطلب واحداً جديداً. ظهر ذلك بالتشخيص: أرسلنا بصمةً وعاد في الرمز
+     UUID من محاولةٍ قبلها. */
+  try {
+    await SocialLogin.logout({ provider: 'google' })
+  } catch {
+    /* لا جلسة تُغلق — وهذا هو المطلوب أصلاً */
+  }
+  const rawNonce = crypto.randomUUID()
+  const hashedNonce = await sha256Hex(rawNonce)
+  const res = await SocialLogin.login({ provider: 'google', options: { nonce: hashedNonce } })
   const idToken =
     res.provider === 'google' && 'idToken' in res.result ? res.result.idToken : null
   if (!idToken) throw new Error('لم يُرجِع غوغل رمزَ هويّة')
   const { error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
     token: idToken,
+    nonce: rawNonce,
   })
   if (error) throw error
 }
+
+/** بصمة SHA-256 نصّاً ستّ‑عشريّاً — الصيغة التي يحسبها Supabase للمقارنة. */
+async function sha256Hex(input: string) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
+
 
 /**
  * الخروج — ومن غوغل أيضاً في التطبيق.
