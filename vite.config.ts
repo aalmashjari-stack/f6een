@@ -3,8 +3,41 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 
 // base: './' يجعل النسخة المبنية تعمل من أي مجلد (file:// أو أي مضيف) — مهم لفتحها على التابلت لاحقاً.
+
+/**
+ * رؤوسُ التخزين — الصفحةُ تُراجَع دائماً والأصولُ تُخزَّن دهراً.
+ *
+ * كان الخادم لا يرسل `Cache-Control` لـ`index.html` إطلاقاً، فتلجأ
+ * المتصفّحات إلى التخمين من `Last-Modified` (heuristic caching) — وسفاري
+ * من أشرسها فيه: بقي يعرض نسخةً قديمة بعد النشر (بلاغ علي، ٢ سبتمبر
+ * ٢٠٢٦). و`no-cache` لا تعني «لا تخزّن» بل «خزّن وتحقّق قبل الاستعمال»،
+ * فالصفحة صغيرة والتحقّق رخيص.
+ *
+ * والأصولُ عكسُها تماماً: اسمُها يحمل بصمةَ محتواها، فتغيُّرُ المحتوى
+ * يغيّر الاسم — ولا معنى لإعادة التحقّق من ملفٍّ لا يتغيّر أبداً.
+ */
+function cacheHeaders() {
+  const hashed = /\/assets\/.+-[A-Za-z0-9_-]{8,}\.[a-z0-9]+$/
+  const set = (req: { url?: string }, res: { setHeader(k: string, v: string): void }) => {
+    const path = (req.url ?? '').split('?')[0]
+    res.setHeader(
+      'Cache-Control',
+      hashed.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache',
+    )
+  }
+  return {
+    name: 'f6een-cache-headers',
+    configurePreviewServer(server: { middlewares: { use(fn: (req: never, res: never, next: () => void) => void): void } }) {
+      server.middlewares.use((req, res, next) => {
+        set(req, res)
+        next()
+      })
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), cacheHeaders()],
   base: './',
   // صفحتان لا واحدة: اللعبة على `index.html` ولوحة الإدارة على `admin.html`.
   // فصلُهما يعني أنّ شيفرة اللوحة وجداولها لا تُحمَّل على جهاز الحكم في
