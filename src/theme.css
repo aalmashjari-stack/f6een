@@ -391,7 +391,6 @@ body::after {
 .grow { flex: 1; min-height: 0; }
 .stack { display: flex; flex-direction: column; }
 .gap-s { gap: 8px; }
-.gap-m { gap: 16px; }
 .center-all { display: flex; align-items: center; justify-content: center; }
 .center-col { display: flex; flex-direction: column; }
 .fade { opacity: .55; }
@@ -605,16 +604,11 @@ body .screen .rd-chip {
   background: rgba(25,70,94,.7);
 }
 
-/* المدخل: المشهد يبقى إنسانياً، لكن الشعار والزجاج يعيدان ربطه باللعبة. */
+/* المدخل: الشعار والزجاج يربطان الشريط باللعبة. */
 body .screen.setup .hero {
   border-radius: 0 0 52px 52px;
   border-bottom: 1px solid rgba(255,189,89,.28);
   box-shadow: 0 28px 70px rgba(0,0,0,.34);
-}
-body .screen.setup .hero-scene::after {
-  background:
-    linear-gradient(90deg, rgba(7,25,35,.05), rgba(7,25,35,.28) 48%, rgba(7,25,35,.88)),
-    linear-gradient(180deg, rgba(7,25,35,.12), transparent 52%, var(--night-deep));
 }
 body .screen.setup .hero-logo {
   width: min(49%, 490px);

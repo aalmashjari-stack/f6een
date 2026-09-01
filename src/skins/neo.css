@@ -409,7 +409,6 @@ html[data-skin] .ring-timer .secs {
    كانت تدهسها، فتظهر بلون كلّ مرحلةٍ أخرى. */
 html[data-skin] .screen:has(.s3-q) .ring-timer .secs { color: var(--n-bad) !important; }
 html[data-skin] .ring-timer.low .secs { color: var(--n-bad) !important; animation: none; }
-html[data-skin] .timer-unit { display: none; }
 html[data-skin] .timer-progress {
   grid-row: 2;
   width: 100%;
@@ -932,19 +931,10 @@ html[data-skin] .screen.setup .hero {
 /* البانر رسمةٌ دافئة مشبعة، والهويّة حولها باردة هادئة — فكان يجلس ككتلةٍ
    غريبة فوق الصفحة. لا يُعاد رسمه (معتمد في assets/) بل يُعالَج:
    تشبّعٌ أقلّ ودفءٌ أخفّ ليقترب من اللوحة، ثم تدرّجان يذيبان حافّتيه في
-   سطح البطاقة فلا تُقرأ له حدود. سقفُ ارتفاعه ينزل أيضاً: الإعداد شاشةُ
-   إدخال، والصورة تُنظر مرّة. */
+   سطح البطاقة فلا تُقرأ له حدود. وسقفُ ارتفاعه ينزل: الإعداد شاشةُ إدخال. */
 html[data-skin] .screen.setup .hero {
   max-height: min(300px, 34vh);
   background: var(--n-surface);
-}
-html[data-skin] .screen.setup .hero-scene img {
-  filter: saturate(.72) contrast(.94) brightness(1.06);
-}
-html[data-skin] .screen.setup .hero-scene::after {
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0) 0 34%, rgba(255,255,255,.80) 66%, #fff 100%),
-    linear-gradient(180deg, rgba(255,255,255,.34) 0, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 62%, rgba(255,255,255,.72) 100%);
 }
 html[data-skin] .screen.setup .hero-logo { filter: none; }
 html[data-skin] .screen.setup .mute-toggle {
