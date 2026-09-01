@@ -49,20 +49,19 @@ export async function signInWithGoogle() {
 /**
  * الدخول داخل التطبيق — بلا متصفّح ولا إعادة توجيه.
  *
- * يشترط معرّفَي غوغل: معرّفَ iOS ليصحّ التوقيع على الجهاز، ومعرّفَ الويب
- * لأنّه الجمهور (`aud`) الذي يتحقّق منه Supabase — ولذلك يجب تسجيلُ معرّف
- * iOS في «Authorized Client IDs» عند مزوّد غوغل في Supabase، وإلّا رُفض
- * الرمز رغم صحّته.
+ * يشترط معرّفَ iOS وحده: هو الذي يصحّح التوقيع على الجهاز، وهو الجمهور
+ * (`aud`) في الرمز الصادر — فيجب تسجيلُه في «Authorized Client IDs» عند
+ * مزوّد غوغل في Supabase، وإلّا رُفض الرمز رغم صحّته. ومعرّفُ الويب
+ * اختياريّ هنا: الحزمة لا تطلبه إلّا لوضع offline (طلبِ `serverAuthCode`)،
+ * وهو ما لا نستعمله.
  *
  * ولا نمرّر `nonce`: غوغل يُدرجه في الرمز كما هو بينما تُهشّئه منصّاتٌ
  * أخرى، فاختلافُ الصيغتين يُفشل المطابقة عند Supabase بخطأٍ غامض. تركُه
  * يترك التحقّق لتوقيع الرمز و`aud` و`exp` — وهي الحارس الفعليّ هنا.
  */
 async function signInWithGoogleNative() {
-  if (!IOS_CLIENT_ID || !WEB_CLIENT_ID) {
-    throw new Error(
-      'ينقص معرّفا غوغل: VITE_GOOGLE_IOS_CLIENT_ID و VITE_GOOGLE_WEB_CLIENT_ID في .env',
-    )
+  if (!IOS_CLIENT_ID) {
+    throw new Error('ينقص VITE_GOOGLE_IOS_CLIENT_ID في .env')
   }
   await initSocial()
   const res = await SocialLogin.login({ provider: 'google', options: {} })

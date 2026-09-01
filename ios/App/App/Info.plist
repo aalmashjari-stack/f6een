@@ -70,5 +70,16 @@
 	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<!-- سكيمُ رجوعِ غوغل: معرّفُ iOS مقلوباً. ورقةُ الدخول تفتح خارج
+	     التطبيق لحظةً وتعود عبره، فبلا هذا السطر تفتح ولا ترجع. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.80452444783-f7ag2irbaiqvf04n533c402i6ah0dhhs</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
