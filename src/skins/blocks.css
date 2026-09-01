@@ -287,7 +287,9 @@ html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
 @media (max-height: 560px) {
   html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
     font-size: clamp(38px, 11vh, 52px);
+  }
 }
+
 html[data-skin='blocks'] .screen.setup .mute-toggle {
   background: var(--n-surface);
   box-shadow: 0 0 0 2px var(--n-ink);
