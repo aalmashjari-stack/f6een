@@ -12,5 +12,7 @@ capacitor-cordova-ios-plugins
 App/App/capacitor.config.json
 App/App/config.xml
 
-# نسخ زائدة تخلّفها مزامنة مكرّرة — الأصل config.xml مُتجاهَل أعلاه
-App/App/config [0-9].xml
+# نسخ زائدة تخلّفها مزامنة iCloud — الأصل config.xml مُتجاهَل أعلاه.
+# النجمة لا خانةٌ واحدة: النمط القديم ‎config [0-9].xml‎ يمسك ٢ إلى ٩ ويترك
+# ‎config 10.xml‎ فتتسلّل إلى المستودع (وقع فعلاً في ١ سبتمبر ٢٠٢٦).
+App/App/config *.xml
