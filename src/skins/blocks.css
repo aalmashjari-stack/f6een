@@ -240,11 +240,19 @@ html[data-skin='blocks'] .screen.setup .hero::before {
   z-index: 0;
   pointer-events: none;
   background:
+    /* شريطُ سدو — النسيج البدويّ الكويتيّ: معيّناتٌ متعاقبة، مملوءةٌ
+       ومفرَّغة، بينها أعمدةٌ صغيرة كخيوط اللُّحمة. مرجعٌ ينتمي إلى المجلس
+       الذي تُلعب فيه فطين، وهندستُه تتّفق مع كتل الهويّة — فالزخرفة تقول
+       شيئاً بدل أن تملأ فراغاً.
+
+       موضعه الحافّة السفلى فوق حدّ الحبر مباشرةً كما يُطرَّز طرفُ النسيج،
+       فيبقى وسطُ الشريط نظيفاً خلف الشعار والقائمة ولا يزاحم القراءة.
+       ورسمةٌ واحدة inline: بلا طلبِ شبكةٍ ولا ملفٍّ يُنسى عند النقل. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='18'%3E%3Cpath d='M0 9 L9 0 L18 9 L9 18 Z' fill='%23FFCE3C' opacity='.55'/%3E%3Cpath d='M18 9 L27 0 L36 9 L27 18 Z' fill='none' stroke='%2322201C' stroke-width='1.5' opacity='.34'/%3E%3Cpath d='M36 9 L45 0 L54 9 L45 18 Z' fill='%237BD3D0' opacity='.5'/%3E%3Cpath d='M54 9 L63 0 L72 9 L63 18 Z' fill='none' stroke='%23E8542F' stroke-width='1.5' opacity='.4'/%3E%3Cpath d='M9 4.5 L9 13.5 M27 4.5 L27 13.5 M45 4.5 L45 13.5 M63 4.5 L63 13.5' stroke='%2322201C' stroke-width='1' opacity='.16'/%3E%3C/svg%3E"),
     radial-gradient(88% 150% at 100% 50%, rgba(255,206,60,.20), transparent 62%),
-    radial-gradient(72% 140% at 0% 50%, rgba(123,211,208,.14), transparent 66%),
-    repeating-linear-gradient(-45deg,
-      rgba(34,32,28,.055) 0 1.5px,
-      transparent 1.5px 12px);
+    radial-gradient(72% 140% at 0% 50%, rgba(123,211,208,.14), transparent 66%);
+  background-repeat: repeat-x, no-repeat, no-repeat;
+  background-position: bottom center, center, center;
 }
 /* المحتوى فوق النسيج — بلا هذا يغرق الشعارُ والأزرار تحته. */
 html[data-skin='blocks'] .screen.setup .hero > * { position: relative; z-index: 1; }
@@ -269,7 +277,9 @@ html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
   min-height: 0;
   background: transparent;
   box-shadow: none;
-  font-size: clamp(26px, 6vh, 46px);
+  /* أكبر قليلاً بطلب علي (١ سبتمبر ٢٠٢٦) — والسقف يبقى دون ارتفاع
+     الشريط فلا يفيض عنه. */
+  font-size: clamp(32px, 7.6vh, 58px);
   padding: .14em .1em .06em;
 }
 html[data-skin='blocks'] .screen.setup .mute-toggle {
