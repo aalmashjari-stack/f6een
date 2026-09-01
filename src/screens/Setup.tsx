@@ -597,7 +597,7 @@ export function Setup({
           /* على الجوال تعطي نسبة الصورة شريطاً بارتفاع ٧٦px — رفيعاً تضيع
              فيه العائلة. فيُفرض ارتفاع أعلى، و cover يقصّ الأطراف ويُبقي
              التلفاز ومن حوله. */
-          .hero { height:clamp(84px, 14vh, 130px); }
+          body .screen.setup .hero { height:clamp(84px, 14vh, 130px); }
 
           .stage-card {
             flex-direction:row; align-items:flex-start; text-align:start;
@@ -613,7 +613,9 @@ export function Setup({
         @media (max-height:560px) {
           /* الشاشة القصيرة لا تحتمل نسبة الصورة كاملةً (٢٠٪ من العرض)،
              فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
-          .hero { height:clamp(52px, 11vh, 84px); }
+          /* أعلى ممّا كان بطلب علي (١ سبتمبر ٢٠٢٦): على الجوال الأفقيّ
+             كان الشريط ٦٤px فيخنق الشعار وشريطَ السدو معاً. */
+          body .screen.setup .hero { height:clamp(78px, 20vh, 104px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
           .setup-body { --gap-block:clamp(6px,1.4vh,14px); --gap-in:clamp(5px,1vh,10px); margin-top:0; }

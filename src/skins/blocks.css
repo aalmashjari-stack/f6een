@@ -282,6 +282,12 @@ html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
   font-size: clamp(32px, 7.6vh, 58px);
   padding: .14em .1em .06em;
 }
+/* الجوال الأفقيّ: الشريط ارتفع، فيتبعه الشعار — ‎7.6vh‎ عند ٣٩٠ ارتفاعاً
+   تعطي ٣٠px وهو دون أرضيّة الـclamp، فيبقى صغيراً في شريطٍ صار أوسع. */
+@media (max-height: 560px) {
+  html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
+    font-size: clamp(38px, 11vh, 52px);
+}
 html[data-skin='blocks'] .screen.setup .mute-toggle {
   background: var(--n-surface);
   box-shadow: 0 0 0 2px var(--n-ink);
