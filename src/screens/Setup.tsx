@@ -136,8 +136,6 @@ export function Setup({
       {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
           يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
       <div className="hero">
-        <span className="hero-bit hero-bit-a" aria-hidden="true" />
-        <span className="hero-bit hero-bit-b" aria-hidden="true" />
         <BrandLogo className="hero-logo" />
 
         {onNav && (
@@ -290,14 +288,18 @@ export function Setup({
            إلا تحت سمتها. */
         body .screen.setup .hero {
           position:relative; flex:none;
-          /* امتدادٌ إلى حافّتي **الأب** لا حافّتي الشاشة: كان
-             ‎calc(50% - 50vw)‎، و‎100vw‎ عرضُ الشاشة كاملاً بما تحت أذن
-             الآيفون — بينما ‎#root‎ مُزاحٌ بمساحات الأمان (showtime.css).
-             فكان الشريط يتجاوز الإزاحة بقدرها على كل جهة، ويخرج الشعارُ
-             وزرُّ الصوت تحت الأذن فيُقصّان. رآها علي على جهازه.
-             والهوامش السالبة تلغي حشوة ‎.screen‎ وحدها، وهي معلومة هنا. */
-          margin-inline:calc(-1 * var(--pad-x));
-          padding:0 var(--pad-x);
+          /* الخلفيّة تعبر الأذن والمحتوى يقف عندها — وهما شيئان لا واحد:
+             حين أوقفتُ الشريطَ كلَّه عند حدّ الأمان سلم الشعارُ من القصّ
+             لكن بقيت شريحتان قشديّتان عند الأذنين («البانر غير مكتمل»).
+             فالهامش السالب يبلغ الحافّة الفيزيائية (حشوة الشاشة + إزاحة
+             ‎#root‎)، والحشوة تردّ المحتوى إلى داخل الأمان. والجهتان
+             منفصلتان: أذن الآيفون في الوضع الأفقيّ على جهةٍ واحدة.
+             وعلى الويب ‎env()‎ أصفار، فتعود القاعدة إلى إلغاء الحشوة وحدها. */
+          margin-left:calc(-1 * (var(--pad-x) + env(safe-area-inset-left)));
+          margin-right:calc(-1 * (var(--pad-x) + env(safe-area-inset-right)));
+          padding-block:0;
+          padding-left:calc(var(--pad-x) + env(safe-area-inset-left));
+          padding-right:calc(var(--pad-x) + env(safe-area-inset-right));
           display:flex !important; align-items:center;
           gap:clamp(8px,1.4vw,18px);
           height:clamp(64px, 11vh, 120px);
@@ -321,25 +323,6 @@ export function Setup({
         body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:0 0 0 2px var(--n-ink,#22201C), 2px 3px 0 var(--n-ink,#22201C); }
         body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:#fff; }
 
-        /* مربّعا زينة من مفردات الشعار نفسه — يدوران حوله كما تدور
-           مربّعاته الصغيرة حول حروفه. زخرفةٌ لا أصل، فلا تعتمد صورة. */
-        body .screen.setup .hero-bit {
-          position:absolute; z-index:0;
-          width:clamp(12px,1.6vw,20px); aspect-ratio:1;
-          border:2.5px solid var(--n-ink, #22201C);
-          border-radius:4px;
-        }
-        body .screen.setup .hero-bit-a {
-          background:var(--n-a-tint, #FFCE3C);
-          inset-inline-start:clamp(200px, 24%, 300px); top:22%;
-          transform:rotate(14deg);
-        }
-        body .screen.setup .hero-bit-b {
-          background:var(--n-b-tint, #7BD3D0);
-          inset-inline-start:clamp(230px, 27%, 340px); bottom:20%;
-          width:clamp(9px,1.2vw,15px);
-          transform:rotate(-11deg);
-        }
 
         /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
            فلا تعترض العين وهي تنزل من الشعار إلى بطاقتي الفريقين. */
