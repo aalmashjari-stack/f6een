@@ -160,6 +160,10 @@ export function Setup({
         </button>
       </div>
 
+      {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
+          العموديّ (‎overflow-y:auto‎) يجرّ معه قصّاً أفقيّاً بحكم CSS، فكان
+          يبتلع تمدّدَ الشريط تحت أذن الآيفون — يُحسب ولا يُرسم. */}
+      <div className="setup-scroll">
       {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
           في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
       <div className="setup-body">
@@ -264,6 +268,7 @@ export function Setup({
           </div>
         </div>
       </div>
+      </div>
 
       <style>{`
         /* التمرير مسموح هنا وحدها (قرار علي ٢١ أغسطس ٢٠٢٦) — والمقاسات مع ذلك
@@ -275,8 +280,17 @@ export function Setup({
            هذه الطبقة)، فافترق الرقمان وخرج الشريط عن حدّه. */
         body .screen.setup {
           --pad-x: clamp(16px, 2.6vw, 36px);
+          /* لا حشوة أفقيّة ولا قصّ على الشاشة نفسها: الحشوة انتقلت إلى
+             الغلاف المتمرّر، والقصّ كان يمنع الشريط من بلوغ الحافّة. */
+          padding-inline: 0;
+          overflow: visible;
+        }
+        /* الغلاف المتمرّر — هو وحده من يقصّ، والشريط خارجه فلا يُقصّ. */
+        .setup-scroll {
+          flex:1; min-height:0;
+          display:flex; flex-direction:column;
+          overflow-y:auto;
           padding-inline: var(--pad-x);
-          overflow-y: auto;
         }
         @media (max-height: 480px) {
           body .screen.setup { --pad-x: clamp(16px, 3vw, 40px); }
@@ -295,8 +309,8 @@ export function Setup({
              ‎#root‎)، والحشوة تردّ المحتوى إلى داخل الأمان. والجهتان
              منفصلتان: أذن الآيفون في الوضع الأفقيّ على جهةٍ واحدة.
              وعلى الويب ‎env()‎ أصفار، فتعود القاعدة إلى إلغاء الحشوة وحدها. */
-          margin-left:calc(-1 * (var(--pad-x) + env(safe-area-inset-left)));
-          margin-right:calc(-1 * (var(--pad-x) + env(safe-area-inset-right)));
+          margin-left:calc(-1 * env(safe-area-inset-left));
+          margin-right:calc(-1 * env(safe-area-inset-right));
           padding-block:0;
           padding-left:calc(var(--pad-x) + env(safe-area-inset-left));
           padding-right:calc(var(--pad-x) + env(safe-area-inset-right));
