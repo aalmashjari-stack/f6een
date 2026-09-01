@@ -110,6 +110,24 @@ async function sha256Hex(input: string) {
  * تدخل بالحساب نفسه بلا سؤال — ويبدو للاعب أنّ الخروج لم يعمل.
  * والفشلُ هنا لا يُوقف الخروج من Supabase: الجلسة هي ما يهمّ.
  */
+/**
+ * معرّفُ صاحب الجلسة الحالية.
+ *
+ * تلزم لأنّ RLS **لا يكفي وحده** للتصفية: سياسةُ «المدير يقرأ الكلّ» تُجمع
+ * مع سياسة «كلٌّ يقرأ صفّه» بـOR، فيرى المديرُ صفوف الجميع — فينفجر
+ * `.single()` ويرى في «ألعابي» ألعابَ غيره. الاستعلامُ يقيّد نفسه بنفسه،
+ * وRLS حارسٌ خلفه لا مصفاةٌ أمامه.
+ *
+ * تُقرأ من الجلسة المحفوظة محلّياً بلا طلبِ شبكة.
+ */
+export async function currentUserId(): Promise<string> {
+  const { data, error } = await supabase.auth.getSession()
+  if (error) throw error
+  const id = data.session?.user.id
+  if (!id) throw new Error('لا جلسة مفتوحة')
+  return id
+}
+
 export async function signOut() {
   if (isNativeApp) {
     try {

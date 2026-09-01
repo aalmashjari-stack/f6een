@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { currentUserId } from './auth'
 import { loadUsedIds, persistUsedIds } from '../game/session'
 
 /**
@@ -13,7 +14,10 @@ import { loadUsedIds, persistUsedIds } from '../game/session'
 
 /** ما يعرفه الخادم عن هذا الحساب. */
 export async function fetchServerUsedIds(): Promise<string[]> {
-  const { data, error } = await supabase.from('used_questions').select('question_id')
+  const { data, error } = await supabase
+    .from('used_questions')
+    .select('question_id')
+    .eq('user_id', await currentUserId())
   if (error) throw error
   return (data ?? []).map((r) => r.question_id as string)
 }
