@@ -16,7 +16,9 @@
   color-scheme:light;
 }
 
-/* شعار فطين — حروف عربية مستقلة قابلة للتشكيل من دون صورة نقطية. */
+/* شعار فطين — حروف عربية مستقلة قابلة للتشكيل من دون صورة نقطية.
+   وهي أشكالُ عرضٍ (‎U+FExx‎) خارج تغطية Baloo، فالراسمُ فعلاً هو Cairo
+   التالي في ‎font-family‎ أدناه — التفصيل في ‎fonts/brand.css‎. */
 .f6een-mark{
   --mark-ink:var(--festival-ink);
   --mark-fill:var(--festival-white);
