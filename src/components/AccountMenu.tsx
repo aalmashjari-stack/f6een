@@ -27,6 +27,23 @@ import { fetchMyGames, fetchProfile, gamesLabel, redeemGiftCode } from '../lib/g
  * التسجيل (انظر `signUpWithEmail`)، ونسخُها في `profiles` يصنع نسختين
  * تفترقان. و«عضو منذ» وحده من القاعدة لأنّه ليس فيها.
  */
+/**
+ * نصُّ الخطأ أيّاً كان شكلُه.
+ *
+ * أخطاءُ supabase-js ليست من نوع `Error` بل كائناتُ `PostgrestError`، فشرطُ
+ * `instanceof Error` وحده كان يسقط عليها فيُعرض نصٌّ احتياطيّ عامّ —
+ * ويضيع سببُ العطل الذي يكتبه الخادم. تُقرأ `message` أنّى وُجدت، ويبقى
+ * الاحتياطيّ لما لا نصَّ فيه أصلاً.
+ */
+function errText(e: unknown): string {
+  if (e instanceof Error) return e.message
+  if (e && typeof e === 'object' && 'message' in e) {
+    const m = (e as { message?: unknown }).message
+    if (typeof m === 'string' && m) return m
+  }
+  return 'تعذّرت القراءة'
+}
+
 export function AccountMenu({
   session,
   balance,
@@ -78,7 +95,7 @@ export function AccountMenu({
         if (onBalance) onBalance(p.balance)
       })
       .catch((e) => {
-        if (alive) setLoadErr(e instanceof Error ? e.message : 'تعذّرت القراءة')
+        if (alive) setLoadErr(errText(e))
       })
     /* منفصلة عن الأولى: من ليس مديراً — وهو كل اللاعبين — يردّ الخادم عليه
        بخطأ صلاحية، ولو كان في نفس `Promise.all` لابتلع الخطأُ الرصيدَ

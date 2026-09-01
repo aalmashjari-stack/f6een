@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { currentUserId } from './auth'
 import type { StoredState } from '../game/session'
 
 /**
@@ -12,7 +13,11 @@ import type { StoredState } from '../game/session'
 
 /** الرصيد الحالي. `null` لا تعني صفراً بل «لم يُقرأ بعد» — والفرق يقرّر هل يُمنع البدء. */
 export async function fetchBalance(): Promise<number> {
-  const { data, error } = await supabase.from('profiles').select('games_balance').single()
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('games_balance')
+    .eq('id', await currentUserId())
+    .single()
   if (error) throw error
   return data.games_balance as number
 }
@@ -33,6 +38,7 @@ export async function fetchOpenSession(): Promise<ServerSession | null> {
   const { data, error } = await supabase
     .from('sessions')
     .select('id, state')
+    .eq('user_id', await currentUserId())
     .eq('status', 'open')
     .maybeSingle()
   if (error) throw error
@@ -141,6 +147,7 @@ export async function fetchProfile(): Promise<Profile> {
   const { data, error } = await supabase
     .from('profiles')
     .select('games_balance, created_at')
+    .eq('id', await currentUserId())
     .single()
   if (error) throw error
   return { balance: data.games_balance as number, createdAt: data.created_at as string }
@@ -169,6 +176,7 @@ export async function fetchMyGames(limit = 50): Promise<GameSummary[]> {
   const { data, error } = await supabase
     .from('sessions')
     .select('id, status, created_at, teams:state->teams')
+    .eq('user_id', await currentUserId())
     .order('created_at', { ascending: false })
     .limit(limit)
   if (error) throw error
