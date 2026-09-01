@@ -1,22 +1,44 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { SocialLogin } from '@capgo/capacitor-social-login'
 import { supabase } from './supabase'
+import { isNativeApp } from './platform'
+
+/* معرّفا غوغل — علنيّان كمفتاح Supabase، والحارس هو تسجيلُهما في
+   Google Cloud وSupabase لا سرّيّتُهما. */
+const IOS_CLIENT_ID = import.meta.env.VITE_GOOGLE_IOS_CLIENT_ID as string | undefined
+const WEB_CLIENT_ID = import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID as string | undefined
+
+/* التهيئة مرّةً واحدة ولو نُقر الزرّ مراراً: نحفظ الوعد نفسه لا علماً
+   منطقيّاً، فالنقرتان المتلاحقتان تنتظران تهيئةً واحدة بدل أن تبدأ
+   ثانيةٌ قبل أن تنتهي الأولى. */
+let socialReady: Promise<void> | null = null
+function initSocial() {
+  if (!socialReady) {
+    socialReady = SocialLogin.initialize({
+      google: { iOSClientId: IOS_CLIENT_ID, webClientId: WEB_CLIENT_ID },
+    })
+  }
+  return socialReady
+}
 
 /**
- * الدخول عبر غوغل — مسار الويب.
+ * الدخول عبر غوغل — مساران لأنّ السياقين مختلفان لا لأنّ الهويّة مختلفة.
  *
- * يغادر الصفحة إلى غوغل ثم يرجع إلى `redirectTo` ومعه `?code=`، فيلتقطه
- * العميل ويبادله بجلسة (انظر `detectSessionInUrl` في supabase.ts).
+ * **الويب:** يغادر الصفحة إلى غوغل ثم يرجع إلى `redirectTo` ومعه `?code=`،
+ * فيلتقطه العميل ويبادله بجلسة (انظر `detectSessionInUrl` في supabase.ts).
+ * و`window.location.origin` لا عنوان مكتوب بيد: نفس الشيفرة تعمل على
+ * `localhost:4173` وعلى `f6een.com` بلا فرع لكلٍّ منهما.
  *
- * `window.location.origin` لا عنوان مكتوب بيد: نفس الشيفرة تعمل على
- * `localhost:4173` وعلى `f6een.com` بلا فرع لكلٍّ منهما. ويشترط Supabase
- * أن يكون الأصل مسجَّلاً في Authentication ← URL Configuration، وإلّا ردّ
- * الطلب بـ`redirect_to` غير مسموح.
- *
- * وفي التطبيق الأصليّ لاحقاً: حزمة غوغل الأصليّة ثم `signInWithIdToken` —
- * لا إعادة توجيه ولا مغادرة للشاشة.
+ * **التطبيق الأصليّ:** هذا المسار كان يكسر الدخول كسراً صامتاً. أصلُ
+ * الويب‑ڤيو في Capacitor هو `capacitor://localhost` لا الدومين، وSupabase
+ * لا يقبله في `redirect_to`، فيتجاهله ويحوّل إلى `Site URL` المسجَّل عنده
+ * — أي يفتح متصفّحاً على موقعٍ آخر ولا يعود إلى التطبيق أبداً (بلاغ علي،
+ * ١ سبتمبر ٢٠٢٦). فالحلّ ألّا يغادر الشاشة أصلاً: ورقةُ دخولٍ من النظام
+ * تعطي `idToken`، ويبادله `signInWithIdToken` بجلسة.
  */
 export async function signInWithGoogle() {
+  if (isNativeApp) return signInWithGoogleNative()
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo: window.location.origin },
@@ -24,7 +46,51 @@ export async function signInWithGoogle() {
   if (error) throw error
 }
 
+/**
+ * الدخول داخل التطبيق — بلا متصفّح ولا إعادة توجيه.
+ *
+ * يشترط معرّفَي غوغل: معرّفَ iOS ليصحّ التوقيع على الجهاز، ومعرّفَ الويب
+ * لأنّه الجمهور (`aud`) الذي يتحقّق منه Supabase — ولذلك يجب تسجيلُ معرّف
+ * iOS في «Authorized Client IDs» عند مزوّد غوغل في Supabase، وإلّا رُفض
+ * الرمز رغم صحّته.
+ *
+ * ولا نمرّر `nonce`: غوغل يُدرجه في الرمز كما هو بينما تُهشّئه منصّاتٌ
+ * أخرى، فاختلافُ الصيغتين يُفشل المطابقة عند Supabase بخطأٍ غامض. تركُه
+ * يترك التحقّق لتوقيع الرمز و`aud` و`exp` — وهي الحارس الفعليّ هنا.
+ */
+async function signInWithGoogleNative() {
+  if (!IOS_CLIENT_ID || !WEB_CLIENT_ID) {
+    throw new Error(
+      'ينقص معرّفا غوغل: VITE_GOOGLE_IOS_CLIENT_ID و VITE_GOOGLE_WEB_CLIENT_ID في .env',
+    )
+  }
+  await initSocial()
+  const res = await SocialLogin.login({ provider: 'google', options: {} })
+  const idToken =
+    res.provider === 'google' && 'idToken' in res.result ? res.result.idToken : null
+  if (!idToken) throw new Error('لم يُرجِع غوغل رمزَ هويّة')
+  const { error } = await supabase.auth.signInWithIdToken({
+    provider: 'google',
+    token: idToken,
+  })
+  if (error) throw error
+}
+
+/**
+ * الخروج — ومن غوغل أيضاً في التطبيق.
+ *
+ * بلا سطر `logout` يبقى حسابُ غوغل مختاراً في النظام، فالنقرةُ التالية
+ * تدخل بالحساب نفسه بلا سؤال — ويبدو للاعب أنّ الخروج لم يعمل.
+ * والفشلُ هنا لا يُوقف الخروج من Supabase: الجلسة هي ما يهمّ.
+ */
 export async function signOut() {
+  if (isNativeApp) {
+    try {
+      await SocialLogin.logout({ provider: 'google' })
+    } catch {
+      /* لا شيء: قد لا تكون التهيئة جرت أصلاً في هذه الجلسة */
+    }
+  }
   const { error } = await supabase.auth.signOut()
   if (error) throw error
 }
