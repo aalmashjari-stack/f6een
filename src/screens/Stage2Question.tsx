@@ -7,7 +7,6 @@ import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
-import { displayName } from '../game/bank'
 
 export function Stage2Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const q = state.currentQuestion!
@@ -35,7 +34,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         </span>
       </div>
 
-      <RoundBar title="الديربي" chips={[state.currentCategory && displayName(state.currentCategory), 'متوسط', 'لا تشاور']} />
+      <RoundBar title="الديربي" chips={['متوسط', 'لا تشاور']} />
 
       {/* في سؤال الصورة يتجاور السؤال والمؤقّت أفقياً كما في الجولة الجماعية:
           الوجه هو السؤال، ومسار المؤقّت تحته كان يأكل مئة وستين بكسلاً فتُقصّ

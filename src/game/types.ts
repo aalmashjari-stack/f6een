@@ -39,7 +39,6 @@ export type Phase =
   | 'stage1-reveal'
   | 'interval'
   | 'stage2-selection'
-  | 'stage2-wheel'
   | 'stage2-question'
   | 'stage2-reveal'
   | 'stage3-play'

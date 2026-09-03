@@ -1,6 +1,6 @@
 import type { Level, Mark, Question, TeamId } from './types'
 import { familyOf } from './bank'
-import { drawOne } from './draw'
+import { drawByLevel, drawOne } from './draw'
 import {
   GameState,
   SetupInput,
@@ -23,7 +23,6 @@ export type Action =
      مفتوحةً سابقة لا التي أُرسلت (نافذة الاستكمال)، ولهذا تُبنى الحالة
      خارج المخفّض ثمّ تُسلَّم إليه بدل أن يبنيها من المدخلات. */
   | { t: 'RESUME'; state: GameState }
-  | { t: 'SPIN_DONE'; category: string } // العجلة توقّفت على تصنيف — الديربي وحده
   | { t: 'S1_PICK'; category: string; level: Level } // خليّة من لوح الجولة الجماعية
   | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
   | { t: 'S1_SCORE'; correct: boolean }
@@ -94,25 +93,6 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     case 'NEW_GAME':
       return null
 
-    /* ---------------- العجلة → السؤال ---------------- */
-    case 'SPIN_DONE': {
-      if (!state) return state
-      const q = drawOne(
-        action.category,
-        'متوسط',
-        state.usedQuestionIds,
-        pendingS3Ids(state),
-        guardedFamilies(state),
-      )
-      return {
-        ...burn(state, q),
-        currentCategory: action.category,
-        currentQuestion: q,
-        spentCategories: [...state.spentCategories, action.category],
-        phase: 'stage2-question',
-      }
-    }
-
     /* ---------------- خليّة من لوح الجولة الجماعية ---------------- */
     /* الخليّة تُقفل هنا لا عند التنقيط: السؤال سُحب وظهر، فإبقاؤها مفتوحة
        يعرض سؤالاً محروقاً لو رجع الحكم إلى اللوح بزرّ الخلف. */
@@ -162,11 +142,10 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         currentQuestion: null,
       }
       if (nextIndex < STAGE1_QUESTIONS) return { ...s, ...rest, phase: 'stage1-board' as const }
-      // انتهت المرحلة ١ → فاصل ثم الديربي (تُصفَّر العجلة)
+      // انتهت المرحلة ١ → فاصل ثم الديربي
       return {
         ...s,
         ...rest,
-        spentCategories: [],
         intervalNext: 'stage2-selection',
         phase: 'interval',
       }
@@ -188,12 +167,22 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       ]
       for (const t of [0, 1] as const)
         if (rem[t].length === 0) rem[t] = state.teams[t].players.map((_, i) => i)
+      /* السؤال يُسحب هنا لا في شاشةٍ تالية: الديربي بلا تصنيفات منذ
+         ٤ سبتمبر ٢٠٢٦ (SPEC ٥)، فلم يبقَ بين اختيار اللاعبين والسؤال شيء. */
+      const q = drawByLevel(
+        'متوسط',
+        state.usedQuestionIds,
+        pendingS3Ids(state),
+        guardedFamilies(state),
+      )
       return {
-        ...state,
+        ...burn(state, q),
         s2Sel: action.sel,
         s2Rem: rem,
         s2Marks: ['صمت', 'صمت'],
-        phase: 'stage2-wheel',
+        currentCategory: null,
+        currentQuestion: q,
+        phase: 'stage2-question',
       }
     }
 
@@ -292,7 +281,6 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
           s3Done: done,
           currentCategory: null,
           currentQuestion: null,
-          spentCategories: [],
           s3Revealed: false,
           intervalNext: 'tiebreak',
           phase: 'interval',

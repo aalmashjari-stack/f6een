@@ -194,6 +194,20 @@ export function poolByLevels(levels: Level[]): Question[] {
   return allowed(levels.flatMap((l) => byLevel.get(l) ?? []))
 }
 
+/** معرّفات البنك المشحون — تُحسب مرّة، فالبنك ملفٌّ لا يتغيّر إلّا بإصدار. */
+const SHIPPED_IDS = new Set(ALL_QUESTIONS.map((q) => q.id))
+
+/**
+ * مخزون **البنك المشحون** بمستوىً واحد — بلا ما أُضيف من اللوحة (`ADM####`).
+ *
+ * للديربي وحده (SPEC ٥، قرار علي ٤ سبتمبر ٢٠٢٦). والتعديلاتُ تبقى مركَّبة:
+ * سؤالُ بنكٍ صحّحه المدير يبقى سؤالَ بنك بنصّه الجديد — المستبعَد هو
+ * **الجديد** لا **المصحَّح**.
+ */
+export function poolShippedByLevel(level: Level): Question[] {
+  return allowed((byLevel.get(level) ?? []).filter((q) => SHIPPED_IDS.has(q.id)))
+}
+
 /* ========================= عائلات القوالب ========================= */
 /**
  * البنك فيه أسئلة تتشارك صيغة واحدة وتختلف إجاباتها — «ما العنصر الذي رمزه الكيميائي…؟»

@@ -25,7 +25,6 @@ import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
 import { Setup } from './screens/Setup'
-import { WheelScreen } from './screens/WheelScreen'
 import { Stage1Board } from './screens/Stage1Board'
 import { Stage1Question } from './screens/Stage1Question'
 import { Stage1Reveal } from './screens/Stage1Reveal'
@@ -51,7 +50,7 @@ const RESUME_WINDOW_MS = 24 * 60 * 60 * 1000
 /* يُرفع كلما تغيّر شكل الحالة المحفوظة. جلسة حُفظت بنسخة أقدم تنقصها حقول
    تعتمد عليها النسخة الحالية، فاستئنافها يُسقط التطبيق في منتصف اللعب.
    الأسلم أن تُطرح ويُستأنف من الإعداد — وهذا لا يكلّف لعبة لأن الخصم عند الإنشاء. */
-const SAVE_VERSION = 5
+const SAVE_VERSION = 6
 
 interface Saved {
   savedAt: number
@@ -164,8 +163,7 @@ export default function App() {
     syncBlocked().catch(() => {})
     /* وطبقة التعديلات معها — سؤالٌ صُحّح في اللوحة يصل الأجهزة هنا. */
     syncOverlay().catch(() => {})
-    /* والفئات معها — الترتيب لا يهمّ: العجلة تُبنى عند فتح شاشة اللفّ،
-       بعد أن يكون الاثنان قد وصلا أو بقيا على المخزّن. */
+    /* والفئات معها — تصل إلى شبكة اختيار الإعداد عبر إخطار `subscribeBank`. */
     syncCategories().catch(() => {})
     return () => {
       alive = false
@@ -384,8 +382,6 @@ export default function App() {
     switch (state.phase) {
       case 'stage1-board':
         return <Stage1Board state={state} dispatch={dispatch} />
-      case 'stage2-wheel':
-        return <WheelScreen state={state} dispatch={dispatch} />
       case 'stage1-question':
         return <Stage1Question state={state} dispatch={dispatch} />
       case 'stage1-reveal':

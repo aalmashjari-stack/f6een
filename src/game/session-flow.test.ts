@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { reducer } from './reducer'
-import { CATEGORIES, familyOf, playableCategories } from './bank'
+import { ALL_QUESTIONS, familyOf, playableCategories, setQuestionOverlay } from './bank'
 import { STAGE1_CATEGORIES, STAGE1_LEVELS, createSession } from './session'
 import type { GameState } from './session'
 import type { Level, Question } from './types'
@@ -28,10 +28,6 @@ const boardCells = (s: GameState): { category: string; level: Level }[] =>
   shuffle(s.s1Categories.flatMap((c) => STAGE1_LEVELS.map((level) => ({ category: c.name, level }))))
 
 const step = (s: GameState, a: Parameters<typeof reducer>[1]) => reducer(s, a)!
-const freeCategory = (s: GameState) => {
-  const left = CATEGORIES.filter((c) => !s.spentCategories.includes(c))
-  return left[Math.floor(Math.random() * left.length)]
-}
 
 /**
  * يلعب جلسة كاملة عبر المحرك نفسه — لا محاكاة تعيد كتابة منطقه — ويعيد
@@ -52,8 +48,8 @@ function playSession(): { shown: Question[]; state: GameState } {
   s = step(s, { t: 'INTERVAL_CONTINUE' })
 
   while (s.phase === 'stage2-selection') {
+    /* الديربي بلا تصنيفات: السؤال يُسحب مع اختيار اللاعبين، بلا شاشة بينهما. */
     s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
-    s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
     shown.push(s.currentQuestion!)
     s = step(s, { t: 'S2_TO_REVEAL' })
     s = step(s, { t: 'S2_NEXT_ROUND' })
@@ -172,7 +168,6 @@ function driveToStage3(): GameState {
   s = step(s, { t: 'INTERVAL_CONTINUE' })
   while (s.phase === 'stage2-selection') {
     s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
-    s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
     s = step(s, { t: 'S2_TO_REVEAL' })
     s = step(s, { t: 'S2_NEXT_ROUND' })
   }
@@ -202,5 +197,68 @@ describe('الحق ما تلحق — انتهاء الوقت لا يكرّر ا�
     expect(s.s3Team).toBe(1)
     expect(s.s3Queue[s.s3Pos].id).not.toBe(onScreenAtTimeout.id)
     expect(s.usedQuestionIds.has(onScreenAtTimeout.id)).toBe(true) // احترق فلا يعود
+  })
+})
+
+
+/**
+ * قانونا الديربي الجديدان (٤ سبتمبر ٢٠٢٦): **بلا تصنيفات**، و**من البنك
+ * المشحون وحده** لا مما أضافته اللوحة.
+ *
+ * والثاني لا يكشفه تصفّحٌ يدويّ: لوحةٌ فارغة من الإضافات تُخفيه تماماً،
+ * ولا يظهر إلّا على حسابٍ رُفعت فيه دفعةُ أسئلة — ثمّ يظهر سؤالٌ مضاف في
+ * نجمة اللعبة بعد أن تكون الجلسة قد بدأت أمام المجلس.
+ */
+describe('الديربي — بلا تصنيفات ومن البنك المشحون', () => {
+  const SHIPPED = new Set(ALL_QUESTIONS.map((q) => q.id))
+
+  it('لا يمرّ بشاشة تصنيف: السؤال جاهز مع اختيار اللاعبين', () => {
+    let s = createSession(INPUT)
+    for (const cell of boardCells(s)) {
+      s = step(s, { t: 'S1_PICK', ...cell })
+      s = step(s, { t: 'S1_SCORE', correct: false })
+    }
+    s = step(s, { t: 'INTERVAL_CONTINUE' })
+    expect(s.phase).toBe('stage2-selection')
+
+    s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
+    expect(s.phase).toBe('stage2-question')
+    expect(s.currentQuestion).not.toBeNull()
+    expect(s.currentQuestion!.level).toBe('متوسط')
+    /* ولا تصنيفَ معروضاً — الشريط يقول «متوسط · لا تشاور» لا اسمَ فئة. */
+    expect(s.currentCategory).toBeNull()
+  })
+
+  it('لا يسحب سؤالاً أضافته اللوحة مهما امتلأت الطبقة', () => {
+    /* طبقةٌ ضخمة من المضاف في المستوى نفسه: لو كان السحب من `effective`
+       لغلبت احتمالاً كلَّ جلسةٍ من الجلسات المئة أدناه. */
+    setQuestionOverlay(
+      Array.from({ length: 400 }, (_, i) => ({
+        id: `ADM${9000 + i}`,
+        category: 'أكلات',
+        level: 'متوسط' as const,
+        topic: '',
+        question: `سؤال مضاف رقم ${i}؟`,
+        answer: `جواب ${i}`,
+      })),
+    )
+    try {
+      for (let n = 0; n < 100; n++) {
+        let s = createSession(INPUT)
+        for (const cell of boardCells(s)) {
+          s = step(s, { t: 'S1_PICK', ...cell })
+          s = step(s, { t: 'S1_SCORE', correct: false })
+        }
+        s = step(s, { t: 'INTERVAL_CONTINUE' })
+        while (s.phase === 'stage2-selection') {
+          s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
+          expect(SHIPPED.has(s.currentQuestion!.id), `الجلسة ${n}`).toBe(true)
+          s = step(s, { t: 'S2_TO_REVEAL' })
+          s = step(s, { t: 'S2_NEXT_ROUND' })
+        }
+      }
+    } finally {
+      setQuestionOverlay([])
+    }
   })
 })

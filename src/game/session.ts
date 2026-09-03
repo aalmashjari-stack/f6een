@@ -72,8 +72,7 @@ export interface GameState {
    */
   askedQuestionIds: string[]
 
-  /** تصنيفات خرجت من العجلة في المرحلة الحالية (تُصفّر عند بداية الديربي). */
-  spentCategories: string[]
+  /** تصنيف السؤال الجاري — لوحُ الجولة الجماعية وحده يملؤه (الديربي بلا تصنيفات). */
   currentCategory: string | null
   currentQuestion: Question | null
 
@@ -163,7 +162,6 @@ export function createSession(input: SetupInput): GameState {
     usedQuestionIds: used,
     askedQuestionIds: [],
     spentFamilies: [],
-    spentCategories: [],
     currentCategory: null,
     currentQuestion: null,
     s1Categories,

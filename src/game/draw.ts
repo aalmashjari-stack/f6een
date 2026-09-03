@@ -1,5 +1,5 @@
 import type { Level, Question } from './types'
-import { familyOf, poolByCatLevel, poolByLevels } from './bank'
+import { familyOf, poolByCatLevel, poolByLevels, poolShippedByLevel } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -43,6 +43,38 @@ export function drawOne(
     return fam === null || !spentFamilies.has(fam)
   })
   const pool = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : cell
+  return pool[Math.floor(Math.random() * pool.length)]
+}
+
+/**
+ * سحبٌ بمستوىً واحد بلا تصنيف، **من البنك المشحون وحده** — الديربي
+ * (SPEC ٥، قرار علي ٤ سبتمبر ٢٠٢٦).
+ *
+ * أخفُّ على البنك من السحب بالتصنيف لا أثقل: المخزون كلُّ أسئلة المستوى لا
+ * خليّةٌ واحدة منه، فلا يجفّ أضعفُ تصنيفٍ ويسحب الجلسة معه.
+ *
+ * والمضافُ من اللوحة (`ADM####`) خارجَه: الديربي نجمةُ اللعبة وأسئلتُه
+ * مُراجَعة، والمضافُ يدخل اللعبة من بابي الجولة الجماعية والحق ما تلحق.
+ * أمّا التعديلُ فيبقى مركَّباً — سؤالُ بنكٍ صُحّح يبقى سؤالَ بنك.
+ *
+ * وسلّم التنازل نفسه الذي في `drawOne`: القالب أوّلاً، ثمّ الحجز، ثمّ عدم
+ * التكرار أخيراً — لأنّ سؤالاً من قالبٍ مطروق يُحسّ متشابهاً، أمّا كسرَ
+ * الحجز فيعيد السؤال نفسه حرفياً.
+ */
+export function drawByLevel(
+  level: Level,
+  used: Set<string>,
+  reserved: Set<string> = new Set(),
+  spentFamilies: Set<string> = new Set(),
+): Question {
+  const all = poolShippedByLevel(level)
+  const unused = all.filter((q) => !used.has(q.id))
+  const free = unused.filter((q) => !reserved.has(q.id))
+  const best = free.filter((q) => {
+    const fam = familyOf(q)
+    return fam === null || !spentFamilies.has(fam)
+  })
+  const pool = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : all
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
