@@ -74,7 +74,10 @@ body {
 .a-card { background: var(--n-surface); border-radius: 14px; overflow: hidden;
   box-shadow: 0 0 0 1.5px var(--n-ink), 3px 3px 0 var(--n-ink); }
 .a-scroll { overflow-x: auto; }
-table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
+/* ‎min-width:max-content‎ هو ما يجعل ‎.a-scroll‎ يتمرّر فعلاً: بـ‎width:100%‎
+   وحدها يسحق تخطيطُ الجداول آخرَ عمودٍ حين يضيق العرض بدل أن يتمدّد
+   الجدول — فتُقصّ أزرارُ الفعل عند حافّة البطاقة. */
+table.a-tbl { width: 100%; min-width: max-content; border-collapse: collapse; white-space: nowrap; }
 .a-tbl th, .a-tbl td { padding: 9px 12px; text-align: start; }
 .a-tbl th {
   font-size: 11px; font-weight: 900; color: var(--n-ink-3);
@@ -99,9 +102,12 @@ table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
 /* خليّة الصلاحية: شارةٌ وزرّان في سطرٍ واحد لا يلتفّ. ‎.a-bar‎ يلتفّ
    بطبعه (‎flex-wrap:wrap‎) وهو صحيحٌ في أشرطة الأدوات العريضة، وخطأٌ في
    خليّة جدولٍ ضيّقة: تتكدّس الأزرار سطوراً ويفيض أطولُها خارج البطاقة. */
-.a-role { display: inline-flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
-/* المنتقي بعرضٍ يكفي أطولَ خياراته ولا يزيد — الخليّة آخر عمودٍ في جدولٍ
-   عريض، وكلُّ بكسلٍ زائد فيها يدفع الجدول إلى التمرير الأفقيّ. */
+/* خليّةُ الفعل: عناصرها في سطرٍ واحد لا يلتفّ. ‎.a-bar‎ يلتفّ بطبعه وهو
+   صحيحٌ في أشرطة الأدوات العريضة، وخطأٌ في خليّة جدول: تتكدّس الأزرار
+   سطوراً ثمّ يفيض أطولُها. والجدول يتمرّر أفقياً (أعلاه)، فعمودٌ أعرض
+   أهونُ من نصٍّ مبتور. */
+.a-acts { display: inline-flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+/* المنتقي بعرضٍ يكفي أطولَ خياراته ولا يزيد. */
 .a-role-pick { padding-inline: 8px; max-width: 128px; }
 
 /* ── الحقول والأزرار ── */

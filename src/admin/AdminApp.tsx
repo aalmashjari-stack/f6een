@@ -156,21 +156,29 @@ function NotAdmin({ email }: { email: string }) {
 
 type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'messages' | 'questions' | 'categories'
 
-/* اللسان الذي يقتصر على المدير العامّ يحمل `true` — والأسئلةُ وما يتّصل بها
-   مفتوحةٌ للمحرّر (قرار علي، ٤ سبتمبر ٢٠٢٦: «كلّ شيء متعلّق بالأسئلة»). */
+/**
+ * الألسنة مرتّبةٌ بالعمل لا بتاريخ إضافتها: **المحتوى أوّلاً** (الأسئلة
+ * وفئاتها وبلاغاتها) ثمّ **الإدارة** (الحسابات والجلسات والأكواد والرسائل).
+ *
+ * والمحتوى أوّلٌ لأنّه العمل اليوميّ — وهو كلّ ما يراه محرّرُ الأسئلة، فلا
+ * تبدأ لوحتُه بفجوةٍ حيث أُخفيت ألسنةٌ ليست له.
+ *
+ * و`true` = للمدير العامّ وحده (قرار علي ٤ سبتمبر ٢٠٢٦: «كلّ شيء متعلّق
+ * بالأسئلة» للمحرّر).
+ */
 const TABS: [Tab, string, boolean][] = [
+  ['questions', 'الأسئلة', false],
+  ['categories', 'الفئات', false],
+  ['reports', 'البلاغات', false],
   ['users', 'الحسابات', true],
   ['sessions', 'الجلسات', true],
   ['codes', 'أكواد الهدية', true],
   ['messages', 'الرسائل', true],
-  ['questions', 'الأسئلة', false],
-  ['categories', 'الفئات', false],
-  ['reports', 'بلاغات الأسئلة', false],
 ]
 
 function Dashboard({ session, superAdmin }: { session: Session; superAdmin: boolean }) {
   const tabs = TABS.filter(([, , sup]) => superAdmin || !sup)
-  const [tab, setTab] = useState<Tab>(() => (superAdmin ? 'users' : 'questions'))
+  const [tab, setTab] = useState<Tab>('questions')
   const [stats, setStats] = useState<AdminStats | null>(null)
 
   const reloadStats = useCallback(() => {
@@ -402,7 +410,7 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
       <td className="num">{user.last_game ? day(user.last_game) : '—'}</td>
       <td className="num">{user.questions_seen}</td>
       <td>
-        <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+        <span className="a-acts">
           <input
             className="a-num"
             value={val}
@@ -422,7 +430,7 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
         {user.id === me ? (
           <span className="tag open">أنت</span>
         ) : (
-          <span className="a-role">
+          <span className="a-acts">
             <select
               className="a-in a-role-pick"
               value={pick}
@@ -761,7 +769,7 @@ function Reports() {
                   <td className="num">{f.reports}</td>
                   <td className="num">{day(f.last_at)}</td>
                   <td>
-                    <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+                    <span className="a-acts">
                       <button
                         className="a-btn go"
                         disabled={busy === f.question_id || f.status === 'ok'}
@@ -962,7 +970,7 @@ function Questions() {
                 <td>{r.q.category}</td>
                 <td>{r.q.level}</td>
                 <td>
-                  <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+                  <span className="a-acts">
                     <button className="a-btn" onClick={() => setEditing(r)}>
                       تعديل
                     </button>
@@ -1652,7 +1660,7 @@ function Messages() {
                   </span>
                 </td>
                 <td>
-                  <div className="a-bar">
+                  <div className="a-acts">
                     {m.status !== 'read' && (
                       <button className="a-btn" onClick={() => mark(m, 'read')}>مقروءة</button>
                     )}
