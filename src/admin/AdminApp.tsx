@@ -415,7 +415,10 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
         {user.id === me ? (
           <span className="tag open">أنت</span>
         ) : (
-          <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+          /* ‎.a-role‎ لا ‎.a-bar‎: الثاني يلتفّ بطبعه فتتكدّس الأزرار الثلاثة
+             سطوراً ويفيض أطولُها خارج البطاقة فيُقصّ. والجدول يتمرّر أفقياً
+             أصلاً، فعمودٌ أعرض أهونُ من نصٍّ مبتور. */
+          <span className="a-role">
             {user.role === null ? (
               <button className="a-btn" disabled={busy} onClick={() => role('editor')}>
                 رقِّه محرّراً
@@ -427,7 +430,7 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
                 </span>
                 {user.role === 'editor' && (
                   <button className="a-btn" disabled={busy} onClick={() => role('super')}>
-                    ارفعه مديراً عامّاً
+                    اجعله عامّاً
                   </button>
                 )}
                 <button

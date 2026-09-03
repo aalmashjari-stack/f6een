@@ -96,6 +96,11 @@ table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
 .tag.abandoned { color: var(--n-warn); }
 .tag.finished { color: var(--n-good); }
 
+/* خليّة الصلاحية: شارةٌ وزرّان في سطرٍ واحد لا يلتفّ. ‎.a-bar‎ يلتفّ
+   بطبعه (‎flex-wrap:wrap‎) وهو صحيحٌ في أشرطة الأدوات العريضة، وخطأٌ في
+   خليّة جدولٍ ضيّقة: تتكدّس الأزرار سطوراً ويفيض أطولُها خارج البطاقة. */
+.a-role { display: inline-flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+
 /* ── الحقول والأزرار ── */
 .a-in, .a-num {
   font: inherit; font-weight: 700; font-size: 13px;
