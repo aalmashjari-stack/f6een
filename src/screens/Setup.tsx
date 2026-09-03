@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { SetupInput } from '../game/session'
 import { STAGE1_TEAM_CATEGORIES } from '../game/session'
 import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
-import { displayName, playableCategories } from '../game/bank'
+import { displayName, playableCategories, subscribeBank } from '../game/bank'
 import { categoryArt } from '../components/categoryArt'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
@@ -65,8 +65,20 @@ export function Setup({
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
 
-  /* تُقرأ مرّة: قائمةٌ تتبدّل تحت إصبع الحكم بين ضغطتين تنقل اختياره إلى فئة أخرى. */
-  const allCats = useMemo<string[]>(playableCategories, [])
+  /**
+   * القائمة تُقرأ مرّةً ثمّ **عند وصول المزامنة وحدها**.
+   *
+   * الثبات مقصود: قائمةٌ تتبدّل تحت إصبع الحكم بين ضغطتين تنقل اختياره إلى
+   * فئةٍ أخرى. لكنّ القراءة المرّةَ الواحدة كانت تُسقط الفئة المضافة من
+   * اللوحة: هذه الشاشة تُفتح في اللحظة التي تبدأ فيها `syncCategories`، فتقرأ
+   * قبل أن تصل. والإخطار يصل مرّةً أو مرّتين في أوّل ثوانٍ ثمّ يسكن —
+   * والفئات لا تُعاد ترتيباً بل تُلحَق في آخر القائمة (انظر `allCategories`)،
+   * فلا ينزاح ما تحت الإصبع.
+   */
+  const [bankRev, setBankRev] = useState(0)
+  useEffect(() => subscribeBank(() => setBankRev((v) => v + 1)), [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const allCats = useMemo<string[]>(playableCategories, [bankRev])
 
   /**
    * دور الاختيار للفريق الأقلّ اختياراً، وعند التساوي للفريق الأول.

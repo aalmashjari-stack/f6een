@@ -102,6 +102,30 @@ export function allQuestions(): Question[] {
 export function setQuestionOverlay(rows: Question[]) {
   overlay = rows
   rebuild()
+  notifyBank()
+}
+
+/* ===================== الإخطار عند تبدّل البنك =====================
+/**
+ * تُنبَّه الشاشاتُ حين تصل طبقةُ التعديلات أو الفئاتُ أو قائمةُ المحجوز من
+ * الخادم — فالمزامنة غير متزامنة وقد تصل **بعد** أن تكون الشاشة قد قرأت
+ * قائمتها.
+ *
+ * ولم يكن يلزم قبل ٣ سبتمبر ٢٠٢٦: الفئات كانت تُقرأ في شاشة العجلة وحدها،
+ * وهي تُفتح بعد الإعداد بدقائق فتصل المزامنةُ قبلها دائماً. ثمّ صارت شبكةُ
+ * اختيار الفئات في الإعداد نفسه — تُقرأ في أوّل لحظة، والمزامنةُ تبدأ معها.
+ * فالفئةُ التي أُضيفت من اللوحة لم تكن تظهر إلّا في التشغيل التالي (حين
+ * تقرأها `applyCachedCategories` من التخزين قبل الرسم).
+ */
+const listeners = new Set<() => void>()
+
+export function subscribeBank(cb: () => void): () => void {
+  listeners.add(cb)
+  return () => void listeners.delete(cb)
+}
+
+function notifyBank() {
+  for (const cb of listeners) cb()
 }
 
 /* ===================== الفئات المضافة من اللوحة ===================== */
@@ -109,6 +133,7 @@ let extra_: string[] = []
 
 export function setExtraCategories(names: string[]) {
   extra_ = names
+  notifyBank()
 }
 
 /** فئات البنك المشحون ثمّ المضافة — بلا تكرار، وبترتيب ثابت. */
@@ -149,6 +174,9 @@ let blocked: Set<string> = new Set()
 
 export function setBlockedQuestionIds(ids: Iterable<string>) {
   blocked = new Set(ids)
+  /* المحجوز يمسّ صلاحية الفئة كما تمسّها الأسئلةُ المضافة: فئةٌ حُجز آخرُ
+     أسئلتها في مستوىً تخرج من `playableCategories`. */
+  notifyBank()
 }
 
 export function blockedQuestionIds(): Set<string> {

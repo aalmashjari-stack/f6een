@@ -9,8 +9,10 @@ import {
   familyOf,
   playableCategories,
   poolByCatLevel,
+  setBlockedQuestionIds,
   setExtraCategories,
   setQuestionOverlay,
+  subscribeBank,
 } from './bank'
 import type { Level } from './types'
 
@@ -221,5 +223,60 @@ describe('الفئات المضافة', () => {
 
   it('كل فئات البنك المشحون صالحة للّعب', () => {
     expect(playableCategories()).toEqual(CATEGORIES)
+  })
+})
+
+
+/**
+ * حارس انحدار لعطلٍ وقع فعلاً وبلّغ عنه علي: فئةٌ أُضيفت من اللوحة لا تظهر
+ * في شاشة الإعداد.
+ *
+ * السبب لم يكن في القاعدة ولا في الشرط، بل في التوقيت: الشاشة تقرأ
+ * `playableCategories` عند فتحها، و`syncCategories` تبدأ في اللحظة نفسها
+ * وتصل بعدها — فتُحسب القائمة قبل وصول الفئة. والعلاج إخطارٌ تشترك فيه
+ * الشاشة فتعيد القراءة.
+ *
+ * والاختبار يمسك الإخطار لا الشاشة: لو حُذف النداء من أيّ من الثلاثة، لم
+ * تعلم شاشةٌ بوصول المزامنة أبداً.
+ */
+describe('الإخطار عند وصول المزامنة', () => {
+  it('يُنبّه المشتركين عند تبدّل الفئات والطبقة والمحجوز', () => {
+    let hits = 0
+    const off = subscribeBank(() => hits++)
+
+    setExtraCategories(['فئة إخطار'])
+    expect(hits, 'الفئات').toBe(1)
+
+    setQuestionOverlay([])
+    expect(hits, 'طبقة الأسئلة').toBe(2)
+
+    setBlockedQuestionIds([])
+    expect(hits, 'المحجوز').toBe(3)
+
+    off()
+    setExtraCategories([])
+    expect(hits, 'بعد إلغاء الاشتراك لا إخطار').toBe(3)
+  })
+
+  it('الفئة الواصلة بعد القراءة الأولى تدخل القائمة عند إعادة القراءة', () => {
+    const before = playableCategories()
+    /* فئة بمستوىً واحد فقط: تصل ولا تصير صالحة — الإخطار يقع والشرط يبقى. */
+    setExtraCategories(['فئة ناقصة'])
+    setQuestionOverlay([
+      { id: 'ADM9001', category: 'فئة ناقصة', level: 'سهل', topic: '', question: 'س؟', answer: 'ج' },
+    ])
+    expect(playableCategories()).not.toContain('فئة ناقصة')
+
+    /* وباكتمال المستويات الثلاثة تدخل — وهي القراءة الثانية التي أتاحها الإخطار. */
+    setQuestionOverlay([
+      { id: 'ADM9001', category: 'فئة ناقصة', level: 'سهل', topic: '', question: 'س١؟', answer: 'ج' },
+      { id: 'ADM9002', category: 'فئة ناقصة', level: 'متوسط', topic: '', question: 'س٢؟', answer: 'ج' },
+      { id: 'ADM9003', category: 'فئة ناقصة', level: 'صعب', topic: '', question: 'س٣؟', answer: 'ج' },
+    ])
+    expect(playableCategories()).toContain('فئة ناقصة')
+    expect(playableCategories().length).toBe(before.length + 1)
+
+    setExtraCategories([])
+    setQuestionOverlay([])
   })
 })
