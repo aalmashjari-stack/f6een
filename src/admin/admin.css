@@ -100,6 +100,9 @@ table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
    بطبعه (‎flex-wrap:wrap‎) وهو صحيحٌ في أشرطة الأدوات العريضة، وخطأٌ في
    خليّة جدولٍ ضيّقة: تتكدّس الأزرار سطوراً ويفيض أطولُها خارج البطاقة. */
 .a-role { display: inline-flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+/* المنتقي بعرضٍ يكفي أطولَ خياراته ولا يزيد — الخليّة آخر عمودٍ في جدولٍ
+   عريض، وكلُّ بكسلٍ زائد فيها يدفع الجدول إلى التمرير الأفقيّ. */
+.a-role-pick { padding-inline: 8px; max-width: 128px; }
 
 /* ── الحقول والأزرار ── */
 .a-in, .a-num {

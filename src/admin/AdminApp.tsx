@@ -346,16 +346,23 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
   const [val, setVal] = useState(String(user.balance ?? 0))
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
-  /* السحب بضغطتين كأكواد الهدية: الصفّ ضيّق والصفوف متجاورة، وضغطةٌ واحدة
-     تنزع صلاحيةً عن الشخص الخطأ. أمّا المنح فبضغطة — أثرُه يُلغى بسحبة. */
-  const [armed, setArmed] = useState(false)
+  /* الصلاحية منتقٍ وزرُّ حفظ — لا شارةً وزرَّين.
+     ثلاثةُ عناصر لا تسعها خليّةُ جدولٍ ضيّقة: تتكدّس إن التفّت، وتُقصّ إن
+     لم تلتفّ. والدور صفةٌ واحدة من ثلاث، فالمنتقي يقولها ويغيّرها معاً.
+     وزرُّ الحفظ لا يعمل إلّا إذا تغيّر الاختيار — فهو تأكيدُ السحب نفسه،
+     بنفس شكل خليّة الرصيد المجاورة. */
+  const current = user.role ?? ''
+  const [pick, setPick] = useState<string>(current)
+  /* القائمة تُعاد تحميلها بعد كل حفظ والصفُّ يبقى بمفتاحه، فلا يُعاد بناء
+     الحالة — بلا هذا يبقى المنتقي على الاختيار القديم بعد نجاح الحفظ. */
+  useEffect(() => setPick(current), [current])
+  const roleDirty = pick !== current
 
-  async function role(next: 'super' | 'editor' | null) {
+  async function saveRole() {
     setErr(null)
     setBusy(true)
     try {
-      await setAdminRole(user.id, next)
-      setArmed(false)
+      await setAdminRole(user.id, (pick || null) as 'super' | 'editor' | null)
       onSaved()
     } catch (e) {
       setErr(e instanceof Error ? e.message : 'تعذّر تغيير الصلاحية')
@@ -415,34 +422,20 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
         {user.id === me ? (
           <span className="tag open">أنت</span>
         ) : (
-          /* ‎.a-role‎ لا ‎.a-bar‎: الثاني يلتفّ بطبعه فتتكدّس الأزرار الثلاثة
-             سطوراً ويفيض أطولُها خارج البطاقة فيُقصّ. والجدول يتمرّر أفقياً
-             أصلاً، فعمودٌ أعرض أهونُ من نصٍّ مبتور. */
           <span className="a-role">
-            {user.role === null ? (
-              <button className="a-btn" disabled={busy} onClick={() => role('editor')}>
-                رقِّه محرّراً
-              </button>
-            ) : (
-              <>
-                <span className={'tag' + (user.role === 'super' ? ' open' : '')}>
-                  {user.role === 'super' ? 'مدير عامّ' : 'محرّر أسئلة'}
-                </span>
-                {user.role === 'editor' && (
-                  <button className="a-btn" disabled={busy} onClick={() => role('super')}>
-                    اجعله عامّاً
-                  </button>
-                )}
-                <button
-                  className="a-btn danger"
-                  disabled={busy}
-                  onClick={() => (armed ? role(null) : setArmed(true))}
-                  onBlur={() => setArmed(false)}
-                >
-                  {armed ? 'تأكيد السحب' : 'اسحب'}
-                </button>
-              </>
-            )}
+            <select
+              className="a-in a-role-pick"
+              value={pick}
+              onChange={(e) => setPick(e.target.value)}
+              aria-label="الصلاحية"
+            >
+              <option value="">بلا صلاحية</option>
+              <option value="editor">محرّر أسئلة</option>
+              <option value="super">مدير عامّ</option>
+            </select>
+            <button className="a-btn go" disabled={!roleDirty || busy} onClick={saveRole}>
+              {busy ? '…' : 'حفظ'}
+            </button>
           </span>
         )}
       </td>
