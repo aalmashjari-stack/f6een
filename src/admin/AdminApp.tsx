@@ -26,6 +26,8 @@ import {
   fetchStats,
   importQuestions,
   isAdmin,
+  isSuper,
+  setAdminRole,
   listCodes,
   listFlags,
   listCategoryRows,
@@ -52,17 +54,19 @@ import {
  */
 export default function AdminApp() {
   const session = useSession()
-  const [admin, setAdmin] = useState<boolean | null>(null)
+  /* `null` = لم يُسأل بعد. والسؤالان يُطرحان معاً فلا ترتسم اللوحة بدورٍ
+     ناقص ثمّ تقفز ألسنتُها حين يصل الجواب الثاني. */
+  const [role, setRole] = useState<{ admin: boolean; superAdmin: boolean } | null>(null)
 
   useEffect(() => {
     if (!session) {
-      setAdmin(null)
+      setRole(null)
       return
     }
     let alive = true
-    isAdmin()
-      .then((v) => alive && setAdmin(v))
-      .catch(() => alive && setAdmin(false))
+    Promise.all([isAdmin(), isSuper()])
+      .then(([admin, superAdmin]) => alive && setRole({ admin, superAdmin }))
+      .catch(() => alive && setRole({ admin: false, superAdmin: false }))
     return () => {
       alive = false
     }
@@ -70,9 +74,9 @@ export default function AdminApp() {
 
   if (session === undefined) return <p className="a-note">…</p>
   if (!session) return <Gate />
-  if (admin === null) return <p className="a-note">…</p>
-  if (!admin) return <NotAdmin email={session.user.email ?? ''} />
-  return <Dashboard session={session} />
+  if (role === null) return <p className="a-note">…</p>
+  if (!role.admin) return <NotAdmin email={session.user.email ?? ''} />
+  return <Dashboard session={session} superAdmin={role.superAdmin} />
 }
 
 /* ============================== بوّابة الدخول ============================== */
@@ -137,8 +141,8 @@ function NotAdmin({ email }: { email: string }) {
       <div className="a-gate-card">
         <h1>لا صلاحية</h1>
         <p className="a-note">
-          هذا الحساب ({email}) ليس مديراً. الصلاحية صفٌّ في جدول <code>admins</code> يُضاف من
-          محرّر SQL وحده.
+          هذا الحساب ({email}) ليس مديراً. الصلاحية يمنحها المديرُ العامّ من لسان
+          «الحسابات» في هذه اللوحة.
         </p>
         <button className="a-btn" onClick={() => signOut()}>
           الخروج
@@ -152,25 +156,29 @@ function NotAdmin({ email }: { email: string }) {
 
 type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'messages' | 'questions' | 'categories'
 
-const TABS: [Tab, string][] = [
-  ['users', 'الحسابات'],
-  ['sessions', 'الجلسات'],
-  ['codes', 'أكواد الهدية'],
-  ['reports', 'بلاغات الأسئلة'],
-  ['messages', 'الرسائل'],
-  ['questions', 'الأسئلة'],
-  ['categories', 'الفئات'],
+/* اللسان الذي يقتصر على المدير العامّ يحمل `true` — والأسئلةُ وما يتّصل بها
+   مفتوحةٌ للمحرّر (قرار علي، ٤ سبتمبر ٢٠٢٦: «كلّ شيء متعلّق بالأسئلة»). */
+const TABS: [Tab, string, boolean][] = [
+  ['users', 'الحسابات', true],
+  ['sessions', 'الجلسات', true],
+  ['codes', 'أكواد الهدية', true],
+  ['messages', 'الرسائل', true],
+  ['questions', 'الأسئلة', false],
+  ['categories', 'الفئات', false],
+  ['reports', 'بلاغات الأسئلة', false],
 ]
 
-function Dashboard({ session }: { session: Session }) {
-  const [tab, setTab] = useState<Tab>('users')
+function Dashboard({ session, superAdmin }: { session: Session; superAdmin: boolean }) {
+  const tabs = TABS.filter(([, , sup]) => superAdmin || !sup)
+  const [tab, setTab] = useState<Tab>(() => (superAdmin ? 'users' : 'questions'))
   const [stats, setStats] = useState<AdminStats | null>(null)
 
   const reloadStats = useCallback(() => {
+    if (!superAdmin) return
     fetchStats()
       .then(setStats)
       .catch(() => {})
-  }, [])
+  }, [superAdmin])
 
   useEffect(reloadStats, [reloadStats])
 
@@ -182,6 +190,9 @@ function Dashboard({ session }: { session: Session }) {
         </h1>
         <div className="a-who">
           <span className="a-mail">{session.user.email}</span>
+          <span className={'tag' + (superAdmin ? ' open' : '')}>
+            {superAdmin ? 'مدير عامّ' : 'محرّر أسئلة'}
+          </span>
           {/* العودة إلى اللعبة — رابطٌ لا زرّ: اللوحة مدخلٌ مستقلّ
               (‏admin.html‎) لا مسارٌ داخل التطبيق، فالرجوع تنقّلٌ حقيقيّ
               بين صفحتين. ورابطٌ يُفتح في تبويب جديد بالوسط أو بـcmd. */}
@@ -194,6 +205,9 @@ function Dashboard({ session }: { session: Session }) {
         </div>
       </header>
 
+      {/* البطاقات حساباتٌ ورصيد، فهي للمدير العامّ — و`admin_stats` تردّ
+          المحرّرَ بـ`not_super` على أيّ حال. */}
+      {superAdmin && (
       <div className="a-tiles">
         <Tile n={stats?.users} label="حساب" />
         <Tile n={stats?.sessions} label="جلسة" />
@@ -204,9 +218,10 @@ function Dashboard({ session }: { session: Session }) {
         <Tile n={stats?.balance} label="رصيد قائم" />
         <Tile n={stats?.redemptions} label="إضافة هدية" />
       </div>
+      )}
 
       <nav className="a-tabs">
-        {TABS.map(([id, label]) => (
+        {tabs.map(([id, label]) => (
           <button
             key={id}
             className={'a-tab' + (tab === id ? ' on' : '')}
@@ -217,7 +232,7 @@ function Dashboard({ session }: { session: Session }) {
         ))}
       </nav>
 
-      {tab === 'users' && <Users onChanged={reloadStats} />}
+      {tab === 'users' && <Users onChanged={reloadStats} me={session.user.id} />}
       {tab === 'sessions' && <Sessions />}
       {tab === 'codes' && <Codes onChanged={reloadStats} />}
       {tab === 'reports' && <Reports />}
@@ -264,7 +279,7 @@ function useLoad<T>(fn: () => Promise<T>) {
 
 /* ================================ الحسابات ================================ */
 
-function Users({ onChanged }: { onChanged: () => void }) {
+function Users({ onChanged, me }: { onChanged: () => void; me: string }) {
   const { data, err, reload } = useLoad<AdminUser[]>(listUsers)
   const [q, setQ] = useState('')
 
@@ -305,6 +320,7 @@ function Users({ onChanged }: { onChanged: () => void }) {
               <th>آخر لعبة</th>
               <th>أسئلة رآها</th>
               <th>الرصيد</th>
+              <th>الصلاحية</th>
             </tr>
           </thead>
           <tbody>
@@ -312,6 +328,7 @@ function Users({ onChanged }: { onChanged: () => void }) {
               <UserRow
                 key={u.id}
                 user={u}
+                me={me}
                 onSaved={() => {
                   reload()
                   onChanged()
@@ -325,10 +342,27 @@ function Users({ onChanged }: { onChanged: () => void }) {
   )
 }
 
-function UserRow({ user, onSaved }: { user: AdminUser; onSaved: () => void }) {
+function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; me: string }) {
   const [val, setVal] = useState(String(user.balance ?? 0))
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+  /* السحب بضغطتين كأكواد الهدية: الصفّ ضيّق والصفوف متجاورة، وضغطةٌ واحدة
+     تنزع صلاحيةً عن الشخص الخطأ. أمّا المنح فبضغطة — أثرُه يُلغى بسحبة. */
+  const [armed, setArmed] = useState(false)
+
+  async function role(next: 'super' | 'editor' | null) {
+    setErr(null)
+    setBusy(true)
+    try {
+      await setAdminRole(user.id, next)
+      setArmed(false)
+      onSaved()
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'تعذّر تغيير الصلاحية')
+    } finally {
+      setBusy(false)
+    }
+  }
 
   const dirty = val !== String(user.balance ?? 0)
 
@@ -374,6 +408,40 @@ function UserRow({ user, onSaved }: { user: AdminUser; onSaved: () => void }) {
           </button>
           {err && <span className="a-err">{err}</span>}
         </span>
+      </td>
+      <td>
+        {/* المديرُ لا يغيّر دورَ نفسه — والقاعدة تردّه بـ`cannot_change_self`
+            لو حاول. وهو القيدُ الذي يضمن بقاء مديرٍ عامّ واحد على الأقلّ. */}
+        {user.id === me ? (
+          <span className="tag open">أنت</span>
+        ) : (
+          <span className="a-bar" style={{ margin: 0, gap: 6 }}>
+            {user.role === null ? (
+              <button className="a-btn" disabled={busy} onClick={() => role('editor')}>
+                رقِّه محرّراً
+              </button>
+            ) : (
+              <>
+                <span className={'tag' + (user.role === 'super' ? ' open' : '')}>
+                  {user.role === 'super' ? 'مدير عامّ' : 'محرّر أسئلة'}
+                </span>
+                {user.role === 'editor' && (
+                  <button className="a-btn" disabled={busy} onClick={() => role('super')}>
+                    ارفعه مديراً عامّاً
+                  </button>
+                )}
+                <button
+                  className="a-btn danger"
+                  disabled={busy}
+                  onClick={() => (armed ? role(null) : setArmed(true))}
+                  onBlur={() => setArmed(false)}
+                >
+                  {armed ? 'تأكيد السحب' : 'اسحب'}
+                </button>
+              </>
+            )}
+          </span>
+        )}
       </td>
     </tr>
   )

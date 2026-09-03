@@ -12,11 +12,35 @@ import type { ImportRow } from './importQuestions'
  * ولهذا لا يضرّ أن تُشحن هذه الشاشة في نفس الحزمة العلنيّة.
  */
 
-/** هل الحساب الحاليّ مدير؟ سؤال القاعدة لا سؤال الرمز. */
+/** هل الحساب الحاليّ مدير (بأيّ دور)؟ سؤال القاعدة لا سؤال الرمز. */
 export async function isAdmin(): Promise<boolean> {
   const { data, error } = await supabase.rpc('is_admin')
   if (error) throw error
   return data === true
+}
+
+/**
+ * هل هو **مدير عامّ**؟ عليه تتوقّف ألسنةُ الحسابات والجلسات والأكواد
+ * والرسائل — ومنحُ الأدوار.
+ *
+ * والإخفاء في الواجهة زينةٌ لا حماية: الحارس الحقيقيّ `is_super()` داخل كلّ
+ * دالّة (انظر `20260904090000_admin_roles.sql`). فمن عدّل سطراً في المتصفّح
+ * ليُظهر اللسان، وجد الدالّة تردّه بـ`not_super`.
+ */
+export async function isSuper(): Promise<boolean> {
+  const { data, error } = await supabase.rpc('is_super')
+  if (error) throw error
+  return data === true
+}
+
+/** دور الإدارة: `super` كلّ شيء · `editor` الأسئلة وحدها · `null` ليس مديراً. */
+export type AdminRole = 'super' | 'editor'
+
+/** منحُ الدور أو سحبُه (`null`). للمدير العامّ وحده، ولا يغيّر دورَ نفسه. */
+export async function setAdminRole(id: string, role: AdminRole | null): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_set_admin', { p_user: id, p_role: role })
+  if (error) throw new Error(translate(error.message))
+  return data as string
 }
 
 export interface AdminUser {
@@ -30,6 +54,7 @@ export interface AdminUser {
   games: number
   last_game: string | null
   questions_seen: number
+  role: AdminRole | null
 }
 
 export async function listUsers(): Promise<AdminUser[]> {
@@ -163,6 +188,9 @@ export async function fetchStats(): Promise<AdminStats | null> {
 /* أخطاء القاعدة إنجليزيّة بطبعها، واللوحة عربيّة كبقيّة التطبيق. */
 const ERRORS: Record<string, string> = {
   not_admin: 'هذا الحساب ليس مديراً',
+  not_super: 'هذا الفعل للمدير العامّ وحده',
+  cannot_change_self: 'لا تغيّر دورَ نفسك — اطلبه من مديرٍ عامّ آخر',
+  bad_role: 'الدور: مدير عامّ أو محرّر أسئلة',
   bad_balance: 'الرصيد رقم صحيح لا يقلّ عن صفر',
   no_such_user: 'لا حساب بهذا المعرّف',
   code_too_short: 'الكود ثلاثة أحرف فأكثر',
