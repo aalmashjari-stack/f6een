@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { reducer } from './reducer'
-import { CATEGORIES, familyOf } from './bank'
-import { STAGE1_QUESTIONS, createSession } from './session'
+import { CATEGORIES, familyOf, playableCategories } from './bank'
+import { STAGE1_CATEGORIES, STAGE1_LEVELS, createSession } from './session'
 import type { GameState } from './session'
-import type { Question } from './types'
+import type { Level, Question } from './types'
+import { shuffle } from './draw'
 
 /** كم سؤالاً يُعرض فعلاً في دور الحق ما تلحق الواحد (٣٠ ثانية ≈ ١٠–١٤). */
 const S3_PER_TURN = 12
+
+/* ستّ فئات من المكتملة المستويات — اللوح يسحب من كل فئة مستوياتها الثلاثة،
+   فلا يصلح له ما نقصه مستوى (انظر playableCategories). */
+const BOARD = playableCategories().slice(0, STAGE1_CATEGORIES)
 
 const INPUT = {
   teamNames: ['النحل', 'الصقور'] as [string, string],
@@ -15,7 +20,12 @@ const INPUT = {
     ['خالد', 'منى'],
   ] as [string[], string[]],
   startingTeam: 0 as const,
+  categories: [BOARD.slice(0, 3), BOARD.slice(3)] as [string[], string[]],
 }
+
+/** خلايا اللوح الثماني عشرة بترتيبٍ مخلوط — كما يختارها فريقٌ لا كما تُصفّ. */
+const boardCells = (s: GameState): { category: string; level: Level }[] =>
+  shuffle(s.s1Categories.flatMap((c) => STAGE1_LEVELS.map((level) => ({ category: c.name, level }))))
 
 const step = (s: GameState, a: Parameters<typeof reducer>[1]) => reducer(s, a)!
 const freeCategory = (s: GameState) => {
@@ -25,18 +35,19 @@ const freeCategory = (s: GameState) => {
 
 /**
  * يلعب جلسة كاملة عبر المحرك نفسه — لا محاكاة تعيد كتابة منطقه — ويعيد
- * كل سؤال عُرض على الشاشة بالترتيب: ٦ في الجولة الجماعية، ٤ في الديربي،
- * و١٢ لكل فريق في الحق ما تلحق، ومعها الحالة الأخيرة.
+ * كل سؤال عُرض على الشاشة بالترتيب: ١٨ في الجولة الجماعية (لوح ستّ فئات
+ * بثلاثة مستويات)، و٤ في الديربي، و١٢ لكل فريق في الحق ما تلحق، ومعها
+ * الحالة الأخيرة.
  */
 function playSession(): { shown: Question[]; state: GameState } {
   const shown: Question[] = []
   let s = createSession(INPUT)
 
-  for (let i = 0; i < STAGE1_QUESTIONS; i++) {
-    s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
+  for (const cell of boardCells(s)) {
+    s = step(s, { t: 'S1_PICK', ...cell })
     shown.push(s.currentQuestion!)
     s = step(s, { t: 'S1_TO_REVEAL' })
-    s = step(s, { t: 'S1_SCORE', outcome: 'owner' })
+    s = step(s, { t: 'S1_SCORE', correct: true })
   }
   s = step(s, { t: 'INTERVAL_CONTINUE' })
 
@@ -93,10 +104,10 @@ describe('الجلسة الكاملة عبر المحرك', () => {
   it('كل سؤال عُرض احترق — ولا شيء غيره', () => {
     let s = createSession(INPUT)
     const shown: string[] = []
-    for (let i = 0; i < STAGE1_QUESTIONS; i++) {
-      s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
+    for (const cell of boardCells(s)) {
+      s = step(s, { t: 'S1_PICK', ...cell })
       shown.push(s.currentQuestion!.id)
-      s = step(s, { t: 'S1_SCORE', outcome: 'none' })
+      s = step(s, { t: 'S1_SCORE', correct: false })
     }
     expect([...s.usedQuestionIds].sort()).toEqual([...shown].sort())
   })
@@ -131,8 +142,9 @@ describe('الجلسة الكاملة عبر المحرك', () => {
 describe('نقاء المحرك', () => {
   it('استدعاء مرّتين على الحالة نفسها يحرق سؤالاً واحداً لا اثنين', () => {
     const s = createSession(INPUT)
-    const a = step(s, { t: 'SPIN_DONE', category: CATEGORIES[0] })
-    const b = step(s, { t: 'SPIN_DONE', category: CATEGORIES[0] })
+    const cell = { category: BOARD[0], level: 'سهل' as const }
+    const a = step(s, { t: 'S1_PICK', ...cell })
+    const b = step(s, { t: 'S1_PICK', ...cell })
 
     expect(s.usedQuestionIds.size).toBe(0) // الحالة الأصلية لم تُمسّ
     expect(a.usedQuestionIds.size).toBe(1)
@@ -141,10 +153,10 @@ describe('نقاء المحرك', () => {
 
   it('لا يعدّل مصفوفات الحالة الواردة في مكانها', () => {
     const s = createSession(INPUT)
-    const categoriesBefore = [...s.spentCategories]
+    const playedBefore = [...s.s1Played]
     const familiesBefore = [...s.spentFamilies]
-    step(s, { t: 'SPIN_DONE', category: CATEGORIES[0] })
-    expect(s.spentCategories).toEqual(categoriesBefore)
+    step(s, { t: 'S1_PICK', category: BOARD[0], level: 'سهل' })
+    expect(s.s1Played).toEqual(playedBefore)
     expect(s.spentFamilies).toEqual(familiesBefore)
   })
 })
@@ -152,10 +164,10 @@ describe('نقاء المحرك', () => {
 /** يقود جلسةً عبر المحرك إلى بداية دور الحق ما تلحق (الفريق الأول). */
 function driveToStage3(): GameState {
   let s = createSession(INPUT)
-  for (let i = 0; i < STAGE1_QUESTIONS; i++) {
-    s = step(s, { t: 'SPIN_DONE', category: freeCategory(s) })
+  for (const cell of boardCells(s)) {
+    s = step(s, { t: 'S1_PICK', ...cell })
     s = step(s, { t: 'S1_TO_REVEAL' })
-    s = step(s, { t: 'S1_SCORE', outcome: 'owner' })
+    s = step(s, { t: 'S1_SCORE', correct: true })
   }
   s = step(s, { t: 'INTERVAL_CONTINUE' })
   while (s.phase === 'stage2-selection') {

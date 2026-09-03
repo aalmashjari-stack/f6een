@@ -1,5 +1,5 @@
 import {
-  STAGE1_POINTS,
+  STAGE1_LEVEL_POINTS,
   STAGE2_CORRECT,
   STAGE2_WRONG,
   STAGE3_POINTS,
@@ -14,8 +14,8 @@ import {
 export const STAGES = [
   {
     name: 'الجولة الجماعية',
-    desc: 'الفريقان يتشاوران معاً، وصاحب الدور يجيب',
-    points: `${STAGE1_POINTS} نقاط`,
+    desc: 'كل فريق يختار ثلاث فئات، ويجيب صاحب الدور على خليّة من اللوح',
+    points: `${STAGE1_LEVEL_POINTS['سهل']} · ${STAGE1_LEVEL_POINTS['متوسط']} · ${STAGE1_LEVEL_POINTS['صعب']}`,
   },
   {
     name: 'الديربي',

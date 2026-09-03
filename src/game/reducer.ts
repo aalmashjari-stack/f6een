@@ -1,18 +1,18 @@
-import type { Mark, Question, TeamId } from './types'
+import type { Level, Mark, Question, TeamId } from './types'
 import { familyOf } from './bank'
 import { drawOne } from './draw'
 import {
   GameState,
   SetupInput,
   StageKey,
-  STAGE1_POINTS,
+  STAGE1_LEVEL_POINTS,
   STAGE1_QUESTIONS,
   STAGE2_CORRECT,
   STAGE2_WRONG,
   STAGE3_POINTS,
   TIEBREAK_POINTS,
+  cellKey,
   createSession,
-  stage1Level,
   stage1Owner,
 } from './session'
 
@@ -23,9 +23,10 @@ export type Action =
      مفتوحةً سابقة لا التي أُرسلت (نافذة الاستكمال)، ولهذا تُبنى الحالة
      خارج المخفّض ثمّ تُسلَّم إليه بدل أن يبنيها من المدخلات. */
   | { t: 'RESUME'; state: GameState }
-  | { t: 'SPIN_DONE'; category: string } // العجلة توقّفت على تصنيف
-  | { t: 'S1_TO_REVEAL' } // انتهت مهلة الفريق الآخر ← كشف تلقائي
-  | { t: 'S1_SCORE'; outcome: 'owner' | 'rival' | 'none' }
+  | { t: 'SPIN_DONE'; category: string } // العجلة توقّفت على تصنيف — الديربي وحده
+  | { t: 'S1_PICK'; category: string; level: Level } // خليّة من لوح الجولة الجماعية
+  | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
+  | { t: 'S1_SCORE'; correct: boolean }
   | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
   | { t: 'INTERVAL_CONTINUE' }
   | { t: 'S2_SELECT'; sel: [number, number] } // اختيار اللاعبَين (بعد التشويق)
@@ -96,11 +97,9 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     /* ---------------- العجلة → السؤال ---------------- */
     case 'SPIN_DONE': {
       if (!state) return state
-      const level =
-        state.phase === 'stage1-wheel' ? stage1Level(state.s1Index) : 'متوسط'
       const q = drawOne(
         action.category,
-        level,
+        'متوسط',
         state.usedQuestionIds,
         pendingS3Ids(state),
         guardedFamilies(state),
@@ -110,7 +109,31 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         currentCategory: action.category,
         currentQuestion: q,
         spentCategories: [...state.spentCategories, action.category],
-        phase: state.phase === 'stage1-wheel' ? 'stage1-question' : 'stage2-question',
+        phase: 'stage2-question',
+      }
+    }
+
+    /* ---------------- خليّة من لوح الجولة الجماعية ---------------- */
+    /* الخليّة تُقفل هنا لا عند التنقيط: السؤال سُحب وظهر، فإبقاؤها مفتوحة
+       يعرض سؤالاً محروقاً لو رجع الحكم إلى اللوح بزرّ الخلف. */
+    case 'S1_PICK': {
+      if (!state) return state
+      const key = cellKey(action.category, action.level)
+      if (state.s1Played.includes(key)) return state
+      const q = drawOne(
+        action.category,
+        action.level,
+        state.usedQuestionIds,
+        pendingS3Ids(state),
+        guardedFamilies(state),
+      )
+      return {
+        ...burn(state, q),
+        s1Cell: { category: action.category, level: action.level },
+        s1Played: [...state.s1Played, key],
+        currentCategory: action.category,
+        currentQuestion: q,
+        phase: 'stage1-question',
       }
     }
 
@@ -126,23 +149,23 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
     /* ---------------- تنقيط الجولة الجماعية ---------------- */
     case 'S1_SCORE': {
-      if (!state) return state
+      if (!state || !state.s1Cell) return state
       const owner = stage1Owner(state.s1Index, state.startingTeam)
-      const rival = (1 - owner) as TeamId
       let s = state
-      if (action.outcome === 'owner') s = addScore(s, owner, STAGE1_POINTS, 's1')
-      else if (action.outcome === 'rival') s = addScore(s, rival, STAGE1_POINTS, 's1')
+      if (action.correct) s = addScore(s, owner, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
 
       const nextIndex = s.s1Index + 1
-      if (nextIndex < STAGE1_QUESTIONS) {
-        return { ...s, s1Index: nextIndex, currentCategory: null, currentQuestion: null, phase: 'stage1-wheel' }
+      const rest = {
+        s1Index: nextIndex,
+        s1Cell: null,
+        currentCategory: null,
+        currentQuestion: null,
       }
+      if (nextIndex < STAGE1_QUESTIONS) return { ...s, ...rest, phase: 'stage1-board' as const }
       // انتهت المرحلة ١ → فاصل ثم الديربي (تُصفَّر العجلة)
       return {
         ...s,
-        s1Index: nextIndex,
-        currentCategory: null,
-        currentQuestion: null,
+        ...rest,
         spentCategories: [],
         intervalNext: 'stage2-selection',
         phase: 'interval',

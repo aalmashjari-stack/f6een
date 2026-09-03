@@ -672,6 +672,115 @@ html[data-skin] body .screen .cat.landed .cat-name {
   html[data-skin] body .screen .cat.spent .cat-name { color: var(--n-ink-3); }
 }
 
+
+/* ─── ١٠ب. لوح الجولة الجماعية وشريحة اختيار الفئة ──────────────────── */
+/* بُنيا بعد نيو (٣ سبتمبر ٢٠٢٦)، فأنماطهما الأساسية بلغة الورقيّة الليليّة
+   — كتلٌ داكنة على أرضيّةٍ فاتحة. هنا يُعادان إلى لغة الأسطح البيضاء
+   وحدِّ الحبر. والبادئة تحمل `body .screen` حيث تنافس أنماطاً محقونةً
+   بـ<style> وقتَ التشغيل — نفس علاج قسم الفئات أعلاه. */
+
+/* إطار الفئة: كلُّ وحدة (بطاقة + ثلاثة مستويات) داخل بطاقةٍ واحدة بلون
+   الفريق الذي اختارها — بدونه يلتبس عمودُ فئةٍ ببطاقة جارتها. */
+html[data-skin] body .screen .bunit {
+  border: 0;
+  border-radius: var(--n-r3);
+  background: var(--n-surface-2);
+}
+html[data-skin] body .screen .bunit { box-shadow: 0 0 0 1px var(--n-line), 0 4px 12px rgba(26,22,38,.10); }
+/* لون الفريق في الأرضيّة لا في الحدّ — الحدّ الملوّن الرفيع يضيع من بعيد */
+html[data-skin] body .screen .bunit.team-0 { background: color-mix(in srgb, var(--n-a-tint) 26%, var(--n-surface)); }
+html[data-skin] body .screen .bunit.team-1 { background: color-mix(in srgb, var(--n-b-tint) 26%, var(--n-surface)); }
+
+/* رأس العمود: الرسمة تملأه واسمُ الفئة على لوحته الداكنة كما في `.cat` */
+html[data-skin] body .screen .bhead {
+  border: 0;
+  border-radius: 14px;
+  background-color: var(--n-surface);
+  box-shadow: 0 0 0 1px rgba(26,22,38,.08), 0 2px 5px rgba(26,22,38,.06);
+}
+html[data-skin] body .screen .bh-name { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.45); }
+
+
+/* خليّة النقاط: سطحٌ أبيض ورقمٌ حبريّ — لا ذهبَ الورقيّة */
+html[data-skin] body .screen .bcell {
+  border: 0;
+  border-radius: var(--n-r2);
+  background: var(--n-surface);
+  color: var(--n-ink);
+  box-shadow: var(--n-e1);
+  transition: box-shadow .18s ease, transform .18s var(--ease-spring);
+}
+html[data-skin] body .screen .bcell .bc-points { color: var(--n-ink); }
+html[data-skin] body .screen .bcell .bc-level { color: var(--n-ink-3); }
+html[data-skin] body .screen .bcell:not(.played):hover { transform: translateY(-2px); box-shadow: var(--n-e2); }
+/* المستهلَك يغور تحت السطح ويبقى مقروءاً — شفافيةٌ للمجلس لا زينة (SPEC §٤) */
+html[data-skin] body .screen .bcell.played {
+  opacity: 1;
+  background: var(--n-bg);
+  box-shadow: inset 0 0 0 1px var(--n-line);
+}
+html[data-skin] body .screen .bcell.played .bc-points,
+html[data-skin] body .screen .bcell.played .bc-level { color: var(--n-ink-3); }
+
+/* شارة صاحب الفئة تلبس كتلة فريقه — لونُ الفريق ثابت عبر الجلسة */
+html[data-skin] body .screen .bh-owner.team-0 { background: var(--n-a-tint); color: var(--n-a); }
+html[data-skin] body .screen .bh-owner.team-1 { background: var(--n-b-tint); color: var(--n-b); }
+
+/* شريحة اختيار الفئة في الإعداد — بطاقة العجلة نفسها بمقاسٍ أصغر */
+html[data-skin] body .screen .catchip {
+  border: 0;
+  border-radius: 14px;
+  background-color: var(--n-surface);
+  box-shadow: 0 0 0 1px rgba(26,22,38,.08), 0 2px 5px rgba(26,22,38,.06);
+}
+html[data-skin] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 1px rgba(26,22,38,.14), 0 6px 14px rgba(26,22,38,.12); }
+/* اكتمل اللوح: غير المختارة تغور تحت السطح ويبقى اسمها مقروءاً — نفس معالجة
+   `.cat.spent` أعلاه، فالحالتان واحدة: فئةٌ خرجت من اللعبة. */
+html[data-skin] body .screen .catchip.dimmed {
+  opacity: 1;
+  background-color: var(--n-bg);
+  box-shadow: inset 0 0 0 1px var(--n-line);
+}
+html[data-skin] body .screen .catchip.dimmed .cc-img { filter: grayscale(1) brightness(1.12) contrast(.72); opacity: .3; }
+html[data-skin] body .screen .catchip.dimmed .cc-plate { background: none; }
+html[data-skin] body .screen .catchip.dimmed .cc-name { color: var(--n-ink-3); text-shadow: none; }
+/* المختارة ترمدّ رسمتُها كأختها، لكن حدَّ فريقها واسمَه تبقيان — الترميد
+   يقول «أُقفل الاختيار» لا «أُلغي اللوح». وأربعةُ محدِّدات هنا تغلب اثنين
+   في قاعدة .dimmed أعلاه، فلا يبتلع الرماديُّ الحدَّ. */
+html[data-skin] body .screen .catchip.taken.dimmed.team-0 { box-shadow: 0 0 0 2.5px var(--n-a-tint), 0 4px 10px rgba(26,22,38,.12); }
+html[data-skin] body .screen .catchip.taken.dimmed.team-1 { box-shadow: 0 0 0 2.5px var(--n-b-tint), 0 4px 10px rgba(26,22,38,.12); }
+html[data-skin] body .screen .catchip.taken.dimmed { background-color: var(--n-surface); }
+html[data-skin] body .screen .catchip.taken.dimmed .cc-img { opacity: .5; }
+html[data-skin] body .screen .catchip.taken.dimmed .cc-plate {
+  background: linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.6) 50%, rgba(14,11,22,0) 100%);
+}
+html[data-skin] body .screen .catchip.taken.dimmed .cc-name { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.45); }
+html[data-skin] body .screen .catchip.taken.team-0 { box-shadow: 0 0 0 2.5px var(--n-a-tint), 0 4px 10px rgba(26,22,38,.12); }
+html[data-skin] body .screen .catchip.taken.team-1 { box-shadow: 0 0 0 2.5px var(--n-b-tint), 0 4px 10px rgba(26,22,38,.12); }
+html[data-skin] body .screen .catchip.taken.team-0 .cc-owner { color: var(--n-a-tint); }
+html[data-skin] body .screen .catchip.taken.team-1 .cc-owner { color: var(--n-b-tint); }
+html[data-skin] .cats-turn.done { background: var(--n-surface-2); color: var(--n-ink-2); }
+html[data-skin] .cats-turn.team-0 { background: var(--n-a-tint); color: var(--n-a); }
+html[data-skin] .cats-turn.team-1 { background: var(--n-b-tint); color: var(--n-b); }
+html[data-skin] .cats-title { color: var(--n-ink); }
+html[data-skin] .cats-count.team-0 { color: var(--n-a); }
+html[data-skin] .cats-count.team-1 { color: var(--n-b); }
+html[data-skin] .cats-hint { color: var(--n-ink-3); }
+
+/* ─── ١٠ج. بطاقتا «أصاب / أخطأ» ──────────────────────────────────────── */
+/* الأخضر والأحمر محجوزان للحكم في كل الهويّات — وهذه شاشةُ حكمٍ على فريقٍ
+   واحد لا اختيارٌ بين فريقين، فتلبسهما. */
+html[data-skin] .pick.pick-yes {
+  background: var(--n-good-tint);
+  box-shadow: inset 0 0 0 1px var(--n-good), var(--n-e1);
+}
+html[data-skin] .pick.pick-no {
+  background: var(--n-bad-tint);
+  box-shadow: inset 0 0 0 1px var(--n-bad), var(--n-e1);
+}
+html[data-skin] .pick.pick-yes .pk-name, html[data-skin] .pick.pick-yes .pk-to { color: var(--n-good); }
+html[data-skin] .pick.pick-no .pk-name, html[data-skin] .pick.pick-no .pk-to { color: var(--n-bad); }
+
 /* ─── ١١. الفاصل والديربي ────────────────────────────────────────────── */
 html[data-skin] .interval-card,
 html[data-skin] .interval-card.tie {

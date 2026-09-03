@@ -34,7 +34,7 @@ export type Mark = 'صمت' | 'صح' | 'غلط'
 /** الشاشات — تدفّق الجلسة في القسم ٣ من SPEC. */
 export type Phase =
   | 'setup'
-  | 'stage1-wheel'
+  | 'stage1-board'
   | 'stage1-question'
   | 'stage1-reveal'
   | 'interval'

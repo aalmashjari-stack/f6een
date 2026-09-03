@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { SetupInput } from '../game/session'
+import { STAGE1_TEAM_CATEGORIES } from '../game/session'
 import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
+import { displayName, playableCategories } from '../game/bank'
+import { categoryArt } from '../components/categoryArt'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 const MIN = 2
@@ -38,6 +41,8 @@ export function Setup({
     ['', ''],
   ])
   const [starter, setStarter] = useState<TeamId | null>(null)
+  /* فئات لوح الجولة الجماعية — ثلاث لكل فريق (SPEC ٤). */
+  const [cats, setCats] = useState<[string[], string[]]>([[], []])
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -59,6 +64,41 @@ export function Setup({
   }
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
+
+  /* تُقرأ مرّة: قائمةٌ تتبدّل تحت إصبع الحكم بين ضغطتين تنقل اختياره إلى فئة أخرى. */
+  const allCats = useMemo<string[]>(playableCategories, [])
+
+  /**
+   * دور الاختيار للفريق الأقلّ اختياراً، وعند التساوي للفريق الأول.
+   *
+   * لا بعدد الضغطات: الحكم قد يسحب اختياراً بضغطةٍ ثانية على الفئة نفسها،
+   * فيصير العدّ فردياً والدور معلّقاً على فريقٍ استوفى نصيبه.
+   *
+   * والقرعة لا تدخل هنا: هي تحدّد من يجيب أوّلاً لا من يختار أوّلاً — فيأخذ
+   * كل فريق واحدة من الاثنتين. وربطُ الاختيار بها كان يقلب ترتيب الفئات بأثر
+   * رجعيّ عند «إعادة القرعة» بعد أن تكون الفئات قد اختيرت.
+   */
+  const pickTurn: TeamId = cats[0].length <= cats[1].length ? 0 : 1
+  const catsReady = cats.every((c) => c.length === STAGE1_TEAM_CATEGORIES)
+  const ownerOf = (cat: string): TeamId | null =>
+    cats[0].includes(cat) ? 0 : cats[1].includes(cat) ? 1 : null
+
+  /** ضغطةٌ على فئةٍ مأخوذة من صاحبها تسحبها — وهي طريقُ التراجع الوحيد ولا تحتاج زرّاً. */
+  function toggleCat(cat: string) {
+    const owner = ownerOf(cat)
+    setCats((c) => {
+      const copy: [string[], string[]] = [[...c[0]], [...c[1]]]
+      if (owner !== null) {
+        copy[owner] = copy[owner].filter((x) => x !== cat)
+        return copy
+      }
+      const t = c[0].length <= c[1].length ? 0 : 1
+      if (copy[t].length >= STAGE1_TEAM_CATEGORIES) return c
+      copy[t].push(cat)
+      return copy
+    })
+    if (owner === null) play('pickLand')
+  }
 
   /* لا تبدأ اللعبة باسم مستعار: كل حقل — الفريقان وكل لاعب — مكتوب (قرار علي
      ٢٦ أغسطس ٢٠٢٦). الأسماء البديلة تبقى للعرض قبل الكتابة لا للّعب بها. */
@@ -107,7 +147,7 @@ export function Setup({
   }
 
   async function start() {
-    if (starter === null || !namesReady || busy || noBalance) return
+    if (starter === null || !namesReady || !catsReady || busy || noBalance) return
     setErr(null)
     setBusy(true)
     try {
@@ -118,6 +158,7 @@ export function Setup({
           players[1].map((p, i) => p.trim() || `لاعب ${i + 1}`),
         ],
         startingTeam: starter,
+        categories: cats,
       })
       /* لا إفراغ لـbusy عند النجاح: الشاشة تتبدّل إلى العجلة، وإفراغه يُعيد
          الزرّ نشطاً للحظة فيُضغط مرّتين — وكل ضغطة جلسة. */
@@ -231,6 +272,64 @@ export function Setup({
           </div>
         </section>
 
+        {/* لوح الجولة الجماعية — ثلاث فئات لكل فريق (SPEC ٤). هنا لا في شاشة
+            مستقلّة: الاختيار قرارُ تجهيزٍ يسبق اللعب مثل الأسماء والقرعة،
+            وشاشةٌ ثالثة بينهما تقطع المجلس مرّتين قبل أول سؤال. */}
+        <section className="setup-block">
+          <div className="cats-head">
+            <h3 className="cats-title">فئات الجولة الجماعية</h3>
+            {/* الشارة تلبس لون صاحب الدور — وتخلعه حين يكتمل اللوح: لا دور
+                عندها لأحد، ولون الفريق الأول عليها يُقرأ نداءً باقياً. */}
+            <span className={catsReady ? 'cats-turn done' : 'cats-turn team-' + pickTurn}>
+              {catsReady ? 'اكتمل اللوح' : `دور ${teamLabel(pickTurn)}`}
+            </span>
+          </div>
+          <div className="cats-grid">
+            {allCats.map((cat) => {
+              const owner = ownerOf(cat)
+              return (
+                <button
+                  key={cat}
+                  className={
+                    'catchip' +
+                    (owner !== null ? ' taken team-' + owner : '') +
+                    /* اكتمل اللوح: **الشبكة كلّها** ترمدّ — المختارة وغيرها —
+                       فتقول بلا سطرٍ إنّ الباب أُقفل ولا فئة سابعة. الرسمة
+                       وحدها تفقد لونها؛ حدُّ الفريق واسمُه يبقيان ملوّنين
+                       وإلّا ضاع مَن اختار ماذا. */
+                    (catsReady ? ' dimmed' : '')
+                  }
+                  onClick={() => toggleCat(cat)}
+                  aria-pressed={owner !== null}
+                >
+                  {/* الرسمة عنصرٌ مستقلّ لا خلفيّةُ الزرّ: الترميد يقع عليها
+                      وحدها فيبقى الاسم مقروءاً فوقها — بناء `.cat` نفسه. */}
+                  <span
+                    className="cc-img"
+                    style={
+                      categoryArt(cat)
+                        ? ({ '--art': `url(${categoryArt(cat)})` } as React.CSSProperties)
+                        : undefined
+                    }
+                  />
+                  <span className="cc-plate">
+                    <span className="cc-name">{displayName(cat)}</span>
+                    {owner !== null && <span className="cc-owner">{teamLabel(owner)}</span>}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          <div className="cats-note">
+            {[0, 1].map((t) => (
+              <span key={t} className={'cats-count team-' + t}>
+                {teamLabel(t as TeamId)}: {cats[t as TeamId].length} / {STAGE1_TEAM_CATEGORIES}
+              </span>
+            ))}
+            <span className="cats-hint">اضغط فئةً مختارة لسحبها</span>
+          </div>
+        </section>
+
         {/* القرعة والزرّان مجموعان عند الحافّة السفلى — كتلة فعل واحدة
             لا سطران يطفوان في الفراغ. */}
         <div className="setup-foot">
@@ -245,6 +344,10 @@ export function Setup({
             ) : !namesReady ? (
               /* بلا هذا السطر يبقى الزرّ رمادياً بلا سبب ظاهر، فيظنّه الحكم عطلاً. */
               <div className="toss-result missing">اكتب أسماء الفريقين واللاعبين</div>
+            ) : !catsReady ? (
+              <div className="toss-result missing">
+                اختر {STAGE1_TEAM_CATEGORIES} فئات لكل فريق
+              </div>
             ) : starter !== null ? (
               <div className="toss-result">
                 يبدأ: <b>{teamLabel(starter)}</b>
@@ -260,7 +363,7 @@ export function Setup({
             </button>
             <button
               className="action"
-              disabled={starter === null || !namesReady || busy || noBalance}
+              disabled={starter === null || !namesReady || !catsReady || busy || noBalance}
               onClick={start}
             >
               {busy ? 'لحظة…' : 'ابدأ اللعبة'}
@@ -373,7 +476,12 @@ export function Setup({
         .setup-body {
           --gap-block: clamp(10px, 2.6vh, 44px);
           --gap-in:    clamp(8px, 1.4vh, 20px);
-          flex:1; min-height:0;
+          /* ‏1 0 auto لا 1 min-height:0: كان الجسم يتقلّص إلى ارتفاع الغلاف
+             فيُسحق محتواه — بطاقاتُ الفئات تحديداً — بدل أن يفيض عنه، فلا
+             يعمل تمرير .setup-scroll إلا بالكاد. الآن يكبر على الشاشة الطويلة
+             (فتبقى كتلةُ الفعل عند الحافّة السفلى بـmargin-top:auto) ولا
+             ينزل تحت مقاس محتواه على القصيرة، فيفيض ويُمرَّر طبيعياً. */
+          flex:1 0 auto;
           width:min(100%, 1140px); margin-inline:auto;
           /* فسحة تحت الشريط أوسع من فجوة .screen — المشهد صورة كاملة العرض،
              فيحتاج هواءً يفصله عن النصّ أكثر مما يحتاجه عنصر عاديّ. */
@@ -669,6 +777,92 @@ export function Setup({
           /* margin-top:auto يحاذي الشارات الثلاث في سطر واحد مهما اختلف طول الوصف. */
           .stage-points { margin-top:auto; padding:6px 16px; }
         }
+
+        /* ===== فئات الجولة الجماعية ===== */
+        .cats-head { display:flex; align-items:center; gap:10px; margin-bottom:clamp(6px,1.2vh,12px); }
+        .cats-title { margin:0; font-size:clamp(14px,1.7vw,19px); font-weight:800; color:var(--cream); }
+        /* شارةُ الدور تلبس لون صاحبه — الفريقان بلونين ثابتين لا بترتيب الظهور */
+        .cats-turn {
+          margin-inline-start:auto;
+          font-size:clamp(11px,1.3vw,14px); font-weight:800;
+          padding:.2em .8em; border-radius:999px;
+        }
+        .cats-turn.done { background:var(--surface-2); color:var(--text-2); }
+        .cats-turn.team-0 { background:var(--gold); color:var(--on-gold); }
+        .cats-turn.team-1 { background:var(--coral); color:var(--on-coral); }
+
+        /* شبكة تلقائية لا بعدد ثابت: الفئات تُضاف من اللوحة فيتغيّر عددها. */
+        /* بطاقةٌ كبيرة تُرى رسمتُها من بعيد (طلب علي، ٣ سبتمبر ٢٠٢٦): الشبكة
+           تختار الفئة بصورتها لا باسمها وحده، والبطاقة الصغيرة تجعل الرسمة
+           زخرفةً لا دليلاً. والارتفاع الزائد يبتلعه تمريرُ الإعداد — وهي
+           الشاشة الوحيدة المسموح لها بالتمرير. */
+        .cats-grid {
+          display:grid;
+          grid-template-columns:repeat(auto-fill, minmax(clamp(162px,19vw,268px), 1fr));
+          gap:clamp(8px,1.1vw,16px);
+        }
+        /* البطاقة رسمةُ الفئة كاملةً، والاسم على لوحةٍ داكنة أسفلها — نفس بناء
+           بطاقة العجلة: الرسمات فاتحة متباينة والاسمُ عليها عارياً يضيع. */
+        .catchip {
+          position:relative; overflow:hidden;
+          display:flex; flex-direction:column; justify-content:flex-end;
+          min-width:0; min-height:clamp(112px,17vh,172px);
+          padding:0;
+          font-family:inherit; cursor:pointer; text-align:center;
+          border-radius:14px;
+          border:2px solid var(--border);
+          background-color:var(--surface-2);
+          color:var(--text-2);
+          transition:border-color .2s ease, color .2s ease, transform .12s var(--ease-spring);
+        }
+        .cc-img {
+          position:absolute; inset:0;
+          --art:none;
+          background-image:var(--art);
+          background-size:cover;
+          background-position:center;
+          transition:filter .25s ease, opacity .25s ease;
+        }
+        .cc-plate {
+          position:relative; z-index:1;
+          display:flex; flex-direction:column; align-items:center; gap:1px;
+          min-width:0;
+          padding:clamp(24px,4vh,46px) 8px clamp(8px,1.4vh,15px);
+          background:linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.6) 50%, rgba(14,11,22,0) 100%);
+        }
+
+        /* اكتمل اللوح: الشبكة كلّها ترمدّ — نفس معالجة الفئة المستهلَكة في
+           العجلة (SPEC ٧)، ظاهرةٌ باهتة لا مخفيّة. والمختارة تحتفظ بحدّها
+           واسم فريقها فوق الرمادي. */
+        .catchip.dimmed { opacity:.55; }
+        .catchip.dimmed:not(.taken) { cursor:default; }
+        .catchip.dimmed .cc-img { filter:grayscale(1) brightness(.6); }
+        /* المختارة تبقى قابلة للسحب بضغطة — وهو طريق التراجع الوحيد بعد
+           اكتمال اللوح، فلا تُقفل معها. */
+        .catchip.dimmed.taken { opacity:.78; }
+        .catchip:not(.dimmed):active, .catchip.taken:active { transform:scale(.97); }
+        .catchip:focus-visible { outline:none; border-color:var(--gold); }
+        @media (hover:hover) { .catchip:not(.dimmed):hover, .catchip.taken:hover { color:var(--cream); border-color:var(--text-3); } }
+        .cc-name {
+          font-size:clamp(14px,1.85vw,23px); font-weight:800; line-height:1.2; color:#fff;
+          max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+          text-shadow:0 1px 3px rgba(0,0,0,.45);
+        }
+        .cc-owner { font-size:clamp(11px,1.4vw,16px); font-weight:700; line-height:1.2; }
+        .catchip.taken .cc-plate { background:linear-gradient(to top, rgba(14,11,22,.94) 0%, rgba(14,11,22,.7) 55%, rgba(14,11,22,.08) 100%); }
+        .catchip.taken.team-0 { border-color:var(--gold); }
+        .catchip.taken.team-0 .cc-owner { color:var(--gold); }
+        .catchip.taken.team-1 { border-color:var(--coral); }
+        .catchip.taken.team-1 .cc-owner { color:var(--coral); }
+
+        .cats-note {
+          display:flex; flex-wrap:wrap; align-items:center; gap:clamp(8px,1.4vw,18px);
+          margin-top:clamp(6px,1.2vh,12px);
+          font-size:clamp(11px,1.3vw,14px); font-weight:700;
+        }
+        .cats-count.team-0 { color:var(--gold); }
+        .cats-count.team-1 { color:var(--coral); }
+        .cats-hint { margin-inline-start:auto; color:var(--text-3); font-weight:600; }
       `}</style>
     </div>
   )

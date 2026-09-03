@@ -26,6 +26,7 @@ import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
 import { Setup } from './screens/Setup'
 import { WheelScreen } from './screens/WheelScreen'
+import { Stage1Board } from './screens/Stage1Board'
 import { Stage1Question } from './screens/Stage1Question'
 import { Stage1Reveal } from './screens/Stage1Reveal'
 import { Interval } from './screens/Interval'
@@ -50,7 +51,7 @@ const RESUME_WINDOW_MS = 24 * 60 * 60 * 1000
 /* يُرفع كلما تغيّر شكل الحالة المحفوظة. جلسة حُفظت بنسخة أقدم تنقصها حقول
    تعتمد عليها النسخة الحالية، فاستئنافها يُسقط التطبيق في منتصف اللعب.
    الأسلم أن تُطرح ويُستأنف من الإعداد — وهذا لا يكلّف لعبة لأن الخصم عند الإنشاء. */
-const SAVE_VERSION = 4
+const SAVE_VERSION = 5
 
 interface Saved {
   savedAt: number
@@ -380,7 +381,8 @@ export default function App() {
      هنا يجعله مكاناً واحداً بدل تمريره إلى تسع شاشات. */
   const screen = (() => {
     switch (state.phase) {
-      case 'stage1-wheel':
+      case 'stage1-board':
+        return <Stage1Board state={state} dispatch={dispatch} />
       case 'stage2-wheel':
         return <WheelScreen state={state} dispatch={dispatch} />
       case 'stage1-question':

@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import type { GameState } from '../game/session'
-import { STAGE1_CONSULT_MS, STAGE1_QUESTIONS, STAGE1_RIVAL_MS, stage1Owner } from '../game/session'
+import { STAGE1_CONSULT_MS, STAGE1_LEVEL_POINTS, STAGE1_QUESTIONS, stage1Owner } from '../game/session'
 import type { Action } from '../game/reducer'
-import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
@@ -10,37 +8,38 @@ import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
 import { displayName } from '../game/bank'
 
-type Step = 'consult' | 'rival'
-
+/**
+ * سؤال الجولة الجماعية.
+ *
+ * **حُذفت مهلة الفريق الآخر (١٥ ثانية) وقيدُ الاختلاف معها** حين صار اللوح
+ * مختاراً بثمانية عشر سؤالاً: الخليّة لصاحب الدور وحده، يصيب فيأخذ نقاطها أو
+ * يخطئ فلا شيء لأحد. والمهلة الثانية في كل سؤال من ثمانية عشر كانت تضيف نحو
+ * خمس دقائق انتظار إلى مرحلة تضاعف طولُها أصلاً.
+ */
 export function Stage1Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
-  const [step, setStep] = useState<Step>('consult')
   const owner = stage1Owner(state.s1Index, state.startingTeam)
-  const rival = (1 - owner) as TeamId
   const ownerTeam = state.teams[owner]
-  const rivalTeam = state.teams[rival]
   const q = state.currentQuestion!
+  const points = STAGE1_LEVEL_POINTS[q.level]
 
-  const consultLeft = useCountdown(STAGE1_CONSULT_MS, step === 'consult')
-  // الكشف تلقائي عند انتهاء الـ١٥ ث، وللحكم زر يكشف قبلها بلا انتظار.
-  const rivalLeft = useCountdown(STAGE1_RIVAL_MS, step === 'rival', () => dispatch({ t: 'S1_TO_REVEAL' }))
-
-  const inConsult = step === 'consult'
+  // ينتهي الوقت فينتظر التطبيق بلا مؤقّت (الخطوة ٤ في القسم ٤): المتحدّث يجيب
+  // شفهياً، والحكم يكشف حين يفرغ.
+  const consultLeft = useCountdown(STAGE1_CONSULT_MS, true)
 
   return (
     <div className="screen">
       <ScoreBar teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} turnTeam={owner} />
 
-      <RoundBar title="الجولة الجماعية" chips={[state.currentCategory && displayName(state.currentCategory), q.level]} />
+      <RoundBar
+        title="الجولة الجماعية"
+        chips={[state.currentCategory && displayName(state.currentCategory), q.level, `${points} نقاط`]}
+      />
 
-      {/* الفريقان ككبسولتين — صاحب الدور ذهبي ممتلئ، الآخر مفرّغ */}
+      {/* صاحب الدور وحده — الخليّة له، ولا مهلة للفريق الآخر بعده */}
       <div className="s1-teams">
         <div className="tpill owner">
           <span className="role">صاحب الدور</span>
           <span className="tname">{ownerTeam.name}</span>
-        </div>
-        <div className={'tpill rival' + (step === 'rival' ? ' active' : '')}>
-          <span className="role">الفريق الآخر</span>
-          <span className="tname">{rivalTeam.name}</span>
         </div>
       </div>
 
@@ -52,40 +51,18 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         </div>
 
         <div className={'timer-stage' + (q.image ? '' : ' grow')}>
-          <Timer
-            remainingMs={inConsult ? consultLeft : rivalLeft}
-            totalMs={inConsult ? STAGE1_CONSULT_MS : STAGE1_RIVAL_MS}
-            size={q.image ? 'md' : 'lg'}
-          />
-          {/* حالةٌ وقاعدة في سطر واحد: «مهلة فلان» تتبدّل مع اللعب فتُقرأ في كل
-              سؤال، و«بلا تكرار إجابة فلان» قاعدةٌ تُقرأ مرّة. على الجوال الأفقي
-              يلتفّ السطر سطرين فيسرق ارتفاع المؤقّت — يُسحق إلى ثلاثة وعشرين
-              بكسلاً ورقمُه أربعةٌ وثلاثون، فيفيض عن بطاقته ويصطدم بالشريط.
-              فتذهب القاعدة وحدها هناك وتبقى الحالة. */}
-          {!inConsult && (
-            <div className="rival-hint">
-              مهلة {rivalTeam.name}
-              <span className="rival-rule"> — بلا تكرار إجابة {ownerTeam.name}</span>
-            </div>
-          )}
+          <Timer remainingMs={consultLeft} totalMs={STAGE1_CONSULT_MS} size={q.image ? 'md' : 'lg'} />
         </div>
       </div>
 
-      {inConsult ? (
-        <div className="stack gap-s">
-          <button className="action compact" onClick={() => setStep('rival')}>
-            انتهى التشاور — إجابة {ownerTeam.name}
-          </button>
-          <div className="action-note">اترك الوقت ينتهي أو اضغط بعد أن يجيب صاحب الدور</div>
-        </div>
-      ) : (
-        <div className="stack gap-s">
-          <button className="action compact" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
-            اكشف الإجابة
-          </button>
-          <div className="action-note">أو اتركها تُكشف تلقائياً عند انتهاء الوقت</div>
-        </div>
-      )}
+      {/* زرّ واحد يسمّي الخطوة التالية (القسم ١٠): الحكم يكشف بعد أن يجيب
+          صاحب الدور شفهياً — انتهاء المؤقّت لا يكشف شيئاً بنفسه. */}
+      <div className="stack gap-s">
+        <button className="action compact" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
+          أجاب {ownerTeam.name} — اكشف الإجابة
+        </button>
+        <div className="action-note">اضغط بعد أن يجيب صاحب الدور</div>
+      </div>
 
       <style>{`
         /* بطاقة السؤال هنا وحدها لا تنمو مع المؤقّت (المؤقّت هو النامي في هذه
@@ -169,8 +146,6 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           background:linear-gradient(150deg, #FFCE7B, var(--gold) 60%, #F0A93F);
           color:var(--on-gold); box-shadow:var(--glow-gold);
         }
-        .tpill.rival { border:2px solid var(--border); color:var(--text-2); }
-        .tpill.rival.active { border-color:var(--coral); color:var(--cream); box-shadow:var(--glow-coral); }
 
         .timer-stage {
           display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
@@ -191,24 +166,6 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           .tpill .tname { line-height:1.3; }
           .s1-question-body.photo { gap:clamp(12px,2vw,22px); }
           .s1-question-body.photo .timer-stage { flex-basis:120px; }
-        }
-        .rival-hint {
-          flex:none;
-          text-align:center; color:var(--cream); font-weight:700;
-          font-size:clamp(14px,1.8vw,19px);
-          padding:9px 22px; border-radius:999px;
-          border:2px solid var(--coral);
-        }
-        /* بعد القاعدة الأساسية عمداً: هي بنفس الأولوية وكانت تغلب هذه بالترتيب
-           وحده. القاعدة («بلا تكرار إجابة فلان») تُقرأ مرّة فتذهب، ويبقى السطر
-           سطراً واحداً ضيّقاً — وما يُوفَّر يعود إلى المؤقّت فوقه. */
-        @media (max-height:480px) {
-          .rival-hint {
-            font-size:clamp(12px,1.6vw,16px);
-            padding:4px 14px;
-            white-space:nowrap;
-          }
-          .rival-hint .rival-rule { display:none; }
         }
       `}</style>
     </div>

@@ -430,6 +430,59 @@ html[data-skin='blocks'] body .screen .cat.landed {
   box-shadow: 0 0 0 3px var(--n-ink), 7px 8px 0 var(--n-ink);
 }
 
+/* ─── ٩ب. لوح الجولة الجماعية وشريحة اختيار الفئة ────────────────────── */
+/* حدُّ حبرٍ وظلٌّ صلب، وميلٌ خفيف على الرؤوس — توقيع الهويّة. */
+/* إطار الفئة: حدُّ حبرٍ سميك وظلٌّ صلب — لغة الهويّة نفسها، وأقوى فصلٍ
+   ممكن بين ستّ وحدات متجاورة. ولون الفريق ينتقل إلى أرضيّة الإطار: حلقةٌ
+   صفراء على قشديّ لا تكاد تُرى من آخر المجلس، أمّا الأرضيّة المصبوغة
+   فتُقرأ بلمحة وتجمع «فئاتنا الثلاث» بلا حدٍّ باهت. */
+html[data-skin='blocks'] body .screen .bunit {
+  border-radius: var(--n-r3);
+  box-shadow: 0 0 0 2.5px var(--n-ink), 5px 6px 0 var(--n-ink);
+}
+html[data-skin='blocks'] body .screen .bunit.team-0 { background: #FFF0C4; }
+html[data-skin='blocks'] body .screen .bunit.team-1 { background: #DCF2F1; }
+html[data-skin='blocks'] body .screen .bhead {
+  border-radius: var(--n-r2);
+  box-shadow: 0 0 0 2px var(--n-ink);
+}
+html[data-skin='blocks'] body .screen .bcell {
+  border-radius: var(--n-r2);
+  box-shadow: var(--n-e1);
+}
+html[data-skin='blocks'] body .screen .bcell:not(.played):hover { box-shadow: var(--n-e2); }
+html[data-skin='blocks'] body .screen .bcell.played {
+  background: var(--n-bg);
+  box-shadow: 0 0 0 2px rgba(34,32,28,.18);
+}
+html[data-skin='blocks'] body .screen .bh-owner { box-shadow: 0 0 0 1.5px var(--n-ink); }
+
+html[data-skin='blocks'] body .screen .catchip {
+  border-radius: var(--n-r1);
+  box-shadow: 0 0 0 2px rgba(34,32,28,.28);
+}
+html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px rgba(34,32,28,.18); }
+html[data-skin='blocks'] body .screen .catchip.taken.dimmed.team-0 { box-shadow: 0 0 0 3px var(--n-a-tint), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken.dimmed.team-1 { box-shadow: 0 0 0 3px var(--n-b-tint), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken.team-0 { box-shadow: 0 0 0 3px var(--n-a-tint), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken.team-1 { box-shadow: 0 0 0 3px var(--n-b-tint), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] .cats-turn { box-shadow: 0 0 0 2px var(--n-ink); }
+
+/* «أصاب / أخطأ» كتلتان مشبعتان بنصٍّ أبيض — الأخضر والأحمر محجوزان للحكم */
+html[data-skin='blocks'] .pick.pick-yes { background: var(--n-good); box-shadow: var(--n-e2); }
+html[data-skin='blocks'] .pick.pick-no  { background: var(--n-bad);  box-shadow: var(--n-e2); }
+html[data-skin='blocks'] .pick.pick-yes .pk-name,
+html[data-skin='blocks'] .pick.pick-yes .pk-to,
+html[data-skin='blocks'] .pick.pick-no .pk-name,
+html[data-skin='blocks'] .pick.pick-no .pk-to { color: #fff; }
+html[data-skin='blocks'] .pick.pick-yes .pk-from,
+html[data-skin='blocks'] .pick.pick-yes .pk-arrow,
+html[data-skin='blocks'] .pick.pick-no .pk-from,
+html[data-skin='blocks'] .pick.pick-no .pk-arrow { color: rgba(255,255,255,.66); }
+html[data-skin='blocks'] .pick.pick-yes:hover,
+html[data-skin='blocks'] .pick.pick-no:hover { box-shadow: var(--n-e3); }
+
 /* ─── ١٠. الفاصل والديربي ────────────────────────────────────────────── */
 html[data-skin='blocks'] .interval-card { box-shadow: var(--n-e3); border-radius: var(--n-r4); }
 html[data-skin='blocks'] .il-eyebrow {

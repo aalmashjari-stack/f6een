@@ -1,7 +1,6 @@
 import type { GameState } from '../game/session'
-import { stage1Owner, STAGE1_POINTS } from '../game/session'
+import { stage1Owner, STAGE1_LEVEL_POINTS } from '../game/session'
 import type { Action } from '../game/reducer'
-import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 import { questionSizeSuffix } from '../components/QuestionText'
 import { FitAnswer } from '../components/FitAnswer'
@@ -17,18 +16,22 @@ import { celebSrc } from '../game/celebs'
  * السؤال والإجابة في بطاقة واحدة لا بطاقتين: هما جملة واحدة يقرؤها المجلس
  * دفعةً واحدة، وفصلهما كان يترك السؤالَ سطراً يتيماً فوق صندوق نصفه فارغ.
  *
- * وتحت اسم كل فريق نتيجتُه قبل الضغطة وبعدها (٥٠ ← ٦٠) بدل «+١٠» مكرّرة على
- * البطاقتين: الرقم المكرّر لا يضيف شيئاً يعرفه الحكم أصلاً، أمّا الانتقال
- * فيقول له أثرَ ضغطته قبل أن يضغط — وهو ما يتردّد فيه فعلاً حين يصيح المجلس.
+ * وتحت كل خيار نتيجةُ صاحب الدور قبل الضغطة وبعدها (٥٠ ← ٨٠): الانتقال يقول
+ * للحكم أثرَ ضغطته قبل أن يضغط — وهو ما يتردّد فيه فعلاً حين يصيح المجلس.
+ *
+ * **صارت حكماً على صاحب الدور وحده** بعد إلغاء قيد الاختلاف: الخليّة له،
+ * فالخياران «أصاب» و«أخطأ» لا ثلاثةُ نتائج بين فريقين. ولغةُ اللونين هي لغة
+ * تنقيط الديربي نفسها (القسم ١٠): الصح ذهبيّ ممتلئ، والغلط بإطار مرجاني.
  */
 export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
-  const rival = (1 - owner) as TeamId
+  const ownerTeam = state.teams[owner]
   const q = state.currentQuestion!
+  const points = STAGE1_LEVEL_POINTS[q.level]
 
   const picks = [
-    { role: 'صاحب الدور', team: owner, outcome: 'owner' as const },
-    { role: 'الفريق الآخر', team: rival, outcome: 'rival' as const },
+    { label: 'أصاب', correct: true, to: ownerTeam.score + points, cls: 'yes' },
+    { label: 'أخطأ', correct: false, to: ownerTeam.score, cls: 'no' },
   ]
 
   return (
@@ -48,31 +51,24 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       {/* حُذف شريط «قرار الحكم» في ٢٥ أغسطس ٢٠٢٦ بقرار علي: «مسوية زحمة
           عالفاضي». وهو كذلك — «من أصاب؟» فوقه يوجّه السؤال إلى الحكم،
           والبطاقتان تحته هما القرار نفسه. */}
-      <div className="eyebrow center">من أصاب؟</div>
+      <div className="eyebrow center">{ownerTeam.name} — {points} نقاط</div>
 
       <div className="pick-cards grow">
-        {picks.map(({ role, team, outcome }) => (
-          /* ‏team-{id} لا ترتيبَ الظهور: البطاقتان مرتّبتان بصاحب الدور أوّلاً
-             والدور يتناوب، فأي تلوين بـnth-child يقلب لون الفريقين كل سؤال. */
+        {picks.map(({ label, correct, to, cls }) => (
           <button
-            key={outcome}
-            className={'pick team-' + team}
-            onClick={() => dispatch({ t: 'S1_SCORE', outcome })}
+            key={cls}
+            className={'pick pick-' + cls}
+            onClick={() => dispatch({ t: 'S1_SCORE', correct })}
           >
-            <span className="pk-role">{role}</span>
-            <span className="pk-name">{state.teams[team].name}</span>
+            <span className="pk-name">{label}</span>
             <span className="pk-delta">
-              <span className="pk-from tabular">{state.teams[team].score}</span>
+              <span className="pk-from tabular">{ownerTeam.score}</span>
               <span className="pk-arrow" aria-hidden="true">←</span>
-              <span className="pk-to tabular">{state.teams[team].score + STAGE1_POINTS}</span>
+              <span className="pk-to tabular">{to}</span>
             </span>
           </button>
         ))}
       </div>
-
-      <button className="none-btn" onClick={() => dispatch({ t: 'S1_SCORE', outcome: 'none' })}>
-        لا أحد أصاب
-      </button>
 
       <style>{`
         /* ===== بطاقة الكشف: السؤال والإجابة معاً ===== */
@@ -127,16 +123,16 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         /* أرضية ارتفاع: على شاشة عريضة قصيرة كان الصفّ ينكمش إلى صفر فتخرج
            البطاقتان من مكانهما وتركبان على «من أصاب؟». */
         .pick-cards {
-          /* stretch لا center: بارتفاع مئوي على .pick كان يدور في حلقة مع
-             ارتفاع هذا الصفّ غير المحسوم (flex-grow)، فيرث المتصفّح ارتفاع
-             المحتوى الجوهري بدل المتاح فعلاً ويفيض على الشاشة. stretch
-             يحسم الحلقة: كل بطاقة تملأ ارتفاع الصفّ أياً كان، بلا نسبة مئوية. */
-          display:flex; gap:clamp(12px,3vw,40px); align-items:stretch; justify-content:center;
+          /* center بعد أن ذهب زرّ «لا أحد أصاب» من تحت الصفّ (٣ سبتمبر ٢٠٢٦):
+             الصفّ يرث ارتفاعه فتُترك البطاقتان معلّقتين في أعلاه وتحتهما فراغ
+             ميّت. والحلقة التي فرضت stretch سابقاً لا تعود: سببها كان ارتفاعاً
+             مئوياً على .pick، وسقفُها اليوم بـvh لا بنسبة. */
+          display:flex; gap:clamp(12px,3vw,40px); align-items:center; justify-content:center;
           flex:1 1 auto; min-height:clamp(78px, 20vh, 220px);
         }
-        /* متساويتان في البروز تماماً (SPEC): لا ذهبيّ على إحداهما — الذهبيّ في
-           هذه الشاشة لغةُ «الإجابة» لا لغةُ «صاحب الدور»، ولو لبسته بطاقةٌ
-           لقُرئت جواباً صحيحاً مسبقاً. يفرّق بينهما سطر الدور وحده. */
+        /* البطاقتان حكمان لا فريقان، فتلبسان لغة تنقيط الديربي: الصحّ ذهبيّ
+           ممتلئ والغلط بإطار مرجانيّ. وتساوي البروز الذي فرضه SPEC كان لأنهما
+           كانتا فريقين — والفريق لا يُلوَّن قبل الحكم، أمّا الحكم فيُلوَّن. */
         .pick {
           position:relative; overflow:hidden; isolation:isolate;
           flex:1 1 0; min-height:0; max-width:min(38vw, 400px);
@@ -188,26 +184,16 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .pk-arrow { color:var(--text-3); font-weight:600; }
         .pk-to    { color:var(--gold); }
 
-        /* ===== الخيار الثالث ===== */
-        /* نصّ صغير حسب SPEC، لكن بمساحة إصابة حقيقية: كان سطراً عارياً يُقرأ
-           تعليقاً لا زرّاً، والحكم يبحث عنه بإبهامه. */
-        .none-btn {
-          flex:none; align-self:center;
-          font-family:inherit; font-weight:700; cursor:pointer;
-          font-size:clamp(13px, min(1.7vw, 2.6vh), 17px); line-height:1.3;
-          color:var(--text-2);
-          padding:clamp(7px,1.4vh,13px) clamp(20px,3vw,34px);
-          border-radius:999px;
-          border:1px solid var(--border);
-          background:rgba(27,62,86,.4);
-          transition:color .2s ease, border-color .2s ease, transform .12s var(--ease-spring);
-          animation:pop-in .45s var(--ease-spring) .2s both;
+        .pick-yes {
+          background:linear-gradient(150deg, #FFCE7B, var(--gold) 60%, #F0A93F);
+          border-color:var(--gold); color:var(--on-gold);
+          box-shadow:var(--lift), var(--glow-gold);
         }
-        .none-btn:active { transform:scale(.97); }
-        .none-btn:focus-visible { outline:none; border-color:var(--gold); color:var(--cream); }
-        @media (hover:hover) {
-          .none-btn:hover { color:var(--cream); border-color:var(--text-3); }
-        }
+        .pick-yes .pk-from, .pick-yes .pk-arrow { color:rgba(65,36,2,.62); }
+        .pick-yes .pk-to { color:var(--on-gold); }
+        .pick-no { border-color:var(--coral); color:var(--coral); }
+        .pick-no .pk-to { color:var(--coral); }
+
 
         /* أضيق الشاشات: الحشوة وحدها هي ما يمكن التنازل عنه داخل البطاقة.
            والأرضية الدنيا لصفّ البطاقتين تتنازل هي الأخرى أربعة بكسل — وهي
@@ -224,12 +210,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
              ولا يبقى فائضٌ يمتصّه — فيدفع الزرّ تحته خارج الشاشة رغم أن كل
              عنصر آخر انكمش. بلا نموّ، الصفّ يأخذ ارتفاع بطاقتيه فعلاً لا أكثر. */
           .pick-cards { flex:0 1 auto; min-height:0; gap:8px; }
-          .none-btn { padding-block:4px; }
           .eyebrow { line-height:1.15; }
         }
 
         @media (prefers-reduced-motion:reduce) {
-          .rv-card, .rv-card::after, .rv-a, .pick, .none-btn { animation:none; }
+          .rv-card, .rv-card::after, .rv-a, .pick { animation:none; }
           .pick { transition:none; }
           .pick:hover { transform:none; }
         }

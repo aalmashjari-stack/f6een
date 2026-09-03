@@ -7,10 +7,20 @@ import { drawStage3Queue } from './draw'
 const TIME_SCALE =
   typeof location !== 'undefined' && new URLSearchParams(location.search).has('fast') ? 0.1 : 1
 
-export const STAGE1_QUESTIONS = 8
+/**
+ * لوح الجولة الجماعية — كل فريق يختار ثلاث فئات، فتصير ستّاً، ولكل فئة
+ * مستوياتها الثلاثة. ثمانية عشر سؤالاً، والنقاط تتبع المستوى لا الموضع.
+ */
+export const STAGE1_TEAM_CATEGORIES = 3
+export const STAGE1_CATEGORIES = STAGE1_TEAM_CATEGORIES * 2
+export const STAGE1_LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+export const STAGE1_QUESTIONS = STAGE1_CATEGORIES * STAGE1_LEVELS.length
 export const STAGE1_CONSULT_MS = 60_000 * TIME_SCALE
-export const STAGE1_RIVAL_MS = 15_000 * TIME_SCALE
-export const STAGE1_POINTS = 10
+export const STAGE1_LEVEL_POINTS: Record<Level, number> = {
+  'سهل': 10,
+  'متوسط': 20,
+  'صعب': 30,
+}
 export const STAGE2_TIMER_MS = 30_000 * TIME_SCALE
 export const STAGE2_CORRECT = 20
 export const STAGE2_WRONG = -10
@@ -19,16 +29,26 @@ export const STAGE3_POINTS = 5
 export const STAGE3_QUEUE_SIZE = 40
 export const TIEBREAK_POINTS = 10
 
-/** مستوى سؤال الجولة الجماعية حسب الموضع — القسم ٨. */
-export function stage1Level(index: number): Level {
-  if (index < 2) return 'سهل'
-  if (index < 6) return 'متوسط'
-  return 'صعب'
+/** مفتاح خليّة في لوح الجولة الجماعية — (فئة، مستوى). */
+export function cellKey(category: string, level: Level): string {
+  return `${category}|${level}`
 }
 
 /** صاحب الدور في الجولة الجماعية: البادئ يلعب 0/2/4، والآخر 1/3/5. */
 export function stage1Owner(index: number, startingTeam: TeamId): TeamId {
   return (index % 2 === 0 ? startingTeam : (1 - startingTeam)) as TeamId
+}
+
+/** فئة على لوح الجولة الجماعية، ومَن اختارها — اللوح يقول لكل فريق أين اختياره. */
+export interface PickedCategory {
+  name: string
+  pickedBy: TeamId
+}
+
+/** خليّة اللوح: فئة ومستوى. النقاط تتبع المستوى (`STAGE1_LEVEL_POINTS`). */
+export interface Stage1Cell {
+  category: string
+  level: Level
 }
 
 export interface GameState {
@@ -57,7 +77,13 @@ export interface GameState {
   currentCategory: string | null
   currentQuestion: Question | null
 
-  /* المرحلة ١ */
+  /* المرحلة ١ — اللوح المختار */
+  /** الفئات الست بترتيب اختيارها، ومع كل واحدة الفريق الذي اختارها. */
+  s1Categories: PickedCategory[]
+  /** مفاتيح الخلايا التي خرجت من اللوح — `cellKey`. مصفوفة لا Set: الحالة تُحفظ بـJSON. */
+  s1Played: string[]
+  /** الخليّة الجارية — تُملأ عند الضغط عليها في اللوح وتُفرَّغ بعد التنقيط. */
+  s1Cell: Stage1Cell | null
   s1Index: number
 
   /* المرحلة ٢ */
@@ -93,6 +119,8 @@ export interface SetupInput {
   teamNames: [string, string]
   players: [string[], string[]]
   startingTeam: TeamId
+  /** ثلاث فئات لكل فريق — لوح الجولة الجماعية (القسم ٤). */
+  categories: [string[], string[]]
 }
 
 export function largestTeamSize(players: [string[], string[]]): number {
@@ -109,6 +137,15 @@ export function createSession(input: SetupInput): GameState {
 
   const used = loadUsedIds()
   const s2Rounds = Math.max(4, largestTeamSize(input.players))
+
+  /* اللوح مصفوف بترتيب الاختيار متناوباً — الفريق الأول أوّلاً ثم الثاني —
+     فيقرأ المجلسُ من الشبكة مَن اختار ماذا بلا حاجة إلى شرح.
+     والقرعة لا تدخل هنا: هي تحدّد من يجيب أوّلاً لا من يختار أوّلاً، وربطها
+     بالاختيار كان يقلب ترتيب الفئات بأثر رجعيّ عند «إعادة القرعة». */
+  const s1Categories: PickedCategory[] = []
+  for (let i = 0; i < STAGE1_TEAM_CATEGORIES; i++)
+    for (const t of [0, 1] as const)
+      if (input.categories[t][i]) s1Categories.push({ name: input.categories[t][i], pickedBy: t })
   const s3Queue = drawStage3Queue(STAGE3_QUEUE_SIZE, used)
 
   const correctByPlayer: Record<string, number> = {}
@@ -120,7 +157,7 @@ export function createSession(input: SetupInput): GameState {
     }
 
   return {
-    phase: 'stage1-wheel',
+    phase: 'stage1-board',
     teams,
     startingTeam: input.startingTeam,
     usedQuestionIds: used,
@@ -129,6 +166,9 @@ export function createSession(input: SetupInput): GameState {
     spentCategories: [],
     currentCategory: null,
     currentQuestion: null,
+    s1Categories,
+    s1Played: [],
+    s1Cell: null,
     s1Index: 0,
     s2Rounds,
     s2Index: 0,
