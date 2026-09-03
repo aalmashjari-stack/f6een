@@ -1,5 +1,5 @@
 import type { Level, Question } from './types'
-import { familyOf, poolByCatLevel, poolByLevels, poolShippedByLevel } from './bank'
+import { familyOf, poolByCatLevel, poolShippedByLevels } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -67,7 +67,7 @@ export function drawByLevel(
   reserved: Set<string> = new Set(),
   spentFamilies: Set<string> = new Set(),
 ): Question {
-  const all = poolShippedByLevel(level)
+  const all = poolShippedByLevels([level])
   const unused = all.filter((q) => !used.has(q.id))
   const free = unused.filter((q) => !reserved.has(q.id))
   const best = free.filter((q) => {
@@ -82,6 +82,10 @@ export function drawByLevel(
  * سحب مسبق لطابور الحق ما تلحق — القرار المعماري: 40 احتياطاً عند إنشاء الجلسة
  * لتعمل المرحلة كاملة بلا إنترنت. من مخزون سهل + متوسط بلا تصنيف (القسم ٦/٨).
  *
+ * **ومن البنك المشحون وحده** (قرار علي ٤ سبتمبر ٢٠٢٦، كالديربي): المضافُ من
+ * اللوحة يدخل اللعبة من باب لوح الجولة الجماعية — وهو الباب الذي يختاره
+ * الفريقان بأنفسهما، فيعرفان من أيّ فئةٍ يأتي السؤال.
+ *
  * لا يضيف المعرّفات إلى `used`: الطابور احتياطي، ويُستهلك منه ١٠–١٤ سؤالاً فقط.
  * الحرق يقع عند العرض الفعلي (انظر S3_JUDGE) — وإلا احترق ٤٠ سؤالاً في الجلسة
  * بدل ١٢، فينكمش أفق «٤٢ جلسة بلا تكرار» في القسم ١٢ إلى نحو ١٢ جلسة.
@@ -92,7 +96,7 @@ export function drawByLevel(
 const STAGE3_MAX_Q_LEN = 80
 
 export function drawStage3Queue(count: number, used: Set<string>): Question[] {
-  const pool = poolByLevels(['سهل', 'متوسط']).filter(
+  const pool = poolShippedByLevels(['سهل', 'متوسط']).filter(
     (q) => !used.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
   )
   const queue: Question[] = []

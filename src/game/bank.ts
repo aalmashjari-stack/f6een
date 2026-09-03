@@ -198,14 +198,16 @@ export function poolByLevels(levels: Level[]): Question[] {
 const SHIPPED_IDS = new Set(ALL_QUESTIONS.map((q) => q.id))
 
 /**
- * مخزون **البنك المشحون** بمستوىً واحد — بلا ما أُضيف من اللوحة (`ADM####`).
+ * مخزون **البنك المشحون** بمستوياتٍ مطلوبة — بلا ما أُضيف من اللوحة (`ADM####`).
  *
- * للديربي وحده (SPEC ٥، قرار علي ٤ سبتمبر ٢٠٢٦). والتعديلاتُ تبقى مركَّبة:
- * سؤالُ بنكٍ صحّحه المدير يبقى سؤالَ بنك بنصّه الجديد — المستبعَد هو
- * **الجديد** لا **المصحَّح**.
+ * للديربي والحق ما تلحق (SPEC ٥ و٦، قرارا علي ٤ سبتمبر ٢٠٢٦). والتعديلاتُ
+ * تبقى مركَّبة: سؤالُ بنكٍ صحّحه المدير يبقى سؤالَ بنك بنصّه الجديد —
+ * المستبعَد هو **الجديد** لا **المصحَّح**.
  */
-export function poolShippedByLevel(level: Level): Question[] {
-  return allowed((byLevel.get(level) ?? []).filter((q) => SHIPPED_IDS.has(q.id)))
+export function poolShippedByLevels(levels: Level[]): Question[] {
+  return allowed(
+    levels.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => SHIPPED_IDS.has(q.id))),
+  )
 }
 
 /* ========================= عائلات القوالب ========================= */
