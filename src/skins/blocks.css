@@ -290,11 +290,9 @@ html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
   }
 }
 
-html[data-skin='blocks'] .screen.setup .mute-toggle {
-  background: var(--n-surface);
-  box-shadow: 0 0 0 2px var(--n-ink);
-  color: var(--n-ink);
-}
+/* الصوت صار كبسولةً في القائمة (٣ سبتمبر ٢٠٢٦) فيرث ثوبَ .hnav — ولا
+   يبقى له إلّا حالةُ الكتم. */
+html[data-skin='blocks'] .screen.setup .hnav-mute.off { background: var(--n-bg); }
 
 /* ─── ٦. السؤال والمؤقّت ─────────────────────────────────────────────── */
 /* بطاقة السؤال أكبر كتلة على الشاشة: حدٌّ سميك وظلٌّ بعيد — البطل. */

@@ -19,7 +19,7 @@ import {
   syncOverlay,
 } from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
-import { ContactPanel, ShopPanel } from './components/SitePanels'
+import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
@@ -125,7 +125,7 @@ export default function App() {
   const [introDone, setIntroDone] = useState(false)
   /* صفحة القائمة المفتوحة خارج اللعب: شراء الألعاب · حسابي · تواصل معنا.
      واحدة في كل لحظة، وتعيش هنا لأنّ «حسابي» يحتاج الجلسة والرصيد. */
-  const [navPage, setNavPage] = useState<'buy' | 'account' | 'contact' | null>(null)
+  const [navPage, setNavPage] = useState<'buy' | 'account' | 'rules' | 'contact' | null>(null)
   const session = useSession()
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
@@ -370,6 +370,7 @@ export default function App() {
           />
         )}
         {navPage === 'buy' && <ShopPanel onClose={() => setNavPage(null)} />}
+        {navPage === 'rules' && <RulesPanel onClose={() => setNavPage(null)} />}
         {navPage === 'contact' && (
           <ContactPanel onClose={() => setNavPage(null)} email={session?.user.email ?? undefined} />
         )}

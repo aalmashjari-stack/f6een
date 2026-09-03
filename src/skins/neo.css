@@ -1046,14 +1046,7 @@ html[data-skin] .screen.setup .hero {
   background: var(--n-surface);
 }
 html[data-skin] .screen.setup .hero-logo { filter: none; }
-html[data-skin] .screen.setup .mute-toggle {
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255,255,255,.9);
-  color: var(--n-ink-2);
-  box-shadow: var(--n-e1);
-  backdrop-filter: blur(6px);
-}
+/* الصوت صار كبسولةً في القائمة (٣ سبتمبر ٢٠٢٦) فيرث ثوبَ .hnav كأخواتها. */
 html[data-skin] .screen.setup .stage-card,
 html[data-skin] .screen.setup .team-card,
 html[data-skin] .screen.setup .stage-card:nth-child(1),

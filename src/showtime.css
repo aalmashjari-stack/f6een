@@ -152,7 +152,6 @@ body .screen.setup .hero{aspect-ratio:var(--banner-ratio);height:auto;min-height
    العرض أكبر (٤٤٪) ومن ارتفاع الشريط أكبر (٨٤٪)، وأصغر النصيبين يحكمه
    فلا يخرج حبره من الصندوق. */
 body .screen.setup .hero-logo{grid-column:1;width:max-content;max-width:min(44%,560px);height:auto;max-height:84%;font-size:clamp(38px,min(8.2vw,12vh),150px);align-self:center;justify-self:start;margin-inline-start:clamp(20px,3.4vw,64px);padding:.22em .16em .12em;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none;filter:drop-shadow(0 10px 14px rgba(48,26,59,.18))}
-body .screen.setup .mute-toggle{border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white);color:var(--festival-purple);box-shadow:4px 5px 0 var(--festival-ink)}
 body .screen.setup .stages-intro{color:var(--festival-muted)} body .screen.setup .brand-inline{color:var(--festival-purple);background:none;-webkit-text-fill-color:currentColor;text-shadow:none}
 body .screen.setup .setup-rule{color:var(--festival-purple)} body .screen.setup .setup-rule::before,body .screen.setup .setup-rule::after{height:4px;background:repeating-linear-gradient(90deg,var(--festival-orange) 0 10px,transparent 10px 17px)}
 body .screen.setup .stage-card,body .screen.setup .team-card{border:4px solid var(--festival-ink);border-radius:32px 10px 32px 10px;background:var(--festival-white);box-shadow:var(--festival-shadow);clip-path:none;backdrop-filter:none}

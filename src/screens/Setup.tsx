@@ -33,7 +33,7 @@ export function Setup({
   onStart: (input: SetupInput) => Promise<void> | void
   balance?: number | null
   /** قائمة الرأس: شراء الألعاب · حسابي · تواصل معنا — تُفتح صفحاتها في App. */
-  onNav?: (page: 'buy' | 'account' | 'contact') => void
+  onNav?: (page: 'buy' | 'account' | 'rules' | 'contact') => void
 }) {
   const [names, setNames] = useState<[string, string]>(['', ''])
   const [players, setPlayers] = useState<[string[], string[]]>([
@@ -185,20 +185,23 @@ export function Setup({
                 الشاشة. والاثنان الآخران كبسولتان محايدتان. */}
             <button className="hnav hnav-buy" onClick={() => onNav('buy')}>شراء الألعاب</button>
             <button className="hnav" onClick={() => onNav('account')}>حسابي</button>
+            <button className="hnav" onClick={() => onNav('rules')}>شرح اللعبة</button>
             <button className="hnav" onClick={() => onNav('contact')}>تواصل معنا</button>
+            {/* الصوت آخر الصفّ ورمزاً بلا نصّ (طلب علي، ٣ سبتمبر ٢٠٢٦ — كان
+                في زاوية الهيرو وحده). القائمة صارت أربعة، وكبسولةٌ خامسة
+                بنصٍّ تُقرأ صفحةً خامسة وهي ضبطٌ لا وجهة — فالرمز يفرّقها،
+                و`aria-label` يحمل ما أسقطه النصّ. */}
+            <button
+              className={'hnav hnav-mute' + (mute ? ' off' : '')}
+              onClick={toggleMute}
+              aria-pressed={mute}
+              aria-label={mute ? 'الصوت مكتوم — شغّله' : 'الصوت يعمل — اكتمه'}
+              title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
+            >
+              <span aria-hidden="true">{mute ? '🔇' : '🔊'}</span>
+            </button>
           </nav>
         )}
-        {/* في زاوية الهيرو لا فوق زر البدء: ضبط يُمسّ مرّة، فلا يزاحم الفعل
-            الأساسي ولا يسقط تحت الطيّة في الشاشات القصيرة. */}
-        <button
-          className={'mute-toggle' + (mute ? ' off' : '')}
-          onClick={toggleMute}
-          aria-pressed={mute}
-          title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
-        >
-          <span aria-hidden="true">{mute ? '🔇' : '🔊'}</span>
-          <span className="mt-label">{mute ? 'مكتوم' : 'الصوت'}</span>
-        </button>
       </div>
 
       {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
@@ -440,23 +443,14 @@ export function Setup({
         body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:0 0 0 2px var(--n-ink,#22201C), 2px 3px 0 var(--n-ink,#22201C); }
         body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:#fff; }
 
-
-        /* inset-inline-end = يسار الشاشة في RTL — الجهة المقابلة لبداية القراءة،
-           فلا تعترض العين وهي تنزل من الشعار إلى بطاقتي الفريقين. */
-        body .screen.setup .mute-toggle {
-          flex:none;
-          display:flex; align-items:center; gap:7px;
-          padding:8px 14px; border-radius:999px;
-          border:1px solid var(--border); background:rgba(15,44,66,.6);
-          color:var(--text-2); font-family:inherit; font-size:14px; font-weight:700;
-          cursor:pointer;
-          transition:color .2s ease, border-color .2s ease, opacity .2s ease, transform .15s var(--ease-spring);
+        /* الصوت كبسولةٌ في الصفّ نفسه، مربّعةٌ برمزها وحده — الحشوة الجانبية
+           تُساوى بالرأسية فلا تبدو كبسولةً بنصٍّ ناقص بين أخواتها. */
+        body .screen.setup .hnav-mute {
+          padding-inline:clamp(7px,1vw,11px);
+          line-height:1;
+          transition:transform .15s var(--ease-spring), box-shadow .15s ease, opacity .2s ease;
         }
-        .mute-toggle:active { transform:scale(.94); }
-        .mute-toggle.off { opacity:.6; }
-        .mute-toggle:not(.off) { color:var(--gold); border-color:var(--gold); }
-        /* الأيقونة وحدها على الجوال — الكلمة تزاحم الشعار في العرض الضيّق */
-        @media (max-width:560px) { .mt-label { display:none; } }
+        body .screen.setup .hnav-mute.off { opacity:.55; }
 
         body .screen.setup .hero-logo {
           position:relative; z-index:1;

@@ -182,6 +182,12 @@ function Dashboard({ session }: { session: Session }) {
         </h1>
         <div className="a-who">
           <span className="a-mail">{session.user.email}</span>
+          {/* العودة إلى اللعبة — رابطٌ لا زرّ: اللوحة مدخلٌ مستقلّ
+              (‏admin.html‎) لا مسارٌ داخل التطبيق، فالرجوع تنقّلٌ حقيقيّ
+              بين صفحتين. ورابطٌ يُفتح في تبويب جديد بالوسط أو بـcmd. */}
+          <a className="a-btn" href="/">
+            العودة للرئيسية
+          </a>
           <button className="a-btn" onClick={() => signOut()}>
             الخروج
           </button>

@@ -109,6 +109,9 @@ table.a-tbl { width: 100%; border-collapse: collapse; white-space: nowrap; }
   padding: 8px 13px; border: 0; border-radius: 9px;
   background: var(--n-surface-2); color: var(--n-ink);
 }
+/* الزرّ قد يكون رابطاً (العودة للرئيسية): الرابط سطريٌّ افتراضاً بحشوةٍ
+   لا تُحترم رأسياً، ومسطَّرٌ بلونٍ موروث — فتُلغى الثلاثة ويُوسَّط نصُّه. */
+a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
 .a-btn.go { background: var(--n-brand); color: #fff; }
 .a-btn.danger { color: var(--n-bad); }
 .a-btn:disabled { opacity: .45; cursor: default; }
