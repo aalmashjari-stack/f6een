@@ -490,8 +490,7 @@ html[data-skin] .mark-cards .mcard:first-child,
 html[data-skin] .mark-cards .mcard:nth-child(2) { transform: none; }
 
 html[data-skin] .pick,
-html[data-skin] .mark-cards .mcard,
-html[data-skin] .not-picked .np-col {
+html[data-skin] .mark-cards .mcard {
   border: 0;
   border-radius: var(--n-r3);
   background: var(--n-surface);
@@ -892,15 +891,6 @@ html[data-skin] .vs-wrap .vs-word {
   font-weight: 800;
   letter-spacing: .02em;
 }
-/* لوحُ «لم يُختر بعد» يخدم شفافية الدورة الكاملة، لكنه كان بطاقةً بيضاء
-   مرفوعة بحجم بطاقات القرار — وهو سطرُ حالةٍ لا قرار. يخفّ إلى إطارٍ شعريّ
-   فيرجع الثقلُ إلى الاسمين، وهما موضوع الشاشة. */
-html[data-skin] .not-picked .np-col {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--n-line);
-}
-html[data-skin] .np-title { color: var(--n-ink-3); font-weight: 700; }
-html[data-skin] .np-names { color: var(--n-ink-2); }
 html[data-skin] .mc-team { color: var(--n-ink-3); }
 html[data-skin] .mc-name { color: var(--n-ink); font-weight: 800; }
 

@@ -734,7 +734,6 @@ body .screen .interval-card::after {
 }
 
 /* الديربي: أسماء اللاعبين على سطح واضح، وقرار الحكم هو اللون الوحيد الصريح. */
-body .screen .not-picked .np-col,
 body .screen .mark-cards .mcard {
   border-radius: 18px;
   background: linear-gradient(145deg, rgba(25,70,94,.7), rgba(7,25,35,.74));

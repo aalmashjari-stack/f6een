@@ -178,7 +178,7 @@ body .screen .cat.spent{opacity:.34;filter:grayscale(.7);box-shadow:none} body .
 body .screen .tpill{border:3px solid var(--festival-ink);border-radius:24px 8px 24px 8px;box-shadow:5px 6px 0 var(--festival-ink);clip-path:none} body .screen .tpill.owner{background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(-.5deg)} body .screen .tpill.rival{background:var(--festival-white);color:var(--festival-purple);transform:rotate(.5deg)} body .screen .tpill.rival.active{background:var(--festival-orange);color:var(--festival-white);border-color:var(--festival-ink)}
 body .screen .rival-hint{border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-pink);color:var(--festival-ink);transform:rotate(-1deg)}
 body .screen .rv-card,body .screen .reveal-a{border:4px solid var(--festival-ink);border-radius:40px 12px 40px 12px;background:var(--festival-white);box-shadow:10px 11px 0 var(--festival-yellow);clip-path:none} body .screen .rv-q,body .screen .reveal-q{color:var(--festival-muted)} body .screen .rv-a,body .screen .reveal-a .a-text{color:var(--festival-purple)}
-body .screen .pick,body .screen .none-btn,body .screen .mark-cards .mcard,body .screen .not-picked .np-col{border:3px solid var(--festival-ink);border-radius:30px 9px 30px 9px;background:var(--festival-white);color:var(--festival-ink);box-shadow:6px 7px 0 var(--festival-ink);backdrop-filter:none}
+body .screen .pick,body .screen .none-btn,body .screen .mark-cards .mcard{border:3px solid var(--festival-ink);border-radius:30px 9px 30px 9px;background:var(--festival-white);color:var(--festival-ink);box-shadow:6px 7px 0 var(--festival-ink);backdrop-filter:none}
 body .screen .pick:first-child,body .screen .mark-cards .mcard:first-child{background:#f7e7f3;transform:rotate(-.5deg)} body .screen .pick:nth-child(2),body .screen .mark-cards .mcard:nth-child(2){background:#e5f7ec;transform:translateY(7px) rotate(.5deg)} body .screen .none-btn{border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
 body .screen .mark-cards .choice{border:3px solid var(--festival-ink);border-radius:14px;background:var(--festival-white);color:var(--festival-ink)} body .screen .mark-cards .choice.ok.on{background:var(--festival-yellow);color:var(--festival-ink);border-color:var(--festival-ink)} body .screen .mark-cards .choice.no.on{background:var(--festival-orange);color:var(--festival-white);border-color:var(--festival-ink)}
 
@@ -219,7 +219,6 @@ body .screen .action-note{margin-top:0}
 body .screen .s1-teams,
 body .screen .pick-cards,
 body .screen .mark-cards,
-body .screen .not-picked,
 body .screen .tb-picks,
 body .screen .s3-verdicts{
   gap:clamp(18px,2.6vw,32px);
@@ -250,8 +249,7 @@ body .screen.end .foot{gap:clamp(12px,1.8vw,20px)}
   body .screen .s1-teams,
   body .screen .pick-cards,
   body .screen .mark-cards,
-  body .screen .not-picked,
-  body .screen .tb-picks,
+    body .screen .tb-picks,
   body .screen .s3-verdicts{gap:clamp(11px,1.8vw,20px)}
   body .screen .timer-stage,body .screen .s3-inner{gap:clamp(10px,1.8vh,17px)}
   body .screen .rv-card,body .screen .reveal-a,body .screen .interval-card,body .screen .s3-ready{gap:clamp(9px,1.6vh,15px)}
@@ -309,7 +307,6 @@ body .screen .stack.gap-s { gap:clamp(12px,1.8vh,18px); }
 body .screen .s1-teams,
 body .screen .pick-cards,
 body .screen .mark-cards,
-body .screen .not-picked,
 body .screen .tb-picks,
 body .screen .s3-verdicts { gap:clamp(18px,2.6vw,32px); }
 body .screen .timer-stage,
@@ -475,8 +472,7 @@ body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
   body .screen .s1-teams,
   body .screen .pick-cards,
   body .screen .mark-cards,
-  body .screen .not-picked,
-  body .screen .tb-picks,
+    body .screen .tb-picks,
   body .screen .s3-verdicts { gap:clamp(11px,1.8vw,20px); }
   body .screen .timer-stage,
   body .screen .s3-inner { gap:clamp(10px,1.8vh,17px); }

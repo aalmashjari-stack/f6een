@@ -500,7 +500,6 @@ html[data-skin='blocks'] .vs-wrap .vs-word {
   box-shadow: 0 0 0 2px var(--n-ink);
   transform: rotate(-2deg);
 }
-html[data-skin='blocks'] .not-picked .np-col { box-shadow: inset 0 0 0 2px var(--n-line); border-radius: var(--n-r2); }
 
 /* ─── ١١. الحق ما تلحق ───────────────────────────────────────────────── */
 html[data-skin='blocks'] .s3-ready {

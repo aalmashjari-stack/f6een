@@ -7,7 +7,10 @@ import { ScoreBar } from '../components/ScoreBar'
 /**
  * اختيار لاعبَي الديربي — الشاشة ٤. بلا زر، تنتقل تلقائياً.
  * اختيار عشوائي بحركة تشويق، ضمن الدورة الكاملة (s2Rem).
- * سطر «لم يُختر بعد» يخدم شفافية الدورة بنفس منطق الأقسام الرمادية.
+ *
+ * **حُذف لوحُ «لم يُختر بعد» في ٤ سبتمبر ٢٠٢٦** بقرار علي. كان يعرض من بقي
+ * دورُه في كلّ فريق خدمةً لشفافية الدورة — والدورةُ يحرسها المحرّك لا
+ * الشاشة (s2Rem)، والاسمان هما موضوع الشاشة.
  */
 export function Stage2Selection({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const pick = (team: TeamId) => {
@@ -118,19 +121,6 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         </div>
       </div>
 
-      <div className="not-picked">
-        {[0, 1].map((ti) => {
-          const team = ti as TeamId
-          const remNames = state.s2Rem[team].map((i) => nameOf(team, i))
-          return (
-            <div key={ti} className="np-col">
-              <div className="np-title">{state.teams[team].name} — لم يُختر بعد</div>
-              <div className="np-names">{remNames.join(' · ') || '—'}</div>
-            </div>
-          )
-        })}
-      </div>
-
       <style>{`
         /* العرض الكامل شرط: بلا width تتقلّص الحاوية على محتواها فتضيق خانتا الاسمين
            ويُقصّ الاسم الطويل مهما صغّرنا الخط. */
@@ -201,10 +191,6 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
           to   { transform:scale(3.4); opacity:0; }
         }
         @media (max-width:560px) { .vs-wrap { gap:12px; } }
-        .not-picked { display:flex; gap:16px; }
-        .np-col { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 16px; }
-        .np-title { color:var(--text-2); font-weight:700; font-size:14px; margin-bottom:4px; }
-        .np-names { color:var(--text-3); font-size:15px; }
       `}</style>
     </div>
   )
