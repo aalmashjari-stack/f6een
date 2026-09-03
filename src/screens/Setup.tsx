@@ -804,7 +804,7 @@ export function Setup({
            الشاشة الوحيدة المسموح لها بالتمرير. */
         .cats-grid {
           display:grid;
-          grid-template-columns:repeat(auto-fill, minmax(clamp(162px,19vw,268px), 1fr));
+          grid-template-columns:repeat(auto-fill, minmax(clamp(116px,13vw,172px), 1fr));
           gap:clamp(8px,1.1vw,16px);
         }
         /* البطاقة رسمةُ الفئة كاملةً، والاسم على لوحةٍ داكنة أسفلها — نفس بناء
@@ -812,7 +812,13 @@ export function Setup({
         .catchip {
           position:relative; overflow:hidden;
           display:flex; flex-direction:column; justify-content:flex-end;
-          min-width:0; min-height:clamp(112px,17vh,172px);
+          /* بطاقةٌ طوليّة كورق اللعب (طلب علي، ٣ سبتمبر ٢٠٢٦) — النسبة تحكم
+             الارتفاع فلا يُخمَّن بـvh، وتصمد على كلّ عرض.
+             **والرسمات ٣:٢ عرضيّة** (SPEC §١١)، فـcover يقصّ جانبيها ويُبقي
+             نحو نصف العرض من الوسط. هذا ثمن الشكل الطوليّ ما لم تُستبدل
+             الرسمات بمصادر طوليّة. */
+          aspect-ratio:3 / 4;
+          min-width:0;
           padding:0;
           font-family:inherit; cursor:pointer; text-align:center;
           border-radius:14px;
@@ -833,7 +839,7 @@ export function Setup({
           position:relative; z-index:1;
           display:flex; flex-direction:column; align-items:center; gap:1px;
           min-width:0;
-          padding:clamp(24px,4vh,46px) 8px clamp(8px,1.4vh,15px);
+          padding:clamp(30px,5vh,58px) 7px clamp(8px,1.4vh,15px);
           background:linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.6) 50%, rgba(14,11,22,0) 100%);
         }
 
