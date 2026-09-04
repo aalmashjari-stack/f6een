@@ -462,7 +462,12 @@ html[data-skin='blocks'] body .screen .catchip {
 html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink); }
 html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px rgba(34,32,28,.18); }
 html[data-skin='blocks'] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 4px var(--n-accent), 4px 4px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .cc-tick {
+  background: var(--n-accent); color: #fff;
+  border-radius: var(--n-r1);
+  box-shadow: 0 0 0 2px var(--n-ink), 2px 2px 0 var(--n-ink);
+}
 html[data-skin='blocks'] .cats-turn { box-shadow: 0 0 0 2px var(--n-ink); }
 
 /* «أصاب / أخطأ» كتلتان مشبعتان بنصٍّ أبيض — الأخضر والأحمر محجوزان للحكم */

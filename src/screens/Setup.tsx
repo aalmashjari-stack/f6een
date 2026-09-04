@@ -318,6 +318,9 @@ export function Setup({
                         : undefined
                     }
                   />
+                  {/* علامةٌ في الزاوية لا حدٌّ رفيع: الاختيار فعلٌ يُرى من آخر
+                      المجلس، والحدُّ وحده لا يُقرأ على بطاقةٍ فوقها رسمة. */}
+                  <span className="cc-tick" aria-hidden="true">✓</span>
                   <span className="cc-plate">
                     <span className="cc-name">{displayName(cat)}</span>
                   </span>
@@ -848,12 +851,21 @@ export function Setup({
           max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
           text-shadow:0 1px 3px rgba(0,0,0,.45);
         }
-        .cc-owner { font-size:clamp(11px,1.4vw,16px); font-weight:700; line-height:1.2; }
         .catchip.taken .cc-plate { background:linear-gradient(to top, rgba(14,11,22,.94) 0%, rgba(14,11,22,.7) 55%, rgba(14,11,22,.08) 100%); }
-        .catchip.taken.team-0 { border-color:var(--gold); }
-        .catchip.taken.team-0 .cc-owner { color:var(--gold); }
-        .catchip.taken.team-1 { border-color:var(--coral); }
-        .catchip.taken.team-1 .cc-owner { color:var(--coral); }
+        /* المختارة: حدٌّ سميك، ورسمتُها تصفو، وعلامةُ صحّ في الزاوية. ثلاث
+           إشارات لا واحدة — البطاقة صغيرة وفوقها رسمة، فالحدّ وحده يضيع. */
+        .catchip.taken { border-color:var(--gold); border-width:4px; }
+        .catchip.taken .cc-img { filter:saturate(1.15); }
+        .cc-tick {
+          position:absolute; z-index:2; top:6px; inset-inline-start:6px;
+          display:none; place-items:center;
+          width:clamp(24px,3.2vw,34px); aspect-ratio:1;
+          border-radius:999px;
+          background:var(--gold); color:#1a1626;
+          font-size:clamp(14px,1.9vw,20px); font-weight:900; line-height:1;
+          box-shadow:0 2px 6px rgba(0,0,0,.35);
+        }
+        .catchip.taken .cc-tick { display:grid; }
 
         .cats-note {
           display:flex; flex-wrap:wrap; align-items:center; gap:clamp(8px,1.4vw,18px);

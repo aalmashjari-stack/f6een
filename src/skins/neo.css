@@ -754,7 +754,8 @@ html[data-skin] body .screen .catchip.taken.dimmed .cc-plate {
   background: linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.6) 50%, rgba(14,11,22,0) 100%);
 }
 html[data-skin] body .screen .catchip.taken.dimmed .cc-name { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.45); }
-html[data-skin] body .screen .catchip.taken { box-shadow: 0 0 0 2.5px var(--n-accent), 0 4px 10px rgba(26,22,38,.12); }
+html[data-skin] body .screen .catchip.taken { box-shadow: 0 0 0 3.5px var(--n-accent), 0 6px 16px rgba(26,22,38,.18); }
+html[data-skin] body .screen .cc-tick { background: var(--n-accent); color: var(--n-surface); }
 html[data-skin] .cats-turn.done { background: var(--n-surface-2); color: var(--n-ink-2); }
 html[data-skin] .cats-title { color: var(--n-ink); }
 html[data-skin] .cats-count { color: var(--n-ink-2); font-variant-numeric: tabular-nums; }
