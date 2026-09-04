@@ -4,8 +4,8 @@ import { STAGES } from '../game/stages'
 import {
   STAGE1_CONSULT_MS,
   STAGE1_LEVEL_POINTS,
+  STAGE1_CATEGORIES,
   STAGE1_QUESTIONS,
-  STAGE1_TEAM_CATEGORIES,
   STAGE2_TIMER_MS,
   STAGE3_TIMER_MS,
 } from '../game/session'
@@ -149,7 +149,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
 export function RulesPanel({ onClose }: { onClose: () => void }) {
   const s1 = `${STAGE1_CONSULT_MS / 1000}`
   const extra = [
-    `كل فريق يختار ${STAGE1_TEAM_CATEGORIES} فئات في الإعداد، فيصير اللوح ${STAGE1_QUESTIONS} سؤالاً. صاحبُ الدور يختار الخليّة والحكم يضغطها، ثم يتشاور الفريقان ${s1} ثانية — والنقاط تتبع المستوى: ${STAGE1_LEVEL_POINTS['سهل']} · ${STAGE1_LEVEL_POINTS['متوسط']} · ${STAGE1_LEVEL_POINTS['صعب']}.`,
+    `يختار الفريقان ${STAGE1_CATEGORIES} فئات في الإعداد، فيصير اللوح ${STAGE1_QUESTIONS} سؤالاً. صاحبُ الدور يختار الخليّة والحكم يضغطها، ثم يتشاور الفريقان ${s1} ثانية — والنقاط تتبع المستوى: ${STAGE1_LEVEL_POINTS['سهل']} · ${STAGE1_LEVEL_POINTS['متوسط']} · ${STAGE1_LEVEL_POINTS['صعب']}.`,
     `لاعبٌ من كل فريق وجهاً لوجه، ${STAGE2_TIMER_MS / 1000} ثانية مشتركة بينهما. لا تشاور إطلاقاً — ومن بادر بالإجابة أولاً هو صاحب الجولة وحده: يربح إن أصاب ويخسر إن أخطأ، ولا يرثها خصمه.`,
     `كل فريق وحده أمام الساعة ${STAGE3_TIMER_MS / 1000} ثانية لا تتوقّف — الكشفُ والحكمُ يُحسبان منها. أسئلةٌ متتابعة، والمجموع مفتوح.`,
   ]

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { reducer } from './reducer'
 import { ALL_QUESTIONS, familyOf, playableCategories, setQuestionOverlay } from './bank'
-import { STAGE1_CATEGORIES, STAGE1_LEVELS, createSession } from './session'
+import { STAGE1_CATEGORIES, STAGE1_LEVELS, createSession, stage1Owner } from './session'
 import type { GameState } from './session'
 import type { Level, Question } from './types'
 import { shuffle } from './draw'
@@ -20,7 +20,7 @@ const INPUT = {
     ['خالد', 'منى'],
   ] as [string[], string[]],
   startingTeam: 0 as const,
-  categories: [BOARD.slice(0, 3), BOARD.slice(3)] as [string[], string[]],
+  categories: BOARD,
 }
 
 /** خلايا اللوح الثماني عشرة بترتيبٍ مخلوط — كما يختارها فريقٌ لا كما تُصفّ. */
@@ -43,7 +43,7 @@ function playSession(): { shown: Question[]; state: GameState } {
     s = step(s, { t: 'S1_PICK', ...cell })
     shown.push(s.currentQuestion!)
     s = step(s, { t: 'S1_TO_REVEAL' })
-    s = step(s, { t: 'S1_SCORE', correct: true })
+    s = step(s, { t: 'S1_SCORE', team: stage1Owner(s.s1Index, s.startingTeam) })
   }
   s = step(s, { t: 'INTERVAL_CONTINUE' })
 
@@ -103,7 +103,7 @@ describe('الجلسة الكاملة عبر المحرك', () => {
     for (const cell of boardCells(s)) {
       s = step(s, { t: 'S1_PICK', ...cell })
       shown.push(s.currentQuestion!.id)
-      s = step(s, { t: 'S1_SCORE', correct: false })
+      s = step(s, { t: 'S1_SCORE', team: null })
     }
     expect([...s.usedQuestionIds].sort()).toEqual([...shown].sort())
   })
@@ -163,7 +163,7 @@ function driveToStage3(): GameState {
   for (const cell of boardCells(s)) {
     s = step(s, { t: 'S1_PICK', ...cell })
     s = step(s, { t: 'S1_TO_REVEAL' })
-    s = step(s, { t: 'S1_SCORE', correct: true })
+    s = step(s, { t: 'S1_SCORE', team: stage1Owner(s.s1Index, s.startingTeam) })
   }
   s = step(s, { t: 'INTERVAL_CONTINUE' })
   while (s.phase === 'stage2-selection') {
@@ -296,7 +296,7 @@ describe('الديربي والحق ما تلحق — من البنك المشح
     let s = createSession(INPUT)
     for (const cell of boardCells(s)) {
       s = step(s, { t: 'S1_PICK', ...cell })
-      s = step(s, { t: 'S1_SCORE', correct: false })
+      s = step(s, { t: 'S1_SCORE', team: null })
     }
     s = step(s, { t: 'INTERVAL_CONTINUE' })
     expect(s.phase).toBe('stage2-selection')
@@ -331,7 +331,7 @@ describe('الديربي والحق ما تلحق — من البنك المشح
         for (const q of s.s3Queue) expect(SHIPPED.has(q.id), `الطابور، الجلسة ${n}`).toBe(true)
         for (const cell of boardCells(s)) {
           s = step(s, { t: 'S1_PICK', ...cell })
-          s = step(s, { t: 'S1_SCORE', correct: false })
+          s = step(s, { t: 'S1_SCORE', team: null })
         }
         s = step(s, { t: 'INTERVAL_CONTINUE' })
         while (s.phase === 'stage2-selection') {

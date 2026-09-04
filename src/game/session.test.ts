@@ -7,7 +7,7 @@ const INPUT = {
   teamNames: ['النحل', 'الصقور'] as [string, string],
   players: [['علي', 'سارة'], ['خالد', 'منى']] as [string[], string[]],
   startingTeam: 0 as const,
-  categories: [BOARD.slice(0, 3), BOARD.slice(3)] as [string[], string[]],
+  categories: BOARD,
 }
 
 /**

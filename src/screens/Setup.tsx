@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { SetupInput } from '../game/session'
-import { STAGE1_TEAM_CATEGORIES } from '../game/session'
+import { STAGE1_CATEGORIES } from '../game/session'
 import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
@@ -42,7 +42,7 @@ export function Setup({
   ])
   const [starter, setStarter] = useState<TeamId | null>(null)
   /* فئات لوح الجولة الجماعية — ثلاث لكل فريق (SPEC ٤). */
-  const [cats, setCats] = useState<[string[], string[]]>([[], []])
+  const [cats, setCats] = useState<string[]>([])
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -81,35 +81,22 @@ export function Setup({
   const allCats = useMemo<string[]>(playableCategories, [bankRev])
 
   /**
-   * دور الاختيار للفريق الأقلّ اختياراً، وعند التساوي للفريق الأول.
-   *
-   * لا بعدد الضغطات: الحكم قد يسحب اختياراً بضغطةٍ ثانية على الفئة نفسها،
-   * فيصير العدّ فردياً والدور معلّقاً على فريقٍ استوفى نصيبه.
-   *
-   * والقرعة لا تدخل هنا: هي تحدّد من يجيب أوّلاً لا من يختار أوّلاً — فيأخذ
-   * كل فريق واحدة من الاثنتين. وربطُ الاختيار بها كان يقلب ترتيب الفئات بأثر
-   * رجعيّ عند «إعادة القرعة» بعد أن تكون الفئات قد اختيرت.
+   * الفئات الستّ للّوح لا للفريقين (قرار علي ٥ سبتمبر ٢٠٢٦). كان كلٌّ يختار
+   * ثلاثاً بالتناوب، وكانت شارةٌ تقول «دور الفريق الأول» فتُقرأ في شاشةٍ فيها
+   * قرعةٌ على أنّها ترتيب اللعب لا ترتيب الاختيار. سقط التناوب وسقطت معه.
    */
-  const pickTurn: TeamId = cats[0].length <= cats[1].length ? 0 : 1
-  const catsReady = cats.every((c) => c.length === STAGE1_TEAM_CATEGORIES)
-  const ownerOf = (cat: string): TeamId | null =>
-    cats[0].includes(cat) ? 0 : cats[1].includes(cat) ? 1 : null
+  const catsReady = cats.length === STAGE1_CATEGORIES
+  const isPicked = (cat: string) => cats.includes(cat)
 
-  /** ضغطةٌ على فئةٍ مأخوذة من صاحبها تسحبها — وهي طريقُ التراجع الوحيد ولا تحتاج زرّاً. */
+  /** ضغطةٌ على فئةٍ مختارة تسحبها — وهي طريقُ التراجع الوحيد ولا تحتاج زرّاً. */
   function toggleCat(cat: string) {
-    const owner = ownerOf(cat)
+    const picked = isPicked(cat)
     setCats((c) => {
-      const copy: [string[], string[]] = [[...c[0]], [...c[1]]]
-      if (owner !== null) {
-        copy[owner] = copy[owner].filter((x) => x !== cat)
-        return copy
-      }
-      const t = c[0].length <= c[1].length ? 0 : 1
-      if (copy[t].length >= STAGE1_TEAM_CATEGORIES) return c
-      copy[t].push(cat)
-      return copy
+      if (picked) return c.filter((x) => x !== cat)
+      if (c.length >= STAGE1_CATEGORIES) return c
+      return [...c, cat]
     })
-    if (owner === null) play('pickLand')
+    if (!picked) play('pickLand')
   }
 
   /* لا تبدأ اللعبة باسم مستعار: كل حقل — الفريقان وكل لاعب — مكتوب (قرار علي
@@ -295,35 +282,31 @@ export function Setup({
           </div>
         </section>
 
-        {/* لوح الجولة الجماعية — ثلاث فئات لكل فريق (SPEC ٤). هنا لا في شاشة
+        {/* لوح الجولة الجماعية — ستّ فئات يختارها الفريقان (SPEC ٤). هنا لا في شاشة
             مستقلّة: الاختيار قرارُ تجهيزٍ يسبق اللعب مثل الأسماء والقرعة،
             وشاشةٌ ثالثة بينهما تقطع المجلس مرّتين قبل أول سؤال. */}
         <section className="setup-block">
           <div className="cats-head">
             <h3 className="cats-title">فئات الجولة الجماعية</h3>
-            {/* الشارة تلبس لون صاحب الدور — وتخلعه حين يكتمل اللوح: لا دور
-                عندها لأحد، ولون الفريق الأول عليها يُقرأ نداءً باقياً. */}
-            <span className={catsReady ? 'cats-turn done' : 'cats-turn team-' + pickTurn}>
-              {catsReady ? 'اكتمل اللوح' : `دور ${teamLabel(pickTurn)}`}
-            </span>
+            {/* لا شارةَ دورٍ بعد اليوم: الفئات للّوح لا للفريقين. يبقى إعلانُ
+                الاكتمال وحده — وهو خبرٌ عن اللوح لا نداءٌ على فريق. */}
+            {catsReady && <span className="cats-turn done">اكتمل اللوح</span>}
           </div>
           <div className="cats-grid">
             {allCats.map((cat) => {
-              const owner = ownerOf(cat)
+              const picked = isPicked(cat)
               return (
                 <button
                   key={cat}
                   className={
                     'catchip' +
-                    (owner !== null ? ' taken team-' + owner : '') +
+                    (picked ? ' taken' : '') +
                     /* اكتمل اللوح: **الشبكة كلّها** ترمدّ — المختارة وغيرها —
-                       فتقول بلا سطرٍ إنّ الباب أُقفل ولا فئة سابعة. الرسمة
-                       وحدها تفقد لونها؛ حدُّ الفريق واسمُه يبقيان ملوّنين
-                       وإلّا ضاع مَن اختار ماذا. */
+                       فتقول بلا سطرٍ إنّ الباب أُقفل ولا فئة سابعة. */
                     (catsReady ? ' dimmed' : '')
                   }
                   onClick={() => toggleCat(cat)}
-                  aria-pressed={owner !== null}
+                  aria-pressed={picked}
                 >
                   {/* الرسمة عنصرٌ مستقلّ لا خلفيّةُ الزرّ: الترميد يقع عليها
                       وحدها فيبقى الاسم مقروءاً فوقها — بناء `.cat` نفسه. */}
@@ -335,20 +318,20 @@ export function Setup({
                         : undefined
                     }
                   />
+                  {/* علامةٌ في الزاوية لا حدٌّ رفيع: الاختيار فعلٌ يُرى من آخر
+                      المجلس، والحدُّ وحده لا يُقرأ على بطاقةٍ فوقها رسمة. */}
+                  <span className="cc-tick" aria-hidden="true">✓</span>
                   <span className="cc-plate">
                     <span className="cc-name">{displayName(cat)}</span>
-                    {owner !== null && <span className="cc-owner">{teamLabel(owner)}</span>}
                   </span>
                 </button>
               )
             })}
           </div>
           <div className="cats-note">
-            {[0, 1].map((t) => (
-              <span key={t} className={'cats-count team-' + t}>
-                {teamLabel(t as TeamId)}: {cats[t as TeamId].length} / {STAGE1_TEAM_CATEGORIES}
-              </span>
-            ))}
+            <span className="cats-count">
+              {cats.length} / {STAGE1_CATEGORIES}
+            </span>
             <span className="cats-hint">اضغط فئةً مختارة لسحبها</span>
           </div>
         </section>
@@ -369,7 +352,7 @@ export function Setup({
               <div className="toss-result missing">اكتب أسماء الفريقين واللاعبين</div>
             ) : !catsReady ? (
               <div className="toss-result missing">
-                اختر {STAGE1_TEAM_CATEGORIES} فئات لكل فريق
+                اختر {STAGE1_CATEGORIES} فئات للّوح
               </div>
             ) : starter !== null ? (
               <div className="toss-result">
@@ -868,12 +851,21 @@ export function Setup({
           max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
           text-shadow:0 1px 3px rgba(0,0,0,.45);
         }
-        .cc-owner { font-size:clamp(11px,1.4vw,16px); font-weight:700; line-height:1.2; }
         .catchip.taken .cc-plate { background:linear-gradient(to top, rgba(14,11,22,.94) 0%, rgba(14,11,22,.7) 55%, rgba(14,11,22,.08) 100%); }
-        .catchip.taken.team-0 { border-color:var(--gold); }
-        .catchip.taken.team-0 .cc-owner { color:var(--gold); }
-        .catchip.taken.team-1 { border-color:var(--coral); }
-        .catchip.taken.team-1 .cc-owner { color:var(--coral); }
+        /* المختارة: حدٌّ سميك، ورسمتُها تصفو، وعلامةُ صحّ في الزاوية. ثلاث
+           إشارات لا واحدة — البطاقة صغيرة وفوقها رسمة، فالحدّ وحده يضيع. */
+        .catchip.taken { border-color:var(--gold); border-width:4px; }
+        .catchip.taken .cc-img { filter:saturate(1.15); }
+        .cc-tick {
+          position:absolute; z-index:2; top:6px; inset-inline-start:6px;
+          display:none; place-items:center;
+          width:clamp(24px,3.2vw,34px); aspect-ratio:1;
+          border-radius:999px;
+          background:var(--gold); color:#1a1626;
+          font-size:clamp(14px,1.9vw,20px); font-weight:900; line-height:1;
+          box-shadow:0 2px 6px rgba(0,0,0,.35);
+        }
+        .catchip.taken .cc-tick { display:grid; }
 
         .cats-note {
           display:flex; flex-wrap:wrap; align-items:center; gap:clamp(8px,1.4vw,18px);

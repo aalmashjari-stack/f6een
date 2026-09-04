@@ -13,7 +13,6 @@ import {
   TIEBREAK_POINTS,
   cellKey,
   createSession,
-  stage1Owner,
 } from './session'
 
 export type Action =
@@ -25,7 +24,7 @@ export type Action =
   | { t: 'RESUME'; state: GameState }
   | { t: 'S1_PICK'; category: string; level: Level } // خليّة من لوح الجولة الجماعية
   | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
-  | { t: 'S1_SCORE'; correct: boolean }
+  | { t: 'S1_SCORE'; team: TeamId | null }
   | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
   | { t: 'INTERVAL_CONTINUE' }
   | { t: 'S2_SELECT'; sel: [number, number] } // اختيار اللاعبَين (بعد التشويق)
@@ -144,9 +143,11 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     /* ---------------- تنقيط الجولة الجماعية ---------------- */
     case 'S1_SCORE': {
       if (!state || !state.s1Cell) return state
-      const owner = stage1Owner(state.s1Index, state.startingTeam)
+      /* النقاط لمن أجاب لا لصاحب الدور (قرار علي ٥ سبتمبر ٢٠٢٦): الحكم يختار
+         الفريق من اسمه، و`null` تعني أنّ أحداً لم يُصب. */
       let s = state
-      if (action.correct) s = addScore(s, owner, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
+      if (action.team !== null)
+        s = addScore(s, action.team, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
 
       const nextIndex = s.s1Index + 1
       const rest = {

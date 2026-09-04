@@ -461,10 +461,13 @@ html[data-skin='blocks'] body .screen .catchip {
 }
 html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink); }
 html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px rgba(34,32,28,.18); }
-html[data-skin='blocks'] body .screen .catchip.taken.dimmed.team-0 { box-shadow: 0 0 0 3px var(--n-a-tint), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken.dimmed.team-1 { box-shadow: 0 0 0 3px var(--n-b-tint), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken.team-0 { box-shadow: 0 0 0 3px var(--n-a-tint), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken.team-1 { box-shadow: 0 0 0 3px var(--n-b-tint), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 4px var(--n-accent), 4px 4px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .cc-tick {
+  background: var(--n-accent); color: #fff;
+  border-radius: var(--n-r1);
+  box-shadow: 0 0 0 2px var(--n-ink), 2px 2px 0 var(--n-ink);
+}
 html[data-skin='blocks'] .cats-turn { box-shadow: 0 0 0 2px var(--n-ink); }
 
 /* «أصاب / أخطأ» كتلتان مشبعتان بنصٍّ أبيض — الأخضر والأحمر محجوزان للحكم */
@@ -685,4 +688,16 @@ html[data-skin='blocks'] .screen.end .best { background: var(--n-surface); box-s
   0%, 22% { transform: rotate(0deg); }
   48%, 78% { transform: rotate(-90deg); }
   100% { transform: rotate(0deg); }
+}
+
+/* بطاقتا «من أجاب؟» في كشف الجولة الجماعية تأخذان لونَي الفريقين المعتمدين
+   في شريط النتيجة (٥ سبتمبر ٢٠٢٦) — فالحكم يربط الاسم بصاحبه بلمحة. */
+html[data-skin='blocks'] body .screen .pick-team.team-0 { border-color: var(--n-a); }
+html[data-skin='blocks'] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
+html[data-skin='blocks'] body .screen .pick-team.team-1 { border-color: var(--n-b); }
+html[data-skin='blocks'] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
+html[data-skin='blocks'] body .screen .rv-ask { color: var(--n-ink); }
+html[data-skin='blocks'] body .screen .pick-none {
+  border-color: var(--n-ink); color: var(--n-ink);
+  border-radius: var(--n-r1); box-shadow: 3px 3px 0 var(--n-ink);
 }

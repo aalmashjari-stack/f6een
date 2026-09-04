@@ -743,27 +743,22 @@ html[data-skin] body .screen .catchip.dimmed {
 html[data-skin] body .screen .catchip.dimmed .cc-img { filter: grayscale(1) brightness(1.12) contrast(.72); opacity: .3; }
 html[data-skin] body .screen .catchip.dimmed .cc-plate { background: none; }
 html[data-skin] body .screen .catchip.dimmed .cc-name { color: var(--n-ink-3); text-shadow: none; }
-/* المختارة ترمدّ رسمتُها كأختها، لكن حدَّ فريقها واسمَه تبقيان — الترميد
-   يقول «أُقفل الاختيار» لا «أُلغي اللوح». وأربعةُ محدِّدات هنا تغلب اثنين
-   في قاعدة .dimmed أعلاه، فلا يبتلع الرماديُّ الحدَّ. */
-html[data-skin] body .screen .catchip.taken.dimmed.team-0 { box-shadow: 0 0 0 2.5px var(--n-a-tint), 0 4px 10px rgba(26,22,38,.12); }
-html[data-skin] body .screen .catchip.taken.dimmed.team-1 { box-shadow: 0 0 0 2.5px var(--n-b-tint), 0 4px 10px rgba(26,22,38,.12); }
+/* المختارة ترمدّ رسمتُها كأختها، لكنّ حدَّها يبقى — الترميد يقول «أُقفل
+   الاختيار» لا «أُلغي اللوح». والحدُّ بلون التمييز لا بلون فريق: الفئات
+   للّوح لا لأحد (٥ سبتمبر ٢٠٢٦). وثلاثةُ محدِّدات هنا تغلب اثنين في قاعدة
+   .dimmed أعلاه، فلا يبتلع الرماديُّ الحدَّ. */
+html[data-skin] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 2.5px var(--n-accent), 0 4px 10px rgba(26,22,38,.12); }
 html[data-skin] body .screen .catchip.taken.dimmed { background-color: var(--n-surface); }
 html[data-skin] body .screen .catchip.taken.dimmed .cc-img { opacity: .5; }
 html[data-skin] body .screen .catchip.taken.dimmed .cc-plate {
   background: linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.6) 50%, rgba(14,11,22,0) 100%);
 }
 html[data-skin] body .screen .catchip.taken.dimmed .cc-name { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.45); }
-html[data-skin] body .screen .catchip.taken.team-0 { box-shadow: 0 0 0 2.5px var(--n-a-tint), 0 4px 10px rgba(26,22,38,.12); }
-html[data-skin] body .screen .catchip.taken.team-1 { box-shadow: 0 0 0 2.5px var(--n-b-tint), 0 4px 10px rgba(26,22,38,.12); }
-html[data-skin] body .screen .catchip.taken.team-0 .cc-owner { color: var(--n-a-tint); }
-html[data-skin] body .screen .catchip.taken.team-1 .cc-owner { color: var(--n-b-tint); }
+html[data-skin] body .screen .catchip.taken { box-shadow: 0 0 0 3.5px var(--n-accent), 0 6px 16px rgba(26,22,38,.18); }
+html[data-skin] body .screen .cc-tick { background: var(--n-accent); color: var(--n-surface); }
 html[data-skin] .cats-turn.done { background: var(--n-surface-2); color: var(--n-ink-2); }
-html[data-skin] .cats-turn.team-0 { background: var(--n-a-tint); color: var(--n-a); }
-html[data-skin] .cats-turn.team-1 { background: var(--n-b-tint); color: var(--n-b); }
 html[data-skin] .cats-title { color: var(--n-ink); }
-html[data-skin] .cats-count.team-0 { color: var(--n-a); }
-html[data-skin] .cats-count.team-1 { color: var(--n-b); }
+html[data-skin] .cats-count { color: var(--n-ink-2); font-variant-numeric: tabular-nums; }
 html[data-skin] .cats-hint { color: var(--n-ink-3); }
 
 /* ─── ١٠ج. بطاقتا «أصاب / أخطأ» ──────────────────────────────────────── */
@@ -1304,3 +1299,12 @@ html[data-skin] .screen.end .foot-link { text-decoration: underline; text-underl
   html[data-skin] .timer-progress { height: 5px; }
   html[data-skin] .q-box, html[data-skin] .s3-q { border-radius: var(--n-r3); }
 }
+
+/* بطاقتا «من أجاب؟» في كشف الجولة الجماعية تأخذان لونَي الفريقين المعتمدين
+   في شريط النتيجة (٥ سبتمبر ٢٠٢٦) — فالحكم يربط الاسم بصاحبه بلمحة. */
+html[data-skin] body .screen .pick-team.team-0 { border-color: var(--n-a); }
+html[data-skin] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
+html[data-skin] body .screen .pick-team.team-1 { border-color: var(--n-b); }
+html[data-skin] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
+html[data-skin] body .screen .rv-ask { color: var(--n-ink); }
+html[data-skin] body .screen .pick-none { border-color: var(--n-ink); color: var(--n-ink); }
