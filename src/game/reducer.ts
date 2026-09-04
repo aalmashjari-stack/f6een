@@ -1,5 +1,5 @@
 import type { Level, Mark, Question, TeamId } from './types'
-import { familyOf } from './bank'
+import { familiesOf } from './bank'
 import { drawByLevel, drawOne, drawStage3Queue } from './draw'
 import {
   GameState,
@@ -46,10 +46,7 @@ const pendingS3Ids = (s: GameState): Set<string> =>
 /** قوالب ممنوعة الآن: ما ظهر في الجلسة + ما ينتظر دوره في طابور الحق ما تلحق. */
 const guardedFamilies = (s: GameState): Set<string> => {
   const fams = new Set(s.spentFamilies)
-  for (const q of s.s3Queue.slice(s.s3Pos)) {
-    const fam = familyOf(q)
-    if (fam !== null) fams.add(fam)
-  }
+  for (const q of s.s3Queue.slice(s.s3Pos)) for (const fam of familiesOf(q)) fams.add(fam)
   return fams
 }
 
@@ -82,9 +79,8 @@ const ensureS3Queue = (s: GameState): GameState => {
 const burn = (s: GameState, q: Question): GameState => {
   const usedQuestionIds = new Set(s.usedQuestionIds)
   usedQuestionIds.add(q.id)
-  const fam = familyOf(q)
-  const spentFamilies =
-    fam === null || s.spentFamilies.includes(fam) ? s.spentFamilies : [...s.spentFamilies, fam]
+  const fresh = familiesOf(q).filter((fam) => !s.spentFamilies.includes(fam))
+  const spentFamilies = fresh.length === 0 ? s.spentFamilies : [...s.spentFamilies, ...fresh]
   const askedQuestionIds = s.askedQuestionIds.includes(q.id)
     ? s.askedQuestionIds
     : [...s.askedQuestionIds, q.id]

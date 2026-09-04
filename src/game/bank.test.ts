@@ -7,6 +7,7 @@ import {
   allCategories,
   allQuestions,
   familyOf,
+  familiesOf,
   playableCategories,
   poolByCatLevel,
   setBlockedQuestionIds,
@@ -107,6 +108,34 @@ describe('عائلات القوالب', () => {
       if (f !== null) size.set(f, (size.get(f) ?? 0) + 1)
     }
     for (const [fam, n] of size) expect(n, fam).toBeGreaterThanOrEqual(3)
+  })
+
+  /**
+   * التصريح في البيانات (`Question.family`) يمسك ما لا يمسكه الاستنتاج: سؤالان
+   * جوابهما واحد وصيغتاهما مختلفتان. وهو يسري على أسئلة الصور — وهي المستثناة
+   * من الاستنتاج لأنّ نصّها «من صاحب الصورة؟» واحد.
+   */
+  it('الموضوع المصرَّح به يجمع الصورة والنصّ، والقالب المستنتَج يبقى معه', () => {
+    const declared = ALL_QUESTIONS.filter((q) => q.family)
+    expect(declared.length).toBeGreaterThan(0)
+
+    // صورةٌ مصرَّح بموضوعها: لا قالب لها، ولها عائلةٌ واحدة هي الموضوع.
+    const photo = declared.find((q) => q.image)
+    expect(photo, 'سؤال صورة مصرَّح بموضوعه').toBeDefined()
+    expect(familyOf(photo!)).toBeNull()
+    expect(familiesOf(photo!)).toHaveLength(1)
+
+    // نصٌّ له قالبٌ مستنتَج وموضوعٌ مصرَّح به: ينتمي إليهما معاً لا إلى أحدهما.
+    const both = declared.find((q) => !q.image && familyOf(q) !== null)
+    if (both) {
+      expect(familiesOf(both)).toHaveLength(2)
+      expect(familiesOf(both)).toContain(familyOf(both)!)
+    }
+
+    // ومن صُرِّح بموضوعه يشارك فيه غيرَه — التصريح قصدٌ لا وسمٌ منفرد.
+    const byKey = new Map<string, number>()
+    for (const q of declared) byKey.set(q.family!, (byKey.get(q.family!) ?? 0) + 1)
+    for (const [k, n] of byKey) expect(n, k).toBeGreaterThanOrEqual(2)
   })
 
   it('السؤال المنفرد بلا عائلة', () => {
