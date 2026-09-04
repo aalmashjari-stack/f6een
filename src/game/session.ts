@@ -25,7 +25,7 @@ export const STAGE2_TIMER_MS = 30_000 * TIME_SCALE
 export const STAGE2_CORRECT = 20
 export const STAGE2_WRONG = -10
 export const STAGE3_TIMER_MS = 30_000 * TIME_SCALE
-export const STAGE3_POINTS = 5
+export const STAGE3_POINTS = 10
 export const STAGE3_QUEUE_SIZE = 40
 export const TIEBREAK_POINTS = 10
 
