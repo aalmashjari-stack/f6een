@@ -79,11 +79,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         ))}
       </div>
 
-      {/* «لا أحد أجاب» لا «أصاب» (تصحيح علي): السؤال «من أجاب؟» فيكون بابُ
+      {/* «لم يجب أحد» (صياغة علي، بعد «لا أحد أصاب» ثمّ «لا أحد أجاب»): بابُ
           الخروج من جنسه. عاد بعد أن ذهب في ٣ سبتمبر: بالخيارين السابقين كان «أخطأ» يكفي، وبثلاثة
           نتائج لا بدّ من بابٍ لِمن لم يُصب أحدٌ عنده. وهو أصغر لأنّه الأندر. */}
       <button className="pick-none" onClick={() => dispatch({ t: 'S1_SCORE', team: null })}>
-        لا أحد أجاب
+        لم يجب أحد
       </button>
 
       <style>{`
@@ -218,7 +218,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .pick-team.team-1 { border-color:var(--cream); }
         .pick-team.team-1 .pk-to { color:var(--cream); }
 
-        /* «لا أحد أجاب» دون البطاقتين في البروز — لأنّه الأندر — لكنّه قرارٌ
+        /* «لم يجب أحد» دون البطاقتين في البروز — لأنّه الأندر — لكنّه قرارٌ
            يُضغط لا حاشية، فيكبر ويشتدّ حدُّه عمّا كان (ملاحظة علي). */
         .pick-none {
           align-self:center; margin-top:clamp(10px,2.2vh,22px);
