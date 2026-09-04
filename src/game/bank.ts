@@ -234,9 +234,15 @@ const prefixKey = (q: Question) =>
   normalizeAr(q.question).split(/\s+/).slice(0, FAMILY_PREFIX_WORDS).join(' ')
 
 const familyById = new Map<string, string>()
+/** ما صُرِّح به في البيانات (`Question.family`) — مفصولٌ عن المستنتَج. */
+const declaredById = new Map<string, string>()
 
 function rebuildFamilies() {
   familyById.clear()
+  declaredById.clear()
+  /* التصريح يسري على أسئلة الصور أيضاً، وبلا حدٍّ أدنى للحجم: اثنان يكفيان
+     لأنّ التصريح قصدٌ لا إحصاء. ويُوسَم بسابقةٍ فلا يصادف مفتاحَ قالبٍ. */
+  for (const q of effective) if (q.family) declaredById.set(q.id, 'موضوع:' + q.family)
   const counts = new Map<string, number>()
   // أسئلة الصور («من صاحب الصورة؟») نصّها واحد فتتجمّع كلّها في عائلة واحدة
   // فيُسمح بواحدة في الجلسة — وهو خطأ: العبرة بالصورة لا بالنصّ. تُستثنى فلا
@@ -255,9 +261,23 @@ function rebuildFamilies() {
 /* البناء الأوّل بالبنك وحده — الطبقة تصل من القاعدة بعد الإقلاع. */
 rebuild()
 
-/** مفتاح عائلة السؤال، أو null إن لم ينتمِ إلى قالب متكرّر. */
+/** مفتاح **القالب** المستنتَج من نصّ السؤال، أو null إن لم ينتمِ إلى قالب متكرّر. */
 export function familyOf(q: Question): string | null {
   return familyById.get(q.id) ?? null
+}
+
+/**
+ * عائلات السؤال كلّها: قالبُه المستنتَج وموضوعُه المصرَّح به. هذه ما يحرسه
+ * السحب — لا `familyOf` وحدها — فسؤالان يجمعهما أيٌّ من الاثنين لا يجتمعان
+ * في جلسة.
+ */
+export function familiesOf(q: Question): string[] {
+  const out: string[] = []
+  const fam = familyById.get(q.id)
+  if (fam !== undefined) out.push(fam)
+  const dec = declaredById.get(q.id)
+  if (dec !== undefined) out.push(dec)
+  return out
 }
 
 /* ========================= أسماء عرض مختصرة ========================= */

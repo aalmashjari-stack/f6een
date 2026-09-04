@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { drawByLevel, drawOne, drawStage3Queue } from './draw'
-import { familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels, setBlockedQuestionIds } from './bank'
+import { ALL_QUESTIONS, familiesOf, familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels, setBlockedQuestionIds } from './bank'
 import type { Level } from './types'
 
 const CAT = 'جغرافيا ومعالم'
@@ -39,6 +39,21 @@ describe('drawOne — الاستبعاد', () => {
     const cell = poolByCatLevel(CAT, LEVEL)
     const reserved = new Set([cell[0].id])
     for (let i = 0; i < 40; i++) expect(reserved.has(drawOne(CAT, LEVEL, new Set(), reserved).id)).toBe(false)
+  })
+
+  it('لا يسحب من موضوع مصرَّح به طُرق في الجلسة ما دام في الخلية غيره', () => {
+    /* الموضوع المصرَّح به يحرسه السحب كما يحرس القالب — وإلّا عاد السؤالان
+       اللذان جوابهما واحد إلى الاجتماع في جلسة. */
+    const q = ALL_QUESTIONS.filter((x) => x.family).find(
+      (x) => poolByCatLevel(x.category, x.level).length > 1,
+    )
+    if (!q) return
+    const spent = new Set(familiesOf(q))
+    for (let i = 0; i < 40; i++) {
+      const picked = drawOne(q.category, q.level, new Set(), new Set(), spent)
+      if (picked.id === q.id) continue // تنازلٌ حين تضيق الخليّة — مسموح
+      expect(familiesOf(picked).some((f) => spent.has(f)), picked.id).toBe(false)
+    }
   })
 
   it('لا يسحب من قالب طُرق في الجلسة ما دام في الخلية غيره', () => {

@@ -1,5 +1,5 @@
 import type { Level, Question } from './types'
-import { familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels } from './bank'
+import { familiesOf, poolByCatLevel, poolByLevels, poolShippedByLevels } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -28,10 +28,7 @@ function pickFrom(
   if (pool.length === 0) return null
   const unused = pool.filter((q) => !used.has(q.id))
   const free = unused.filter((q) => !reserved.has(q.id))
-  const best = free.filter((q) => {
-    const fam = familyOf(q)
-    return fam === null || !spentFamilies.has(fam)
-  })
+  const best = free.filter((q) => familiesOf(q).every((fam) => !spentFamilies.has(fam)))
   const from = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : pool
   return from[Math.floor(Math.random() * from.length)]
 }
@@ -147,12 +144,12 @@ export function drawStage3Queue(
   const spare: Question[] = []
   for (const q of shuffle(pool)) {
     if (queue.length >= count) break
-    const fam = familyOf(q)
-    if (fam !== null && seenFamilies.has(fam)) {
+    const fams = familiesOf(q)
+    if (fams.some((fam) => seenFamilies.has(fam))) {
       spare.push(q)
       continue
     }
-    if (fam !== null) seenFamilies.add(fam)
+    for (const fam of fams) seenFamilies.add(fam)
     queue.push(q)
   }
   // إن لم يكتمل العدد (مخزون شحيح) نكمل من المُستبعَد — الاحتياطي أولى من طابور ناقص.
