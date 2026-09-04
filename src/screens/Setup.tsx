@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { SetupInput } from '../game/session'
-import { STAGE1_TEAM_CATEGORIES } from '../game/session'
+import { STAGE1_CATEGORIES } from '../game/session'
 import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
@@ -42,7 +42,7 @@ export function Setup({
   ])
   const [starter, setStarter] = useState<TeamId | null>(null)
   /* فئات لوح الجولة الجماعية — ثلاث لكل فريق (SPEC ٤). */
-  const [cats, setCats] = useState<[string[], string[]]>([[], []])
+  const [cats, setCats] = useState<string[]>([])
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -81,35 +81,22 @@ export function Setup({
   const allCats = useMemo<string[]>(playableCategories, [bankRev])
 
   /**
-   * دور الاختيار للفريق الأقلّ اختياراً، وعند التساوي للفريق الأول.
-   *
-   * لا بعدد الضغطات: الحكم قد يسحب اختياراً بضغطةٍ ثانية على الفئة نفسها،
-   * فيصير العدّ فردياً والدور معلّقاً على فريقٍ استوفى نصيبه.
-   *
-   * والقرعة لا تدخل هنا: هي تحدّد من يجيب أوّلاً لا من يختار أوّلاً — فيأخذ
-   * كل فريق واحدة من الاثنتين. وربطُ الاختيار بها كان يقلب ترتيب الفئات بأثر
-   * رجعيّ عند «إعادة القرعة» بعد أن تكون الفئات قد اختيرت.
+   * الفئات الستّ للّوح لا للفريقين (قرار علي ٥ سبتمبر ٢٠٢٦). كان كلٌّ يختار
+   * ثلاثاً بالتناوب، وكانت شارةٌ تقول «دور الفريق الأول» فتُقرأ في شاشةٍ فيها
+   * قرعةٌ على أنّها ترتيب اللعب لا ترتيب الاختيار. سقط التناوب وسقطت معه.
    */
-  const pickTurn: TeamId = cats[0].length <= cats[1].length ? 0 : 1
-  const catsReady = cats.every((c) => c.length === STAGE1_TEAM_CATEGORIES)
-  const ownerOf = (cat: string): TeamId | null =>
-    cats[0].includes(cat) ? 0 : cats[1].includes(cat) ? 1 : null
+  const catsReady = cats.length === STAGE1_CATEGORIES
+  const isPicked = (cat: string) => cats.includes(cat)
 
-  /** ضغطةٌ على فئةٍ مأخوذة من صاحبها تسحبها — وهي طريقُ التراجع الوحيد ولا تحتاج زرّاً. */
+  /** ضغطةٌ على فئةٍ مختارة تسحبها — وهي طريقُ التراجع الوحيد ولا تحتاج زرّاً. */
   function toggleCat(cat: string) {
-    const owner = ownerOf(cat)
+    const picked = isPicked(cat)
     setCats((c) => {
-      const copy: [string[], string[]] = [[...c[0]], [...c[1]]]
-      if (owner !== null) {
-        copy[owner] = copy[owner].filter((x) => x !== cat)
-        return copy
-      }
-      const t = c[0].length <= c[1].length ? 0 : 1
-      if (copy[t].length >= STAGE1_TEAM_CATEGORIES) return c
-      copy[t].push(cat)
-      return copy
+      if (picked) return c.filter((x) => x !== cat)
+      if (c.length >= STAGE1_CATEGORIES) return c
+      return [...c, cat]
     })
-    if (owner === null) play('pickLand')
+    if (!picked) play('pickLand')
   }
 
   /* لا تبدأ اللعبة باسم مستعار: كل حقل — الفريقان وكل لاعب — مكتوب (قرار علي
@@ -295,35 +282,31 @@ export function Setup({
           </div>
         </section>
 
-        {/* لوح الجولة الجماعية — ثلاث فئات لكل فريق (SPEC ٤). هنا لا في شاشة
+        {/* لوح الجولة الجماعية — ستّ فئات يختارها الفريقان (SPEC ٤). هنا لا في شاشة
             مستقلّة: الاختيار قرارُ تجهيزٍ يسبق اللعب مثل الأسماء والقرعة،
             وشاشةٌ ثالثة بينهما تقطع المجلس مرّتين قبل أول سؤال. */}
         <section className="setup-block">
           <div className="cats-head">
             <h3 className="cats-title">فئات الجولة الجماعية</h3>
-            {/* الشارة تلبس لون صاحب الدور — وتخلعه حين يكتمل اللوح: لا دور
-                عندها لأحد، ولون الفريق الأول عليها يُقرأ نداءً باقياً. */}
-            <span className={catsReady ? 'cats-turn done' : 'cats-turn team-' + pickTurn}>
-              {catsReady ? 'اكتمل اللوح' : `دور ${teamLabel(pickTurn)}`}
-            </span>
+            {/* لا شارةَ دورٍ بعد اليوم: الفئات للّوح لا للفريقين. يبقى إعلانُ
+                الاكتمال وحده — وهو خبرٌ عن اللوح لا نداءٌ على فريق. */}
+            {catsReady && <span className="cats-turn done">اكتمل اللوح</span>}
           </div>
           <div className="cats-grid">
             {allCats.map((cat) => {
-              const owner = ownerOf(cat)
+              const picked = isPicked(cat)
               return (
                 <button
                   key={cat}
                   className={
                     'catchip' +
-                    (owner !== null ? ' taken team-' + owner : '') +
+                    (picked ? ' taken' : '') +
                     /* اكتمل اللوح: **الشبكة كلّها** ترمدّ — المختارة وغيرها —
-                       فتقول بلا سطرٍ إنّ الباب أُقفل ولا فئة سابعة. الرسمة
-                       وحدها تفقد لونها؛ حدُّ الفريق واسمُه يبقيان ملوّنين
-                       وإلّا ضاع مَن اختار ماذا. */
+                       فتقول بلا سطرٍ إنّ الباب أُقفل ولا فئة سابعة. */
                     (catsReady ? ' dimmed' : '')
                   }
                   onClick={() => toggleCat(cat)}
-                  aria-pressed={owner !== null}
+                  aria-pressed={picked}
                 >
                   {/* الرسمة عنصرٌ مستقلّ لا خلفيّةُ الزرّ: الترميد يقع عليها
                       وحدها فيبقى الاسم مقروءاً فوقها — بناء `.cat` نفسه. */}
@@ -337,18 +320,15 @@ export function Setup({
                   />
                   <span className="cc-plate">
                     <span className="cc-name">{displayName(cat)}</span>
-                    {owner !== null && <span className="cc-owner">{teamLabel(owner)}</span>}
                   </span>
                 </button>
               )
             })}
           </div>
           <div className="cats-note">
-            {[0, 1].map((t) => (
-              <span key={t} className={'cats-count team-' + t}>
-                {teamLabel(t as TeamId)}: {cats[t as TeamId].length} / {STAGE1_TEAM_CATEGORIES}
-              </span>
-            ))}
+            <span className="cats-count">
+              {cats.length} / {STAGE1_CATEGORIES}
+            </span>
             <span className="cats-hint">اضغط فئةً مختارة لسحبها</span>
           </div>
         </section>
@@ -369,7 +349,7 @@ export function Setup({
               <div className="toss-result missing">اكتب أسماء الفريقين واللاعبين</div>
             ) : !catsReady ? (
               <div className="toss-result missing">
-                اختر {STAGE1_TEAM_CATEGORIES} فئات لكل فريق
+                اختر {STAGE1_CATEGORIES} فئات للّوح
               </div>
             ) : starter !== null ? (
               <div className="toss-result">

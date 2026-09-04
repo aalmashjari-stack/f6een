@@ -20,7 +20,7 @@ const INPUT = {
     ['خالد', 'منى'],
   ] as [string[], string[]],
   startingTeam: 0 as const,
-  categories: [BOARD.slice(0, 3), BOARD.slice(3)] as [string[], string[]],
+  categories: BOARD,
 }
 
 /** خلايا اللوح الثماني عشرة بترتيبٍ مخلوط — كما يختارها فريقٌ لا كما تُصفّ. */

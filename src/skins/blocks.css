@@ -461,10 +461,8 @@ html[data-skin='blocks'] body .screen .catchip {
 }
 html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink); }
 html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px rgba(34,32,28,.18); }
-html[data-skin='blocks'] body .screen .catchip.taken.dimmed.team-0 { box-shadow: 0 0 0 3px var(--n-a-tint), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken.dimmed.team-1 { box-shadow: 0 0 0 3px var(--n-b-tint), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken.team-0 { box-shadow: 0 0 0 3px var(--n-a-tint), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken.team-1 { box-shadow: 0 0 0 3px var(--n-b-tint), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
 html[data-skin='blocks'] .cats-turn { box-shadow: 0 0 0 2px var(--n-ink); }
 
 /* «أصاب / أخطأ» كتلتان مشبعتان بنصٍّ أبيض — الأخضر والأحمر محجوزان للحكم */

@@ -8,11 +8,12 @@ const TIME_SCALE =
   typeof location !== 'undefined' && new URLSearchParams(location.search).has('fast') ? 0.1 : 1
 
 /**
- * لوح الجولة الجماعية — كل فريق يختار ثلاث فئات، فتصير ستّاً، ولكل فئة
+ * لوح الجولة الجماعية — الفريقان يختاران ستّ فئات معاً، ولكل فئة
  * مستوياتها الثلاثة. ثمانية عشر سؤالاً، والنقاط تتبع المستوى لا الموضع.
  */
-export const STAGE1_TEAM_CATEGORIES = 3
-export const STAGE1_CATEGORIES = STAGE1_TEAM_CATEGORIES * 2
+/* ستّ فئات للّوح يختارها الفريقان معاً بلا قسمة ولا تناوب (قرار علي ٥ سبتمبر
+   ٢٠٢٦). كانت ثلاثاً لكل فريق، وكانت الخليّة تحمل لون من اختارها. */
+export const STAGE1_CATEGORIES = 6
 export const STAGE1_LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
 export const STAGE1_QUESTIONS = STAGE1_CATEGORIES * STAGE1_LEVELS.length
 export const STAGE1_CONSULT_MS = 60_000 * TIME_SCALE
@@ -42,7 +43,6 @@ export function stage1Owner(index: number, startingTeam: TeamId): TeamId {
 /** فئة على لوح الجولة الجماعية، ومَن اختارها — اللوح يقول لكل فريق أين اختياره. */
 export interface PickedCategory {
   name: string
-  pickedBy: TeamId
 }
 
 /** خليّة اللوح: فئة ومستوى. النقاط تتبع المستوى (`STAGE1_LEVEL_POINTS`). */
@@ -118,8 +118,8 @@ export interface SetupInput {
   teamNames: [string, string]
   players: [string[], string[]]
   startingTeam: TeamId
-  /** ثلاث فئات لكل فريق — لوح الجولة الجماعية (القسم ٤). */
-  categories: [string[], string[]]
+  /** ستّ فئات للّوح، يختارها الفريقان معاً بلا قسمة (القسم ٤). */
+  categories: string[]
 }
 
 export function largestTeamSize(players: [string[], string[]]): number {
@@ -137,14 +137,9 @@ export function createSession(input: SetupInput): GameState {
   const used = loadUsedIds()
   const s2Rounds = Math.max(4, largestTeamSize(input.players))
 
-  /* اللوح مصفوف بترتيب الاختيار متناوباً — الفريق الأول أوّلاً ثم الثاني —
-     فيقرأ المجلسُ من الشبكة مَن اختار ماذا بلا حاجة إلى شرح.
-     والقرعة لا تدخل هنا: هي تحدّد من يجيب أوّلاً لا من يختار أوّلاً، وربطها
-     بالاختيار كان يقلب ترتيب الفئات بأثر رجعيّ عند «إعادة القرعة». */
-  const s1Categories: PickedCategory[] = []
-  for (let i = 0; i < STAGE1_TEAM_CATEGORIES; i++)
-    for (const t of [0, 1] as const)
-      if (input.categories[t][i]) s1Categories.push({ name: input.categories[t][i], pickedBy: t })
+  /* اللوح بترتيب الاختيار كما وقع. ولا مالك للفئة: الفريقان يختاران الستّ
+     معاً، فلا لون فريقٍ على الخليّة ولا اسمَ صاحبٍ فوقها. */
+  const s1Categories: PickedCategory[] = input.categories.map((name) => ({ name }))
   const s3Queue = drawStage3Queue(STAGE3_QUEUE_SIZE, used)
 
   const correctByPlayer: Record<string, number> = {}

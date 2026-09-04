@@ -46,8 +46,8 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
                يميناً) وعمود المستويات الثلاثة يسارها — سهل ثم متوسط ثم صعب.
                والإطار ضرورةٌ لا زينة: بدونه يجاور عمودُ فئةٍ بطاقةَ الفئة التي
                تليها فيُقرأ لها، وستُّ وحدات متجاورة تصير شبكةً واحدة ملتبسة.
-               ولونه لون الفريق الذي اختار الفئة — يقول من صاحبها بلا سطر. */
-            <div key={cat.name} className={'bunit team-' + cat.pickedBy}>
+               ولا لون فريقٍ عليه: الفئات الستّ للّوح لا لأحد (٥ سبتمبر ٢٠٢٦). */
+            <div key={cat.name} className="bunit">
               <div
                 className="bhead"
                 style={
@@ -60,7 +60,6 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
                     متباينة، والاسمُ عليها بلا حجابٍ يضيع في نصفها (نفس علاج `.cat-name`). */}
                 <span className="bh-plate">
                   <span className="bh-name">{displayName(cat.name)}</span>
-                  <span className={'bh-owner team-' + cat.pickedBy}>{state.teams[cat.pickedBy].name}</span>
                 </span>
               </div>
 
