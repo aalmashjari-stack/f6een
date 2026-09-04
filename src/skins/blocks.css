@@ -696,4 +696,8 @@ html[data-skin='blocks'] body .screen .pick-team.team-0 { border-color: var(--n-
 html[data-skin='blocks'] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
 html[data-skin='blocks'] body .screen .pick-team.team-1 { border-color: var(--n-b); }
 html[data-skin='blocks'] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
-html[data-skin='blocks'] body .screen .pick-none { border-color: var(--n-line); color: var(--n-ink-2); }
+html[data-skin='blocks'] body .screen .rv-ask { color: var(--n-ink); }
+html[data-skin='blocks'] body .screen .pick-none {
+  border-color: var(--n-ink); color: var(--n-ink);
+  border-radius: var(--n-r1); box-shadow: 3px 3px 0 var(--n-ink);
+}

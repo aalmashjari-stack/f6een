@@ -135,9 +135,16 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           to   { inset-inline-start:120%; }
         }
 
-        /* «من أجاب؟» ينزل عن بطاقة الإجابة: كان ملتصقاً بها فيُقرأ ذيلاً لها
-           لا سؤالاً جديداً موجَّهاً إلى الحكم (ملاحظة علي ٥ سبتمبر ٢٠٢٦). */
-        .rv-ask { margin-block-start:clamp(10px,2.6vh,28px); }
+        /* «من أجاب؟» سؤالٌ موجَّه إلى الحكم لا لافتةُ سياق، فيخرج من هيئة
+           eyebrow الصغيرة الخافتة: يكبر ويشتدّ لونه وينزل عن بطاقة الإجابة
+           مسافةً تفصله عنها (ملاحظتا علي ٥ سبتمبر ٢٠٢٦). */
+        .rv-ask {
+          margin-block-start:clamp(18px,4.5vh,46px);
+          font-size:clamp(17px,2.6vw,28px);
+          font-weight:900;
+          letter-spacing:0;
+          color:var(--cream);
+        }
 
         /* ===== البطاقتان ===== */
         /* أرضية ارتفاع: على شاشة عريضة قصيرة كان الصفّ ينكمش إلى صفر فتخرج
@@ -211,13 +218,14 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .pick-team.team-1 { border-color:var(--cream); }
         .pick-team.team-1 .pk-to { color:var(--cream); }
 
-        /* «لا أحد» أصغر لأنّه الأندر — وباب خروجٍ لا خيارٌ ثالث مساوٍ. */
+        /* «لا أحد أجاب» دون البطاقتين في البروز — لأنّه الأندر — لكنّه قرارٌ
+           يُضغط لا حاشية، فيكبر ويشتدّ حدُّه عمّا كان (ملاحظة علي). */
         .pick-none {
-          align-self:center; margin-top:clamp(6px,1.4vh,14px);
-          padding:clamp(6px,1.2vh,12px) clamp(18px,3vw,34px);
+          align-self:center; margin-top:clamp(10px,2.2vh,22px);
+          padding:clamp(9px,1.8vh,16px) clamp(26px,4.5vw,48px);
           border-radius:999px; cursor:pointer; font-family:inherit;
-          font-size:clamp(12px,1.5vw,17px); font-weight:800;
-          background:transparent; border:2px solid var(--text-3); color:var(--text-2);
+          font-size:clamp(14px,1.9vw,21px); font-weight:900;
+          background:transparent; border:2.5px solid var(--text-2); color:var(--cream);
         }
         .pick-none:active { transform:scale(.97); }
         .pick-none:focus-visible { outline:none; border-color:var(--gold); color:var(--cream); }

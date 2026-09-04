@@ -1306,4 +1306,5 @@ html[data-skin] body .screen .pick-team.team-0 { border-color: var(--n-a); }
 html[data-skin] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
 html[data-skin] body .screen .pick-team.team-1 { border-color: var(--n-b); }
 html[data-skin] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
-html[data-skin] body .screen .pick-none { border-color: var(--n-line); color: var(--n-ink-2); }
+html[data-skin] body .screen .rv-ask { color: var(--n-ink); }
+html[data-skin] body .screen .pick-none { border-color: var(--n-ink); color: var(--n-ink); }
