@@ -41,7 +41,15 @@ export function Intro({ onDone }: { onDone?: () => void }) {
     const code = q.get('error') ?? h.get('error')
     if (!code) return null
     const why = q.get('error_description') ?? h.get('error_description')
-    return why ? decodeURIComponent(why.replace(/\+/g, ' ')) : code
+    if (!why) return code
+    /* `URLSearchParams` فكّ الترميز أصلاً؛ فكٌّ ثانٍ يلتقط ما بقي مرمَّزاً
+       مرّتين، ويرمي على `%` عاريةٍ في نصٍّ فُكّ فعلاً — ورميةٌ هنا داخل
+       مُهيّئ الحالة تُسقط شاشة التعريف كلّها. */
+    try {
+      return decodeURIComponent(why.replace(/\+/g, ' '))
+    } catch {
+      return why
+    }
   })
 
   async function google() {

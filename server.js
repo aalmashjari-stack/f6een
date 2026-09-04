@@ -11,7 +11,7 @@
  */
 import { createServer } from 'node:http'
 import { readFile, stat } from 'node:fs/promises'
-import { extname, join, normalize, resolve } from 'node:path'
+import { extname, join, normalize, resolve, sep } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, 'dist')
 const PORT = Number(process.env.PORT) || 4173
@@ -42,11 +42,24 @@ const HASHED = /\/assets\/.+-[A-Za-z0-9_-]{8,}\.[a-z0-9]+$/
 const cacheFor = (path) =>
   HASHED.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache'
 
-/** يمنع الخروجَ من `dist` عبر `..` في المسار. */
+/**
+ * يمنع الخروجَ من `dist` عبر `..` في المسار.
+ *
+ * والمقارنة بالفاصل لا بالبادئة وحدها: `startsWith(ROOT)` كانت تقبل
+ * `dist-x/…` جاراً لـ`dist`. و`decodeURIComponent` يرمي على `%` ناقصة
+ * (`/%E0%A4`)، فيُمسك هنا ويُردّ المسارُ باطلاً بدل أن يصعد الخطأ رفضاً
+ * غير مُمسَك يُسقط العمليّة كلّها — طلبٌ واحد مشوَّه كان يطفئ الخادم.
+ */
 function safeJoin(urlPath) {
-  const clean = normalize(decodeURIComponent(urlPath)).replace(/^(\.\.[/\\])+/, '')
+  let decoded
+  try {
+    decoded = decodeURIComponent(urlPath)
+  } catch {
+    return null
+  }
+  const clean = normalize(decoded).replace(/^(\.\.[/\\])+/, '')
   const full = join(ROOT, clean)
-  return full.startsWith(ROOT) ? full : null
+  return full === ROOT || full.startsWith(ROOT + sep) ? full : null
 }
 
 async function readIfFile(path) {
@@ -58,11 +71,15 @@ async function readIfFile(path) {
   }
 }
 
-createServer(async (req, res) => {
+async function handle(req, res) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, { Allow: 'GET, HEAD', 'Content-Type': 'text/plain; charset=utf-8' }).end()
+    return
+  }
   const urlPath = (req.url ?? '/').split('?')[0]
   const target = safeJoin(urlPath === '/' ? '/index.html' : urlPath)
   if (!target) {
-    res.writeHead(400).end('bad path')
+    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' }).end('bad path')
     return
   }
 
@@ -83,9 +100,22 @@ createServer(async (req, res) => {
 
   res.writeHead(200, {
     'Content-Type': TYPES[extname(path).toLowerCase()] ?? 'application/octet-stream',
+    'Content-Length': body.length,
     'Cache-Control': cacheFor(urlPath),
     'X-Content-Type-Options': 'nosniff',
-  }).end(body)
+  })
+  /* HEAD يأخذ الرؤوس وحدها — بلا هذا يُرسَل الجسم كاملاً لمن لم يطلبه. */
+  res.end(req.method === 'HEAD' ? undefined : body)
+}
+
+/* أيّ خطأٍ غير متوقَّع في معالجة طلبٍ يُردّ 500 على ذلك الطلب وحده —
+   لا رفضاً غير مُمسَك يُخرج Node من العمليّة ويقطع كلّ من في المجلس. */
+createServer((req, res) => {
+  handle(req, res).catch((err) => {
+    console.error(err)
+    if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' })
+    res.end('خطأ في الخادم')
+  })
 }).listen(PORT, () => {
   console.log(`f6een على المنفذ ${PORT}`)
 })

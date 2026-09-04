@@ -22,6 +22,12 @@ export interface ImportRow {
   topic: string
   question: string
   answer: string
+  /**
+   * صورة السؤال القائم كما هي — تُحمل مع التعديل ولا يحرّرها الملفّ.
+   * بدونها كان تصحيحُ اسم صاحب صورةٍ في «مشاهير» من ملفّ يُنشئ صفّ الطبقة
+   * بلا صورة، فيعود السؤال نصّاً عارياً «من صاحب الصورة؟». `null` للمضاف.
+   */
+  image: string | null
 }
 
 export interface Rejected {
@@ -95,8 +101,12 @@ const unescapeXml = (s: string) =>
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
     .replace(/&amp;/g, '&')
 
+/* الوسوم الثلاثة `<row>` و`<c>` و`<t>` قد تأتي مغلقةً على نفسها (`<c r="A2" s="1"/>`
+   لخليّةٍ فارغة لها تنسيق — وإكسل يكتبها في كل ورقة منسّقة). تعبيرٌ يفترض
+   `<c …>…</c>` دائماً كان يبتلع من الخليّة الفارغة إلى إغلاق الخليّة التالية،
+   فتنزاح الأعمدة ويُقرأ رقمُ النصّ المشترك قيمةً. لذلك كلّ تعبير يقبل الشكلين. */
 const textOf = (xml: string): string =>
-  [...xml.matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map((m) => unescapeXml(m[1])).join('')
+  [...xml.matchAll(/<t\b[^>]*?(?:\/>|>([\s\S]*?)<\/t>)/g)].map((m) => unescapeXml(m[1] ?? '')).join('')
 
 /** ورقة إكسل الأولى إلى صفوف نصّية. الصيغ تُقرأ بقيمتها المحفوظة لا بحسابها. */
 export function parseXlsx(buf: ArrayBuffer): string[][] {
@@ -115,11 +125,11 @@ export function parseXlsx(buf: ArrayBuffer): string[][] {
   const sheet = strFromU8(files[sheetName])
   const rows: string[][] = []
 
-  for (const rowMatch of sheet.matchAll(/<row[^>]*>([\s\S]*?)<\/row>/g)) {
+  for (const rowMatch of sheet.matchAll(/<row\b[^>]*?(?:\/>|>([\s\S]*?)<\/row>)/g)) {
     const cells: string[] = []
-    for (const c of rowMatch[1].matchAll(/<c([^>]*)>([\s\S]*?)<\/c>/g)) {
+    for (const c of (rowMatch[1] ?? '').matchAll(/<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g)) {
       const attrs = c[1]
-      const body = c[2]
+      const body = c[2] ?? ''
       const ref = /r="([A-Z]+\d+)"/.exec(attrs)?.[1]
       const type = /t="([^"]+)"/.exec(attrs)?.[1]
       let value = ''
@@ -181,6 +191,8 @@ function headerMap(head: string[]): Record<string, number> {
 export interface KnownQuestion {
   id: string
   question: string
+  /** مفتاح الصورة أو رابطها إن كان سؤالَ صورة — يُحمل مع التعديل كما هو. */
+  image?: string
 }
 
 /**
@@ -275,7 +287,15 @@ export function buildPlan(
 
     seenText.add(key)
     if (id) seenId.add(id)
-    rows.push({ id, category, level, topic: at('topic'), question, answer })
+    rows.push({
+      id,
+      category,
+      level,
+      topic: at('topic'),
+      question,
+      answer,
+      image: (id && byId.get(id)?.image) || null,
+    })
   }
 
   return {

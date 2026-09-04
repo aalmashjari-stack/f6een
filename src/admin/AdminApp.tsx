@@ -710,7 +710,13 @@ const FLAG_LABEL: Record<AdminFlag['status'], string> = {
 function Reports() {
   const { data, err, reload } = useLoad<AdminFlag[]>(listFlags)
   const list = useBank()
-  const bank = useMemo(() => (list ? new Map(list.map((q) => [q.id, q])) : null), [list])
+  const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  /* البنك بعد تركيب التعديلات عليه — كما يراه اللاعب: بالمشحون وحده كان
+     بلاغٌ على سؤالٍ أضافته اللوحة يظهر معرّفاً بلا نصّ، والمعدَّلُ بنصّه القديم. */
+  const bank = useMemo(
+    () => (list && edits ? new Map(merge(list, edits).map((r) => [r.q.id, r.q])) : null),
+    [list, edits],
+  )
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
 
@@ -1003,7 +1009,7 @@ function Questions() {
       {importing && rows && (
         <ImportDialog
           categories={categories}
-          existing={rows.map((r) => ({ id: r.q.id, question: r.q.question }))}
+          existing={rows.map((r) => ({ id: r.q.id, question: r.q.question, image: r.q.image }))}
           onClose={() => setImporting(false)}
           onDone={(text) => {
             setImporting(false)

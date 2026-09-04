@@ -202,6 +202,85 @@ describe('الحق ما تلحق — انتهاء الوقت لا يكرّر ا�
 
 
 /**
+ * حرّاس المرحلة: الفعل الذي يصل خارج شاشته لا يُنفَّذ — مؤقّتُ تشويقٍ يطلق
+ * اختياراً بعد أن ذهبت الشاشة، أو ضغطةٌ مزدوجة تحكم على سؤالٍ لم يُكشف.
+ * الحالة نفسها تُعاد لا نسخة، فلا تُعاد الشاشة رسماً ولا يُحرق سؤال.
+ */
+describe('حرّاس المرحلة', () => {
+  it('لا خليّة تُسحب خارج لوح الجولة الجماعية', () => {
+    let s = createSession(INPUT)
+    const [a, b] = boardCells(s)
+    s = step(s, { t: 'S1_PICK', ...a })
+    expect(s.phase).toBe('stage1-question')
+    expect(reducer(s, { t: 'S1_PICK', ...b })).toBe(s)
+  })
+
+  it('لا اختيار لاعبَين خارج شاشة الاختيار', () => {
+    const s = createSession(INPUT)
+    expect(reducer(s, { t: 'S2_SELECT', sel: [0, 0] })).toBe(s)
+  })
+
+  it('لا حكم في الحق ما تلحق قبل الكشف', () => {
+    const s = driveToStage3()
+    expect(reducer(s, { t: 'S3_JUDGE', verdict: 'correct' })).toBe(s)
+  })
+
+  it('سؤال الحسم لا يُسحب مرّتين وسؤالٌ معروض', () => {
+    const s = { ...driveToStage3(), phase: 'tiebreak' as const }
+    const once = step(s, { t: 'TIEBREAK_SPIN', category: BOARD[0] })
+    expect(once.currentQuestion).not.toBeNull()
+    expect(reducer(once, { t: 'TIEBREAK_SPIN', category: BOARD[1] })).toBe(once)
+  })
+
+  it('سؤال الحسم بلا فئة يُسحب صعباً من البنك كلّه', () => {
+    const s = { ...driveToStage3(), phase: 'tiebreak' as const }
+    const spun = step(s, { t: 'TIEBREAK_SPIN', category: '' })
+    expect(spun.currentQuestion?.level).toBe('صعب')
+    expect(spun.currentCategory).toBeNull()
+  })
+})
+
+/**
+ * الطابور لا ينفد: الأربعون تكفي دورين عاديّين، لكنّ حكماً سريعاً مع فريقٍ
+ * يعرف الإجابات يستهلكها — فكان الفريق الثاني يقف على «نفد الطابور» وزرٍّ
+ * معطَّل. الآن تُسحب دفعةٌ جديدة عند آخر ورقة، بلا تكرارٍ ولا قالبٍ مطروق.
+ */
+describe('الحق ما تلحق — الطابور لا ينفد', () => {
+  it('يُمدَّد حين تُستهلك آخر ورقة، بلا تكرار سؤال', () => {
+    let s = driveToStage3()
+    const before = new Set([...s.usedQuestionIds])
+    const shown: string[] = []
+    const total = s.s3Queue.length + 15
+    for (let k = 0; k < total; k++) {
+      const q = s.s3Queue[s.s3Pos]
+      expect(q, `الورقة ${k}`).toBeDefined()
+      shown.push(q.id)
+      s = step(s, { t: 'S3_REVEAL' })
+      s = step(s, { t: 'S3_JUDGE', verdict: 'correct' })
+    }
+    expect(new Set(shown).size).toBe(shown.length)
+    for (const id of shown) expect(before.has(id), id).toBe(false)
+    expect(s.s3Queue[s.s3Pos]).toBeDefined()
+    /* ولا قالبان من عائلة واحدة بين ما عُرض في الجلسة كلّها */
+    const fams = s.askedQuestionIds
+      .map((id) => familyOf(s.s3Queue.find((q) => q.id === id) ?? ALL_QUESTIONS.find((q) => q.id === id)!))
+      .filter((f): f is string => f !== null)
+    expect(new Set(fams).size).toBe(fams.length)
+  })
+
+  it('انتهاء الدور عند آخر ورقة يترك للفريق التالي ورقةً جاهزة', () => {
+    let s = driveToStage3()
+    while (s.s3Pos < s.s3Queue.length - 1) {
+      s = step(s, { t: 'S3_REVEAL' })
+      s = step(s, { t: 'S3_JUDGE', verdict: 'wrong' })
+    }
+    s = step(s, { t: 'S3_END_TURN' })
+    expect(s.s3Team).toBe(1)
+    expect(s.s3Queue[s.s3Pos]).toBeDefined()
+  })
+})
+
+/**
  * قوانين ٤ سبتمبر ٢٠٢٦: الديربي **بلا تصنيفات**، والديربي والحق ما تلحق
  * **من البنك المشحون وحده** لا مما أضافته اللوحة. والمضافُ يدخل اللعبة من
  * باب لوح الجولة الجماعية — الباب الذي يختاره الفريقان بأنفسهما.

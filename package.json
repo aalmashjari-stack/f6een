@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/clean-icloud-dupes.mjs dist",
+    "clean:dupes": "node scripts/clean-icloud-dupes.mjs",
     "start": "node server.js",
     "preview": "vite preview --host",
     "test": "vitest run",

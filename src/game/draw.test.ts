@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { drawOne, drawStage3Queue } from './draw'
-import { familyOf, poolByCatLevel, poolByLevels, setBlockedQuestionIds } from './bank'
+import { drawByLevel, drawOne, drawStage3Queue } from './draw'
+import { familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels, setBlockedQuestionIds } from './bank'
 import type { Level } from './types'
 
 const CAT = 'جغرافيا ومعالم'
@@ -84,11 +84,64 @@ describe('drawOne — سلّم التنازل عند ضيق المخزون', () 
   })
 })
 
+/**
+ * الخليّة تفرغ في اللعب فعلاً: بلاغٌ يصل بعد بدء الجلسة يحجز آخر سؤالٍ في
+ * خليّةٍ ضيّقة (فئات الصور فيها سؤالٌ واحد في المستوى). كان `drawOne` يعود
+ * بلا سؤال فيسقط المحرّك على `q.id` أمام المجلس — والآن يسقط إلى المستوى
+ * نفسه من فئةٍ أخرى، ثمّ إلى البنك كلّه.
+ */
+describe('drawOne — الخليّة الفارغة لا تُسقط المحرّك', () => {
+  it('فئة لا وجود لها تسقط إلى المستوى نفسه من فئة أخرى', () => {
+    const q = drawOne('فئة لا وجود لها', 'صعب', new Set())
+    expect(q).toBeDefined()
+    expect(q.level).toBe('صعب')
+  })
+
+  it('خليّة حُجزت كلّها بالبلاغات تسقط إلى المستوى بلا محجوز', () => {
+    const cell = poolByCatLevel(CAT, LEVEL)
+    const blocked = new Set(cell.map((q) => q.id))
+    setBlockedQuestionIds(blocked)
+    try {
+      for (let i = 0; i < 20; i++) {
+        const q = drawOne(CAT, LEVEL, new Set())
+        expect(q.level).toBe(LEVEL)
+        expect(blocked.has(q.id)).toBe(false)
+      }
+    } finally {
+      setBlockedQuestionIds([])
+    }
+  })
+
+  it('drawByLevel يسقط إلى البنك كلّه إن حُجز المستوى المشحون كلّه', () => {
+    const level = poolShippedByLevels(['صعب'])
+    setBlockedQuestionIds(level.map((q) => q.id))
+    try {
+      const q = drawByLevel('صعب', new Set())
+      expect(q).toBeDefined()
+    } finally {
+      setBlockedQuestionIds([])
+    }
+  })
+})
+
 describe('drawStage3Queue', () => {
   it('يعطي العدد المطلوب بلا تكرار سؤال', () => {
     const q = drawStage3Queue(40, new Set())
     expect(q).toHaveLength(40)
     expect(new Set(q.map((x) => x.id)).size).toBe(40)
+  })
+
+  it('يتجنّب القوالب المطروقة في الجلسة حين يُمدَّد في منتصفها', () => {
+    const first = drawStage3Queue(40, new Set())
+    const fams = new Set(first.map(familyOf).filter((f): f is string => f !== null))
+    if (fams.size === 0) return
+    for (let i = 0; i < 20; i++) {
+      const more = drawStage3Queue(10, new Set(first.map((q) => q.id)), fams)
+      for (const q of more) {
+        const f = familyOf(q)
+        if (f !== null) expect(fams.has(f), q.id).toBe(false)
+      }
+    }
   })
 
   it('بلا قالبين من عائلة واحدة — أسئلته تُعرض متتابعة في ثلاثين ثانية', () => {
