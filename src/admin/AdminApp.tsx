@@ -203,8 +203,13 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
           </span>
           {/* العودة إلى اللعبة — رابطٌ لا زرّ: اللوحة مدخلٌ مستقلّ
               (‏admin.html‎) لا مسارٌ داخل التطبيق، فالرجوع تنقّلٌ حقيقيّ
-              بين صفحتين. ورابطٌ يُفتح في تبويب جديد بالوسط أو بـcmd. */}
-          <a className="a-btn" href="/">
+              بين صفحتين. ورابطٌ يُفتح في تبويب جديد بالوسط أو بـcmd.
+
+              و‎./index.html‎ لا ‎/‎: في التطبيق الأصليّ الأصلُ
+              ‎capacitor://localhost‎، والجذرُ المجرّد يعتمد على أن يخدم
+              الخادمُ الداخليّ ‎index.html‎ عنه — أمّا المسار الصريح فيصحّ
+              في المتصفّح والتطبيق معاً. */}
+          <a className="a-btn" href="./index.html">
             العودة للرئيسية
           </a>
           <button className="a-btn" onClick={() => signOut()}>

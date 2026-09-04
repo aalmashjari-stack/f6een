@@ -3,6 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import { deleteAccount, signOut } from '../lib/auth'
 import { day } from '../lib/date'
 import { isAdmin } from '../lib/admin'
+import { isNativeApp } from '../lib/platform'
 import type { GameSummary, Profile } from '../lib/games'
 import { fetchMyGames, fetchProfile, gamesLabel, redeemGiftCode } from '../lib/games'
 
@@ -227,9 +228,20 @@ export function AccountMenu({
             <footer className="acct-foot">
               {/* لا يظهر إلّا لمن تقول القاعدة إنّه مدير — والزرّ راحةٌ لا
                   حراسة: من كتب العنوان بيده يصل إلى الصفحة نفسها، ولا يرى
-                  فيها شيئاً ما لم يكن صفّه في `admins`. */}
+                  فيها شيئاً ما لم يكن صفّه في `admins`.
+
+                  و`target="_blank"` في المتصفّح وحده: هناك يفتح اللوحة في
+                  تبويب جديد فتبقى اللعبة مفتوحة. أمّا في التطبيق الأصليّ
+                  فـCapacitor يحوّل الهدف الجديد إلى **سفاري النظام**، ويطلب
+                  منه فتح `capacitor://localhost/admin.html` — وهو عنوانٌ لا
+                  يعرفه، فلا يحدث شيء. فينتقل في مكانه، والرجوع من زرّ
+                  «العودة للرئيسية» في رأس اللوحة. */}
               {admin && (
-                <a className="acct-act admin" href="./admin.html" target="_blank" rel="noreferrer">
+                <a
+                  className="acct-act admin"
+                  href="./admin.html"
+                  {...(isNativeApp ? {} : { target: '_blank', rel: 'noreferrer' })}
+                >
                   لوحة الإدارة
                 </a>
               )}
