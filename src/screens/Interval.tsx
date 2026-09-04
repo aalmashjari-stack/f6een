@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { STAGE3_POINTS } from '../game/session'
 import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
@@ -28,7 +29,7 @@ const NEXT: Record<string, Next> = {
   'stage3-play': {
     eyebrow: 'المرحلة القادمة',
     title: 'الحق ما تلحق',
-    rule: '30 ثانية دون توقف لكل فريق، و⁨+5⁩ نقاط لكل إجابة صحيحة.',
+    rule: `30 ثانية دون توقف لكل فريق، و⁨+${STAGE3_POINTS}⁩ نقاط لكل إجابة صحيحة.`,
     cta: 'ابدأ',
   },
   /* التعادل ليس «مرحلة قادمة»: انتهت اللعبة والنتيجة متساوية، وهذا خبر قبل أن يكون
