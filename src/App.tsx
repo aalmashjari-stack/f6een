@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import type { GameState, SetupInput, StoredState } from './game/session'
-import { createSession, decodeState, encodeState, persistUsedIds } from './game/session'
+import { createSession, decodeState, encodeState, isStoredState, persistUsedIds } from './game/session'
 import { reducer } from './game/reducer'
 import { useSession } from './lib/auth'
 import {
@@ -73,6 +73,11 @@ function loadSaved(): { state: GameState; sessionId: string | null } | null {
       localStorage.removeItem(SAVE_KEY)
       return null
     }
+    /* رقم النسخة يُرفع باليد وقد يُنسى — والبنية لا تُنسى. */
+    if (!isStoredState(saved.state)) {
+      localStorage.removeItem(SAVE_KEY)
+      return null
+    }
     if (saved.state.phase === 'endgame') return null
     return { state: decodeState(saved.state), sessionId: saved.sessionId ?? null }
   } catch {
@@ -111,12 +116,26 @@ const SERVER_SAVE_DELAY_MS = 2500
  * هو الاشتراط لا الآليّة. ومزامنة ذاكرة الأسئلة تبقى تعمل لمن دخل فعلاً. */
 const REQUIRE_LOGIN = true
 
+/**
+ * لقطةٌ من الخادم لا تصلح للاستئناف: بشكلٍ قديم لا يقرؤه هذا الإصدار، أو
+ * ختامٌ لم يُغلق (انقطعت الشبكة عند «لعبة جديدة»). في الحالين تبقى «مفتوحة»
+ * عند الخادم فيردّها `start_session` في كلّ بدء ولا يبدأ اللاعب لعبةً جديدة
+ * أبداً — فتُغلق، والختامُ «مكتملاً» والقديمُ «منسحباً» لأنّه لا سبيل إلى
+ * إكماله. والرصيد لا يُمسّ في الحالين: الخصم عند الإنشاء (SPEC ٣).
+ */
+function unresumable(state: unknown): 'finished' | 'abandoned' | null {
+  if (!isStoredState(state)) return 'abandoned'
+  return state.phase === 'endgame' ? 'finished' : null
+}
+
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, null, () => loadSaved()?.state ?? null)
+  /* قراءةٌ واحدة من المخزن لكلا الحقلين — كانت تُقرأ وتُفكّ مرّتين. */
+  const [boot] = useState(loadSaved)
+  const [state, dispatch] = useReducer(reducer, boot?.state ?? null)
   /* صفّ الجلسة على الخادم. يُقرأ من الحفظ المحلّي كي ينجو من إغلاق المتصفّح:
      بدونه تبقى الجلسة مفتوحة على الخادم بعد أن تنتهي على الجهاز، فيردّها
      `start_session` بدل أن يبدأ لعبةً جديدة. */
-  const [sessionId, setSessionId] = useState<string | null>(() => loadSaved()?.sessionId ?? null)
+  const [sessionId, setSessionId] = useState<string | null>(boot?.sessionId ?? null)
   const [balance, setBalance] = useState<number | null>(null)
   /* شاشة الشعار للتطبيق المثبَّت وحده — انظر `isNativeApp`. في المتصفّح
      تبدأ «منتهية»، فلا يُصيَّر الشعار أصلاً ولا يعمل مؤقّته. */
@@ -218,6 +237,12 @@ export default function App() {
     fetchOpenSession()
       .then((row) => {
         if (!alive || !row || stateRef.current) return
+        const close = unresumable(row.state)
+        if (close) {
+          /* لا تُستأنف — تُغلق فيُفتح الباب لجلسةٍ جديدة من الإعداد. */
+          closeSession(row.id, close).catch(() => {})
+          return
+        }
         setSessionId(row.id)
         dispatch({ t: 'RESUME', state: decodeState(row.state) })
       })
@@ -307,7 +332,15 @@ export default function App() {
         dispatch({ t: 'RESUME', state: fresh })
         return
       }
-      const row = await startSession(encodeState(fresh))
+      let row = await startSession(encodeState(fresh))
+      const close = unresumable(row.state)
+      if (close) {
+        /* جلسةٌ مفتوحة لا تصلح للاستئناف حالت دون الإنشاء: تُغلق ويُعاد
+           الطلب مرّةً واحدة — فيُنشئ الخادم الجديدة ويخصم لها. */
+        await closeSession(row.id, close)
+        row = await startSession(encodeState(fresh))
+        if (unresumable(row.state)) throw new Error('bad_session')
+      }
       setSessionId(row.id)
       dispatch({ t: 'RESUME', state: decodeState(row.state) })
       refreshBalance()

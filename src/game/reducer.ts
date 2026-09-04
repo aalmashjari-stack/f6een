@@ -1,6 +1,6 @@
 import type { Level, Mark, Question, TeamId } from './types'
 import { familyOf } from './bank'
-import { drawByLevel, drawOne } from './draw'
+import { drawByLevel, drawOne, drawStage3Queue } from './draw'
 import {
   GameState,
   SetupInput,
@@ -53,6 +53,24 @@ const guardedFamilies = (s: GameState): Set<string> => {
   return fams
 }
 
+/** كم ورقةً تُضاف حين ينفد طابور الحق ما تلحق — دفعةٌ صغيرة لا أربعون: ما يُسحب هنا نادرٌ أصلاً. */
+const S3_REFILL = 10
+
+/**
+ * الطابور لا ينفد. الأربعون التي تُسحب عند الإنشاء تكفي دورين عاديّين
+ * (١٠–١٤ لكلّ فريق)، لكنّ حكماً سريع الضغط مع فريقٍ يعرف الإجابات قد يمرّ
+ * عشرين سؤالاً في ثلاثين ثانية — فينتهي الفريق الثاني إلى «نفد الطابور»
+ * وزرٍّ معطَّل وساعةٍ تكمل عدّها على لا شيء. فحين تُستهلك آخر ورقة تُسحب
+ * دفعةٌ جديدة بالشروط نفسها (سهل ومتوسط، من المشحون، بلا محروق ولا قالبٍ
+ * مطروق)، والبنك محلّيّ فلا شبكة تُنتظر.
+ */
+const ensureS3Queue = (s: GameState): GameState => {
+  if (s.s3Pos < s.s3Queue.length) return s
+  const taken = new Set([...s.usedQuestionIds, ...s.s3Queue.map((q) => q.id)])
+  const more = drawStage3Queue(S3_REFILL, taken, guardedFamilies(s))
+  return more.length > 0 ? { ...s, s3Queue: [...s.s3Queue, ...more] } : s
+}
+
 /**
  * يحرق سؤالاً عُرض للتوّ: معرّفه وقالبه وموضعه في سجلّ الجلسة.
  * بمجموعة جديدة لا بتعديل القديمة — المحرك نقيّ، والحفظ في التخزين أثرٌ
@@ -97,7 +115,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     /* الخليّة تُقفل هنا لا عند التنقيط: السؤال سُحب وظهر، فإبقاؤها مفتوحة
        يعرض سؤالاً محروقاً لو رجع الحكم إلى اللوح بزرّ الخلف. */
     case 'S1_PICK': {
-      if (!state) return state
+      if (!state || state.phase !== 'stage1-board') return state
       const key = cellKey(action.category, action.level)
       if (state.s1Played.includes(key)) return state
       const q = drawOne(
@@ -159,7 +177,9 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
     /* ---------------- اختيار لاعبَي الديربي ---------------- */
     case 'S2_SELECT': {
-      if (!state) return state
+      /* حارس المرحلة: مؤقّتُ التشويق قد يطلق الاختيار بعد أن يكون الحكم
+         قد أنهى الجلسة أو انتقلت الشاشة — فلا يُسحب سؤالٌ ويُحرق لشاشةٍ ذهبت. */
+      if (!state || state.phase !== 'stage2-selection') return state
       // إزالة المختارَين من دورة كل فريق؛ إعادة تعبئة الدورة إن فرغت
       const rem: [number[], number[]] = [
         state.s2Rem[0].filter((i) => i !== action.sel[0]),
@@ -246,7 +266,9 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     }
 
     case 'S3_JUDGE': {
-      if (!state) return state
+      /* لا حكمَ على ما لم يُكشف: زرّا ✓/✗ لا يظهران إلّا بعد الكشف، والحارس
+         هنا يمنع ضغطةً مزدوجة من أن تحكم على السؤال التالي وهو ما زال مطويّاً. */
+      if (!state || !state.s3Revealed) return state
       let s = state
       if (action.verdict === 'correct') s = addScore(s, s.s3Team, STAGE3_POINTS, 's3')
       const counts = [...s.s3Counts[action.verdict]] as [number, number]
@@ -256,7 +278,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       // الحرق هنا لا عند سحب الطابور، حتى لا يحترق الاحتياطي الذي لم يُعرض.
       const shown = s.s3Queue[s.s3Pos]
       if (shown) s = burn(s, shown)
-      return { ...s, s3Pos: s.s3Pos + 1, s3Revealed: false }
+      return ensureS3Queue({ ...s, s3Pos: s.s3Pos + 1, s3Revealed: false })
     }
 
     case 'S3_END_TURN': {
@@ -270,7 +292,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (shown) s = { ...burn(s, shown), s3Pos: s.s3Pos + 1 }
       if (done.length < 2) {
         const nextTeam = (1 - s.s3Team) as TeamId
-        return { ...s, s3Team: nextTeam, s3Done: done, s3Revealed: false }
+        return ensureS3Queue({ ...s, s3Team: nextTeam, s3Done: done, s3Revealed: false })
       }
       // انتهى الفريقان → تعادل؟ فاصل تعادل : ختام
       // يمرّ بالفاصل أولاً: القفز المباشر إلى سؤال حاسم بلا إنذار يفاجئ المتسابقين
@@ -291,17 +313,22 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
     /* ---------------- فاصل التعادل ---------------- */
     case 'TIEBREAK_SPIN': {
-      if (!state) return state
-      const q = drawOne(
-        action.category,
-        'صعب',
-        state.usedQuestionIds,
-        pendingS3Ids(state),
-        guardedFamilies(state),
-      )
+      /* سؤالٌ واحد في كلّ مرّة: سحبٌ ثانٍ وسؤالٌ معروض يحرق ورقةً لم تُقرأ. */
+      if (!state || state.currentQuestion) return state
+      /* بلا فئة (لا فئةَ مكتملة المستويات) يُسحب الصعب من البنك كلّه بدل
+         أن تسقط الشاشة الحاسمة على فئةٍ لا وجود لها. */
+      const q = action.category
+        ? drawOne(
+            action.category,
+            'صعب',
+            state.usedQuestionIds,
+            pendingS3Ids(state),
+            guardedFamilies(state),
+          )
+        : drawByLevel('صعب', state.usedQuestionIds, pendingS3Ids(state), guardedFamilies(state))
       return {
         ...burn(state, q),
-        currentCategory: action.category,
+        currentCategory: action.category || null,
         currentQuestion: q,
         s3Revealed: false,
       }

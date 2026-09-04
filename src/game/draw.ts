@@ -1,5 +1,5 @@
 import type { Level, Question } from './types'
-import { familyOf, poolByCatLevel, poolShippedByLevels } from './bank'
+import { familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -8,6 +8,54 @@ export function shuffle<T>(arr: T[]): T[] {
     ;[a[i], a[j]] = [a[j], a[i]]
   }
   return a
+}
+
+const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+
+/**
+ * يختار من مجموعةٍ بسلّم التنازل عند ضيق المخزون: القالب أوّلاً، ثمّ الحجز،
+ * ثمّ عدم التكرار أخيراً. لأنّ سؤالاً من قالب مطروق يُحسّ متشابهاً، أمّا كسر
+ * الحجز فيعيد السؤال نفسه حرفياً.
+ *
+ * ويعود بـ`null` إن كانت المجموعة فارغة أصلاً — والمنادي هو من يقرّر البديل.
+ */
+function pickFrom(
+  pool: Question[],
+  used: Set<string>,
+  reserved: Set<string>,
+  spentFamilies: Set<string>,
+): Question | null {
+  if (pool.length === 0) return null
+  const unused = pool.filter((q) => !used.has(q.id))
+  const free = unused.filter((q) => !reserved.has(q.id))
+  const best = free.filter((q) => {
+    const fam = familyOf(q)
+    return fam === null || !spentFamilies.has(fam)
+  })
+  const from = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : pool
+  return from[Math.floor(Math.random() * from.length)]
+}
+
+/**
+ * آخر ملاذٍ حين تفرغ الخليّة نفسها: المستوى بلا تصنيف، ثمّ البنك كلّه.
+ *
+ * الخليّة تفرغ في اللعب فعلاً لا في النظريّة: `playableCategories` تحرس
+ * الإعداد، لكنّ بلاغاً يصل بعد بدء الجلسة — من هذا الجهاز أو من غيره —
+ * يحجز آخر سؤالٍ في خليّةٍ ضيّقة (فئات الصور فيها سؤالٌ واحد في المستوى)،
+ * فكان `drawOne` يعود بلا سؤال ويسقط المحرّك على `q.id` أمام المجلس.
+ * سؤالٌ من فئةٍ أخرى بالمستوى نفسه خيرٌ من شاشةٍ بيضاء.
+ */
+function fallback(
+  level: Level,
+  used: Set<string>,
+  reserved: Set<string>,
+  spentFamilies: Set<string>,
+): Question {
+  const q =
+    pickFrom(poolByLevels([level]), used, reserved, spentFamilies) ??
+    pickFrom(poolByLevels(LEVELS), used, reserved, spentFamilies)
+  if (!q) throw new Error('بنك الأسئلة فارغ')
+  return q
 }
 
 /**
@@ -25,8 +73,7 @@ export function shuffle<T>(arr: T[]): T[] {
  *
  * `spentFamilies` = قوالب ظهرت في هذه الجلسة (أو محجوزة في الطابور) — انظر familyOf.
  *
- * سلّم التنازل عند ضيق المخزون: القالب أولاً، ثم الحجز، ثم عدم التكرار أخيراً.
- * لأن سؤالاً من قالب مطروق يُحسّ متشابهاً، أما كسر الحجز فيعيد السؤال نفسه حرفياً.
+ * ولا يعود بلا سؤال أبداً: خليّةٌ فارغة تسقط إلى المستوى ثمّ إلى البنك (انظر `fallback`).
  */
 export function drawOne(
   category: string,
@@ -35,15 +82,10 @@ export function drawOne(
   reserved: Set<string> = new Set(),
   spentFamilies: Set<string> = new Set(),
 ): Question {
-  const cell = poolByCatLevel(category, level)
-  const unused = cell.filter((q) => !used.has(q.id))
-  const free = unused.filter((q) => !reserved.has(q.id))
-  const best = free.filter((q) => {
-    const fam = familyOf(q)
-    return fam === null || !spentFamilies.has(fam)
-  })
-  const pool = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : cell
-  return pool[Math.floor(Math.random() * pool.length)]
+  return (
+    pickFrom(poolByCatLevel(category, level), used, reserved, spentFamilies) ??
+    fallback(level, used, reserved, spentFamilies)
+  )
 }
 
 /**
@@ -54,12 +96,10 @@ export function drawOne(
  * خليّةٌ واحدة منه، فلا يجفّ أضعفُ تصنيفٍ ويسحب الجلسة معه.
  *
  * والمضافُ من اللوحة (`ADM####`) خارجَه: الديربي نجمةُ اللعبة وأسئلتُه
- * مُراجَعة، والمضافُ يدخل اللعبة من بابي الجولة الجماعية والحق ما تلحق.
+ * مُراجَعة، والمضافُ يدخل اللعبة من باب لوح الجولة الجماعية وحده.
  * أمّا التعديلُ فيبقى مركَّباً — سؤالُ بنكٍ صُحّح يبقى سؤالَ بنك.
  *
- * وسلّم التنازل نفسه الذي في `drawOne`: القالب أوّلاً، ثمّ الحجز، ثمّ عدم
- * التكرار أخيراً — لأنّ سؤالاً من قالبٍ مطروق يُحسّ متشابهاً، أمّا كسرَ
- * الحجز فيعيد السؤال نفسه حرفياً.
+ * وسلّم التنازل نفسه الذي في `drawOne`، وآخر الملاذ نفسه إن حُجز المستوى كلّه.
  */
 export function drawByLevel(
   level: Level,
@@ -67,15 +107,10 @@ export function drawByLevel(
   reserved: Set<string> = new Set(),
   spentFamilies: Set<string> = new Set(),
 ): Question {
-  const all = poolShippedByLevels([level])
-  const unused = all.filter((q) => !used.has(q.id))
-  const free = unused.filter((q) => !reserved.has(q.id))
-  const best = free.filter((q) => {
-    const fam = familyOf(q)
-    return fam === null || !spentFamilies.has(fam)
-  })
-  const pool = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : all
-  return pool[Math.floor(Math.random() * pool.length)]
+  return (
+    pickFrom(poolShippedByLevels([level]), used, reserved, spentFamilies) ??
+    fallback(level, used, reserved, spentFamilies)
+  )
 }
 
 /**
@@ -92,15 +127,23 @@ export function drawByLevel(
  *
  * الطابور نفسه بلا تكرار قوالب: أسئلته تُعرض متتابعة في ثلاثين ثانية، فتشابه
  * صيغتين فيه أوضح ما يكون على المسامع.
+ *
+ * `avoidFamilies` = قوالب لا تدخل الطابور (ما طُرق في الجلسة) — يلزم حين
+ * يُمدَّد الطابور في منتصف اللعب (انظر `ensureS3Queue` في المحرّك)، فطابورُ
+ * الإنشاء يُسحب قبل أيّ سؤال ولا قوالب مطروقة بعد.
  */
 const STAGE3_MAX_Q_LEN = 80
 
-export function drawStage3Queue(count: number, used: Set<string>): Question[] {
+export function drawStage3Queue(
+  count: number,
+  used: Set<string>,
+  avoidFamilies: Set<string> = new Set(),
+): Question[] {
   const pool = poolShippedByLevels(['سهل', 'متوسط']).filter(
     (q) => !used.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
   )
   const queue: Question[] = []
-  const seenFamilies = new Set<string>()
+  const seenFamilies = new Set<string>(avoidFamilies)
   const spare: Question[] = []
   for (const q of shuffle(pool)) {
     if (queue.length >= count) break

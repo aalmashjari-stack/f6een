@@ -12,9 +12,23 @@ const CTX = {
 
 const HEAD = ['التصنيف', 'المستوى', 'السؤال', 'الإجابة', 'الموضوع', 'المعرّف']
 
-/** ملفّ إكسل حقيقيّ مصغّر: زِمٌّ فيه ورقة وسلسلة نصوص مشتركة. */
+/** زِمُّ إكسل من ورقةٍ ونصوصٍ مشتركة مكتوبتين يداً. */
+function xlsxRaw(sheet: string, shared: string): ArrayBuffer {
+  const zip = zipSync({
+    'xl/sharedStrings.xml': strToU8(shared),
+    'xl/worksheets/sheet1.xml': strToU8(sheet),
+  })
+  return zip.buffer.slice(zip.byteOffset, zip.byteOffset + zip.byteLength) as ArrayBuffer
+}
+
+/**
+ * ملفّ إكسل حقيقيّ مصغّر: زِمٌّ فيه ورقة وسلسلة نصوص مشتركة.
+ *
+ * الخليّة الفارغة تُكتب مغلقةً على نفسها `<c r="B2" s="1"/>` — كما يكتبها
+ * إكسل لخليّةٍ فارغة لها تنسيق، وهو ما يقع في كلّ ورقةٍ منسّقة.
+ */
 function xlsx(rows: string[][]): ArrayBuffer {
-  const strings = [...new Set(rows.flat())]
+  const strings = [...new Set(rows.flat().filter((c) => c !== ''))]
   const shared =
     `<?xml version="1.0"?><sst>` +
     strings.map((s) => `<si><t>${s.replace(/&/g, '&amp;')}</t></si>`).join('') +
@@ -26,20 +40,18 @@ function xlsx(rows: string[][]): ArrayBuffer {
         (r, i) =>
           `<row r="${i + 1}">` +
           r
-            .map(
-              (c, j) =>
-                `<c r="${String.fromCharCode(65 + j)}${i + 1}" t="s"><v>${strings.indexOf(c)}</v></c>`,
-            )
+            .map((c, j) => {
+              const ref = `${String.fromCharCode(65 + j)}${i + 1}`
+              return c === ''
+                ? `<c r="${ref}" s="1"/>`
+                : `<c r="${ref}" t="s"><v>${strings.indexOf(c)}</v></c>`
+            })
             .join('') +
           `</row>`,
       )
       .join('') +
     `</sheetData></worksheet>`
-  const zip = zipSync({
-    'xl/sharedStrings.xml': strToU8(shared),
-    'xl/worksheets/sheet1.xml': strToU8(sheet),
-  })
-  return zip.buffer.slice(zip.byteOffset, zip.byteOffset + zip.byteLength) as ArrayBuffer
+  return xlsxRaw(sheet, shared)
 }
 
 describe('قراءة الملفّ', () => {
@@ -52,6 +64,35 @@ describe('قراءة الملفّ', () => {
   it('يقرأ csv مع الاقتباس وفاصلةٍ داخل النصّ', () => {
     const table = parseCsv('أ,ب\n"سؤال، فيه فاصلة",جواب\n')
     expect(table[1]).toEqual(['سؤال، فيه فاصلة', 'جواب'])
+  })
+
+  /* الخليّة الفارغة المغلقة على نفسها كانت تبتلع ما بعدها حتى إغلاق الخليّة
+     التالية، فتنزاح الأعمدة ويُقرأ رقمُ النصّ المشترك قيمةً في غير مكانه. */
+  it('الخليّة الفارغة المغلقة على نفسها لا تزيح ما بعدها', () => {
+    const table = parseXlsx(xlsx([HEAD, ['الكويت', '', 'س', 'ج', '', 'M001']]))
+    expect(table[1]).toEqual(['الكويت', '', 'س', 'ج', '', 'M001'])
+  })
+
+  it('الصفّ الفارغ المغلق على نفسه لا يبتلع الصفّ التالي', () => {
+    const shared = `<sst><si><t>أ</t></si><si><t>ب</t></si></sst>`
+    const sheet =
+      `<worksheet><sheetData>` +
+      `<row r="1"><c r="A1" t="s"><v>0</v></c></row>` +
+      `<row r="2" s="1" customFormat="1"/>` +
+      `<row r="3"><c r="A3" t="s"><v>1</v></c></row>` +
+      `</sheetData></worksheet>`
+    const table = parseXlsx(xlsxRaw(sheet, shared))
+    expect(table).toEqual([['أ'], [], ['ب']])
+  })
+
+  /* النصّ المشترك الفارغ يُكتب `<t/>` — كان يبتلع نصّ الخليّة التالية. */
+  it('النصّ المشترك الفارغ لا يسرق نصّ جاره', () => {
+    const shared = `<sst><si><t/></si><si><t>ب</t></si></sst>`
+    const sheet =
+      `<worksheet><sheetData><row r="1">` +
+      `<c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c>` +
+      `</row></sheetData></worksheet>`
+    expect(parseXlsx(xlsxRaw(sheet, shared))[0]).toEqual(['', 'ب'])
   })
 
   /* إكسل العربي يبدأ ملفّه بعلامة ترتيب البايتات، وبدون طرحها يصير اسم أوّل
@@ -126,6 +167,26 @@ describe('خطّة الرفع', () => {
     expect(p.rows).toHaveLength(0)
     expect(p.rejected[0].reason).toContain('المستوى')
     expect(p.rejected[0].reason).toContain('الإجابة')
+  })
+
+  /* تعديل سؤال صورة من ملفّ كان يفقده صورته: صفّ الطبقة يحلّ محلّ سؤال
+     البنك كلّه، فبلا الصورة يعود «من صاحب الصورة؟» نصّاً عارياً. */
+  it('التعديل يحمل صورة السؤال القائم كما هي، والمضاف بلا صورة', () => {
+    const ctx = {
+      categories: ['الكويت'],
+      existing: [{ id: 'X001', question: 'من صاحب الصورة؟', image: 'celeb-001-q367825' }],
+    }
+    const p = buildPlan(
+      [
+        HEAD,
+        ['الكويت', 'سهل', 'من صاحب الصورة؟', 'اسم مصحَّح', '', 'X001'],
+        ['الكويت', 'سهل', 'سؤال جديد', 'ج', '', ''],
+      ],
+      ctx,
+    )
+    expect(p.rejected).toEqual([])
+    expect(p.rows[0].image).toBe('celeb-001-q367825')
+    expect(p.rows[1].image).toBeNull()
   })
 
   it('يتخطّى الأسطر الفارغة بلا شكوى', () => {

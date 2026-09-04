@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GameState } from '../game/session'
 import { leader, playerStats } from '../game/session'
-import { ALL_QUESTIONS } from '../game/bank'
+import { allQuestions } from '../game/bank'
 import { gamesLabel } from '../lib/games'
 import type { Action } from '../game/reducer'
 import { Confetti } from '../components/Confetti'
@@ -336,8 +336,10 @@ export function Endgame({
  * فاللوحة طبقةٌ فوقه بارتفاع مقيَّد تتمرّر في داخلها — لا قسمٌ يُضاف أسفله
  * فيدفع الجدول خارج الشاشة.
  *
- * والنصّ يُحلّ من البنك المشحون: القاعدة تحفظ المعرّف وحده (`admin_reports`)،
- * ونسخُ نصّ السؤال في الحالة يضاعف حجم كل جلسة محفوظة بلا فائدة.
+ * والنصّ يُحلّ من البنك كما يراه اللعب — المشحون بعد تركيب طبقة اللوحة عليه:
+ * القاعدة تحفظ المعرّف وحده (`admin_reports`)، ونسخُ نصّ السؤال في الحالة
+ * يضاعف حجم كل جلسة محفوظة بلا فائدة. ومن البنك المشحون وحده كان سؤالٌ
+ * أضافته اللوحة يظهر هنا معرّفاً عارياً (`ADM0012`) لا نصّاً يُعرف.
  */
 function ReportPanel({
   state,
@@ -348,7 +350,7 @@ function ReportPanel({
   dispatch: (a: Action) => void
   onClose: () => void
 }) {
-  const bank = useMemo(() => new Map(ALL_QUESTIONS.map((q) => [q.id, q])), [])
+  const bank = useMemo(() => new Map(allQuestions().map((q) => [q.id, q])), [])
   const asked = state.askedQuestionIds
 
   return (

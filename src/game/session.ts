@@ -211,6 +211,80 @@ export function decodeState(s: StoredState): GameState {
   return { ...s, usedQuestionIds: new Set(s.usedQuestionIds) }
 }
 
+const PHASES = new Set<string>([
+  'setup',
+  'stage1-board',
+  'stage1-question',
+  'stage1-reveal',
+  'interval',
+  'stage2-selection',
+  'stage2-question',
+  'stage2-reveal',
+  'stage3-play',
+  'tiebreak',
+  'endgame',
+])
+
+/**
+ * هل هذه لقطةٌ بشكل النسخة الحالية؟ تُفحص **بنيةً لا نسخةً**: الخادم يحفظ
+ * الحالة بلا رقم نسخة، وجلسةٌ فُتحت قبل أن يتبدّل الشكل (العجلة قبل لوح
+ * الجولة الجماعية مثلاً) تبقى «مفتوحة» عنده، فيردّها `start_session` في
+ * كلّ بدء — ويستأنفها التطبيق فيسقط عند أوّل شاشةٍ تقرأ حقلاً لم يعد
+ * موجوداً، ثمّ يعيد الكرّة في كلّ تشغيل. الفحص هنا هو ما يميّز اللقطة
+ * الصالحة من التي تُغلق ويُبدأ بعدها من الإعداد.
+ *
+ * والحفظ المحلّي يحمل رقمَ نسخة (`SAVE_VERSION` في App) ويُفحص بهذا أيضاً:
+ * رقمٌ يُرفع باليد قد يُنسى، والبنية لا تُنسى.
+ */
+export function isStoredState(x: unknown): x is StoredState {
+  if (!x || typeof x !== 'object') return false
+  const s = x as Record<string, unknown>
+  const arr = (k: string) => Array.isArray(s[k])
+  const num = (k: string) => typeof s[k] === 'number' && Number.isFinite(s[k] as number)
+  const obj = (k: string) => !!s[k] && typeof s[k] === 'object'
+  const teamId = (v: unknown) => v === 0 || v === 1
+  if (typeof s.phase !== 'string' || !PHASES.has(s.phase)) return false
+  if (!arr('teams') || (s.teams as unknown[]).length !== 2) return false
+  const teamsOk = (s.teams as unknown[]).every((t) => {
+    if (!t || typeof t !== 'object') return false
+    const team = t as Record<string, unknown>
+    return (
+      teamId(team.id) &&
+      typeof team.name === 'string' &&
+      Array.isArray(team.players) &&
+      typeof team.score === 'number'
+    )
+  })
+  if (!teamsOk) return false
+  const stagePoints = s.stagePoints as Record<string, unknown> | undefined
+  const s3Counts = s.s3Counts as Record<string, unknown> | undefined
+  return (
+    teamId(s.startingTeam) &&
+    arr('usedQuestionIds') &&
+    arr('askedQuestionIds') &&
+    arr('spentFamilies') &&
+    arr('s1Categories') &&
+    arr('s1Played') &&
+    num('s1Index') &&
+    num('s2Rounds') &&
+    num('s2Index') &&
+    arr('s2Rem') &&
+    arr('s2Marks') &&
+    teamId(s.s3Team) &&
+    arr('s3Queue') &&
+    num('s3Pos') &&
+    arr('s3Done') &&
+    typeof s.intervalNext === 'string' &&
+    obj('correctByPlayer') &&
+    obj('wrongByPlayer') &&
+    obj('stagePoints') &&
+    ['s1', 's2', 's3', 'tie'].every((k) => Array.isArray(stagePoints?.[k])) &&
+    obj('s3Counts') &&
+    ['correct', 'wrong'].every((k) => Array.isArray(s3Counts?.[k])) &&
+    arr('reportedQuestionIds')
+  )
+}
+
 /* ======================= الذاكرة عبر الجلسات — القسم ٨ ======================= */
 const USED_KEY = 'f6een.usedQuestionIds'
 

@@ -16,7 +16,9 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
     if (!state.currentQuestion && !drawnRef.current) {
       drawnRef.current = true
       const cats = playableCategories()
-      const cat = cats[Math.floor(Math.random() * cats.length)]
+      /* بلا فئةٍ مكتملة المستويات (حجزت البلاغات آخر «صعب» فيها) يُسحب
+         الصعب من البنك كلّه — الشاشة الحاسمة لا تسقط على فئةٍ لا وجود لها. */
+      const cat = cats.length > 0 ? cats[Math.floor(Math.random() * cats.length)] : ''
       dispatch({ t: 'TIEBREAK_SPIN', category: cat })
     }
     if (state.currentQuestion) drawnRef.current = false

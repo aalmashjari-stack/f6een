@@ -157,6 +157,7 @@
     <li><code>f6een.session</code> — الجلسة الجارية: أسماء الفرق واللاعبين، والنقاط، وموضعك في اللعبة، لتستأنف إن أُغلقت الشاشة.</li>
     <li><code>f6een.usedQuestionIds</code> — نسخة من معرّفات الأسئلة التي ظهرت، لتعمل اللعبة بلا إنترنت.</li>
     <li><code>f6een.muted</code> — هل الصوت مكتوم.</li>
+    <li><code>f6een.blockedQuestionIds</code> و<code>f6een.questionOverlay</code> و<code>f6een.extraCategories</code> — نسخة من قوائم الإدارة (الأسئلة المحجوزة بالبلاغات، والمعدَّلة أو المضافة، والفئات المضافة) لتعمل اللعبة بلا إنترنت. لا شيء فيها عنك.</li>
     <li>وإن سجّلت الدخول: رمز جلستك، لئلّا تُطالَب بالدخول في كل مرّة.</li>
   </ul>
 
@@ -247,8 +248,11 @@
       Those IDs carry no answers and no scores.
     </p>
     <p>
-      <strong>Team and player names never leave your device.</strong> They are stored locally
-      and shown on screen; the app sends nothing but question IDs to the server.
+      <strong>Since 30 August 2026 a game is deducted from your balance the moment it starts</strong>,
+      so an interrupted game can be resumed: a snapshot of the running game — the team and
+      player names you typed, the scores, and where you are in the game — is saved to your
+      account. It holds no answers, and it is deleted together with the account. Before that
+      date these names never left the device; this page said so, and no longer does.
     </p>
     <p>
       Data is stored with <strong>Supabase in Frankfurt, Germany</strong> (EU). The site is
@@ -256,10 +260,11 @@
       tracking. We never sell or share your data.
     </p>
     <p>
-      To get a copy of your data or have your account deleted, email
-      <a href="mailto:privacy@f6een.com">privacy@f6een.com</a> from your account address.
-      Deletion is completed within 30 days. There is currently no in-app delete button; one
-      will be added before the app is published to the App Store and Google Play.
+      You can delete your account yourself from the “حسابي” (My account) page, in the app or
+      on the site, with two taps; it removes the account, its balance, the seen-question IDs
+      and the game history at once. To get a copy of your data, or to request deletion by
+      email instead, write to <a href="mailto:privacy@f6een.com">privacy@f6een.com</a> from
+      your account address; email requests are completed within 30 days.
     </p>
   </div>
 

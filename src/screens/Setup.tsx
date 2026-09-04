@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { SetupInput } from '../game/session'
 import { STAGE1_TEAM_CATEGORIES } from '../game/session'
 import type { TeamId } from '../game/types'
@@ -141,21 +141,29 @@ export function Setup({
     })
   }
 
+  /* مؤقّت القرعة يُلغى إن ذهبت الشاشة في منتصفها — وإلّا بقي يكتب في
+     مكوّنٍ فُكّك. */
+  const tossTimer = useRef<number | null>(null)
+  useEffect(() => () => { if (tossTimer.current !== null) clearInterval(tossTimer.current) }, [])
+
   function toss() {
+    if (tossing) return
     setTossing(true)
     setStarter(null)
     let n = 0
-    const iv = setInterval(() => {
+    const iv = window.setInterval(() => {
       setTossFace((f) => (1 - f) as TeamId)
       n++
       if (n > 11) {
         clearInterval(iv)
+        tossTimer.current = null
         const result = (Math.random() < 0.5 ? 0 : 1) as TeamId
         setTossFace(result)
         setStarter(result)
         setTossing(false)
       }
     }, 110)
+    tossTimer.current = iv
   }
 
   async function start() {
