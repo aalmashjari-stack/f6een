@@ -689,3 +689,11 @@ html[data-skin='blocks'] .screen.end .best { background: var(--n-surface); box-s
   48%, 78% { transform: rotate(-90deg); }
   100% { transform: rotate(0deg); }
 }
+
+/* بطاقتا «من أجاب؟» في كشف الجولة الجماعية تأخذان لونَي الفريقين المعتمدين
+   في شريط النتيجة (٥ سبتمبر ٢٠٢٦) — فالحكم يربط الاسم بصاحبه بلمحة. */
+html[data-skin='blocks'] body .screen .pick-team.team-0 { border-color: var(--n-a); }
+html[data-skin='blocks'] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
+html[data-skin='blocks'] body .screen .pick-team.team-1 { border-color: var(--n-b); }
+html[data-skin='blocks'] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
+html[data-skin='blocks'] body .screen .pick-none { border-color: var(--n-line); color: var(--n-ink-2); }

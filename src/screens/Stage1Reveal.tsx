@@ -1,4 +1,5 @@
 import type { GameState } from '../game/session'
+import type { TeamId } from '../game/types'
 import { stage1Owner, STAGE1_LEVEL_POINTS } from '../game/session'
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
@@ -25,14 +26,18 @@ import { celebSrc } from '../game/celebs'
  */
 export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
-  const ownerTeam = state.teams[owner]
   const q = state.currentQuestion!
   const points = STAGE1_LEVEL_POINTS[q.level]
 
-  const picks = [
-    { label: 'أصاب', correct: true, to: ownerTeam.score + points, cls: 'yes' },
-    { label: 'أخطأ', correct: false, to: ownerTeam.score, cls: 'no' },
-  ]
+  /* الخياران اسما الفريقين لا «أصاب/أخطأ» (قرار علي ٥ سبتمبر ٢٠٢٦): النقاط
+     لمن أجاب أيّاً كان، فالخليّة لم تعد لصاحب الدور وحده. وتحت كل اسم نتيجةُ
+     فريقه قبل الضغطة وبعدها. */
+  const picks = state.teams.map((t, i) => ({
+    team: i as TeamId,
+    label: t.name,
+    from: t.score,
+    to: t.score + points,
+  }))
 
   return (
     <div className="screen">
@@ -51,24 +56,35 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       {/* حُذف شريط «قرار الحكم» في ٢٥ أغسطس ٢٠٢٦ بقرار علي: «مسوية زحمة
           عالفاضي». وهو كذلك — «من أصاب؟» فوقه يوجّه السؤال إلى الحكم،
           والبطاقتان تحته هما القرار نفسه. */}
-      <div className="eyebrow center">{ownerTeam.name} — {points} نقاط</div>
+      {/* «نقطة» لا «نقاط» مع العشرين والثلاثين (تصحيح علي)، و«نقاط» مع العشر:
+          العربية تجمع من ثلاثة إلى عشرة وتُفرد بعدها. */}
+      <div className="eyebrow center rv-ask">
+        من أجاب؟ — {points} {points > 10 ? 'نقطة' : 'نقاط'}
+      </div>
 
       <div className="pick-cards grow">
-        {picks.map(({ label, correct, to, cls }) => (
+        {picks.map(({ team, label, from, to }) => (
           <button
-            key={cls}
-            className={'pick pick-' + cls}
-            onClick={() => dispatch({ t: 'S1_SCORE', correct })}
+            key={team}
+            className={'pick pick-team team-' + team}
+            onClick={() => dispatch({ t: 'S1_SCORE', team })}
           >
             <span className="pk-name">{label}</span>
             <span className="pk-delta">
-              <span className="pk-from tabular">{ownerTeam.score}</span>
+              <span className="pk-from tabular">{from}</span>
               <span className="pk-arrow" aria-hidden="true">←</span>
               <span className="pk-to tabular">{to}</span>
             </span>
           </button>
         ))}
       </div>
+
+      {/* «لا أحد أجاب» لا «أصاب» (تصحيح علي): السؤال «من أجاب؟» فيكون بابُ
+          الخروج من جنسه. عاد بعد أن ذهب في ٣ سبتمبر: بالخيارين السابقين كان «أخطأ» يكفي، وبثلاثة
+          نتائج لا بدّ من بابٍ لِمن لم يُصب أحدٌ عنده. وهو أصغر لأنّه الأندر. */}
+      <button className="pick-none" onClick={() => dispatch({ t: 'S1_SCORE', team: null })}>
+        لا أحد أجاب
+      </button>
 
       <style>{`
         /* ===== بطاقة الكشف: السؤال والإجابة معاً ===== */
@@ -118,6 +134,10 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           from { inset-inline-start:-50%; }
           to   { inset-inline-start:120%; }
         }
+
+        /* «من أجاب؟» ينزل عن بطاقة الإجابة: كان ملتصقاً بها فيُقرأ ذيلاً لها
+           لا سؤالاً جديداً موجَّهاً إلى الحكم (ملاحظة علي ٥ سبتمبر ٢٠٢٦). */
+        .rv-ask { margin-block-start:clamp(10px,2.6vh,28px); }
 
         /* ===== البطاقتان ===== */
         /* أرضية ارتفاع: على شاشة عريضة قصيرة كان الصفّ ينكمش إلى صفر فتخرج
@@ -184,15 +204,24 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .pk-arrow { color:var(--text-3); font-weight:600; }
         .pk-to    { color:var(--gold); }
 
-        .pick-yes {
-          background:linear-gradient(150deg, #FFCE7B, var(--gold) 60%, #F0A93F);
-          border-color:var(--gold); color:var(--on-gold);
-          box-shadow:var(--lift), var(--glow-gold);
+        /* البطاقتان فريقان لا حكمان، فتتساويان في البروز (SPEC ١٠) وتأخذ كلٌّ
+           لونَ فريقها كما في شريط النتيجة — فيربط الحكمُ الاسمَ بصاحبه بلمحة. */
+        .pick-team.team-0 { border-color:var(--gold); }
+        .pick-team.team-0 .pk-to { color:var(--gold); }
+        .pick-team.team-1 { border-color:var(--cream); }
+        .pick-team.team-1 .pk-to { color:var(--cream); }
+
+        /* «لا أحد» أصغر لأنّه الأندر — وباب خروجٍ لا خيارٌ ثالث مساوٍ. */
+        .pick-none {
+          align-self:center; margin-top:clamp(6px,1.4vh,14px);
+          padding:clamp(6px,1.2vh,12px) clamp(18px,3vw,34px);
+          border-radius:999px; cursor:pointer; font-family:inherit;
+          font-size:clamp(12px,1.5vw,17px); font-weight:800;
+          background:transparent; border:2px solid var(--text-3); color:var(--text-2);
         }
-        .pick-yes .pk-from, .pick-yes .pk-arrow { color:rgba(65,36,2,.62); }
-        .pick-yes .pk-to { color:var(--on-gold); }
-        .pick-no { border-color:var(--coral); color:var(--coral); }
-        .pick-no .pk-to { color:var(--coral); }
+        .pick-none:active { transform:scale(.97); }
+        .pick-none:focus-visible { outline:none; border-color:var(--gold); color:var(--cream); }
+        @media (hover:hover) { .pick-none:hover { border-color:var(--cream); color:var(--cream); } }
 
 
         /* أضيق الشاشات: الحشوة وحدها هي ما يمكن التنازل عنه داخل البطاقة.

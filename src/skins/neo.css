@@ -1299,3 +1299,11 @@ html[data-skin] .screen.end .foot-link { text-decoration: underline; text-underl
   html[data-skin] .timer-progress { height: 5px; }
   html[data-skin] .q-box, html[data-skin] .s3-q { border-radius: var(--n-r3); }
 }
+
+/* بطاقتا «من أجاب؟» في كشف الجولة الجماعية تأخذان لونَي الفريقين المعتمدين
+   في شريط النتيجة (٥ سبتمبر ٢٠٢٦) — فالحكم يربط الاسم بصاحبه بلمحة. */
+html[data-skin] body .screen .pick-team.team-0 { border-color: var(--n-a); }
+html[data-skin] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
+html[data-skin] body .screen .pick-team.team-1 { border-color: var(--n-b); }
+html[data-skin] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
+html[data-skin] body .screen .pick-none { border-color: var(--n-line); color: var(--n-ink-2); }

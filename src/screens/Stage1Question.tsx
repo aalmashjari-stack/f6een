@@ -55,13 +55,15 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         </div>
       </div>
 
-      {/* زرّ واحد يسمّي الخطوة التالية (القسم ١٠): الحكم يكشف بعد أن يجيب
-          صاحب الدور شفهياً — انتهاء المؤقّت لا يكشف شيئاً بنفسه. */}
+      {/* زرّ واحد يسمّي الخطوة التالية (القسم ١٠): الحكم يكشف بعد أن تُقال
+          الإجابة شفهياً — انتهاء المؤقّت لا يكشف شيئاً بنفسه.
+          ولا يسمّي الزرُّ فريقاً بعد اليوم (٥ سبتمبر ٢٠٢٦): «من أجاب؟» سؤالُ
+          الشاشة التالية، فتسميةُ صاحب الدور هنا تُجيب عنه قبل أن يُطرح. */}
       <div className="stack gap-s">
         <button className="action compact" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
-          أجاب {ownerTeam.name} — اكشف الإجابة
+          اكشف الإجابة
         </button>
-        <div className="action-note">اضغط بعد أن يجيب صاحب الدور</div>
+        <div className="action-note">اضغط بعد أن يجيب أحد الفريقين</div>
       </div>
 
       <style>{`
