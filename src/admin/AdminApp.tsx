@@ -15,7 +15,7 @@ import type {
 } from '../lib/admin'
 import { uploadArt } from '../lib/uploads'
 import type { Plan } from '../lib/importQuestions'
-import { buildPlan, readTable } from '../lib/importQuestions'
+import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
 import {
   addCategory,
@@ -887,6 +887,25 @@ function Questions() {
     )
   }, [rows, q, cat, level, source])
 
+  /**
+   * تصديرُ ما تراه لا ما في القاعدة: `shown` بعد التصفية، فتصفية «سيارات»
+   * ثمّ التصدير تعطي أسئلتها وحدها.
+   *
+   * والأعمدة أعمدةُ المستورِد نفسها (`HEADERS` في importQuestions) ومعها
+   * المعرّف — فيدور الملفّ ذهاباً وإياباً: تُصدّر، وتُصحّح في إكسل، وتُرفع
+   * من «رفع ملفّ» فتحلّ التصحيحات محلّ الأصل بعمود المعرّف.
+   */
+  function exportCsv() {
+    if (!shown || shown.length === 0) return
+    const csv = questionsToCsv(shown.map((r) => r.q))
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `أسئلة-فطين${cat ? '-' + cat : ''}${level ? '-' + level : ''}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   async function remove(row: Row) {
     setMsg(null)
     try {
@@ -948,6 +967,10 @@ function Questions() {
         </button>
         <button className="a-btn" onClick={() => setImporting(true)}>
           رفع ملفّ
+        </button>
+        {/* التصدير بجوار الرفع: البابان واحد — يخرج الملفّ ويعود مصحَّحاً. */}
+        <button className="a-btn" onClick={exportCsv} disabled={shown.length === 0}>
+          تصدير CSV
         </button>
       </div>
 

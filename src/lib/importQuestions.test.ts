@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { zipSync, strToU8 } from 'fflate'
-import { buildPlan, parseCsv, parseXlsx } from './importQuestions'
+import { buildPlan, parseCsv, parseXlsx, questionsToCsv } from './importQuestions'
 
 const CTX = {
   categories: ['الكويت', 'أدب وفنون'],
@@ -193,5 +193,44 @@ describe('خطّة الرفع', () => {
     const p = plan([['', '', '', '', '', ''], ['الكويت', 'سهل', 'سؤال', 'جواب', '', '']])
     expect(p.rejected).toEqual([])
     expect(p.added).toBe(1)
+  })
+})
+
+/**
+ * الدورة كاملة: ما يكتبه `questionsToCsv` يقرؤه `parseCsv` ويقبله `buildPlan`.
+ *
+ * الادّعاء الذي يحرسه هذا الاختبار أنّ زرّ «تصدير CSV» في اللوحة يُخرج ملفّاً
+ * يعود من «رفع ملفّ» — فلو تبدّل عمودٌ في أحد الطرفين سقط هنا لا عند علي.
+ */
+describe('تصدير الأسئلة ثمّ استيرادها', () => {
+  const q = {
+    id: 'M001',
+    category: 'الكويت',
+    level: 'سهل',
+    topic: 'الكويت',
+    question: 'ما هي عاصمة مصر؟',
+    answer: 'القاهرة',
+  }
+
+  it('الملفّ الخارج يعود داخلاً تعديلاً بالمعرّف', () => {
+    const plan = buildPlan(parseCsv(questionsToCsv([q])), CTX)
+    expect(plan.rejected, JSON.stringify(plan.rejected)).toHaveLength(0)
+    expect(plan.rows).toHaveLength(1)
+    expect(plan.rows[0].id).toBe('M001')
+    expect(plan.rows[0].category).toBe('الكويت')
+    expect(plan.rows[0].answer).toBe('القاهرة')
+  })
+
+  it('يهرب من علامة التنصيص في نصّ السؤال فلا ينكسر الصفّ', () => {
+    const tricky = { ...q, id: 'ADM0001', question: 'من قال «"العلم نور"، والجهل ظلام»؟' }
+    const plan = buildPlan(parseCsv(questionsToCsv([tricky])), CTX)
+    expect(plan.rejected, JSON.stringify(plan.rejected)).toHaveLength(0)
+    expect(plan.rows[0].question).toBe(tricky.question)
+  })
+
+  it('يبدأ بـBOM وينتهي أسطرُه بـCRLF — شرطا إكسل', () => {
+    const csv = questionsToCsv([q])
+    expect(csv.startsWith('\ufeff')).toBe(true)
+    expect(csv.includes('\r\n')).toBe(true)
   })
 })

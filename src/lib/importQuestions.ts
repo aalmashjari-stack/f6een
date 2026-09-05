@@ -167,6 +167,25 @@ const norm = (s: string) =>
     .replace(/ى/g, 'ي')
     .replace(/[^\p{L}\p{N}]/gu, '')
 
+/**
+ * كتابةُ الأسئلة CSV — هنا لا في اللوحة، بجوار قارئها.
+ *
+ * العمودُ الأول اسمٌ من `HEADERS` نفسها، فالملفّ الخارج يعود داخلاً: يُصدَّر،
+ * ويُصحَّح في إكسل، ويُرفع من «رفع ملفّ» — والمعرّف يجعل الصفّ تعديلاً لسؤالٍ
+ * قائم لا إضافةً لثانٍ مثله. يحرس الدورةَ اختبارٌ في `importQuestions.test.ts`.
+ *
+ * وBOM أوّلاً وإلّا فتح إكسل العربيةَ رموزاً، و`\r\n` وإلّا قرأ ويندوز
+ * الملفّ كلَّه صفّاً واحداً.
+ */
+export function questionsToCsv(
+  rows: { id: string; category: string; level: string; topic?: string | null; question: string; answer: string }[],
+): string {
+  const esc = (v: string | null | undefined) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
+  const head = ['المعرّف', 'التصنيف', 'المستوى', 'الموضوع', 'السؤال', 'الإجابة']
+  const body = rows.map((r) => [r.id, r.category, r.level, r.topic ?? '', r.question, r.answer])
+  return '\ufeff' + [head, ...body].map((r) => r.map(esc).join(',')).join('\r\n')
+}
+
 /** أسماء الأعمدة كما يكتبها الناس — لا عمود واحد له اسم واحد. */
 const HEADERS: Record<string, string[]> = {
   category: ['التصنيف', 'الفئة', 'القسم'],
