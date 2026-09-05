@@ -14,6 +14,7 @@ import type {
   CategoryRow,
 } from '../lib/admin'
 import { uploadArt } from '../lib/uploads'
+import { celebImage, isImageUrl } from '../game/celebs'
 import type { Plan } from '../lib/importQuestions'
 import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
@@ -1299,11 +1300,15 @@ function Questions() {
 
 /**
  * صورة السؤال في اللوحة: الرابط المرفوع يُعرض كما هو، والمفتاح المشحون
- * (`celeb-…`) لا تعرفه اللوحة إلّا بتحميل صور المشاهير كلّها — ولا تستحقّ
- * معاينةٌ صغيرة ذلك، فيُكتفى بالإطار الفارغ ويبقى المفتاح محفوظاً.
+ * (`celeb-…`) يُحلّ إلى ملفّه.
+ *
+ * كانت تُرجع فراغاً للمفتاح — «معاينةٌ صغيرة لا تستحقّ تحميل صور المشاهير
+ * كلّها». والثمن لم يكن تحميلاً: `import.meta.glob` بـ`?url` يجمع مساراتٍ
+ * نصّية لا صوراً، والصورة وحدها تُطلب عند عرضها. أمّا الخسارة فكانت أنّ
+ * تعديل سؤال «مشاهير» يُظهر إطاراً فارغاً كأنّ صورته ضاعت — وهي سليمة.
  */
 function resolveImage(image: string): string | null {
-  return /^https?:\/\//.test(image) ? image : null
+  return isImageUrl(image) ? image : celebImage(image)
 }
 
 function toQuestion(e: AdminQuestionEdit): Question {

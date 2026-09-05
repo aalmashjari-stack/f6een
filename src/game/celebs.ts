@@ -22,6 +22,20 @@ const CELEB_IMAGES: Record<string, string> = Object.fromEntries(
   ]),
 )
 
+/** هل المفتاح رابطٌ كامل (صورةٌ رُفعت من اللوحة) لا مفتاحَ ملفٍّ مشحون؟ */
+export const isImageUrl = (key: string): boolean => /^https?:\/\//.test(key)
+
+/**
+ * ملفُّ المفتاح المشحون، أو `null` إن لم يكن في التطبيق.
+ *
+ * منفصلةٌ عن `celebSrc` لأنّ الفرق بين «لا صورة» و«صورةٌ بديلة» يهمّ من
+ * يعرض معاينةً للمدير: الشاشة تريد صورةً دائماً ولو مؤقّتة، واللوحة تريد
+ * أن تعرف أنّ المفتاح لا يقابله ملفّ.
+ */
+export function celebImage(key: string): string | null {
+  return CELEB_IMAGES[key] ?? null
+}
+
 /**
  * مصدر صورة المفتاح، أو الصورة المؤقتة إن لم يُسجَّل بعد.
  *
@@ -30,6 +44,6 @@ const CELEB_IMAGES: Record<string, string> = Object.fromEntries(
  * كل شاشةٍ تعرض صورةً أن تعرف الفرق.
  */
 export function celebSrc(key?: string): string {
-  if (key && /^https?:\/\//.test(key)) return key
-  return (key && CELEB_IMAGES[key]) || placeholder
+  if (key && isImageUrl(key)) return key
+  return (key && celebImage(key)) || placeholder
 }
