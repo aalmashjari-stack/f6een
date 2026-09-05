@@ -186,5 +186,20 @@ label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
   vertical-align: middle;
 }
 .a-tbl input[type='checkbox']:disabled { cursor: default; opacity: .35; }
-/* عمودُ التحديد أضيق ما يمكن — لا يزاحم السؤال. */
-.a-tbl th:first-child, .a-tbl td:first-child { width: 1%; padding-inline-end: 4px; }
+/* عمودُ التحديد أضيق ما يمكن — **في جدول الأسئلة وحده**. أوّل صياغةٍ لهذه
+   القاعدة كانت على `.a-tbl` كلّها، وفي اللوحة جداولُ أخرى (المستخدمون،
+   الجلسات، الأكواد) فضاق أوّلُ عمودٍ فيها جميعاً. */
+.a-tbl-q th:first-child, .a-tbl-q td:first-child { width: 1%; padding-inline: 8px 2px; }
+
+/* عمودُ الأزرار مثبَّتٌ على حافّة العرض: الجدول يتمرّر أفقيّاً بالتصميم
+   (min-width:max-content أعلاه)، وإضافةُ عمود التحديد دفعت «تعديل» و«حذف»
+   خارج الشاشة — فاختفيا عند علي. التثبيت يُبقيهما في متناول اليد مهما اتّسع
+   الجدول، والرأسُ مثبَّتٌ رأسياً أصلاً فيلتقيان في الزاوية.
+   وخلفيّةٌ صريحة شرطُ التثبيت: بدونها تمرّ الصفوف تحت العمود فتُقرأ عبره. */
+.a-tbl-q th:last-child, .a-tbl-q td:last-child {
+  position: sticky; inset-inline-end: 0; z-index: 1;
+  background: var(--n-surface);
+  border-inline-start: 1px solid var(--n-line);
+}
+.a-tbl-q th:last-child { z-index: 2; }
+.a-tbl-q tr:hover td:last-child { background: var(--n-surface-2); }
