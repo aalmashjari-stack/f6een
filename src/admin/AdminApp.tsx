@@ -25,6 +25,7 @@ import {
   deleteCategory,
   deleteCode,
   deleteQuestionEdit,
+  deleteQuestions,
   fetchStats,
   importQuestions,
   isAdmin,
@@ -979,10 +980,14 @@ function Questions() {
   }
 
   /**
-   * حذفُ المحدَّد صفّاً صفّاً — لا دالّةَ جملةٍ في القاعدة.
+   * حذفُ المحدَّد — **نداءٌ واحد في معاملةٍ واحدة**.
    *
-   * والرسالة تفصل بين فعلين مختلفين تحت زرٍّ واحد: المضاف **يُمحى**،
-   * والمعدَّل **يعود أصلاً في البنك ولا يختفي من اللعبة**. خلطُهما يجعل الحكم
+   * كان صفّاً صفّاً، فوقف حذفُ «سيارات» عند ستّين: حارسُ الخليّة في القاعدة
+   * يقيس كلَّ حذفٍ وحده، ولا يرى أنّ الحكم يفرغ الخليّة كلّها — يرى نزولاً
+   * من عشرين إلى تسعة عشر فيردّه، ولا سبيل من عشرين إلى صفرٍ بخطوة.
+   *
+   * والرسالة تفصل بين فعلين مختلفين تحت زرٍّ واحد: المضاف والمنقول **يُمحيان**،
+   * والمعدَّل **يعود أصلاً في الملفّ ولا يختفي من اللعبة**. خلطُهما يجعل الحكم
    * يظنّ أنّه محا ثلاثين سؤالاً وقد محا عشرة وأعاد عشرين.
    */
   async function removePicked() {
@@ -991,33 +996,31 @@ function Questions() {
     const added = rows.filter((r) => r.source === 'added').length
     const banked = rows.filter((r) => r.source === 'bank').length
     const edited = rows.length - added - banked
-    const what = [
-      added ? `محوُ ${added} سؤالاً مضافاً نهائياً` : '',
-      banked ? `محوُ ${banked} سؤالاً من البنك نهائياً` : '',
-      edited ? `إعادةُ ${edited} سؤالاً من البنك إلى أصله` : '',
-    ].filter(Boolean).join(' و')
+    /* **«أعِد الأصل» معناه مشروطٌ بالمرجع.** حين كان الملفّ مرجعاً، حذفُ صفّ
+       التعديل يُظهر أصلَه المشحون ثانيةً. وبعد نقل البنك لم يعد الملفّ يُقرأ:
+       صفُّ التعديل هو السؤال كلُّه — والبذرةُ تخطّته عمداً كي لا تمحو تعديلك
+       (`on conflict do nothing`) — فحذفُه محوٌ لا تراجع. */
+    const what = live
+      ? `محوُ ${rows.length} سؤالاً نهائياً`
+      : [
+          added ? `محوُ ${added} سؤالاً مضافاً نهائياً` : '',
+          banked ? `محوُ ${banked} سؤالاً من البنك نهائياً` : '',
+          edited ? `إعادةُ ${edited} سؤالاً من البنك إلى أصله` : '',
+        ].filter(Boolean).join(' و')
     if (!window.confirm(`${what}. متأكّد؟`)) return
 
     setMsg(null)
     setWiping(rows.length)
-    let ok = 0
-    const failed: string[] = []
-    for (const r of rows) {
-      try {
-        await deleteQuestionEdit(r.q.id)
-        ok++
-      } catch {
-        failed.push(r.q.id)
-      }
-      setWiping((n) => n - 1)
+    try {
+      const n = await deleteQuestions(rows.map((r) => r.q.id))
+      setPicked(new Set())
+      setMsg(`تمّ على ${n} سؤالاً`)
+    } catch (e) {
+      /* المعاملة تُرجَع كلُّها عند الرفض، فلا يُحذف شيء — والتحديد يبقى
+         كما هو ليصحّح الحكمُ اختيارَه بدل أن يعيد بناءه. */
+      setMsg(e instanceof Error ? `${e.message} — لم يُحذف شيء` : 'تعذّر الحذف')
     }
     setWiping(0)
-    setPicked(new Set())
-    setMsg(
-      failed.length === 0
-        ? `تمّ على ${ok} سؤالاً`
-        : `تمّ على ${ok}، وتعذّر على ${failed.length}: ${failed.slice(0, 5).join('، ')}`,
-    )
     reload()
   }
 
@@ -1025,11 +1028,7 @@ function Questions() {
     setMsg(null)
     try {
       const kind = await deleteQuestionEdit(row.q.id)
-      setMsg(
-        kind === 'override'
-          ? 'أُعيد سؤال البنك كما كان'
-          : 'حُذف السؤال',
-      )
+      setMsg(!live && kind === 'override' ? 'أُعيد سؤال البنك كما كان' : 'حُذف السؤال')
       reload()
     } catch (e) {
       setMsg(e instanceof Error ? e.message : 'تعذّر الحذف')
@@ -1250,7 +1249,7 @@ function Questions() {
                     </button>
                     {r.deletable && (
                       <button className="a-btn danger" onClick={() => remove(r)}>
-                        {r.source === 'edited' ? 'أعِد الأصل' : 'حذف'}
+                        {!live && r.source === 'edited' ? 'أعِد الأصل' : 'حذف'}
                       </button>
                     )}
                   </span>

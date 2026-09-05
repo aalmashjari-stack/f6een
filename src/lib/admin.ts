@@ -209,7 +209,7 @@ const ERRORS: Record<string, string> = {
   bad_payload: 'صيغة الدفعة غير صالحة',
   too_many_rows: 'الرزمة فوق ألف صفّ',
   bank_incomplete: 'البنك في القاعدة ناقص — خليّة تحت الحدّ. أكمل الزرع أوّلاً',
-  cell_floor: 'لا يمكن — الخليّة تنزل تحت عشرين سؤالاً',
+  cell_floor: 'لا يمكن — تبقى الخليّة تحت عشرين سؤالاً. أفرِغها كلَّها أو أبقِ عشرين',
 }
 
 function translate(msg: string): string {
@@ -347,6 +347,24 @@ export async function importQuestions(
   }
 
   return { added, updated }
+}
+
+/**
+ * حذفُ جملةٍ في معاملةٍ واحدة — إمّا كلُّها أو لا شيء.
+ *
+ * كان الحكم يحذف صفّاً صفّاً، فيقيس حارسُ الخليّة كلَّ حذفٍ وحده ولا يرى
+ * أنّ الحكم يفرغ الخليّة كلّها: يقف عند عشرين ويردّ ما بعده. وحذفُ فئة
+ * «سيارات» توقّف فعلاً عند ستّين — عشرين في كل مستوى.
+ *
+ * وهنا تُقاس الخلايا على حالتها النهائية بعد الحذف كلِّه، فالإفراغ يمرّ
+ * (الفئة تخرج من اللعب ولا تُكسر) والنحافةُ تُردّ. ومئة نداءٍ متتابع صارت
+ * نداءً واحداً.
+ */
+export async function deleteQuestions(ids: string[]): Promise<number> {
+  if (ids.length === 0) return 0
+  const { data, error } = await supabase.rpc('admin_delete_questions', { p_ids: ids })
+  if (error) throw new Error(translate(error.message))
+  return (data as { deleted: number }).deleted
 }
 
 /* ===================== نقل البنك إلى القاعدة ===================== */
