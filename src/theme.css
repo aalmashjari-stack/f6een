@@ -325,7 +325,13 @@ body::after {
   gap: clamp(6px, 1.4vh, 14px); width: 100%; height: 100%;
   flex: 1 1 auto; min-height: 0;
 }
-.q-prompt { flex: none; font-weight: 800; font-size: clamp(18px, 2.6vw, 28px); color: var(--cream); }
+/* التوسيط يظهر أثرُه حين يلتفّ السطر سطرين — والسطرُ صار نصَّ السؤال، فقد
+   يطول: «من أي مسلسل خليجي هذا المشهد؟». سطرٌ واحد لا يتغيّر (الحاوية
+   تنكمش على محتواها بـalign-items: center). */
+.q-prompt {
+  flex: none; text-align: center;
+  font-weight: 800; font-size: clamp(18px, 2.6vw, 28px); color: var(--cream);
+}
 /* بطاقة السؤال صفٌّ أفقي في كل الشاشات، فلو تُرك التلميح على حاله لحاذى المثل
    بجواره: «أكمل المثل من جد وجد…» سطراً واحداً. :has يقلبها عموداً حين يوجد
    التلميح وحده — وهو أخفّ من غلافٍ جديد يلفّهما، إذ الغلاف يصير أبَ .q-text

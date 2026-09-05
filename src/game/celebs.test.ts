@@ -19,6 +19,14 @@ describe('صور المشاهير', () => {
     expect(missing.map((q) => `${q.id}: ${q.image}`)).toEqual([])
   })
 
+  /**
+   * `QuestionView` صار يعرض نصَّ السؤال فوق الصورة بدل سطرٍ ثابت — فبلا نصٍّ
+   * تظهر الصورة بلا سؤال. البنك سليم اليوم، وهذا يمنع ملفَّ رفعٍ يُفرغه غداً.
+   */
+  it('كل سؤال صورة يحمل نصّاً — هو السطرُ السائل فوقها', () => {
+    for (const q of withImage) expect(q.question.trim(), q.id).not.toBe('')
+  })
+
   it('الرابط المرفوع من اللوحة يمرّ كما هو', () => {
     const url = 'https://example.supabase.co/storage/v1/object/public/art/questions/1.jpg'
     expect(isImageUrl(url)).toBe(true)
