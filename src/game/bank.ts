@@ -65,6 +65,15 @@ export const ALL_QUESTIONS: Question[] = [
  * من أوّل أربع كلمات من نصّه، فتعديل النصّ ينقله من عائلة إلى أخرى.
  */
 let overlay: Question[] = []
+/**
+ * `db` = القاعدة تحمل الأسئلة كلّها فهي المرجع، والملفّ بذرةٌ لا تُقرأ.
+ * `overlay` = الوضع الأصليّ: الملفّ أساسٌ والقاعدة فرقٌ يُركَّب فوقه.
+ *
+ * يأتي من `question_bank()` (مفتاح `bank_in_db` في القاعدة)، ولا يُقلب من
+ * هنا: قلبُه بصفوفٍ ناقصة يعني بنكاً منقوصاً في كل جهاز.
+ */
+type BankMode = 'db' | 'overlay'
+let mode: BankMode = 'overlay'
 let effective: Question[] = ALL_QUESTIONS
 
 /** فهرسة: تصنيف × مستوى ← أسئلة. جوهر السحب في القسم ٨. */
@@ -74,13 +83,25 @@ const byLevel = new Map<Level, Question[]>()
 
 const key = (category: string, level: Level) => `${category}|${level}`
 
+const notExcluded = (q: Question) =>
+  !EXCLUDED_POLITICAL_CELEBRITY_IDS.has(q.id) && !EXCLUDED_OBSCURE_CELEBRITY_IDS.has(q.id)
+
 function rebuild() {
-  const byId = new Map(overlay.map((q) => [q.id, q]))
-  /* ترتيب البنك محفوظ والمضاف في آخره: الترتيب لا يؤثّر في السحب (عشوائيّ)
-     لكنّه يجعل اللوحة تعرض قائمة ثابتة بين تحديث وآخر. */
-  effective = ALL_QUESTIONS.map((q) => byId.get(q.id) ?? q)
-  const seen = new Set(ALL_QUESTIONS.map((q) => q.id))
-  for (const q of overlay) if (!seen.has(q.id)) effective.push(q)
+  /* **الوضع `db` بصفوفٍ فارغة لا يُصدَّق.** مزامنةٌ ردّت لا شيء — انقطاعٌ
+     أو خللٌ في القاعدة — كانت ستمحو البنك من الجهاز. فيبقى الملفّ عاملاً
+     حتى تصل صفوفٌ فعلية. */
+  if (mode === 'db' && overlay.length > 0) {
+    /* الاستبعادُ يبقى مطبَّقاً هنا أيضاً: البذرة لا تحمل المستبعدين، لكنّ
+       ملفّ رفعٍ قد يعيدهم — والقرار قرارُ علي لا قرارُ الجدول. */
+    effective = overlay.filter(notExcluded)
+  } else {
+    const byId = new Map(overlay.map((q) => [q.id, q]))
+    /* ترتيب البنك محفوظ والمضاف في آخره: الترتيب لا يؤثّر في السحب (عشوائيّ)
+       لكنّه يجعل اللوحة تعرض قائمة ثابتة بين تحديث وآخر. */
+    effective = ALL_QUESTIONS.map((q) => byId.get(q.id) ?? q)
+    const seen = new Set(ALL_QUESTIONS.map((q) => q.id))
+    for (const q of overlay) if (!seen.has(q.id)) effective.push(q)
+  }
 
   byCatLevel.clear()
   byLevel.clear()
@@ -99,10 +120,16 @@ export function allQuestions(): Question[] {
   return effective
 }
 
-export function setQuestionOverlay(rows: Question[]) {
+export function setQuestionOverlay(rows: Question[], nextMode: BankMode = 'overlay') {
   overlay = rows
+  mode = nextMode
   rebuild()
   notifyBank()
+}
+
+/** مرجعُ الأسئلة الآن: القاعدة أم ملفّ التطبيق. للتشخيص واللوحة. */
+export function bankMode(): BankMode {
+  return mode === 'db' && overlay.length > 0 ? 'db' : 'overlay'
 }
 
 /* ===================== الإخطار عند تبدّل البنك =====================

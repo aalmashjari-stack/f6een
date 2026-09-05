@@ -23,6 +23,16 @@ interface Row {
   question: string
   answer: string
   image: string | null
+  /** الموضوع المصرَّح به — يمنع سؤالين جوابهما واحد في جلسة. قد يغيب. */
+  family?: string | null
+}
+
+/** ما تُرجعه `question_bank()`: الوضع وصفوفه في نداءٍ واحد. */
+interface BankPayload {
+  mode: 'db' | 'overlay'
+  rows: Row[]
+  /** توقيعُ ما نُزّل — به يُعرف أنّ ما في التخزين لا يزال هو الأحدث. */
+  sig?: string
 }
 
 const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
@@ -39,20 +49,36 @@ function toQuestion(r: Row): Question | null {
     question: r.question,
     answer: r.answer,
     ...(r.image ? { image: r.image } : {}),
+    ...(r.family ? { family: r.family } : {}),
   }
 }
 
-function loadLocal(): Row[] {
+/**
+ * المخزون المحلّي شكلان: مصفوفةُ صفوفٍ (ما قبل ٥ سبتمبر ٢٠٢٦) وكائنٌ يحمل
+ * الوضع معها. الشكل القديم يُقرأ ولا يُسقط الطبقة — من حدّث التطبيق ولم
+ * يتّصل بعدُ يبقى لاعباً بما كان عنده.
+ */
+function loadLocal(): BankPayload {
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as Row[]) : []
+    if (!raw) return { mode: 'overlay', rows: [] }
+    const parsed = JSON.parse(raw) as Row[] | BankPayload
+    if (Array.isArray(parsed)) return { mode: 'overlay', rows: parsed }
+    return {
+      mode: parsed.mode === 'db' ? 'db' : 'overlay',
+      rows: parsed.rows ?? [],
+      sig: parsed.sig,
+    }
   } catch {
-    return []
+    return { mode: 'overlay', rows: [] }
   }
 }
 
-function apply(rows: Row[]) {
-  setQuestionOverlay(rows.map(toQuestion).filter((q): q is Question => q !== null))
+function apply(p: BankPayload) {
+  setQuestionOverlay(
+    p.rows.map(toQuestion).filter((q): q is Question => q !== null),
+    p.mode,
+  )
 }
 
 /** تُنادى عند الإقلاع قبل أي سحب — بلا شبكة. */
@@ -60,17 +86,55 @@ export function applyCachedOverlay() {
   apply(loadLocal())
 }
 
-/** تُنادى بعد توفّر الجلسة. */
+/**
+ * تُنادى بعد توفّر الجلسة.
+ *
+ * `question_bank()` تُرجع الوضع والصفوف معاً — لا نداءان قد يصل أحدهما
+ * دون الآخر فيُقلب الوضعُ على صفوفٍ قديمة. وإن لم تكن الدالّة موجودة بعد
+ * (قاعدةٌ لم تُرقَّ) نسقط إلى `question_overlay()` القديمة، وهي الوضع
+ * `overlay` بطبعها.
+ */
 export async function syncOverlay(): Promise<void> {
-  const { data, error } = await supabase.rpc('question_overlay')
-  if (error) throw error
-  const rows = (data ?? []) as Row[]
+  const cached = loadLocal()
+
+  /**
+   * التوقيع **قبل** الصفوف لا بعدها.
+   *
+   * لو قُرئ بعدها ثمّ عُدّل سؤالٌ بينهما، لخُتمت حمولةٌ قديمة بتوقيعٍ جديد —
+   * فيطابق توقيعَ الخادم في كل إقلاعٍ بعده، ويتجمّد الجهاز على نسخةٍ قديمة
+   * إلى الأبد. وقراءتُه أوّلاً تقلب الخطأ إلى جهته الآمنة: توقيعٌ أقدم من
+   * صفوفه يعني تنزيلاً زائداً مرّةً واحدة، لا تجمّداً.
+   *
+   * وفشلُه لا يوقف شيئاً: نمضي إلى التنزيل الكامل بلا توقيع.
+   */
+  const sign = await supabase.rpc('bank_signature')
+  const sig = !sign.error && sign.data ? JSON.stringify(sign.data) : undefined
+
+  if (sig !== undefined && sig === cached.sig) {
+    apply(cached)
+    return
+  }
+
+  const bank = await supabase.rpc('question_bank')
+  let payload: BankPayload
+
+  if (bank.error) {
+    const legacy = await supabase.rpc('question_overlay')
+    if (legacy.error) throw legacy.error
+    payload = { mode: 'overlay', rows: (legacy.data ?? []) as Row[] }
+  } else {
+    const d = bank.data as BankPayload | null
+    payload = { mode: d?.mode === 'db' ? 'db' : 'overlay', rows: d?.rows ?? [] }
+  }
+
+  payload.sig = sig
+
   try {
-    localStorage.setItem(KEY, JSON.stringify(rows))
+    localStorage.setItem(KEY, JSON.stringify(payload))
   } catch {
     /* تجاهل — الطبقة تُطبَّق في هذه الجلسة على أي حال. */
   }
-  apply(rows)
+  apply(payload)
 }
 
 /* ========================= الفئات المضافة ========================= */
