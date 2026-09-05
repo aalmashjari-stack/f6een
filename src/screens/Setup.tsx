@@ -797,8 +797,11 @@ export function Setup({
         /* ===== فئات الجولة الجماعية ===== */
         .cats-head { display:flex; align-items:center; gap:10px; margin-bottom:clamp(6px,1.2vh,12px); }
         .cats-title { margin:0; font-size:clamp(14px,1.7vw,19px); font-weight:800; color:var(--cream); }
+        /* سطر التوجيه في الوسط بمساحةٍ حوله (طلب علي): محشوراً في الحافّة
+           فوق العنوان كان يُقرأ ذيلاً لِما قبله لا نداءً لِما بعده. */
         .cats-lead {
-          margin:0 0 clamp(4px,1vh,10px);
+          margin:clamp(12px,2.6vh,30px) 0 clamp(10px,1.8vh,18px);
+          text-align:center;
           font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--gold);
         }
         /* شارةُ الدور تلبس لون صاحبه — الفريقان بلونين ثابتين لا بترتيب الظهور */
