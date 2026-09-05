@@ -757,9 +757,7 @@ html[data-skin] body .screen .catchip.taken.dimmed .cc-name { color: #fff; text-
 html[data-skin] body .screen .catchip.taken { box-shadow: 0 0 0 3.5px var(--n-accent), 0 6px 16px rgba(26,22,38,.18); }
 html[data-skin] body .screen .cc-tick { background: var(--n-accent); color: var(--n-surface); }
 html[data-skin] .cats-turn.done { background: var(--n-surface-2); color: var(--n-ink-2); }
-html[data-skin] .cats-title { color: var(--n-ink); }
-html[data-skin] .cats-count { color: var(--n-ink-2); font-variant-numeric: tabular-nums; }
-html[data-skin] .cats-hint { color: var(--n-ink-3); }
+html[data-skin] .cats-count { color: var(--n-ink); font-variant-numeric: tabular-nums; }
 
 /* ─── ١٠ج. بطاقتا «أصاب / أخطأ» ──────────────────────────────────────── */
 /* الأخضر والأحمر محجوزان للحكم في كل الهويّات — وهذه شاشةُ حكمٍ على فريقٍ
@@ -1308,3 +1306,9 @@ html[data-skin] body .screen .pick-team.team-1 { border-color: var(--n-b); }
 html[data-skin] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
 html[data-skin] body .screen .rv-ask { color: var(--n-ink); }
 html[data-skin] body .screen .pick-none { border-color: var(--n-ink); color: var(--n-ink); }
+
+/* تنبيهُ النقص: الرسالة تحت زرّ القرعة تحمرّ حين يُضغط الزرّ وشيءٌ ناقص
+   (٥ سبتمبر ٢٠٢٦) — لونُ التنبيه في الهويّة لا مرجانيُّ الأساس. */
+html[data-skin] body .screen .toss-result.missing.alert { color: var(--n-accent); }
+
+html[data-skin] body .screen .cats-lead { color: var(--n-accent); }

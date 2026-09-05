@@ -43,6 +43,10 @@ export function Setup({
   const [starter, setStarter] = useState<TeamId | null>(null)
   /* فئات لوح الجولة الجماعية — ثلاث لكل فريق (SPEC ٤). */
   const [cats, setCats] = useState<string[]>([])
+  /* تنبيهُ النقص: الرسالة تحت الزرّ رماديّة ما لم يضغط الحكم «قرعة البدء»
+     وشيءٌ ناقص — فتحمرّ عندها (طلب علي ٥ سبتمبر ٢٠٢٦). الرماديّ يخبر،
+     والأحمر يجيب على ضغطةٍ لم تُثمر. */
+  const [nudge, setNudge] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -128,6 +132,9 @@ export function Setup({
     })
   }
 
+  /* التنبيه يسقط بمجرّد اكتمال ما نقص — لا ينتظر ضغطةً ثانية. */
+  useEffect(() => { if (namesReady && catsReady) setNudge(false) }, [namesReady, catsReady])
+
   /* مؤقّت القرعة يُلغى إن ذهبت الشاشة في منتصفها — وإلّا بقي يكتب في
      مكوّنٍ فُكّك. */
   const tossTimer = useRef<number | null>(null)
@@ -135,6 +142,12 @@ export function Setup({
 
   function toss() {
     if (tossing) return
+    /* بيانات ناقصة: لا تبدأ القرعة أصلاً — رسالتُها كانت تحلّ محلّ التنبيه
+       فيومض الأحمر ويختفي قبل أن يُقرأ. الضغطة تُظهر ما ينقص لا غير. */
+    if (!namesReady || !catsReady) {
+      setNudge(true)
+      return
+    }
     setTossing(true)
     setStarter(null)
     let n = 0
@@ -286,14 +299,25 @@ export function Setup({
             مستقلّة: الاختيار قرارُ تجهيزٍ يسبق اللعب مثل الأسماء والقرعة،
             وشاشةٌ ثالثة بينهما تقطع المجلس مرّتين قبل أول سؤال. */}
         <section className="setup-block">
+          {/* سطر التوجيه فوق العنوان (طلب علي ٥ سبتمبر ٢٠٢٦): العنوان يسمّي
+              القسم، وهذا يقول للحكم ما يفعله فيه — بعد أن حُذف التلميح الصغير
+              الذي كان تحت الشبكة. */}
+          {/* سطران في الوسط لا ثلاثة: نداءٌ وعدّاد. سقطت التسمية «فئات الجولة
+              الجماعية» (طلب علي ٥ سبتمبر ٢٠٢٦) — النداء يكفي، والشبكةُ تحته
+              تقول ما هي. والعدّاد هنا لأنّ عينَ الحكم على الشبكة لا تحتها. */}
           <div className="cats-head">
-            <h3 className="cats-title">فئات الجولة الجماعية</h3>
-            {/* لا شارةَ دورٍ بعد اليوم: الفئات للّوح لا للفريقين. يبقى إعلانُ
-                الاكتمال وحده — وهو خبرٌ عن اللوح لا نداءٌ على فريق. */}
-            {catsReady && <span className="cats-turn done">اكتمل اللوح</span>}
+            <p className="cats-lead">قم باختيار الفئات</p>
+            {catsReady ? (
+              <span className="cats-turn done">اكتمل اللوح</span>
+            ) : (
+              /* المفتاح يتبدّل مع العدد فتُعاد الحركة عند كل اختيار. */
+              <span className="cats-count" key={cats.length}>
+                {cats.length} / {STAGE1_CATEGORIES}
+              </span>
+            )}
           </div>
           <div className="cats-grid">
-            {allCats.map((cat) => {
+            {allCats.map((cat, i) => {
               const picked = isPicked(cat)
               return (
                 <button
@@ -307,6 +331,7 @@ export function Setup({
                   }
                   onClick={() => toggleCat(cat)}
                   aria-pressed={picked}
+                  style={{ '--i': i } as React.CSSProperties}
                 >
                   {/* الرسمة عنصرٌ مستقلّ لا خلفيّةُ الزرّ: الترميد يقع عليها
                       وحدها فيبقى الاسم مقروءاً فوقها — بناء `.cat` نفسه. */}
@@ -328,12 +353,6 @@ export function Setup({
               )
             })}
           </div>
-          <div className="cats-note">
-            <span className="cats-count">
-              {cats.length} / {STAGE1_CATEGORIES}
-            </span>
-            <span className="cats-hint">اضغط فئةً مختارة لسحبها</span>
-          </div>
         </section>
 
         {/* القرعة والزرّان مجموعان عند الحافّة السفلى — كتلة فعل واحدة
@@ -349,9 +368,11 @@ export function Setup({
               <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
             ) : !namesReady ? (
               /* بلا هذا السطر يبقى الزرّ رمادياً بلا سبب ظاهر، فيظنّه الحكم عطلاً. */
-              <div className="toss-result missing">اكتب أسماء الفريقين واللاعبين</div>
+              <div className={'toss-result missing' + (nudge ? ' alert' : '')}>
+                اكتب أسماء الفريقين واللاعبين
+              </div>
             ) : !catsReady ? (
-              <div className="toss-result missing">
+              <div className={'toss-result missing' + (nudge ? ' alert' : '')}>
                 اختر {STAGE1_CATEGORIES} فئات للّوح
               </div>
             ) : starter !== null ? (
@@ -678,6 +699,7 @@ export function Setup({
         .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
         .toss-result b { color:var(--gold); }
         .toss-result.missing { color:var(--text-2); font-weight:700; }
+        .toss-result.missing.alert { color:var(--coral); font-weight:900; }
         .toss-note { color:var(--text-2); font-weight:700; font-size:.72em; }
 
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
@@ -776,8 +798,46 @@ export function Setup({
         }
 
         /* ===== فئات الجولة الجماعية ===== */
-        .cats-head { display:flex; align-items:center; gap:10px; margin-bottom:clamp(6px,1.2vh,12px); }
-        .cats-title { margin:0; font-size:clamp(14px,1.7vw,19px); font-weight:800; color:var(--cream); }
+        /* الرأس عمودٌ في الوسط: نداءٌ فعدّاد، والثاني أصغر من الأول. */
+        .cats-head {
+          display:flex; flex-direction:column; align-items:center; gap:clamp(2px,.5vh,6px);
+          margin:clamp(12px,2.6vh,30px) 0 clamp(10px,2vh,20px);
+          text-align:center;
+        }
+        .cats-lead { margin:0; font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--gold); }
+        .cats-count {
+          font-size:clamp(13px,1.6vw,18px); font-weight:900; color:var(--cream);
+          font-variant-numeric:tabular-nums;
+          animation:count-pop .32s var(--ease-spring) both;
+        }
+        @keyframes count-pop {
+          from { transform:scale(.72); opacity:.4; }
+          to   { transform:scale(1);   opacity:1; }
+        }
+        /* دخولُ الشبكة متتابعاً: البطاقة تلي أختها بأربعين جزءاً من الثانية،
+           فتُقرأ الشبكةُ وهي تُبنى بدل أن تظهر دفعةً واحدة. والسقف عند العاشرة
+           حتى لا تنتظر الأخيرةُ نصف ثانية. */
+        .catchip {
+          animation:chip-in .34s var(--ease-spring) both;
+          animation-delay:calc(min(var(--i, 0), 10) * 40ms);
+        }
+        @keyframes chip-in {
+          from { transform:translateY(10px) scale(.94); opacity:0; }
+          to   { transform:none; opacity:1; }
+        }
+        /* علامةُ الصحّ تقفز حين تُولد — الاختيار فعلٌ فليكن له أثرٌ يُرى. */
+        .catchip.taken .cc-tick { animation:tick-pop .3s var(--ease-spring) both; }
+        @keyframes tick-pop {
+          from { transform:scale(0) rotate(-25deg); }
+          to   { transform:scale(1) rotate(0); }
+        }
+        /* إعلانُ الاكتمال يهبط لا يظهر فجأة. */
+        .cats-turn.done { animation:count-pop .36s var(--ease-spring) both; }
+
+        /* من أوقف الحركة في نظامه لا تُفرض عليه: تبقى الحالة النهائية بلا انتقال. */
+        @media (prefers-reduced-motion: reduce) {
+          .catchip, .cats-count, .cats-turn.done, .catchip.taken .cc-tick { animation:none; }
+        }
         /* شارةُ الدور تلبس لون صاحبه — الفريقان بلونين ثابتين لا بترتيب الظهور */
         .cats-turn {
           margin-inline-start:auto;
@@ -867,14 +927,6 @@ export function Setup({
         }
         .catchip.taken .cc-tick { display:grid; }
 
-        .cats-note {
-          display:flex; flex-wrap:wrap; align-items:center; gap:clamp(8px,1.4vw,18px);
-          margin-top:clamp(6px,1.2vh,12px);
-          font-size:clamp(11px,1.3vw,14px); font-weight:700;
-        }
-        .cats-count.team-0 { color:var(--gold); }
-        .cats-count.team-1 { color:var(--coral); }
-        .cats-hint { margin-inline-start:auto; color:var(--text-3); font-weight:600; }
       `}</style>
     </div>
   )
