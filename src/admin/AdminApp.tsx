@@ -1053,7 +1053,7 @@ function Questions() {
       {msg && <p className="a-note">{msg}</p>}
 
       <div className="a-card a-scroll">
-        <table className="a-tbl">
+        <table className="a-tbl a-tbl-q">
           <thead>
             <tr>
               <th>
@@ -1079,14 +1079,15 @@ function Questions() {
             {shown.slice(0, limit).map((r) => (
               <tr key={r.q.id}>
                 <td>
-                  {/* المشحونُ بلا تعديل بلا خانة: لا شيء فيه يُحذف. */}
-                  {r.source !== 'bank' && (
-                    <input
-                      type="checkbox"
-                      checked={picked.has(r.q.id)}
-                      onChange={() => toggleOne(r.q.id)}
-                    />
-                  )}
+                  {/* خانةٌ في كل صفّ، والمشحونُ **معطَّلٌ لا مخفيّ**: إخفاؤها
+                      جعل الصفحة الأولى — وكلُّها بنك — تبدو بلا ميزةٍ أصلاً. */}
+                  <input
+                    type="checkbox"
+                    checked={picked.has(r.q.id)}
+                    onChange={() => toggleOne(r.q.id)}
+                    disabled={r.source === 'bank'}
+                    title={r.source === 'bank' ? 'سؤال البنك لا يُحذف — عدّله أوّلاً' : undefined}
+                  />
                 </td>
                 <td>
                   <span className={'tag' + (r.source === 'bank' ? '' : ' open')}>
