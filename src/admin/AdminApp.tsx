@@ -1553,8 +1553,17 @@ function Categories() {
     }
   }
 
-  async function remove(cat: string) {
+  async function remove(cat: string, total: number) {
     setMsg(null)
+    /* الحارسُ في القاعدة (`admin_delete_category`) لا هنا؛ وهذا سبقٌ له
+       يقول الرقم: «تحمل أسئلة» وحدها لا تدلّ الحكمَ على كم بقي ولا أين. */
+    if (total > 0) {
+      setMsg({
+        ok: false,
+        text: `«${cat}» تحمل ${total} سؤالاً — احذفها من لسان الأسئلة أوّلاً، ثمّ عُد`,
+      })
+      return
+    }
     try {
       await deleteCategory(cat)
       setMsg({ ok: true, text: `حُذفت «${cat}»` })
@@ -1652,12 +1661,12 @@ function Categories() {
                 </td>
                 <td>
                   {r.added && (
-                    <button
-                      className="a-btn danger"
-                      disabled={r.total > 0}
-                      title={r.total > 0 ? 'انقل أسئلتها أو احذفها أوّلاً' : undefined}
-                      onClick={() => remove(r.cat)}
-                    >
+                    /* **يُضغط دائماً، ويقول سببَه عند الرفض.** كان معطَّلاً
+                       والسببُ في تلميحٍ لا يظهر إلّا بالتحويم — فقرأه علي
+                       «الزرّ لا يعمل»، وهي ثالث مرّة يخدعه فيها زرٌّ رماديّ
+                       (خانةُ التحديد وزرُّ الحذف قبله). الرفضُ المشروح أوضح
+                       من التعطيل الصامت. */
+                    <button className="a-btn danger" onClick={() => remove(r.cat, r.total)}>
                       حذف
                     </button>
                   )}
