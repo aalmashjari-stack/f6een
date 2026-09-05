@@ -208,6 +208,8 @@ const ERRORS: Record<string, string> = {
   no_such_category: 'لا فئة بهذا الاسم',
   bad_payload: 'صيغة الدفعة غير صالحة',
   too_many_rows: 'الرزمة فوق ألف صفّ',
+  bank_incomplete: 'البنك في القاعدة ناقص — خليّة تحت الحدّ. أكمل الزرع أوّلاً',
+  cell_floor: 'لا يمكن — الخليّة تنزل تحت عشرين سؤالاً',
 }
 
 function translate(msg: string): string {
@@ -225,11 +227,18 @@ export interface AdminQuestionEdit {
   question: string
   answer: string
   image: string | null
-  origin: 'override' | 'new'
+  family: string | null
+  origin: 'bank' | 'override' | 'new'
   updated_at: string
 }
 
-/** ما عُدّل أو أُضيف وحده. البنك المشحون تحمله اللوحة في المتصفّح وتدمجه. */
+/**
+ * صفوفُ الأسئلة في القاعدة.
+ *
+ * **قيمةٌ واحدة لا صفوف.** الدالّة كانت تُرجع صفوفاً، وPostgREST يقصّها
+ * عند ألف — فبعد نقل البنك رأت اللوحة ١٠٠٠ من ٢٢١١ وبدا الزرعُ ناقصاً
+ * (`20260905180000_admin_questions_jsonb.sql`). ولا حدَّ على حجم قيمة jsonb.
+ */
 export async function listQuestionEdits(): Promise<AdminQuestionEdit[]> {
   const { data, error } = await supabase.rpc('admin_questions')
   if (error) throw error
@@ -261,11 +270,16 @@ export async function saveQuestion(q: QuestionInput): Promise<string> {
   return data as string
 }
 
-/** حذف صفّ الطبقة: تراجعٌ إلى الأصل لسؤال البنك، ومحوٌ للسؤال المضاف. */
-export async function deleteQuestionEdit(id: string): Promise<'override' | 'new'> {
+/**
+ * حذف صفّ الطبقة.
+ *
+ * قبل نقل البنك: تراجعٌ إلى الأصل المشحون لسؤال البنك، ومحوٌ للمضاف.
+ * بعده: محوٌ حقيقيّ للجميع — وتردّه القاعدة إن أنزل خليّةً تحت الحدّ.
+ */
+export async function deleteQuestionEdit(id: string): Promise<'bank' | 'override' | 'new'> {
   const { data, error } = await supabase.rpc('admin_delete_question', { p_id: id })
   if (error) throw new Error(translate(error.message))
-  return data as 'override' | 'new'
+  return data as 'bank' | 'override' | 'new'
 }
 
 /* ============================== الفئات ============================== */
@@ -333,4 +347,84 @@ export async function importQuestions(
   }
 
   return { added, updated }
+}
+
+/* ===================== نقل البنك إلى القاعدة ===================== */
+/**
+ * البنك كان ملفّاً في التطبيق، فصار صفوفاً في القاعدة (قرار علي ٥ سبتمبر
+ * ٢٠٢٦). والنقل من هنا لا من محرّر SQL: اللوحة تحمل البنك في المتصفّح
+ * أصلاً وهي مسجَّلةُ الدخول مديراً — فلا يُنسخ ستّمئة كيلوبايت بيدٍ، ولا
+ * يُطلب مفتاحٌ يتجاوز حرّاس القاعدة.
+ *
+ * وخطوتان لا واحدة: `seedBank` تزرع، و`setBankMode` تقلب المفتاح — ولا
+ * تقلبه القاعدة إلّا بعد أن تتأكّد أنّ كل خليّة بلغت حدّها.
+ */
+
+export interface SeedRow {
+  id: string
+  category: string
+  level: string
+  topic: string
+  question: string
+  answer: string
+  image: string | null
+  family: string | null
+}
+
+/** هل القاعدة هي مرجع الأسئلة الآن؟ */
+export async function bankMode(): Promise<boolean> {
+  const { data, error } = await supabase.rpc('bank_mode')
+  if (error) throw new Error(translate(error.message))
+  return data === true
+}
+
+/** الخلايا التي لم تبلغ حدّها — سببُ رفض قلب المفتاح، معروضاً لا مخفيّاً. */
+export async function bankFloorBreaches(): Promise<
+  { category: string; level: string; n: number; floor: number }[]
+> {
+  const { data, error } = await supabase.rpc('bank_floor_breaches')
+  if (error) throw new Error(translate(error.message))
+  return (data ?? []) as { category: string; level: string; n: number; floor: number }[]
+}
+
+/**
+ * زرعُ البنك — **لا يمسّ صفّاً قائماً**. فما عدّلتَه من اللوحة قبل النقل
+ * يبقى كما عدّلته، وتشغيلُ الزرع مرّتين يُكمل ما نقص ولا يكرّر.
+ */
+export async function seedBank(
+  rows: SeedRow[],
+  onProgress?: (done: number, total: number) => void,
+): Promise<{ inserted: number; total: number }> {
+  const CHUNK = 300
+  let inserted = 0
+  let total = 0
+
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const { data, error } = await supabase.rpc('admin_seed_bank', {
+      p_rows: rows.slice(i, i + CHUNK),
+    })
+    if (error) throw new Error(translate(error.message))
+    const res = data as { inserted: number; total: number }
+    inserted += res.inserted
+    total = res.total
+    onProgress?.(Math.min(i + CHUNK, rows.length), rows.length)
+  }
+
+  return { inserted, total }
+}
+
+/**
+ * قلبُ المرجع.
+ *
+ * `expect` = عدد أسئلة ملفّ التطبيق. القاعدة تعدّ صفوفها وتردّ القلبَ إن
+ * كانت أقلّ — فزرعٌ انقطع في منتصفه لا يصير مرجعاً. والإطفاء رجوعٌ آمن
+ * فلا يُفحص.
+ */
+export async function setBankMode(on: boolean, expect = 0): Promise<number> {
+  const { data, error } = await supabase.rpc('admin_set_bank_mode', {
+    p_on: on,
+    p_expect: expect,
+  })
+  if (error) throw new Error(translate(error.message))
+  return (data as { total: number }).total
 }

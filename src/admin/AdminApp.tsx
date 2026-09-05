@@ -19,6 +19,7 @@ import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
 import {
   addCategory,
+  bankMode,
   createCode,
   deleteCategory,
   deleteCode,
@@ -37,7 +38,9 @@ import {
   listUsers,
   saveCategoryArt,
   saveQuestion,
+  seedBank,
   setBalance,
+  setBankMode,
   setFlag,
 } from '../lib/admin'
 
@@ -827,6 +830,8 @@ interface Row {
   q: Question
   source: Source
   origin?: AdminQuestionEdit['origin']
+  /** له صفٌّ في القاعدة، فالحذف يطاله. المشحونُ بلا صفٍّ لا يُحذف. */
+  deletable: boolean
 }
 
 const SOURCE_LABEL: Record<Source, string> = {
@@ -842,17 +847,45 @@ const SOURCE_LABEL: Record<Source, string> = {
  * والقاعدة لا تعرف منه شيئاً — فيها الفرق وحده. ولو أُرسل البنك كلّه إلى
  * القاعدة ليُدمج هناك لصار لكل سؤالٍ نسختان تفترقان عند أوّل إصدار.
  */
-/** البنك المشحون بعد تركيب التعديلات — نفس دمج المحرّك، بمصدر كل صفّ. */
-function merge(bank: Question[], edits: AdminQuestionEdit[]): Row[] {
+const SOURCE_OF: Record<AdminQuestionEdit['origin'], Source> = {
+  bank: 'bank',
+  override: 'edited',
+  new: 'added',
+}
+
+/**
+ * البنك المشحون بعد تركيب التعديلات — نفس دمج المحرّك، بمصدر كل صفّ.
+ *
+ * `live` = القاعدة صارت مرجع الأسئلة (مفتاح `bank_in_db`). حينها **لا
+ * يُدمج الملفّ أصلاً**: صفوف القاعدة هي البنك كلّه، ودمجُ الملفّ فوقها
+ * يعيد كل سؤالٍ حذفتَه.
+ */
+function merge(
+  bank: Question[],
+  edits: AdminQuestionEdit[],
+  /* صفٌّ واحد بـ`origin = 'bank'` يكفي دليلاً: البنك انتُقل. الشاشاتُ
+     الأخرى (البلاغات والفئات) لا تسأل المفتاح، فتكفيها هذه القرينة. */
+  live = edits.some((e) => e.origin === 'bank'),
+): Row[] {
+  if (live) {
+    return edits.map((e) => ({
+      q: toQuestion(e),
+      source: SOURCE_OF[e.origin] ?? 'added',
+      origin: e.origin,
+      deletable: true,
+    }))
+  }
+
   const byId = new Map(edits.map((e) => [e.question_id, e]))
   const out: Row[] = bank.map((base) => {
     const e = byId.get(base.id)
     return e
-      ? { q: toQuestion(e), source: 'edited' as const, origin: e.origin }
-      : { q: base, source: 'bank' as const }
+      ? { q: toQuestion(e), source: 'edited' as const, origin: e.origin, deletable: true }
+      : { q: base, source: 'bank' as const, deletable: false }
   })
   for (const e of edits) {
-    if (e.origin === 'new') out.push({ q: toQuestion(e), source: 'added', origin: 'new' })
+    if (e.origin === 'new')
+      out.push({ q: toQuestion(e), source: 'added', origin: 'new', deletable: true })
   }
   return out
 }
@@ -873,9 +906,23 @@ function Questions() {
   const [picked, setPicked] = useState<Set<string>>(new Set())
   const [wiping, setWiping] = useState(0)
 
+  /* مرجعُ الأسئلة: القاعدة أم ملفّ التطبيق. `null` = لم يصل الجواب بعد،
+     فتُعرض الصفحةُ على الوضع القديم حتى يصل — لا شاشةَ انتظارٍ لأجل مفتاح. */
+  const [live, setLive] = useState<boolean | null>(null)
+  const [seeding, setSeeding] = useState<{ done: number; total: number } | null>(null)
+  useEffect(() => {
+    let alive = true
+    bankMode()
+      .then((v) => alive && setLive(v))
+      .catch(() => alive && setLive(false))
+    return () => {
+      alive = false
+    }
+  }, [])
+
   const rows: Row[] | null = useMemo(
-    () => (bank && edits ? merge(bank, edits) : null),
-    [bank, edits],
+    () => (bank && edits ? merge(bank, edits, live ?? undefined) : null),
+    [bank, edits, live],
   )
 
   const shown = useMemo(() => {
@@ -909,9 +956,9 @@ function Questions() {
     URL.revokeObjectURL(url)
   }
 
-  /* المشحونُ بلا تعديل لا يُحذف — لا صفَّ له في الطبقة أصلاً. فالتحديد
-     يقتصر على المضاف والمعدَّل. */
-  const selectable = useMemo(() => (shown ?? []).filter((r) => r.source !== 'bank'), [shown])
+  /* المشحونُ بلا صفٍّ في القاعدة لا يُحذف. وبعد النقل لكل سؤالٍ صفٌّ،
+     فيصير الجميع قابلاً للتحديد. */
+  const selectable = useMemo(() => (shown ?? []).filter((r) => r.deletable), [shown])
   const allPicked = selectable.length > 0 && selectable.every((r) => picked.has(r.q.id))
 
   /* تبدّلت التصفية: يسقط التحديد. وإلّا حذف الحكمُ صفوفاً لا يراها. */
@@ -941,9 +988,11 @@ function Questions() {
     const rows = selectable.filter((r) => picked.has(r.q.id))
     if (rows.length === 0) return
     const added = rows.filter((r) => r.source === 'added').length
-    const edited = rows.length - added
+    const banked = rows.filter((r) => r.source === 'bank').length
+    const edited = rows.length - added - banked
     const what = [
       added ? `محوُ ${added} سؤالاً مضافاً نهائياً` : '',
+      banked ? `محوُ ${banked} سؤالاً من البنك نهائياً` : '',
       edited ? `إعادةُ ${edited} سؤالاً من البنك إلى أصله` : '',
     ].filter(Boolean).join(' و')
     if (!window.confirm(`${what}. متأكّد؟`)) return
@@ -975,10 +1024,64 @@ function Questions() {
     setMsg(null)
     try {
       const kind = await deleteQuestionEdit(row.q.id)
-      setMsg(kind === 'new' ? 'حُذف السؤال المضاف' : 'أُعيد سؤال البنك كما كان')
+      setMsg(
+        kind === 'override'
+          ? 'أُعيد سؤال البنك كما كان'
+          : 'حُذف السؤال',
+      )
       reload()
     } catch (e) {
       setMsg(e instanceof Error ? e.message : 'تعذّر الحذف')
+    }
+  }
+
+  /**
+   * نقلُ البنك إلى القاعدة — خطوتان في ضغطة.
+   *
+   * الزرعُ لا يمسّ صفّاً قائماً، فتعديلاتُك السابقة تبقى؛ ثمّ يُقلب المفتاح
+   * ولا تقبله القاعدة إلّا إن بلغت كلُّ خليّةٍ حدَّها. فإن انقطعت الشبكة في
+   * المنتصف بقي المفتاحُ مطفأً واللعبةُ على ملفّها — وإعادةُ الضغط تُكمل.
+   */
+  async function migrate() {
+    if (!bank) return
+    if (!window.confirm(`نقلُ ${bank.length} سؤالاً إلى القاعدة. ما عدّلتَه لا يُمسّ. متأكّد؟`)) return
+    setMsg(null)
+    try {
+      const payload = bank.map((b) => ({
+        id: b.id,
+        category: b.category,
+        level: b.level as string,
+        topic: b.topic ?? '',
+        question: b.question,
+        answer: b.answer,
+        image: b.image ?? null,
+        family: b.family ?? null,
+      }))
+      setSeeding({ done: 0, total: payload.length })
+      const res = await seedBank(payload, (done, total) => setSeeding({ done, total }))
+      setSeeding(null)
+      const total = await setBankMode(true, payload.length)
+      setLive(true)
+      setMsg(`تمّ النقل — أُضيف ${res.inserted}، والمجموع في القاعدة ${total}. القاعدة صارت المرجع.`)
+      reload()
+    } catch (e) {
+      setSeeding(null)
+      setMsg(e instanceof Error ? e.message : 'تعذّر النقل')
+    }
+  }
+
+  /** رجوعٌ آمن: الأسئلة تعود من ملفّ التطبيق، وصفوفُ القاعدة تبقى مكانها. */
+  async function revert() {
+    if (!window.confirm('يعود مرجع الأسئلة إلى ملفّ التطبيق. ما حذفتَه من البنك يظهر ثانيةً. متأكّد؟'))
+      return
+    setMsg(null)
+    try {
+      await setBankMode(false)
+      setLive(false)
+      setMsg('المرجع الآن ملفّ التطبيق')
+      reload()
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : 'تعذّر التبديل')
     }
   }
 
@@ -993,6 +1096,32 @@ function Questions() {
 
   return (
     <>
+      {/* مرجعُ الأسئلة معروضٌ دائماً: هو ما يفسّر لماذا يُحذف سؤالٌ ولا يُحذف
+          آخر. كان الفرق صامتاً فبدا الزرُّ معطوباً. */}
+      <div className="a-bar">
+        {live === true ? (
+          <>
+            <span className="tag open">مرجع الأسئلة: القاعدة</span>
+            <button className="a-btn" onClick={revert}>
+              أعِد المرجع إلى ملفّ التطبيق
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="tag">مرجع الأسئلة: ملفّ التطبيق</span>
+            <button
+              className="a-btn go"
+              onClick={migrate}
+              disabled={!bank || live === null || seeding !== null}
+            >
+              {seeding
+                ? `يُنقل… ${seeding.done} / ${seeding.total}`
+                : `نقل البنك إلى القاعدة (${bank?.length ?? 0})`}
+            </button>
+          </>
+        )}
+      </div>
+
       <div className="a-bar">
         <input
           className="a-in"
@@ -1054,6 +1183,18 @@ function Questions() {
 
       <div className="a-card a-scroll">
         <table className="a-tbl a-tbl-q">
+          {/* الأعمدة تُقاس هنا لا من محتواها (`table-layout: fixed` في
+              admin.css): السؤالُ يأخذ ما بقي، والباقي بعرضٍ يكفي أطولَ ما
+              فيه. وبهذا يظهر الجدول كلُّه بلا تمريرٍ أفقيّ على شاشة الحاسب. */}
+          <colgroup>
+            <col style={{ width: 38 }} />
+            <col style={{ width: 84 }} />
+            <col />
+            <col style={{ width: 220 }} />
+            <col style={{ width: 140 }} />
+            <col style={{ width: 82 }} />
+            <col style={{ width: 158 }} />
+          </colgroup>
           <thead>
             <tr>
               <th>
@@ -1078,37 +1219,37 @@ function Questions() {
           <tbody>
             {shown.slice(0, limit).map((r) => (
               <tr key={r.q.id}>
-                <td>
+                <td className="mid">
                   {/* خانةٌ في كل صفّ، والمشحونُ **معطَّلٌ لا مخفيّ**: إخفاؤها
                       جعل الصفحة الأولى — وكلُّها بنك — تبدو بلا ميزةٍ أصلاً. */}
                   <input
                     type="checkbox"
                     checked={picked.has(r.q.id)}
                     onChange={() => toggleOne(r.q.id)}
-                    disabled={r.source === 'bank'}
-                    title={r.source === 'bank' ? 'سؤال البنك لا يُحذف — عدّله أوّلاً' : undefined}
+                    disabled={!r.deletable}
+                    title={r.deletable ? undefined : 'سؤالٌ في ملفّ التطبيق — انقل البنك إلى القاعدة ليُحذف'}
                   />
                 </td>
-                <td>
+                <td className="mid">
                   <span className={'tag' + (r.source === 'bank' ? '' : ' open')}>
                     {SOURCE_LABEL[r.source]}
                   </span>
                 </td>
-                <td style={{ whiteSpace: 'normal', maxWidth: 460 }}>
+                <td>
                   {r.q.image ? <span className="muted">[صورة] </span> : null}
                   {r.q.question}
                 </td>
-                <td style={{ whiteSpace: 'normal', maxWidth: 220 }}>{r.q.answer}</td>
+                <td>{r.q.answer}</td>
                 <td>{r.q.category}</td>
                 <td>{r.q.level}</td>
-                <td>
+                <td className="mid">
                   <span className="a-acts">
                     <button className="a-btn" onClick={() => setEditing(r)}>
                       تعديل
                     </button>
-                    {r.source !== 'bank' && (
+                    {r.deletable && (
                       <button className="a-btn danger" onClick={() => remove(r)}>
-                        {r.source === 'added' ? 'حذف' : 'أعِد الأصل'}
+                        {r.source === 'edited' ? 'أعِد الأصل' : 'حذف'}
                       </button>
                     )}
                   </span>
@@ -1174,6 +1315,7 @@ function toQuestion(e: AdminQuestionEdit): Question {
     question: e.question,
     answer: e.answer,
     ...(e.image ? { image: e.image } : {}),
+    ...(e.family ? { family: e.family } : {}),
   }
 }
 

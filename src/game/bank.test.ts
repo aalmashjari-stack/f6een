@@ -6,6 +6,7 @@ import {
   EXCLUDED_POLITICAL_CELEBRITY_IDS,
   allCategories,
   allQuestions,
+  bankMode,
   familyOf,
   familiesOf,
   playableCategories,
@@ -307,5 +308,69 @@ describe('الإخطار عند وصول المزامنة', () => {
 
     setExtraCategories([])
     setQuestionOverlay([])
+  })
+})
+
+/**
+ * البنك في القاعدة — ٥ سبتمبر ٢٠٢٦.
+ *
+ * المرجع صار صفوف القاعدة لا ملفّ التطبيق، والملفّ بذرةُ أوّل إقلاع. وهذا
+ * تبديلُ أساسٍ لا طبقةٍ فوقه: ما يحرسه الاختبار أن يُبدَّل حين يجب، وألّا
+ * يُبدَّل حين تعود المزامنةُ فارغة — فذاك يمحو البنك من كل جهاز.
+ */
+describe('مرجع الأسئلة: القاعدة أم الملفّ', () => {
+  afterEach(() => setQuestionOverlay([]))
+
+  const row = (id: string, level: Level, extra: Partial<(typeof ALL_QUESTIONS)[number]> = {}) => ({
+    id,
+    category: 'جغرافيا ومعالم',
+    level,
+    topic: 'جغرافيا',
+    question: `سؤال ${id}؟`,
+    answer: `إجابة ${id}`,
+    ...extra,
+  })
+
+  it('وضعُ القاعدة يستبدل البنك كلَّه، لا يركّب فوقه', () => {
+    setQuestionOverlay([row('DB1', 'سهل'), row('DB2', 'متوسط')], 'db')
+    expect(bankMode()).toBe('db')
+    expect(allQuestions()).toHaveLength(2)
+    /* ما لم تُرسله القاعدة لا وجود له — وهذا هو الحذف. */
+    expect(allQuestions().some((q) => q.id === ALL_QUESTIONS[0].id)).toBe(false)
+  })
+
+  it('وضعُ القاعدة بصفوفٍ فارغة لا يُصدَّق — الملفّ يبقى عاملاً', () => {
+    /* مزامنةٌ ردّت لا شيء (انقطاعٌ أو خلل) كانت ستمحو البنك من الجهاز. */
+    setQuestionOverlay([], 'db')
+    expect(bankMode()).toBe('overlay')
+    expect(allQuestions()).toHaveLength(ALL_QUESTIONS.length)
+  })
+
+  it('المستبعدون بقرار علي يبقون مستبعدين وإن أرسلتهم القاعدة', () => {
+    const banned = [...EXCLUDED_POLITICAL_CELEBRITY_IDS][0]
+    setQuestionOverlay([row('DB1', 'سهل'), row(banned, 'سهل')], 'db')
+    expect(allQuestions().map((q) => q.id)).not.toContain(banned)
+    expect(allQuestions()).toHaveLength(1)
+  })
+
+  it('الموضوع المصرَّح به يعبر مع الصفّ فيبقى حارسُ التكرار عاملاً', () => {
+    setQuestionOverlay(
+      [
+        row('DB1', 'سهل', { family: 'عواصم' }),
+        row('DB2', 'سهل', { family: 'عواصم' }),
+      ],
+      'db',
+    )
+    const [a, b] = allQuestions()
+    expect(familiesOf(a)).toEqual(familiesOf(b))
+    expect(familiesOf(a)).toContain('موضوع:عواصم')
+  })
+
+  it('الرجوع إلى الملفّ يعيد البنك كما كان', () => {
+    setQuestionOverlay([row('DB1', 'سهل')], 'db')
+    expect(allQuestions()).toHaveLength(1)
+    setQuestionOverlay([], 'overlay')
+    expect(bankMode()).toBe('overlay')
+    expect(allQuestions()).toHaveLength(ALL_QUESTIONS.length)
   })
 })

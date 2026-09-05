@@ -186,10 +186,23 @@ label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
   vertical-align: middle;
 }
 .a-tbl input[type='checkbox']:disabled { cursor: default; opacity: .35; }
-/* عمودُ التحديد أضيق ما يمكن — **في جدول الأسئلة وحده**. أوّل صياغةٍ لهذه
-   القاعدة كانت على `.a-tbl` كلّها، وفي اللوحة جداولُ أخرى (المستخدمون،
-   الجلسات، الأكواد) فضاق أوّلُ عمودٍ فيها جميعاً. */
-.a-tbl-q th:first-child, .a-tbl-q td:first-child { width: 1%; padding-inline: 8px 2px; }
+/* جدولُ الأسئلة **يُقاس ولا يتمدّد**.
+   `max-width` على خليّةٍ في جدولٍ تخطيطُه `auto` لا أثر له — قاعدةٌ في CSS
+   يسهل نسيانها، وقد نُسيت هنا. فكان عمودُ السؤال يأخذ عرضَ أطولِ سؤالٍ في
+   الصفحة كاملاً، ويدفع الإجابةَ والتصنيفَ والمستوى وراء تمريرٍ أفقيّ لا
+   يخطر ببال أحد: تبقى «المصدر» و«السؤال» ظاهرتين وكأنّ الجدول عمودان.
+   و`table-layout: fixed` يجعل الأعمدةَ تُقاس من `colgroup` لا من محتواها،
+   فيلتزم النصُّ الطويل عمودَه ويلتفّ فيه. */
+.a-tbl-q { table-layout: fixed; min-width: 860px; }
+.a-tbl-q th, .a-tbl-q td {
+  white-space: normal;
+  /* كلمةٌ أطول من عمودها تفيض ولا تكسر التخطيط — الروابط والمعرّفات. */
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+/* الشارةُ والأزرار في وسط الصفّ لا في أعلاه، والنصُّ الطويل وحده يبدأ من فوق. */
+.a-tbl-q td.mid { vertical-align: middle; }
+.a-tbl-q th:first-child, .a-tbl-q td:first-child { padding-inline: 8px 2px; }
 
 /* عمودُ الأزرار مثبَّتٌ على حافّة العرض: الجدول يتمرّر أفقيّاً بالتصميم
    (min-width:max-content أعلاه)، وإضافةُ عمود التحديد دفعت «تعديل» و«حذف»
