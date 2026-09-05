@@ -23,15 +23,15 @@ const memory = new Map<Team['id'], { score: number; t: number }>()
  * يجب أن يقع في ثانية — والمجلس ينظر.
  *
  * ولا تأكيد قبلهما: الضغطة الخاطئة يردّها الزرُّ المقابل، والرقاقة الطائرة
- * فوق القرص (+5 أو −5) تقول ما وقع فوراً.
+ * فوق القرص (+10 أو −10) تقول ما وقع فوراً.
  */
 function Adjust({ onAdjust }: { onAdjust: (delta: number) => void }) {
   return (
     <span className="pts-adj">
-      <button type="button" aria-label="زيادة خمس نقاط" onClick={() => onAdjust(SCORE_FIX_STEP)}>
+      <button type="button" aria-label={`زيادة ${SCORE_FIX_STEP} نقاط`} onClick={() => onAdjust(SCORE_FIX_STEP)}>
         +
       </button>
-      <button type="button" aria-label="إنقاص خمس نقاط" onClick={() => onAdjust(-SCORE_FIX_STEP)}>
+      <button type="button" aria-label={`إنقاص ${SCORE_FIX_STEP} نقاط`} onClick={() => onAdjust(-SCORE_FIX_STEP)}>
         −
       </button>
     </span>

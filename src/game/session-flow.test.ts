@@ -4,7 +4,12 @@ import { ALL_QUESTIONS, familyOf, playableCategories, setQuestionOverlay } from 
 import {
   SCORE_FIX_STEP,
   STAGE1_CATEGORIES,
+  STAGE1_LEVEL_POINTS,
   STAGE1_LEVELS,
+  STAGE2_CORRECT,
+  STAGE2_WRONG,
+  STAGE3_POINTS,
+  TIEBREAK_POINTS,
   createSession,
   stage1Owner,
 } from './session'
@@ -373,13 +378,31 @@ describe('تصحيح الحكم', () => {
     expect(s.teams[0].score).toBe(0)
   })
 
-  /* ردُّ خطأٍ كامل: عشرون ذهبت للفريق الغلط — أربع ضغطات هنا وأربع هناك. */
+  /* ردُّ خطأٍ كامل: خليّةٌ صعبة (30) ذهبت للفريق الغلط. والضغطات تُحسب من
+     الثابت لا تُكتب رقماً — فتغييرُ الخطوة لا يكسر الاختبار بل يقيسه. */
   it('يردّ نقاط سؤالٍ كاملٍ ذهب للفريق الخطأ', () => {
+    const wrong = 30
+    const presses = wrong / SCORE_FIX_STEP
+    expect(Number.isInteger(presses), 'خطوةُ التصحيح تقسم نقاط اللعبة').toBe(true)
+
     let s = fresh()
-    s = step(s, { t: 'ADJUST', team: 1, delta: 20 })
-    for (let i = 0; i < 4; i++) s = step(s, { t: 'ADJUST', team: 1, delta: -SCORE_FIX_STEP })
-    for (let i = 0; i < 4; i++) s = step(s, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
-    expect([s.teams[0].score, s.teams[1].score]).toEqual([20, 0])
+    s = step(s, { t: 'ADJUST', team: 1, delta: wrong })
+    for (let i = 0; i < presses; i++) s = step(s, { t: 'ADJUST', team: 1, delta: -SCORE_FIX_STEP })
+    for (let i = 0; i < presses; i++) s = step(s, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    expect([s.teams[0].score, s.teams[1].score]).toEqual([wrong, 0])
+  })
+
+  /* الحارسُ الحقيقيّ للقيمة: كلُّ ما تمنحه اللعبة مضاعفُ الخطوة، فلا خطأ
+     يعجز التصحيحُ عن ردّه بالضبط. يسقط لو صارت الخطوة 20 أو 15. */
+  it('كل قيمةٍ تمنحها اللعبة مضاعفٌ لخطوة التصحيح', () => {
+    const awards = [
+      ...Object.values(STAGE1_LEVEL_POINTS),
+      STAGE2_CORRECT,
+      STAGE2_WRONG,
+      STAGE3_POINTS,
+      TIEBREAK_POINTS,
+    ]
+    for (const v of awards) expect(Math.abs(v) % SCORE_FIX_STEP, `${v}`).toBe(0)
   })
 
   /* أعمدةُ الختام تجمع المجموع دائماً: التصحيح يُقيَّد على مرحلة طوره، فلا
