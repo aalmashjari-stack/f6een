@@ -1037,13 +1037,17 @@ function Questions() {
         <button className="a-btn" onClick={exportCsv} disabled={shown.length === 0}>
           تصدير CSV
         </button>
-        {/* لا يظهر إلّا حين يُحدَّد شيء: زرُّ حذفٍ جماعيّ دائمُ الظهور إغراءٌ
-            بضغطةٍ لا رجعة فيها. */}
-        {picked.size > 0 && (
-          <button className="a-btn danger" onClick={removePicked} disabled={wiping > 0}>
-            {wiping > 0 ? `يُحذف… ${wiping}` : `حذف المحدَّد (${picked.size})`}
-          </button>
-        )}
+        {/* ظاهرٌ دائماً ومعطَّلٌ حتى يُحدَّد شيء (٥ سبتمبر ٢٠٢٦). كان يظهر عند
+            التحديد وحده — أخفيتُه لئلّا يكون إغراءً بضغطةٍ لا رجعة فيها،
+            فصار الاختفاءُ نفسه يُقرأ «الميزة غير موجودة». والتعطيل حارسٌ
+            يكفي. */}
+        <button
+          className="a-btn danger"
+          onClick={removePicked}
+          disabled={picked.size === 0 || wiping > 0}
+        >
+          {wiping > 0 ? `يُحذف… ${wiping}` : `حذف المحدَّد (${picked.size})`}
+        </button>
       </div>
 
       {msg && <p className="a-note">{msg}</p>}
