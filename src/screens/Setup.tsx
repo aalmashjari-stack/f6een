@@ -43,6 +43,10 @@ export function Setup({
   const [starter, setStarter] = useState<TeamId | null>(null)
   /* فئات لوح الجولة الجماعية — ثلاث لكل فريق (SPEC ٤). */
   const [cats, setCats] = useState<string[]>([])
+  /* تنبيهُ النقص: الرسالة تحت الزرّ رماديّة ما لم يضغط الحكم «قرعة البدء»
+     وشيءٌ ناقص — فتحمرّ عندها (طلب علي ٥ سبتمبر ٢٠٢٦). الرماديّ يخبر،
+     والأحمر يجيب على ضغطةٍ لم تُثمر. */
+  const [nudge, setNudge] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -128,6 +132,9 @@ export function Setup({
     })
   }
 
+  /* التنبيه يسقط بمجرّد اكتمال ما نقص — لا ينتظر ضغطةً ثانية. */
+  useEffect(() => { if (namesReady && catsReady) setNudge(false) }, [namesReady, catsReady])
+
   /* مؤقّت القرعة يُلغى إن ذهبت الشاشة في منتصفها — وإلّا بقي يكتب في
      مكوّنٍ فُكّك. */
   const tossTimer = useRef<number | null>(null)
@@ -135,6 +142,12 @@ export function Setup({
 
   function toss() {
     if (tossing) return
+    /* بيانات ناقصة: لا تبدأ القرعة أصلاً — رسالتُها كانت تحلّ محلّ التنبيه
+       فيومض الأحمر ويختفي قبل أن يُقرأ. الضغطة تُظهر ما ينقص لا غير. */
+    if (!namesReady || !catsReady) {
+      setNudge(true)
+      return
+    }
     setTossing(true)
     setStarter(null)
     let n = 0
@@ -332,7 +345,6 @@ export function Setup({
             <span className="cats-count">
               {cats.length} / {STAGE1_CATEGORIES}
             </span>
-            <span className="cats-hint">اضغط فئةً مختارة لسحبها</span>
           </div>
         </section>
 
@@ -349,9 +361,11 @@ export function Setup({
               <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
             ) : !namesReady ? (
               /* بلا هذا السطر يبقى الزرّ رمادياً بلا سبب ظاهر، فيظنّه الحكم عطلاً. */
-              <div className="toss-result missing">اكتب أسماء الفريقين واللاعبين</div>
+              <div className={'toss-result missing' + (nudge ? ' alert' : '')}>
+                اكتب أسماء الفريقين واللاعبين
+              </div>
             ) : !catsReady ? (
-              <div className="toss-result missing">
+              <div className={'toss-result missing' + (nudge ? ' alert' : '')}>
                 اختر {STAGE1_CATEGORIES} فئات للّوح
               </div>
             ) : starter !== null ? (
@@ -678,6 +692,7 @@ export function Setup({
         .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
         .toss-result b { color:var(--gold); }
         .toss-result.missing { color:var(--text-2); font-weight:700; }
+        .toss-result.missing.alert { color:var(--coral); font-weight:900; }
         .toss-note { color:var(--text-2); font-weight:700; font-size:.72em; }
 
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
@@ -874,7 +889,6 @@ export function Setup({
         }
         .cats-count.team-0 { color:var(--gold); }
         .cats-count.team-1 { color:var(--coral); }
-        .cats-hint { margin-inline-start:auto; color:var(--text-3); font-weight:600; }
       `}</style>
     </div>
   )

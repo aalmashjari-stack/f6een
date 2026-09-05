@@ -701,3 +701,7 @@ html[data-skin='blocks'] body .screen .pick-none {
   border-color: var(--n-ink); color: var(--n-ink);
   border-radius: var(--n-r1); box-shadow: 3px 3px 0 var(--n-ink);
 }
+
+/* تنبيهُ النقص: الرسالة تحت زرّ القرعة تحمرّ حين يُضغط الزرّ وشيءٌ ناقص
+   (٥ سبتمبر ٢٠٢٦) — لونُ التنبيه في الهويّة لا مرجانيُّ الأساس. */
+html[data-skin='blocks'] body .screen .toss-result.missing.alert { color: var(--n-accent); }
