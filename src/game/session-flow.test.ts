@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { reducer } from './reducer'
 import { ALL_QUESTIONS, familyOf, playableCategories, setQuestionOverlay } from './bank'
-import { STAGE1_CATEGORIES, STAGE1_LEVELS, createSession, stage1Owner } from './session'
+import {
+  SCORE_FIX_STEP,
+  STAGE1_CATEGORIES,
+  STAGE1_LEVELS,
+  createSession,
+  stage1Owner,
+} from './session'
 import type { GameState } from './session'
 import type { Level, Question } from './types'
 import { shuffle } from './draw'
@@ -344,5 +350,65 @@ describe('الديربي والحق ما تلحق — من البنك المشح
     } finally {
       setQuestionOverlay([])
     }
+  })
+})
+
+/**
+ * تصحيحُ الحكم — ±5 بجانب نقاط الفريق.
+ *
+ * الحكم يخطئ في «من أجاب؟» فتذهب النقاط للفريق الغلط. وهذا الفعل يمرّ
+ * بالمخفّض لا بالواجهة كي يُحفظ مع الجلسة — ولو عُدّل الرقم في الشاشة وحدها
+ * لعاد الخطأ عند أوّل استئناف.
+ */
+describe('تصحيح الحكم', () => {
+  const fresh = () => createSession(INPUT)
+
+  it('يزيد وينقص للفريق المقصود وحده', () => {
+    let s = fresh()
+    s = step(s, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    expect(s.teams[0].score).toBe(SCORE_FIX_STEP)
+    expect(s.teams[1].score).toBe(0)
+
+    s = step(s, { t: 'ADJUST', team: 0, delta: -SCORE_FIX_STEP })
+    expect(s.teams[0].score).toBe(0)
+  })
+
+  /* ردُّ خطأٍ كامل: عشرون ذهبت للفريق الغلط — أربع ضغطات هنا وأربع هناك. */
+  it('يردّ نقاط سؤالٍ كاملٍ ذهب للفريق الخطأ', () => {
+    let s = fresh()
+    s = step(s, { t: 'ADJUST', team: 1, delta: 20 })
+    for (let i = 0; i < 4; i++) s = step(s, { t: 'ADJUST', team: 1, delta: -SCORE_FIX_STEP })
+    for (let i = 0; i < 4; i++) s = step(s, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    expect([s.teams[0].score, s.teams[1].score]).toEqual([20, 0])
+  })
+
+  /* أعمدةُ الختام تجمع المجموع دائماً: التصحيح يُقيَّد على مرحلة طوره، فلا
+     يظهر مجموعٌ لا تفسّره أعمدته. */
+  it('يُقيَّد على مرحلة الطور الجاري فتبقى أعمدة الختام مطابقة', () => {
+    let s = fresh()
+    expect(s.phase).toBe('stage1-board')
+    s = step(s, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    expect(s.stagePoints.s1[0]).toBe(SCORE_FIX_STEP)
+
+    s = step({ ...s, phase: 'stage2-question' }, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    expect(s.stagePoints.s2[0]).toBe(SCORE_FIX_STEP)
+
+    s = step({ ...s, phase: 'stage3-play' }, { t: 'ADJUST', team: 1, delta: -SCORE_FIX_STEP })
+    expect(s.stagePoints.s3[1]).toBe(-SCORE_FIX_STEP)
+
+    s = step({ ...s, phase: 'tiebreak' }, { t: 'ADJUST', team: 1, delta: SCORE_FIX_STEP })
+    expect(s.stagePoints.tie[1]).toBe(SCORE_FIX_STEP)
+
+    for (const t of [0, 1] as const) {
+      const cols = (['s1', 's2', 's3', 'tie'] as const).reduce((n, k) => n + s.stagePoints[k][t], 0)
+      expect(cols, `مجموع أعمدة الفريق ${t}`).toBe(s.teams[t].score)
+    }
+  })
+
+  /* الفاصلُ ذيلُ الجولة الجماعية لا بابُ الديربي — والتصحيح فيه يتبعها. */
+  it('التصحيح في الفاصل يُقيَّد على الجولة الجماعية', () => {
+    const s = step({ ...fresh(), phase: 'interval' }, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    expect(s.stagePoints.s1[0]).toBe(SCORE_FIX_STEP)
+    expect(s.stagePoints.s2[0]).toBe(0)
   })
 })

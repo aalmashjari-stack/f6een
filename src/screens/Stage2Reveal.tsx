@@ -32,7 +32,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen s2-reveal-screen">
-      <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       {q.image ? (
         <img className="reveal-photo" src={celebSrc(q.image)} alt="" />

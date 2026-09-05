@@ -121,6 +121,14 @@ html[data-skin='blocks'] .scorebar .team .name,
 html[data-skin='blocks'] .scorebar .team.lead .name { color: var(--n-ink); font-weight: 800; }
 html[data-skin='blocks'] .scorebar .team-kicker,
 html[data-skin='blocks'] .scorebar .team.turn .team-kicker { color: rgba(34,32,28,.62); }
+/* زرّا التصحيح يتبعان القرص: أبيضُ بحدّ حبر، لا حدٌّ رماديّ رفيع. */
+html[data-skin='blocks'] .scorebar .pts-adj button {
+  color: var(--n-ink);
+  background: #fff;
+  border: 0;
+  box-shadow: inset 0 0 0 2px var(--n-ink);
+}
+
 /* القرص أبيض بحدّ حبر، والرقم حبرٌ — كما في المعاينة المعتمدة */
 html[data-skin='blocks'] .scorebar .team .pts-disc {
   background: #fff;

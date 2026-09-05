@@ -165,6 +165,16 @@ html[data-skin] .scorebar .team.lead .pts {
   font-weight: 800;
   font-size: calc(var(--pts-d) * .50);
 }
+/* زرّا التصحيح: حبرٌ على أبيض لا أبيضُ على شفّاف.
+   قاعدةُ showtime بُنيت على كبسولةٍ داكنة (`--cream` على شفّافٍ أبيض)، وكبسولةُ
+   نيو صبغةٌ فاتحة — فكان الزرّان يختفيان فيها. والقياس يبقى قياسَ showtime:
+   مربّعٌ لا ينزل عن ثلاثين بكسلاً كي يُضغط بالإبهام. */
+html[data-skin] .scorebar .pts-adj button {
+  color: var(--n-ink-2);
+  background: rgba(255, 255, 255, .74);
+  border: 1px solid rgba(34, 32, 28, .16);
+}
+html[data-skin] .scorebar .pts-adj button:hover { background: #fff; }
 /* النِّسب مقيسة على أرقام Cairo الجدوليّة (نحو ٠٫٦em للخانة): ثلاث خانات
    عند ٠٫٣٨ تشغل ٠٫٦٨ من القطر، وأربع عند ٠٫٣٠ تشغل ٠٫٧٢ — داخل الدائرة
    المحيطة بهامش في الحالتين. والسالب يُعدّ خانةً: «−١٠» ثلاثٌ لا اثنتان. */

@@ -27,7 +27,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
   if (!started) {
     return (
       <div className="screen center-col">
-        <ScoreBar teams={state.teams} />
+        <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
         <div className="grow center-all">
           {/* رقم الفريق على البطاقة — لتلبس لونَه كما تفعل بقيّة الشاشات،
               فالهويّة اللونيّة لا تنقطع في المرحلة الحاسمة. */}
@@ -50,7 +50,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`الحق ما تلحق · ${team.name}`} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label={`الحق ما تلحق · ${team.name}`} />
 
       <Timer remainingMs={left} totalMs={STAGE3_TIMER_MS} coral />
 
