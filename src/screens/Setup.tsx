@@ -367,14 +367,18 @@ export function Setup({
             ) : tossing ? (
               <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
             ) : !namesReady ? (
-              /* بلا هذا السطر يبقى الزرّ رمادياً بلا سبب ظاهر، فيظنّه الحكم عطلاً. */
-              <div className={'toss-result missing' + (nudge ? ' alert' : '')}>
-                اكتب أسماء الفريقين واللاعبين
-              </div>
+              /* لا تظهر إلّا بعد ضغطةٍ على «قرعة البدء» والبيانات ناقصة (طلب
+                 علي ٥ سبتمبر ٢٠٢٦): سطرٌ دائمٌ تحت الزرّ يصير جزءاً من
+                 الأثاث فلا يُقرأ، وظهورُه جواباً على ضغطةٍ يُقرأ. */
+              nudge ? (
+                <div className="toss-result missing alert">اكتب أسماء الفريقين واللاعبين</div>
+              ) : null
             ) : !catsReady ? (
-              <div className={'toss-result missing' + (nudge ? ' alert' : '')}>
-                اختر {STAGE1_CATEGORIES} فئات للّوح
-              </div>
+              nudge ? (
+                <div className="toss-result missing alert">
+                  اختر {STAGE1_CATEGORIES} فئات للّوح
+                </div>
+              ) : null
             ) : starter !== null ? (
               <div className="toss-result">
                 يبدأ: <b>{teamLabel(starter)}</b>
