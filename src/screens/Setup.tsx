@@ -299,6 +299,10 @@ export function Setup({
             مستقلّة: الاختيار قرارُ تجهيزٍ يسبق اللعب مثل الأسماء والقرعة،
             وشاشةٌ ثالثة بينهما تقطع المجلس مرّتين قبل أول سؤال. */}
         <section className="setup-block">
+          {/* سطر التوجيه فوق العنوان (طلب علي ٥ سبتمبر ٢٠٢٦): العنوان يسمّي
+              القسم، وهذا يقول للحكم ما يفعله فيه — بعد أن حُذف التلميح الصغير
+              الذي كان تحت الشبكة. */}
+          <p className="cats-lead">قم باختيار الفئات</p>
           <div className="cats-head">
             <h3 className="cats-title">فئات الجولة الجماعية</h3>
             {/* لا شارةَ دورٍ بعد اليوم: الفئات للّوح لا للفريقين. يبقى إعلانُ
@@ -793,6 +797,10 @@ export function Setup({
         /* ===== فئات الجولة الجماعية ===== */
         .cats-head { display:flex; align-items:center; gap:10px; margin-bottom:clamp(6px,1.2vh,12px); }
         .cats-title { margin:0; font-size:clamp(14px,1.7vw,19px); font-weight:800; color:var(--cream); }
+        .cats-lead {
+          margin:0 0 clamp(4px,1vh,10px);
+          font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--gold);
+        }
         /* شارةُ الدور تلبس لون صاحبه — الفريقان بلونين ثابتين لا بترتيب الظهور */
         .cats-turn {
           margin-inline-start:auto;
