@@ -1183,6 +1183,18 @@ function Questions() {
 
       <div className="a-card a-scroll">
         <table className="a-tbl a-tbl-q">
+          {/* الأعمدة تُقاس هنا لا من محتواها (`table-layout: fixed` في
+              admin.css): السؤالُ يأخذ ما بقي، والباقي بعرضٍ يكفي أطولَ ما
+              فيه. وبهذا يظهر الجدول كلُّه بلا تمريرٍ أفقيّ على شاشة الحاسب. */}
+          <colgroup>
+            <col style={{ width: 38 }} />
+            <col style={{ width: 84 }} />
+            <col />
+            <col style={{ width: 220 }} />
+            <col style={{ width: 140 }} />
+            <col style={{ width: 82 }} />
+            <col style={{ width: 158 }} />
+          </colgroup>
           <thead>
             <tr>
               <th>
@@ -1207,7 +1219,7 @@ function Questions() {
           <tbody>
             {shown.slice(0, limit).map((r) => (
               <tr key={r.q.id}>
-                <td>
+                <td className="mid">
                   {/* خانةٌ في كل صفّ، والمشحونُ **معطَّلٌ لا مخفيّ**: إخفاؤها
                       جعل الصفحة الأولى — وكلُّها بنك — تبدو بلا ميزةٍ أصلاً. */}
                   <input
@@ -1218,19 +1230,19 @@ function Questions() {
                     title={r.deletable ? undefined : 'سؤالٌ في ملفّ التطبيق — انقل البنك إلى القاعدة ليُحذف'}
                   />
                 </td>
-                <td>
+                <td className="mid">
                   <span className={'tag' + (r.source === 'bank' ? '' : ' open')}>
                     {SOURCE_LABEL[r.source]}
                   </span>
                 </td>
-                <td style={{ whiteSpace: 'normal', maxWidth: 460 }}>
+                <td>
                   {r.q.image ? <span className="muted">[صورة] </span> : null}
                   {r.q.question}
                 </td>
-                <td style={{ whiteSpace: 'normal', maxWidth: 220 }}>{r.q.answer}</td>
+                <td>{r.q.answer}</td>
                 <td>{r.q.category}</td>
                 <td>{r.q.level}</td>
-                <td>
+                <td className="mid">
                   <span className="a-acts">
                     <button className="a-btn" onClick={() => setEditing(r)}>
                       تعديل

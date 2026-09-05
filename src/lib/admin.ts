@@ -232,7 +232,13 @@ export interface AdminQuestionEdit {
   updated_at: string
 }
 
-/** ما عُدّل أو أُضيف وحده. البنك المشحون تحمله اللوحة في المتصفّح وتدمجه. */
+/**
+ * صفوفُ الأسئلة في القاعدة.
+ *
+ * **قيمةٌ واحدة لا صفوف.** الدالّة كانت تُرجع صفوفاً، وPostgREST يقصّها
+ * عند ألف — فبعد نقل البنك رأت اللوحة ١٠٠٠ من ٢٢١١ وبدا الزرعُ ناقصاً
+ * (`20260905180000_admin_questions_jsonb.sql`). ولا حدَّ على حجم قيمة jsonb.
+ */
 export async function listQuestionEdits(): Promise<AdminQuestionEdit[]> {
   const { data, error } = await supabase.rpc('admin_questions')
   if (error) throw error
