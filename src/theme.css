@@ -147,6 +147,28 @@ body::after {
   transition: border-color .35s ease, box-shadow .35s ease, transform .35s var(--ease-spring);
 }
 /* النقاط في قرص دائري داخل الكبسولة */
+/* القرصُ وزرّا التصحيح مجموعةٌ واحدة — وإلّا فرّق بينهما `space-between`
+   فطار كلٌّ إلى طرف. */
+.scorebar .pts-group { flex: none; display: flex; align-items: center; gap: 8px; }
+
+/* تصحيحُ الحكم: زرّان مربّعان بجانب القرص.
+   صفٌّ لا عمود. العمودُ يقسم ارتفاعَ القرص نصفين فيعطي هدفاً 23×17 بكسلاً —
+   يُضغط بالفأرة ولا يُضغط بالإبهام، واللعبة تُدار من جوّالٍ يُبثّ إلى
+   التلفزيون. والصفُّ يأخذ عرضاً من الكبسولة (وهي `flex: 1` فتحتمله) ويُبقي
+   الارتفاع كما هو — فقاعدةُ الشاشة الواحدة لا تُمسّ. */
+.scorebar .pts-adj { display: flex; gap: 6px; }
+.scorebar .pts-adj button {
+  font: inherit; line-height: 1; cursor: pointer;
+  width: clamp(30px, 4vh, 38px); height: clamp(30px, 4vh, 38px);
+  display: grid; place-items: center;
+  font-size: clamp(16px, 2.2vh, 21px); font-weight: 900;
+  color: var(--cream); background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .28); border-radius: 10px;
+  transition: background .12s, transform .12s;
+}
+.scorebar .pts-adj button:hover { background: rgba(255, 255, 255, .22); }
+.scorebar .pts-adj button:active { transform: scale(.9); }
+
 .scorebar .team .pts-disc {
   flex: none;
   display: grid;

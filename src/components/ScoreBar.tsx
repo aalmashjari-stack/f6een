@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { Team } from '../game/types'
-import { leader } from '../game/session'
+import type { Team, TeamId } from '../game/types'
+import { SCORE_FIX_STEP, leader } from '../game/session'
 import { useCountUp } from './useCountUp'
 
 /**
@@ -15,7 +15,40 @@ import { useCountUp } from './useCountUp'
 const RECENT_MS = 2500
 const memory = new Map<Team['id'], { score: number; t: number }>()
 
-function TeamCapsule({ team, lead, turn }: { team: Team; lead: boolean; turn?: boolean }) {
+/**
+ * تصحيحُ الحكم — زرّان صغيران بجانب قرص النقاط.
+ *
+ * الحكم يخطئ في «من أجاب؟» فتذهب النقاط للفريق الغلط، ولم يكن لها ردّ إلى
+ * الختام. وهما مكشوفان لا مخبوءان خلف قائمة: الخطأ يُكتشف في ثانية والتصحيح
+ * يجب أن يقع في ثانية — والمجلس ينظر.
+ *
+ * ولا تأكيد قبلهما: الضغطة الخاطئة يردّها الزرُّ المقابل، والرقاقة الطائرة
+ * فوق القرص (+5 أو −5) تقول ما وقع فوراً.
+ */
+function Adjust({ onAdjust }: { onAdjust: (delta: number) => void }) {
+  return (
+    <span className="pts-adj">
+      <button type="button" aria-label="زيادة خمس نقاط" onClick={() => onAdjust(SCORE_FIX_STEP)}>
+        +
+      </button>
+      <button type="button" aria-label="إنقاص خمس نقاط" onClick={() => onAdjust(-SCORE_FIX_STEP)}>
+        −
+      </button>
+    </span>
+  )
+}
+
+function TeamCapsule({
+  team,
+  lead,
+  turn,
+  onAdjust,
+}: {
+  team: Team
+  lead: boolean
+  turn?: boolean
+  onAdjust?: (delta: number) => void
+}) {
   // يُحسب مرة واحدة عند البناء — قبل أن يكتب التأثير أدناه القيمة الجديدة.
   const [from] = useState(() => {
     const m = memory.get(team.id)
@@ -52,28 +85,55 @@ function TeamCapsule({ team, lead, turn }: { team: Team; lead: boolean; turn?: b
         {kicker !== team.name && <span className="team-kicker">{kicker}</span>}
         <span className="name">{team.name}</span>
       </span>
-      <span className="pts-disc">
-        <span className={`pts tabular digits-${Math.min(String(shown).length, 4)}`}>{shown}</span>
-        {delta !== null && delta !== 0 && (
-          <span key={delta} className={'delta tabular' + (delta < 0 ? ' minus' : '')}>
-            {delta > 0 ? `+${delta}` : `${delta}`}
-          </span>
-        )}
+      <span className="pts-group">
+        <span className="pts-disc">
+          <span className={`pts tabular digits-${Math.min(String(shown).length, 4)}`}>{shown}</span>
+          {delta !== null && delta !== 0 && (
+            <span key={delta} className={'delta tabular' + (delta < 0 ? ' minus' : '')}>
+              {delta > 0 ? `+${delta}` : `${delta}`}
+            </span>
+          )}
+        </span>
+        {onAdjust && <Adjust onAdjust={onAdjust} />}
       </span>
     </div>
   )
 }
 
-export function ScoreBar({ teams, label, turnTeam }: { teams: [Team, Team]; label?: string; turnTeam?: 0 | 1 }) {
+/**
+ * `onAdjust` اختياريّ: الشاشة التي لا تمرّره تعرض الشريط كما كان. فشاشةُ
+ * الختام وما لا حكمَ فيه تبقى بلا أزرار.
+ */
+export function ScoreBar({
+  teams,
+  label,
+  turnTeam,
+  onAdjust,
+}: {
+  teams: [Team, Team]
+  label?: string
+  turnTeam?: 0 | 1
+  onAdjust?: (team: TeamId, delta: number) => void
+}) {
   const lead = leader(teams)
   return (
     <div className="scorebar">
-      <TeamCapsule team={teams[0]} lead={lead === 0} turn={turnTeam === 0} />
+      <TeamCapsule
+        team={teams[0]}
+        lead={lead === 0}
+        turn={turnTeam === 0}
+        onAdjust={onAdjust && ((d) => onAdjust(0, d))}
+      />
       <div className="mid">
         <span className="mid-dot" aria-hidden="true" />
         <span>{label ?? 'فطين'}</span>
       </div>
-      <TeamCapsule team={teams[1]} lead={lead === 1} turn={turnTeam === 1} />
+      <TeamCapsule
+        team={teams[1]}
+        lead={lead === 1}
+        turn={turnTeam === 1}
+        onAdjust={onAdjust && ((d) => onAdjust(1, d))}
+      />
     </div>
   )
 }

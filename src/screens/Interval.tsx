@@ -64,7 +64,7 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
 
   return (
     <div className="screen center-col">
-      <ScoreBar teams={state.teams} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
       <div className="grow center-all">
         <div className={'interval-card' + (tie ? ' tie' : '') + (held ? ' held' : '')}>
           <div className="il-stage-no tabular" aria-hidden="true">{stageNo}</div>

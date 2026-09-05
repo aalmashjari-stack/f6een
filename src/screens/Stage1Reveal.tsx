@@ -41,7 +41,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} turnTeam={owner} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
 
       <div className="rv-card">
         {q.image ? (

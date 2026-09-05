@@ -30,6 +30,16 @@ export const STAGE3_POINTS = 10
 export const STAGE3_QUEUE_SIZE = 40
 export const TIEBREAK_POINTS = 10
 
+/**
+ * خطوةُ تصحيح الحكم — يدويّة بـ+ و− بجانب نقاط كل فريق.
+ *
+ * الحكم يخطئ في «من أجاب؟» فتذهب النقاط للفريق الغلط، ولم يكن لها ردّ:
+ * الجلسة تمضي والخطأ ثابت إلى الختام. وخمسٌ لا عشر لأنّ نقاط اللعبة
+ * 10 و20 و30 — فالخمسة تبلغها كلَّها بضغطاتٍ معدودة، والعشرة تعجز عن
+ * تصحيحٍ نصفه.
+ */
+export const SCORE_FIX_STEP = 5
+
 /** مفتاح خليّة في لوح الجولة الجماعية — (فئة، مستوى). */
 export function cellKey(category: string, level: Level): string {
   return `${category}|${level}`
@@ -113,6 +123,20 @@ export interface GameState {
 }
 
 export type StageKey = 's1' | 's2' | 's3' | 'tie'
+
+/**
+ * مرحلةُ الطور — لأجل عمود الختام.
+ *
+ * تصحيحُ الحكم يُقيَّد على المرحلة التي وقع فيها لا على عمودٍ خاصّ به: أعمدة
+ * الختام تبقى تجمع المجموع، ولا يحتاج المخطَّطُ المحفوظ مفتاحاً جديداً تفتقده
+ * الجلساتُ القديمة. والفاصلُ يتبع الجولة الجماعية — هو ذيلُها لا بابُ الديربي.
+ */
+export function stageOfPhase(phase: Phase): StageKey {
+  if (phase.startsWith('stage2')) return 's2'
+  if (phase === 'stage3-play') return 's3'
+  if (phase === 'tiebreak') return 'tie'
+  return 's1'
+}
 
 export interface SetupInput {
   teamNames: [string, string]

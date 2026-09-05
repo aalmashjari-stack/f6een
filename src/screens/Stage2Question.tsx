@@ -16,7 +16,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
 
       {/* اسم الفريق فوق اسم المتبارز — كما في شاشة الكشف تماماً. بدونه يقرأ
           المجلس «لاعب ٢ ضد لاعب ٢» ولا يعرف من يمثّل من: الاسم الافتراضي

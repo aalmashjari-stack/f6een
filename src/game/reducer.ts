@@ -13,6 +13,7 @@ import {
   TIEBREAK_POINTS,
   cellKey,
   createSession,
+  stageOfPhase,
 } from './session'
 
 export type Action =
@@ -35,6 +36,9 @@ export type Action =
   | { t: 'S3_END_TURN' } // انتهت الثلاثون ثانية
   | { t: 'TIEBREAK_SPIN'; category: string }
   | { t: 'TIEBREAK_PICK'; team: TeamId | 'none' }
+  /* تصحيحُ الحكم: ±5 بجانب نقاط الفريق، في أي طور. لا يحرّك الشاشة ولا
+     يمسّ السؤال — يعدّل الرقم وحده. */
+  | { t: 'ADJUST'; team: TeamId; delta: number }
   | { t: 'REPORT_QUESTION'; id: string }
   | { t: 'NEW_GAME' }
 
@@ -340,6 +344,14 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         return { ...s, currentQuestion: null, currentCategory: null, s3Revealed: false, phase: 'tiebreak' }
       }
       return { ...s, phase: 'endgame' }
+    }
+
+    /* تصحيحُ الحكم. يمرّ بالمخفّض كأي فعل فيُحفظ مع الجلسة — ولو عُدّل
+       الرقم في الواجهة لعاد الخطأُ عند أوّل استئناف. ولا حدَّ عند الصفر:
+       نقاط الفريق تنزل تحته أصلاً بخطأ الديربي (`STAGE2_WRONG`). */
+    case 'ADJUST': {
+      if (!state) return state
+      return addScore(state, action.team, action.delta, stageOfPhase(state.phase))
     }
 
     case 'REPORT_QUESTION': {
