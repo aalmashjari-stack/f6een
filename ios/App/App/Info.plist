@@ -37,12 +37,16 @@
             <string>Default Configuration</string>
             <key>UISceneDelegateClassName</key>
             <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-            <!-- لا UISceneStoryboardFile هنا عمداً: وجودُه يجعل UIKit يبني
-                 نافذةً بـ CAPBridgeViewController من Main.storyboard، ثم
-                 يبني SceneDelegate نافذةً ثانيةً فوقها. النافذتان معاً لا
-                 تظهران على التلفون — الأعلى تحجب الأخرى — لكن انعكاسَ
-                 الشاشة إلى تلفزيون ذكي يلتقط السفلى، فتتجمّد عند صورة
-                 الإقلاع ولا تتبع اللمس. نافذةٌ واحدة يبنيها SceneDelegate. -->
+            <!-- **لا تحذف UISceneStoryboardFile.** حُذف في ٤ سبتمبر ٢٠٢٦ ظنّاً
+                 أنّه يبني نافذةً ثانيةً تلتقطها مرآةُ التلفزيون، وأنّ حذفه
+                 آمنٌ لأنّ SceneDelegate يبني نافذته بنفسه. **لم يكن آمناً**:
+                 التطبيق فتح على شاشة بيضاء. الـCAPBridgeViewController الذي
+                 يبنيه SceneDelegate برمجيّاً لا يحمّل الويب كالذي يبنيه
+                 Main.storyboard، فبلا المفتاح لا شيء يُعرض.
+                 أُعيد في ٥ سبتمبر ٢٠٢٦. ومشكلة تجمّد الانعكاس ما زالت قائمة
+                 وتحتاج مدخلاً آخر. -->
+            <key>UISceneStoryboardFile</key>
+            <string>Main</string>
         </dict>
       </array>
     </dict>
