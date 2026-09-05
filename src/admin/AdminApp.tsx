@@ -869,6 +869,9 @@ function Questions() {
   const [editing, setEditing] = useState<Row | 'new' | null>(null)
   const [importing, setImporting] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
+  /* المحدَّد بمعرّفاته لا بمواضعه: الصفوف تتبدّل مع التصفية والترقيم. */
+  const [picked, setPicked] = useState<Set<string>>(new Set())
+  const [wiping, setWiping] = useState(0)
 
   const rows: Row[] | null = useMemo(
     () => (bank && edits ? merge(bank, edits) : null),
@@ -904,6 +907,68 @@ function Questions() {
     a.download = `أسئلة-فطين${cat ? '-' + cat : ''}${level ? '-' + level : ''}.csv`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  /* المشحونُ بلا تعديل لا يُحذف — لا صفَّ له في الطبقة أصلاً. فالتحديد
+     يقتصر على المضاف والمعدَّل. */
+  const selectable = useMemo(() => (shown ?? []).filter((r) => r.source !== 'bank'), [shown])
+  const allPicked = selectable.length > 0 && selectable.every((r) => picked.has(r.q.id))
+
+  /* تبدّلت التصفية: يسقط التحديد. وإلّا حذف الحكمُ صفوفاً لا يراها. */
+  useEffect(() => setPicked(new Set()), [q, cat, level, source])
+
+  function toggleOne(id: string) {
+    setPicked((p) => {
+      const n = new Set(p)
+      if (n.has(id)) n.delete(id)
+      else n.add(id)
+      return n
+    })
+  }
+
+  function toggleAll() {
+    setPicked(allPicked ? new Set() : new Set(selectable.map((r) => r.q.id)))
+  }
+
+  /**
+   * حذفُ المحدَّد صفّاً صفّاً — لا دالّةَ جملةٍ في القاعدة.
+   *
+   * والرسالة تفصل بين فعلين مختلفين تحت زرٍّ واحد: المضاف **يُمحى**،
+   * والمعدَّل **يعود أصلاً في البنك ولا يختفي من اللعبة**. خلطُهما يجعل الحكم
+   * يظنّ أنّه محا ثلاثين سؤالاً وقد محا عشرة وأعاد عشرين.
+   */
+  async function removePicked() {
+    const rows = selectable.filter((r) => picked.has(r.q.id))
+    if (rows.length === 0) return
+    const added = rows.filter((r) => r.source === 'added').length
+    const edited = rows.length - added
+    const what = [
+      added ? `محوُ ${added} سؤالاً مضافاً نهائياً` : '',
+      edited ? `إعادةُ ${edited} سؤالاً من البنك إلى أصله` : '',
+    ].filter(Boolean).join(' و')
+    if (!window.confirm(`${what}. متأكّد؟`)) return
+
+    setMsg(null)
+    setWiping(rows.length)
+    let ok = 0
+    const failed: string[] = []
+    for (const r of rows) {
+      try {
+        await deleteQuestionEdit(r.q.id)
+        ok++
+      } catch {
+        failed.push(r.q.id)
+      }
+      setWiping((n) => n - 1)
+    }
+    setWiping(0)
+    setPicked(new Set())
+    setMsg(
+      failed.length === 0
+        ? `تمّ على ${ok} سؤالاً`
+        : `تمّ على ${ok}، وتعذّر على ${failed.length}: ${failed.slice(0, 5).join('، ')}`,
+    )
+    reload()
   }
 
   async function remove(row: Row) {
@@ -972,6 +1037,13 @@ function Questions() {
         <button className="a-btn" onClick={exportCsv} disabled={shown.length === 0}>
           تصدير CSV
         </button>
+        {/* لا يظهر إلّا حين يُحدَّد شيء: زرُّ حذفٍ جماعيّ دائمُ الظهور إغراءٌ
+            بضغطةٍ لا رجعة فيها. */}
+        {picked.size > 0 && (
+          <button className="a-btn danger" onClick={removePicked} disabled={wiping > 0}>
+            {wiping > 0 ? `يُحذف… ${wiping}` : `حذف المحدَّد (${picked.size})`}
+          </button>
+        )}
       </div>
 
       {msg && <p className="a-note">{msg}</p>}
@@ -980,6 +1052,17 @@ function Questions() {
         <table className="a-tbl">
           <thead>
             <tr>
+              <th>
+                {/* تُحدّد كلَّ ما بعد التصفية لا الصفحةَ المعروضة وحدها —
+                    «امسح كل شيء» يعني كلَّ ما صفّيتَه. والعنوان يقول العدد. */}
+                <input
+                  type="checkbox"
+                  checked={allPicked}
+                  onChange={toggleAll}
+                  disabled={selectable.length === 0}
+                  title={`تحديد الكلّ (${selectable.length})`}
+                />
+              </th>
               <th>المصدر</th>
               <th>السؤال</th>
               <th>الإجابة</th>
@@ -991,6 +1074,16 @@ function Questions() {
           <tbody>
             {shown.slice(0, limit).map((r) => (
               <tr key={r.q.id}>
+                <td>
+                  {/* المشحونُ بلا تعديل بلا خانة: لا شيء فيه يُحذف. */}
+                  {r.source !== 'bank' && (
+                    <input
+                      type="checkbox"
+                      checked={picked.has(r.q.id)}
+                      onChange={() => toggleOne(r.q.id)}
+                    />
+                  )}
+                </td>
                 <td>
                   <span className={'tag' + (r.source === 'bank' ? '' : ' open')}>
                     {SOURCE_LABEL[r.source]}
