@@ -176,3 +176,15 @@ a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
 .q-box .a-in, .q-box select.a-in, .q-box textarea.a-in { width: 100%; }
 /* زرٌّ في ثوب label — يفتح منتقي الملفّات بالضغط على النصّ نفسه. */
 label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
+
+/* خاناتُ التحديد في جدول الأسئلة: أكبر من الافتراضيّ وبلون اللوحة.
+   الحجمُ الافتراضيّ (13px) يضيع بين صفوفٍ نصُّها 13px أيضاً، وقد ضاع فعلاً. */
+.a-tbl input[type='checkbox'] {
+  width: 18px; height: 18px;
+  accent-color: var(--n-brand);
+  cursor: pointer;
+  vertical-align: middle;
+}
+.a-tbl input[type='checkbox']:disabled { cursor: default; opacity: .35; }
+/* عمودُ التحديد أضيق ما يمكن — لا يزاحم السؤال. */
+.a-tbl th:first-child, .a-tbl td:first-child { width: 1%; padding-inline-end: 4px; }
