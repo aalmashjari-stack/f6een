@@ -1,15 +1,28 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react'
 import type { GameState, SetupInput, StoredState } from './game/session'
-import { createSession, decodeState, encodeState, isStoredState, persistUsedIds } from './game/session'
+import {
+  createSession,
+  decodeState,
+  encodeState,
+  isStoredState,
+  persistUsedIds,
+  readScoped,
+  removeScoped,
+  setStorageOwner,
+  writeScoped,
+} from './game/session'
 import { reducer } from './game/reducer'
 import { useSession } from './lib/auth'
 import {
-  closeSession,
+  closeSessionDurably,
   fetchBalance,
   fetchOpenSession,
+  flushPendingClose,
+  pendingClose,
   saveSessionState,
   startSession,
 } from './lib/games'
+import type { ServerSession } from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
 import { applyCachedBlocked, reportQuestion, syncBlocked } from './lib/questionFlags'
 import {
@@ -43,7 +56,9 @@ applyCachedBlocked()
 applyCachedOverlay()
 applyCachedCategories()
 
-/* حفظ محلي واستئناف خلال ٢٤ ساعة — نافذة الاستكمال (القسم ٩). */
+/* حفظ محلي واستئناف خلال ٢٤ ساعة — نافذة الاستكمال (القسم ٩).
+   والمفتاح باسم الحساب (`readScoped`): لعبةُ حسابٍ لا تظهر لحسابٍ آخر على
+   الجهاز نفسه. */
 const SAVE_KEY = 'f6een.session'
 const RESUME_WINDOW_MS = 24 * 60 * 60 * 1000
 
@@ -62,20 +77,20 @@ interface Saved {
 
 function loadSaved(): { state: GameState; sessionId: string | null } | null {
   try {
-    const raw = localStorage.getItem(SAVE_KEY)
+    const raw = readScoped(SAVE_KEY)
     if (!raw) return null
     const saved = JSON.parse(raw) as Saved
     if (saved.version !== SAVE_VERSION) {
-      localStorage.removeItem(SAVE_KEY)
+      removeScoped(SAVE_KEY)
       return null
     }
     if (Date.now() - saved.savedAt > RESUME_WINDOW_MS) {
-      localStorage.removeItem(SAVE_KEY)
+      removeScoped(SAVE_KEY)
       return null
     }
     /* رقم النسخة يُرفع باليد وقد يُنسى — والبنية لا تُنسى. */
     if (!isStoredState(saved.state)) {
-      localStorage.removeItem(SAVE_KEY)
+      removeScoped(SAVE_KEY)
       return null
     }
     if (saved.state.phase === 'endgame') return null
@@ -86,21 +101,17 @@ function loadSaved(): { state: GameState; sessionId: string | null } | null {
 }
 
 function saveSession(state: GameState | null, sessionId: string | null) {
-  try {
-    if (!state) {
-      localStorage.removeItem(SAVE_KEY)
-      return
-    }
-    const payload: Saved = {
-      savedAt: Date.now(),
-      version: SAVE_VERSION,
-      sessionId,
-      state: encodeState(state),
-    }
-    localStorage.setItem(SAVE_KEY, JSON.stringify(payload))
-  } catch {
-    /* تجاهل */
+  if (!state) {
+    removeScoped(SAVE_KEY)
+    return
   }
+  const payload: Saved = {
+    savedAt: Date.now(),
+    version: SAVE_VERSION,
+    sessionId,
+    state: encodeState(state),
+  }
+  writeScoped(SAVE_KEY, JSON.stringify(payload))
 }
 
 /** تأجيل حفظ الحالة على الخادم — الحفظ المحلّي فوريّ، وهذا يلحق به. */
@@ -117,25 +128,32 @@ const SERVER_SAVE_DELAY_MS = 2500
 const REQUIRE_LOGIN = true
 
 /**
- * لقطةٌ من الخادم لا تصلح للاستئناف: بشكلٍ قديم لا يقرؤه هذا الإصدار، أو
- * ختامٌ لم يُغلق (انقطعت الشبكة عند «لعبة جديدة»). في الحالين تبقى «مفتوحة»
- * عند الخادم فيردّها `start_session` في كلّ بدء ولا يبدأ اللاعب لعبةً جديدة
- * أبداً — فتُغلق، والختامُ «مكتملاً» والقديمُ «منسحباً» لأنّه لا سبيل إلى
- * إكماله. والرصيد لا يُمسّ في الحالين: الخصم عند الإنشاء (SPEC ٣).
+ * جلسةٌ من الخادم لا تصلح للاستئناف: إغلاقٌ معلَّق لم يبلغه (انقطعت الشبكة
+ * عند الختام أو الانسحاب — فلقطته عنده سابقةٌ للنهاية)، أو لقطةٌ بشكلٍ
+ * قديم لا يقرؤه هذا الإصدار، أو ختامٌ لم يُغلق. في الأحوال كلّها تبقى
+ * «مفتوحة» عند الخادم فيردّها `start_session` في كلّ بدء ولا يبدأ اللاعب
+ * لعبةً جديدة أبداً — فتُغلق بحالها ولقطتها إن كانت معلَّقة، والختامُ
+ * «مكتملاً» والقديمُ «منسحباً» لأنّه لا سبيل إلى إكماله. والرصيد لا يُمسّ
+ * في الأحوال كلّها: الخصم عند الإنشاء (SPEC ٣).
  */
-function unresumable(state: unknown): 'finished' | 'abandoned' | null {
-  if (!isStoredState(state)) return 'abandoned'
-  return state.phase === 'endgame' ? 'finished' : null
+function unresumable(row: ServerSession): { status: 'finished' | 'abandoned'; state?: StoredState } | null {
+  const pending = pendingClose()
+  if (pending && pending.id === row.id) return { status: pending.status, state: pending.state }
+  if (!isStoredState(row.state)) return { status: 'abandoned' }
+  return row.state.phase === 'endgame' ? { status: 'finished' } : null
 }
 
 export default function App() {
-  /* قراءةٌ واحدة من المخزن لكلا الحقلين — كانت تُقرأ وتُفكّ مرّتين. */
-  const [boot] = useState(loadSaved)
-  const [state, dispatch] = useReducer(reducer, boot?.state ?? null)
+  /* الحالة تُقرأ من المخزن بعد أن يُعرف الحساب لا قبله (انظر أثر الإقلاع
+     أدناه): المفتاح باسم الحساب، ولا حساب قبل أن تُقرأ الجلسة. */
+  const [state, dispatch] = useReducer(reducer, null)
   /* صفّ الجلسة على الخادم. يُقرأ من الحفظ المحلّي كي ينجو من إغلاق المتصفّح:
      بدونه تبقى الجلسة مفتوحة على الخادم بعد أن تنتهي على الجهاز، فيردّها
      `start_session` بدل أن يبدأ لعبةً جديدة. */
-  const [sessionId, setSessionId] = useState<string | null>(boot?.sessionId ?? null)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  /* هل قُرئ المخزن لهذا الحساب؟ قبلها لا تُرسم شاشة: وإلّا ومضت شاشة الإعداد
+     لحظةً قبل أن تُستأنف اللعبة المحفوظة. */
+  const [booted, setBooted] = useState(false)
   const [balance, setBalance] = useState<number | null>(null)
   /* شاشة الشعار للتطبيق المثبَّت وحده — انظر `isNativeApp`. في المتصفّح
      تبدأ «منتهية»، فلا يُصيَّر الشعار أصلاً ولا يعمل مؤقّته. */
@@ -145,6 +163,7 @@ export default function App() {
      واحدة في كل لحظة، وتعيش هنا لأنّ «حسابي» يحتاج الجلسة والرصيد. */
   const [navPage, setNavPage] = useState<'buy' | 'account' | 'rules' | 'contact' | null>(null)
   const session = useSession()
+  const uid = session?.user.id ?? null
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
   useEffect(() => {
@@ -159,7 +178,6 @@ export default function App() {
      الرفعَ الفاشل يُعاد تلقائياً في التغيير التالي لأنّه لا يدخل هنا إلا بعد
      نجاحه. */
   const uploaded = useRef<Set<string>>(new Set())
-  const uid = session?.user.id ?? null
 
   /* مزامنة أولى عند توفّر الحساب — قبل أي لعبة، فالإعداد يقرأ من التخزين
      المحلّي بعد أن يكون قد اغتنى بما عند الخادم. */
@@ -213,6 +231,33 @@ export default function App() {
   const stateRef = useRef(state)
   stateRef.current = state
 
+  /**
+   * الإقلاع باسم الحساب — قبل كلّ أثرٍ آخر (أثرُ تخطيطٍ فيسبق الآثار كلّها).
+   *
+   * يضبط صاحب المخزن ثمّ يقرأ لعبته المحفوظة. وحسابٌ يحلّ محلّ حساب ولعبةٌ
+   * في الذاكرة: تُطرح قبل أن يراها الثاني — الحفظ المحلّي كان قد كُتب باسم
+   * الأوّل، فلا يخسر شيئاً.
+   */
+  const ownerRef = useRef<string | null | undefined>(undefined)
+  const resolved = session !== undefined
+  useLayoutEffect(() => {
+    if (!resolved) return
+    const prev = ownerRef.current
+    if (prev !== undefined && prev === uid) return
+    ownerRef.current = uid
+    setStorageOwner(uid)
+    if (prev !== undefined && stateRef.current) {
+      setSessionId(null)
+      dispatch({ t: 'NEW_GAME' })
+    }
+    const saved = loadSaved()
+    if (saved) {
+      setSessionId(saved.sessionId)
+      dispatch({ t: 'RESUME', state: saved.state })
+    }
+    setBooted(true)
+  }, [uid, resolved])
+
   const refreshBalance = useCallback(() => {
     fetchBalance()
       .then(setBalance)
@@ -234,13 +279,16 @@ export default function App() {
   useEffect(() => {
     if (!uid || stateRef.current) return
     let alive = true
-    fetchOpenSession()
+    /* الإغلاق المعلَّق أوّلاً: لو بقي، ردّ الخادمُ جلسةً انتهت على أنّها مفتوحة. */
+    flushPendingClose()
+      .catch(() => {})
+      .then(() => fetchOpenSession())
       .then((row) => {
         if (!alive || !row || stateRef.current) return
-        const close = unresumable(row.state)
+        const close = unresumable(row)
         if (close) {
           /* لا تُستأنف — تُغلق فيُفتح الباب لجلسةٍ جديدة من الإعداد. */
-          closeSession(row.id, close).catch(() => {})
+          closeSessionDurably(row.id, close.status, close.state).catch(() => {})
           return
         }
         setSessionId(row.id)
@@ -274,8 +322,8 @@ export default function App() {
     const id = sessionId
     setSessionId(null)
     closedId.current = id
-    closeSession(id, 'finished', encodeState(state)).catch(() => {
-      /* تبقى مفتوحة، فيستأنفها أوّل بدءٍ قادم بلا خصم — لا خسارة على اللاعب. */
+    closeSessionDurably(id, 'finished', encodeState(state)).catch(() => {
+      /* بقيت معلَّقة محلّياً: تُعاد عند الإقلاع القادم، ولا تُستأنف قبلها. */
     })
   }, [state, sessionId])
 
@@ -333,13 +381,13 @@ export default function App() {
         return
       }
       let row = await startSession(encodeState(fresh))
-      const close = unresumable(row.state)
+      const close = unresumable(row)
       if (close) {
         /* جلسةٌ مفتوحة لا تصلح للاستئناف حالت دون الإنشاء: تُغلق ويُعاد
            الطلب مرّةً واحدة — فيُنشئ الخادم الجديدة ويخصم لها. */
-        await closeSession(row.id, close)
+        await closeSessionDurably(row.id, close.status, close.state)
         row = await startSession(encodeState(fresh))
-        if (unresumable(row.state)) throw new Error('bad_session')
+        if (unresumable(row)) throw new Error('bad_session')
       }
       setSessionId(row.id)
       dispatch({ t: 'RESUME', state: decodeState(row.state) })
@@ -354,7 +402,7 @@ export default function App() {
   const quit = useCallback(() => {
     if (sessionId) {
       const snapshot = stateRef.current
-      closeSession(sessionId, 'abandoned', snapshot ? encodeState(snapshot) : undefined).catch(
+      closeSessionDurably(sessionId, 'abandoned', snapshot ? encodeState(snapshot) : undefined).catch(
         () => {},
       )
       setSessionId(null)
@@ -371,7 +419,7 @@ export default function App() {
         الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً.
      الأول اختياريّ بالمنصّة، والثاني لازمٌ في الاثنين. فحين لا شعار، يُنتظر
      بسطحٍ صامت بلون الهويّة: لا وميض ولا علامة تحميل تُقلق قبل أن يلزم. */
-  if (!splashDone || session === undefined) {
+  if (!splashDone || session === undefined || !booted) {
     return isNativeApp ? (
       <Splash onDone={leaveSplash} />
     ) : (

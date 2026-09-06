@@ -20,7 +20,7 @@ function makeChain(rows: unknown) {
   const eqs: [string, unknown][] = []
   const result = { data: rows, error: null }
   const chain: Record<string, unknown> = {}
-  for (const k of ['select', 'order', 'limit', 'insert', 'upsert', 'update']) {
+  for (const k of ['select', 'order', 'limit', 'range', 'insert', 'upsert', 'update']) {
     chain[k] = vi.fn(() => chain)
   }
   chain.eq = vi.fn((col: string, val: unknown) => {

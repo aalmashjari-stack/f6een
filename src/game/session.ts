@@ -152,7 +152,12 @@ export function largestTeamSize(players: [string[], string[]]): number {
   return Math.max(players[0].length, players[1].length)
 }
 
-export function createSession(input: SetupInput): GameState {
+/**
+ * `used` = ذاكرة الحساب بترتيب الاستعمال (الأقدم أوّلاً). تُقرأ من التخزين
+ * المحلّي في اللعب، وتُمرَّر صراحةً في الاختبار الذي يقود جلساتٍ متتابعة
+ * بذاكرةٍ تتراكم — وهو الاختبار الوحيد الذي يبلغ نفاد البنك.
+ */
+export function createSession(input: SetupInput, used: Set<string> = loadUsedIds()): GameState {
   const teams: [Team, Team] = [0, 1].map((id) => ({
     id: id as TeamId,
     name: input.teamNames[id],
@@ -160,7 +165,6 @@ export function createSession(input: SetupInput): GameState {
     score: 0,
   })) as [Team, Team]
 
-  const used = loadUsedIds()
   const s2Rounds = Math.max(4, largestTeamSize(input.players))
 
   /* اللوح بترتيب الاختيار كما وقع. ولا مالك للفئة: الفريقان يختاران الستّ
@@ -306,12 +310,72 @@ export function isStoredState(x: unknown): x is StoredState {
   )
 }
 
+/* ======================= التخزين المحلّي مخصوصٌ بالحساب ======================= */
+/**
+ * كلّ ما يُكتب في `localStorage` يُكتب باسم الحساب — الذاكرةُ عبر الجلسات،
+ * والجلسةُ المحفوظة، والإغلاقُ المعلَّق.
+ *
+ * كان المفتاح واحداً للجهاز كلّه، فحسابٌ ثانٍ يدخل على الجهاز نفسه يرث
+ * ذاكرةَ الأوّل وتُرفع باسمه إلى الخادم، ويرى لعبته المحفوظة (تدقيق ٦
+ * سبتمبر ٢٠٢٦). والمبرّر القديم — رفعُ ما لُعب قبل التسجيل — سقط حين صار
+ * الدخول إجباريّاً؛ وبقيت منه خطوةٌ واحدة: المفتاحُ القديم بلا اسمٍ يرثه
+ * **أوّلُ** حسابٍ يدخل بعد هذا الإصدار ثمّ يُمحى، فلا تضيع ذاكرةُ جهازٍ
+ * لعب قبله.
+ */
+let owner = 'anon'
+
+/** يُضبط حين تُعرف الجلسة، قبل أيّ قراءة — `null` لمن يلعب بلا حساب. */
+export function setStorageOwner(id: string | null) {
+  owner = id ?? 'anon'
+}
+
+export function scopedKey(base: string): string {
+  return `${base}:${owner}`
+}
+
+export function readScoped(base: string): string | null {
+  try {
+    const key = scopedKey(base)
+    const own = localStorage.getItem(key)
+    if (own !== null || owner === 'anon') return own
+    /* الوراثة مرّةً واحدة ولحسابٍ حقيقيّ وحده. */
+    const legacy = localStorage.getItem(base)
+    if (legacy === null) return null
+    localStorage.setItem(key, legacy)
+    localStorage.removeItem(base)
+    return legacy
+  } catch {
+    return null
+  }
+}
+
+export function writeScoped(base: string, value: string) {
+  try {
+    localStorage.setItem(scopedKey(base), value)
+  } catch {
+    /* تجاهل */
+  }
+}
+
+export function removeScoped(base: string) {
+  try {
+    localStorage.removeItem(scopedKey(base))
+  } catch {
+    /* تجاهل */
+  }
+}
+
 /* ======================= الذاكرة عبر الجلسات — القسم ٨ ======================= */
 const USED_KEY = 'f6een.usedQuestionIds'
 
+/**
+ * بترتيب الاستعمال: أوّل المجموعة أقدمُ ما سُمع. الترتيب هو ما تعتمد عليه
+ * قاعدة «الأقدم استخداماً» في السحب عند النفاد (SPEC ٨)، فلا يُعاد بناؤها
+ * مرتَّبةً ولا تُفرز.
+ */
 export function loadUsedIds(): Set<string> {
   try {
-    const raw = localStorage.getItem(USED_KEY)
+    const raw = readScoped(USED_KEY)
     return new Set(raw ? (JSON.parse(raw) as string[]) : [])
   } catch {
     return new Set()
@@ -319,11 +383,7 @@ export function loadUsedIds(): Set<string> {
 }
 
 export function persistUsedIds(used: Set<string>) {
-  try {
-    localStorage.setItem(USED_KEY, JSON.stringify([...used]))
-  } catch {
-    /* تجاهل */
-  }
+  writeScoped(USED_KEY, JSON.stringify([...used]))
 }
 
 /* ============================ مساعدات مشتقّة ============================ */

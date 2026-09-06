@@ -13,24 +13,54 @@ export function shuffle<T>(arr: T[]): T[] {
 const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
 
 /**
- * يختار من مجموعةٍ بسلّم التنازل عند ضيق المخزون: القالب أوّلاً، ثمّ الحجز،
- * ثمّ عدم التكرار أخيراً. لأنّ سؤالاً من قالب مطروق يُحسّ متشابهاً، أمّا كسر
- * الحجز فيعيد السؤال نفسه حرفياً.
+ * قيود السحب — صنفان لا صنف واحد (٧ سبتمبر ٢٠٢٦):
  *
- * ويعود بـ`null` إن كانت المجموعة فارغة أصلاً — والمنادي هو من يقرّر البديل.
+ * - **صلبة لا تُكسر:** ما عُرض في هذه الجلسة، وما حُجز لطابور الحق ما تلحق،
+ *   وقوالب الجلسة وموضوعاتها. هذه هي الضمانتان اللتان يحرسهما الاختبار —
+ *   «لا سؤال مرّتين ولا قالبان من عائلة» — وكانتا تسقطان عند ضيق المخزون:
+ *   سلّمُ التنازل القديم كان ينزل من القالب إلى الحجز إلى التكرار، فيعيد
+ *   عند الجلسة الحادية والثلاثين سؤالاً سُمع في الليلة نفسها.
+ * - **ليّنة تُعاد:** ذاكرة الحساب عبر الجلسات. حين تفرغ الخليّة منها يُعاد
+ *   **الأقدم استخداماً** (SPEC ٨) لا أيُّ سؤال — والترتيب هو ترتيب
+ *   المجموعة نفسها: أوّل ما فيها أقدمُ ما سُمع، لأنّ الخادم يرتّب بـ`used_at`
+ *   والحرقُ يضيف في الذيل.
  */
-function pickFrom(
-  pool: Question[],
-  used: Set<string>,
-  reserved: Set<string>,
-  spentFamilies: Set<string>,
-): Question | null {
-  if (pool.length === 0) return null
-  const unused = pool.filter((q) => !used.has(q.id))
-  const free = unused.filter((q) => !reserved.has(q.id))
-  const best = free.filter((q) => familiesOf(q).every((fam) => !spentFamilies.has(fam)))
-  const from = best.length > 0 ? best : free.length > 0 ? free : unused.length > 0 ? unused : pool
-  return from[Math.floor(Math.random() * from.length)]
+export interface DrawGuards {
+  /** ذاكرة الحساب بترتيب الاستعمال، وفيها أسئلة هذه الجلسة أيضاً. */
+  used: Set<string>
+  /** ما لا يُسحب أبداً في هذه الجلسة: المعروض فيها والمحجوز لطابورها. */
+  excluded: Set<string>
+  /** قوالب وموضوعات ظهرت في الجلسة أو تنتظر في الطابور. */
+  spentFamilies: Set<string>
+}
+
+const EMPTY: Set<string> = new Set()
+
+const eligible = (pool: Question[], g: DrawGuards): Question[] =>
+  pool.filter(
+    (q) => !g.excluded.has(q.id) && familiesOf(q).every((fam) => !g.spentFamilies.has(fam)),
+  )
+
+/**
+ * يختار من مجموعة: جديدٌ عشوائيّ إن وُجد، وإلّا أقدمُ ما استُعمل منها.
+ * ويعود بـ`null` إن لم يبقَ فيها ما يجوز عرضه — والمنادي هو من يقرّر البديل.
+ */
+function pickFrom(pool: Question[], g: DrawGuards): Question | null {
+  const ok = eligible(pool, g)
+  if (ok.length === 0) return null
+  const fresh = ok.filter((q) => !g.used.has(q.id))
+  if (fresh.length > 0) return fresh[Math.floor(Math.random() * fresh.length)]
+  return oldestUsed(ok, g.used)
+}
+
+/** أقدم سؤالٍ في `pool` بحسب ترتيب الذاكرة — أوّل معرّفٍ فيها يقع في المجموعة. */
+function oldestUsed(pool: Question[], used: Set<string>): Question | null {
+  const byId = new Map(pool.map((q) => [q.id, q]))
+  for (const id of used) {
+    const q = byId.get(id)
+    if (q) return q
+  }
+  return null
 }
 
 /**
@@ -41,34 +71,36 @@ function pickFrom(
  * يحجز آخر سؤالٍ في خليّةٍ ضيّقة (فئات الصور فيها سؤالٌ واحد في المستوى)،
  * فكان `drawOne` يعود بلا سؤال ويسقط المحرّك على `q.id` أمام المجلس.
  * سؤالٌ من فئةٍ أخرى بالمستوى نفسه خيرٌ من شاشةٍ بيضاء.
+ *
+ * والقيود الصلبة تبقى صلبةً هنا أيضاً: سؤالٌ من فئةٍ أخرى أهون من سؤالٍ
+ * سُمع قبل دقائق.
  */
-function fallback(
-  level: Level,
-  used: Set<string>,
-  reserved: Set<string>,
-  spentFamilies: Set<string>,
-): Question {
-  const q =
-    pickFrom(poolByLevels([level]), used, reserved, spentFamilies) ??
-    pickFrom(poolByLevels(LEVELS), used, reserved, spentFamilies)
+function fallback(level: Level, g: DrawGuards): Question {
+  const q = pickFrom(poolByLevels([level]), g) ?? pickFrom(poolByLevels(LEVELS), g)
   if (!q) throw new Error('بنك الأسئلة فارغ')
   return q
 }
 
+const guards = (used: Set<string>, excluded: Set<string>, spentFamilies: Set<string>): DrawGuards => ({
+  used,
+  excluded,
+  spentFamilies,
+})
+
 /**
  * خوارزمية السحب — القسم ٨.
  * pool = أسئلة (التصنيف، المستوى) ناقص المستخدمة. إن نفد، نرجع لأقدم مستخدم.
- * في النسخة الحالية "الأقدم استخداماً" مبسّط: أي سؤال من الخلية (لأننا لا نحفظ ترتيب الاستخدام بعد).
  *
  * لا يمسّ `used`: الحرق مسؤولية المحرك، يعيده في حالة جديدة. لو أضاف السحبُ
  * المعرّفَ هنا لاحترق سؤالٌ لم يُعرض كلما استُدعي المحرك مرّتين على الحالة
  * نفسها — وهو ما يفعله StrictMode في التطوير للكشف عن الآثار الجانبية.
  *
- * `reserved` = معرّفات محجوزة لطابور الحق ما تلحق. الطابور يُسحب عند إنشاء الجلسة
- * ولا يُضاف إلى used (يحترق عند العرض فقط)، فبدون استثنائه هنا قد تُسحب منه ورقة
- * وتُعرض في الجولة الجماعية ثم تعود وتظهر ثانيةً في الحق ما تلحق — نفس السؤال مرتين.
+ * `excluded` = ما لا يُسحب في هذه الجلسة مهما ضاق المخزون: ما عُرض فيها،
+ * وما حُجز لطابور الحق ما تلحق. الطابور يُسحب عند إنشاء الجلسة ولا يُضاف إلى
+ * used (يحترق عند العرض فقط)، فبدون استثنائه هنا تُسحب منه ورقة وتُعرض في
+ * الجولة الجماعية ثم تعود وتظهر ثانيةً في الحق ما تلحق — نفس السؤال مرتين.
  *
- * `spentFamilies` = قوالب ظهرت في هذه الجلسة (أو محجوزة في الطابور) — انظر familyOf.
+ * `spentFamilies` = قوالب ظهرت في هذه الجلسة (أو محجوزة في الطابور) — انظر familiesOf.
  *
  * ولا يعود بلا سؤال أبداً: خليّةٌ فارغة تسقط إلى المستوى ثمّ إلى البنك (انظر `fallback`).
  */
@@ -76,13 +108,11 @@ export function drawOne(
   category: string,
   level: Level,
   used: Set<string>,
-  reserved: Set<string> = new Set(),
-  spentFamilies: Set<string> = new Set(),
+  excluded: Set<string> = EMPTY,
+  spentFamilies: Set<string> = EMPTY,
 ): Question {
-  return (
-    pickFrom(poolByCatLevel(category, level), used, reserved, spentFamilies) ??
-    fallback(level, used, reserved, spentFamilies)
-  )
+  const g = guards(used, excluded, spentFamilies)
+  return pickFrom(poolByCatLevel(category, level), g) ?? fallback(level, g)
 }
 
 /**
@@ -96,18 +126,16 @@ export function drawOne(
  * مُراجَعة، والمضافُ يدخل اللعبة من باب لوح الجولة الجماعية وحده.
  * أمّا التعديلُ فيبقى مركَّباً — سؤالُ بنكٍ صُحّح يبقى سؤالَ بنك.
  *
- * وسلّم التنازل نفسه الذي في `drawOne`، وآخر الملاذ نفسه إن حُجز المستوى كلّه.
+ * والقيود نفسها التي في `drawOne`، وآخر الملاذ نفسه إن حُجز المستوى كلّه.
  */
 export function drawByLevel(
   level: Level,
   used: Set<string>,
-  reserved: Set<string> = new Set(),
-  spentFamilies: Set<string> = new Set(),
+  excluded: Set<string> = EMPTY,
+  spentFamilies: Set<string> = EMPTY,
 ): Question {
-  return (
-    pickFrom(poolShippedByLevels([level]), used, reserved, spentFamilies) ??
-    fallback(level, used, reserved, spentFamilies)
-  )
+  const g = guards(used, excluded, spentFamilies)
+  return pickFrom(poolShippedByLevels([level]), g) ?? fallback(level, g)
 }
 
 /**
@@ -128,30 +156,43 @@ export function drawByLevel(
  * `avoidFamilies` = قوالب لا تدخل الطابور (ما طُرق في الجلسة) — يلزم حين
  * يُمدَّد الطابور في منتصف اللعب (انظر `ensureS3Queue` في المحرّك)، فطابورُ
  * الإنشاء يُسحب قبل أيّ سؤال ولا قوالب مطروقة بعد.
+ *
+ * `excluded` = ما لا يدخل الطابور أبداً: ما عُرض في الجلسة وما في الطابور
+ * أصلاً. أمّا `used` فذاكرةٌ ليّنة: حين لا يبقى جديد يُكمَل من **أقدم** ما
+ * سُمع — كان الطابور يُرجع صفراً لحسابٍ استنفد المخزون (نحو الجلسة الثالثة
+ * والثلاثين)، فيقف الفريقان على «نفد الطابور» والساعةُ تعدّ على لا شيء.
+ * والقوالب صلبةٌ إلى النهاية: طابورٌ أقصر خيرٌ من قالبين متلاحقين.
  */
 const STAGE3_MAX_Q_LEN = 80
 
 export function drawStage3Queue(
   count: number,
   used: Set<string>,
-  avoidFamilies: Set<string> = new Set(),
+  avoidFamilies: Set<string> = EMPTY,
+  excluded: Set<string> = EMPTY,
 ): Question[] {
   const pool = poolShippedByLevels(['سهل', 'متوسط']).filter(
-    (q) => !used.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
+    (q) => !excluded.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
   )
+  const fresh = pool.filter((q) => !used.has(q.id))
   const queue: Question[] = []
   const seenFamilies = new Set<string>(avoidFamilies)
-  const spare: Question[] = []
-  for (const q of shuffle(pool)) {
-    if (queue.length >= count) break
+  const take = (q: Question): boolean => {
+    if (queue.length >= count) return false
     const fams = familiesOf(q)
-    if (fams.some((fam) => seenFamilies.has(fam))) {
-      spare.push(q)
-      continue
-    }
+    if (fams.some((fam) => seenFamilies.has(fam))) return true
     for (const fam of fams) seenFamilies.add(fam)
     queue.push(q)
+    return true
   }
-  // إن لم يكتمل العدد (مخزون شحيح) نكمل من المُستبعَد — الاحتياطي أولى من طابور ناقص.
-  return queue.concat(spare.slice(0, count - queue.length))
+  for (const q of shuffle(fresh)) if (!take(q)) break
+  if (queue.length < count) {
+    /* الجديد لم يكفِ: يُكمَل بالأقدم فالأقدم من الذاكرة، بترتيبها لا عشوائياً. */
+    const byId = new Map(pool.filter((q) => used.has(q.id)).map((q) => [q.id, q]))
+    for (const id of used) {
+      const q = byId.get(id)
+      if (q && !take(q)) break
+    }
+  }
+  return queue
 }
