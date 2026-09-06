@@ -30,7 +30,7 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
 
   return (
     <div className="screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label="فاصل التعادل" />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
       <RoundBar title="سؤال حاسم" chips={[state.currentCategory && displayName(state.currentCategory), 'صعب']} />
 
       <div className="q-box grow center-all">
