@@ -595,7 +595,6 @@ html[data-skin='blocks'] .screen.end .es-row { border-top: 2px solid var(--n-lin
 html[data-skin='blocks'] .screen.end .es-row:first-child { border-top: 0; }
 html[data-skin='blocks'] .screen.end .es-row > .es-num.up:first-child { color: var(--n-a); }
 html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: var(--n-b); }
-html[data-skin='blocks'] .screen.end .best { background: var(--n-surface); box-shadow: 0 0 0 2px var(--n-ink); color: var(--n-ink); }
 
 /* ─── ١٤. الشاشات القصيرة ────────────────────────────────────────────── */
 /* الميل والظلال البعيدة زينةُ المتّسع. على الجوال الأفقي (تحت 480px)
