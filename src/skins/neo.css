@@ -1180,14 +1180,6 @@ html[data-skin] .screen.end .final-score {
   font-weight: 800;
   letter-spacing: -.02em;
 }
-html[data-skin] .screen.end .best {
-  border: 0;
-  border-radius: 999px;
-  background: rgba(23,23,31,.05);
-  color: var(--n-ink-2);
-  box-shadow: none;
-}
-html[data-skin] .screen.end .best b { color: var(--n-ink); font-weight: 800; }
 html[data-skin] .screen.end .es-title {
   padding: 0;
   border: 0;

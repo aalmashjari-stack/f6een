@@ -9,14 +9,6 @@ import { useCountUp } from '../components/useCountUp'
 import { play } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 
-/** تمييز العدد العربي: ١ مفرد، ٢ مثنّى، ٣–١٠ جمع، ١١ فأكثر مفرد منصوب. */
-function correctAnswers(n: number) {
-  if (n === 1) return 'إجابة صحيحة واحدة'
-  if (n === 2) return 'إجابتان صحيحتان'
-  if (n <= 10) return `${n} إجابات صحيحة`
-  return `${n} إجابة صحيحة`
-}
-
 /** الرقم السالب يحمل إشارته، والموجب يحملها أيضاً ليُقرأ الجدول كسطر مكاسب لا كمجموع. */
 function signed(n: number) {
   return n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0'
@@ -42,7 +34,6 @@ export function Endgame({
   const [reportOpen, setReportOpen] = useState(false)
   const win = leader(state.teams)
   const stats = playerStats(state).sort((a, b) => b.correct - a.correct || a.wrong - b.wrong)
-  const best = stats[0]?.correct > 0 ? stats[0] : null
 
   const sp = state.stagePoints
   const rows = [
@@ -95,12 +86,6 @@ export function Endgame({
           <span className="tabular">{s0}</span> — <span className="tabular">{s1}</span>
         </div>
       </div>
-
-      {best && (
-        <div className="best">
-          أفضل لاعب في الديربي: <b>{best.player.name}</b> · {correctAnswers(best.correct)}
-        </div>
-      )}
 
       {/* الكتل الثلاث في صفّ على الشاشة العريضة بدل عمود واحد يمتدّ ثلاثة
           أضعاف ارتفاع الشاشة. الشاشة عريضة والجداول ضيّقة، فالعرض هو
@@ -303,12 +288,10 @@ export function Endgame({
           line-height:1.2;
           animation:rise .5s ease-out .42s both;
         }
-        .best { color:var(--cream); font-size:clamp(13px,min(2vw,2.3vh),22px); animation:rise .5s ease-out .46s both; }
         @keyframes rise {
           from { opacity:0; transform:translateY(12px); }
           to   { opacity:1; transform:none; }
         }
-        .best b { color:var(--gold); }
 
         /* لا تمرير داخلي: الصفحة كلها تُمرَّر حتى لا يُقتطع لاعب من القائمة (حتى ١٢ لاعباً). */
         .es-block { width:100%; max-width:680px; min-width:0; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }

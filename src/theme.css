@@ -820,12 +820,6 @@ body .screen.end .winner {
   border-block:1px solid rgba(255,189,89,.32);
   background:linear-gradient(90deg, transparent, rgba(255,189,89,.06), transparent);
 }
-body .screen.end .best {
-  padding:8px 18px;
-  border-radius:10px;
-  background:rgba(255,189,89,.08);
-  border:1px solid rgba(255,189,89,.18);
-}
 body .screen.end .es-row,
 body .screen.end .report-note {
   border-radius:12px;
