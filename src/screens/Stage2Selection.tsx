@@ -76,7 +76,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         setSpin((s) => s + 1)
         setSettled(true)
         timers.current.push(
-          window.setTimeout(() => dispatch({ t: 'S2_SELECT', sel: targetRef.current }), 1500),
+          window.setTimeout(() => dispatch({ t: 'S2_SELECT', sel: targetRef.current, at: Date.now() }), 1500),
         )
         return
       }

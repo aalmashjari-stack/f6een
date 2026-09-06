@@ -13,8 +13,21 @@ const AUDIBLE_SECS = 5
  * يفتح باب اختلافها. وهو أقوى مواضع الصوت مبرراً — الفريق يتشاور ووجوهه
  * إلى بعضها لا إلى الشاشة، فلا أحد يراقب الرقم وهو ينزل.
  */
-export function useCountdown(durationMs: number, running: boolean, onDone?: () => void) {
-  const [remaining, setRemaining] = useState(durationMs)
+/**
+ * `endsAt` = موعدُ الانتهاء المحفوظ مع الجلسة (ميلي ثانية منذ 1970). معه
+ * يبدأ العدّ ممّا بقي إلى الموعد لا من المدّة كاملة — فإعادةُ التحميل لا
+ * تعيد الثلاثين ثانية، والعائدُ بعد الموعد يجد الصفر فيُنادى `onDone`.
+ */
+const startingMs = (durationMs: number, endsAt?: number | null) =>
+  endsAt === undefined || endsAt === null ? durationMs : Math.max(0, Math.min(durationMs, endsAt - Date.now()))
+
+export function useCountdown(
+  durationMs: number,
+  running: boolean,
+  onDone?: () => void,
+  endsAt?: number | null,
+) {
+  const [remaining, setRemaining] = useState(() => startingMs(durationMs, endsAt))
   const endRef = useRef<number>(0)
   const firedRef = useRef(false)
   /** آخر ثانية صحيحة نُطقت — حتى تُسمع النبضة مرة واحدة لا في كل إطار. */
@@ -24,10 +37,10 @@ export function useCountdown(durationMs: number, running: boolean, onDone?: () =
 
   // إعادة الضبط عند تغيّر المدّة (سؤال جديد / دور جديد)
   useEffect(() => {
-    setRemaining(durationMs)
+    setRemaining(startingMs(durationMs, endsAt))
     firedRef.current = false
     lastSecRef.current = -1
-  }, [durationMs])
+  }, [durationMs, endsAt])
 
   useEffect(() => {
     if (!running) return
@@ -58,7 +71,7 @@ export function useCountdown(durationMs: number, running: boolean, onDone?: () =
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running, durationMs])
+  }, [running, durationMs, endsAt])
 
   return remaining
 }

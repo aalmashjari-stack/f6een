@@ -114,6 +114,17 @@ export interface GameState {
   /* فاصل */
   intervalNext: Phase
 
+  /**
+   * موعدُ انتهاء المؤقّت الجاري (ميلي ثانية منذ 1970)، أو `null` بلا مؤقّت.
+   *
+   * المؤقّت كان يعيش في الشاشة وحدها فيبدأ من أوّله مع كلّ تركيب: إعادةُ
+   * تحميلٍ في الحق ما تلحق كانت تعطي ثلاثين ثانيةً جديدة مع إبقاء النقاط
+   * (تدقيق ٦ سبتمبر ٢٠٢٦). و«الساعة لا تتوقّف أبداً» (SPEC ٦) تعني موعداً
+   * لا مدّة: من عاد بعد فوات الموعد وجد الدور منتهياً. الوقت يأتي من الفعل
+   * (`at`) لا من المخفّض، فيبقى نقيّاً وقابلاً للاختبار.
+   */
+  timerEndsAt: number | null
+
   /* إحصاء */
   correctByPlayer: Record<string, number>
   wrongByPlayer: Record<string, number>
@@ -133,7 +144,16 @@ export type StageKey = 's1' | 's2' | 's3' | 'tie'
  * الختام تبقى تجمع المجموع، ولا يحتاج المخطَّطُ المحفوظ مفتاحاً جديداً تفتقده
  * الجلساتُ القديمة. والفاصلُ يتبع الجولة الجماعية — هو ذيلُها لا بابُ الديربي.
  */
-export function stageOfPhase(phase: Phase): StageKey {
+export function stageOfPhase(s: Pick<GameState, 'phase' | 'intervalNext'>): StageKey {
+  const { phase } = s
+  if (phase === 'interval') {
+    /* الفاصلُ ذيلُ ما سبقه: قبل الديربي ذيلُ اللوح، وقبل الحق ما تلحق ذيلُ
+       الديربي، وقبل الحسم ذيلُ الحق ما تلحق. كان يُنسب كلُّه إلى اللوح،
+       فتصحيحٌ بعد الديربي يظهر في عمود الجولة الجماعية. */
+    if (s.intervalNext === 'stage3-play') return 's2'
+    if (s.intervalNext === 'tiebreak') return 's3'
+    return 's1'
+  }
   if (phase.startsWith('stage2')) return 's2'
   if (phase === 'stage3-play') return 's3'
   if (phase === 'tiebreak') return 'tie'
@@ -204,6 +224,7 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
     s3Revealed: false,
     s3Done: [],
     intervalNext: 'stage2-selection',
+    timerEndsAt: null,
     correctByPlayer,
     wrongByPlayer,
     stagePoints: { s1: [0, 0], s2: [0, 0], s3: [0, 0], tie: [0, 0] },
@@ -233,7 +254,8 @@ export function encodeState(s: GameState): StoredState {
 }
 
 export function decodeState(s: StoredState): GameState {
-  return { ...s, usedQuestionIds: new Set(s.usedQuestionIds) }
+  /* لقطةٌ من إصدارٍ سبق المؤقّت المحفوظ تُستأنف بلا موعد — كما كانت. */
+  return { ...s, usedQuestionIds: new Set(s.usedQuestionIds), timerEndsAt: s.timerEndsAt ?? null }
 }
 
 const PHASES = new Set<string>([
@@ -268,6 +290,7 @@ export function isStoredState(x: unknown): x is StoredState {
   const num = (k: string) => typeof s[k] === 'number' && Number.isFinite(s[k] as number)
   const obj = (k: string) => !!s[k] && typeof s[k] === 'object'
   const teamId = (v: unknown) => v === 0 || v === 1
+  const pair = (v: unknown) => Array.isArray(v) && v.length === 2 && v.every((n) => typeof n === 'number')
   if (typeof s.phase !== 'string' || !PHASES.has(s.phase)) return false
   if (!arr('teams') || (s.teams as unknown[]).length !== 2) return false
   const teamsOk = (s.teams as unknown[]).every((t) => {
@@ -277,12 +300,38 @@ export function isStoredState(x: unknown): x is StoredState {
       teamId(team.id) &&
       typeof team.name === 'string' &&
       Array.isArray(team.players) &&
+      team.players.every(
+        (p) => !!p && typeof p === 'object' && typeof (p as Player).id === 'string' && typeof (p as Player).name === 'string',
+      ) &&
       typeof team.score === 'number'
     )
   })
   if (!teamsOk) return false
   const stagePoints = s.stagePoints as Record<string, unknown> | undefined
   const s3Counts = s.s3Counts as Record<string, unknown> | undefined
+  const question = (v: unknown) =>
+    !!v &&
+    typeof v === 'object' &&
+    typeof (v as Question).id === 'string' &&
+    typeof (v as Question).question === 'string' &&
+    typeof (v as Question).answer === 'string'
+  /* ما تحتاجه شاشة الطور بعينه — فحصٌ بنيويّ عامّ كان يقبل لقطة «سؤال»
+     بلا سؤال، فتسقط الشاشة على `null` عند كلّ إقلاع بلا مخرج. */
+  const phaseOk = (() => {
+    switch (s.phase) {
+      case 'stage1-question':
+      case 'stage1-reveal':
+        return question(s.currentQuestion) && obj('s1Cell')
+      case 'stage2-question':
+      case 'stage2-reveal':
+        return question(s.currentQuestion) && pair(s.s2Sel)
+      case 'tiebreak':
+        return s.currentQuestion === null || question(s.currentQuestion)
+      default:
+        return true
+    }
+  })()
+  if (!phaseOk) return false
   return (
     teamId(s.startingTeam) &&
     arr('usedQuestionIds') &&
@@ -303,10 +352,12 @@ export function isStoredState(x: unknown): x is StoredState {
     obj('correctByPlayer') &&
     obj('wrongByPlayer') &&
     obj('stagePoints') &&
-    ['s1', 's2', 's3', 'tie'].every((k) => Array.isArray(stagePoints?.[k])) &&
+    ['s1', 's2', 's3', 'tie'].every((k) => pair(stagePoints?.[k])) &&
     obj('s3Counts') &&
-    ['correct', 'wrong'].every((k) => Array.isArray(s3Counts?.[k])) &&
-    arr('reportedQuestionIds')
+    ['correct', 'wrong'].every((k) => pair(s3Counts?.[k])) &&
+    arr('reportedQuestionIds') &&
+    (s.timerEndsAt === undefined || s.timerEndsAt === null || num('timerEndsAt')) &&
+    (s.s3Queue as unknown[]).every(question)
   )
 }
 

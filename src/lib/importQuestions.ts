@@ -248,7 +248,10 @@ export function buildPlan(
 
   const cats = new Set(ctx.categories)
   const byId = new Map(ctx.existing.map((q) => [q.id, q]))
-  const byText = new Map(ctx.existing.map((q) => [norm(q.question), q.id]))
+  /* أسئلة الصور خارج مقارنة النصّ: «من صاحب الصورة؟» واحدٌ في مئةٍ منها،
+     والفرقُ في الصورة لا في النصّ. كان تصديرُها ثمّ رفعُها يردّ كلَّها إلّا
+     الأوّل (تدقيق ٦ سبتمبر ٢٠٢٦). */
+  const byText = new Map(ctx.existing.filter((q) => !q.image).map((q) => [norm(q.question), q.id]))
   const seenText = new Set<string>()
   const seenId = new Set<string>()
 
@@ -292,19 +295,22 @@ export function buildPlan(
     }
 
     const key = norm(question)
-    if (seenText.has(key)) {
+    /* صفّان بمعرّفين مختلفين ونصٍّ واحد سؤالان حقّاً حين يكونان سؤالَي صورة؛
+       أمّا الجديد بلا معرّف فنصُّه هويّتُه. */
+    const photo = !!(id && byId.get(id)?.image)
+    if (!photo && seenText.has(key)) {
       push('السؤال مكرّر داخل الملفّ')
       continue
     }
     /* التكرار يُقاس بالنصّ المطبَّع: «ما هي عاصمةُ مصر؟» و«ما هي عاصمة مصر»
        سؤالٌ واحد على المسامع. ويُستثنى تعديلُ السؤال نفسه بمعرّفه. */
     const twin = byText.get(key)
-    if (twin && twin !== id) {
+    if (!photo && twin && twin !== id) {
       push(`موجود في البنك (${twin})`)
       continue
     }
 
-    seenText.add(key)
+    if (!photo) seenText.add(key)
     if (id) seenId.add(id)
     rows.push({
       id,

@@ -10,7 +10,7 @@ import { QuestionView } from '../components/QuestionView'
 export function Stage2Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const q = state.currentQuestion!
   const sel = state.s2Sel!
-  const left = useCountdown(STAGE2_TIMER_MS, true, () => dispatch({ t: 'S2_TO_REVEAL' }))
+  const left = useCountdown(STAGE2_TIMER_MS, true, () => dispatch({ t: 'S2_TO_REVEAL' }), state.timerEndsAt)
   const nameOf = (team: TeamId) => state.teams[team].players[sel[team]]?.name ?? ''
 
   return (

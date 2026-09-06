@@ -331,22 +331,26 @@ export async function deleteCategory(name: string): Promise<void> {
 export async function importQuestions(
   rows: ImportRow[],
   onProgress?: (done: number, total: number) => void,
-): Promise<{ added: number; updated: number }> {
+): Promise<{ added: number; updated: number; skipped: number }> {
   const CHUNK = 300
   let added = 0
   let updated = 0
+  /* ما تخطّاه الخادم لأنّ نصّه موجود أصلاً — رزمةٌ نجحت ثمّ أُعيد الملفّ
+     كلّه بعد انقطاع، فلا تُضاف أسئلتها ثانيةً. */
+  let skipped = 0
 
   for (let i = 0; i < rows.length; i += CHUNK) {
     const slice = rows.slice(i, i + CHUNK)
     const { data, error } = await supabase.rpc('admin_import_questions', { p_rows: slice })
     if (error) throw new Error(translate(error.message))
-    const res = data as { added: number; updated: number }
+    const res = data as { added: number; updated: number; skipped?: number }
     added += res.added
     updated += res.updated
+    skipped += res.skipped ?? 0
     onProgress?.(Math.min(i + CHUNK, rows.length), rows.length)
   }
 
-  return { added, updated }
+  return { added, updated, skipped }
 }
 
 /**

@@ -24,7 +24,7 @@ import {
 } from './lib/games'
 import type { ServerSession } from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
-import { applyCachedBlocked, reportQuestion, syncBlocked } from './lib/questionFlags'
+import { applyCachedBlocked, flushPendingReports, reportQuestion, syncBlocked } from './lib/questionFlags'
 import {
   applyCachedCategories,
   applyCachedOverlay,
@@ -34,6 +34,7 @@ import {
 import { AccountMenu } from './components/AccountMenu'
 import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
+import { CrashScreen } from './components/CrashScreen'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
@@ -279,8 +280,11 @@ export default function App() {
   useEffect(() => {
     if (!uid || stateRef.current) return
     let alive = true
-    /* الإغلاق المعلَّق أوّلاً: لو بقي، ردّ الخادمُ جلسةً انتهت على أنّها مفتوحة. */
+    /* الإغلاق المعلَّق أوّلاً: لو بقي، ردّ الخادمُ جلسةً انتهت على أنّها مفتوحة.
+       والبلاغات المعلَّقة بعده — الخادم يقبلها عن جلسةٍ لقطتُها كاملة. */
     flushPendingClose()
+      .catch(() => {})
+      .then(() => flushPendingReports())
       .catch(() => {})
       .then(() => fetchOpenSession())
       .then((row) => {
@@ -331,8 +335,8 @@ export default function App() {
    * البلاغ يُرفع إلى القاعدة فيُحجز السؤال عن الجميع حتى يراجعه المدير.
    *
    * المرجع يمنع الإرسال مرّتين: الحالة تُرسَم مرّات، والقائمة تُقرأ كاملة في
-   * كل مرّة. وفشل الشبكة يُبتلع — البلاغ محفوظ في حالة الجلسة فيصل مع
-   * لقطتها، والحجز المحلّي وقع أصلاً.
+   * كل مرّة. وفشل الشبكة يُبتلع — البلاغ في صندوقٍ صادر يُعاد عند الإقلاع
+   * (`flushPendingReports`)، والحجز المحلّي وقع في لحظة الضغطة.
    */
   const sent = useRef(new Set<string>())
   useEffect(() => {
@@ -488,7 +492,8 @@ export default function App() {
 
   return (
     <>
-      {screen}
+      {/* شاشةُ اللعب تحت شبكة أمان: خطأٌ في الرسم يُعرض بزرّين بدل جذرٍ فارغ. */}
+      <CrashScreen onNewGame={quit}>{screen}</CrashScreen>
       {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
       {state.phase !== 'endgame' && <QuitGame onQuit={quit} charged={sessionId !== null} />}
     </>

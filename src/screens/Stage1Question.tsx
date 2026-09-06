@@ -20,7 +20,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
 
   // ينتهي الوقت فينتظر التطبيق بلا مؤقّت (الخطوة ٤ في القسم ٤): المتحدّث يجيب
   // شفهياً، والحكم يكشف حين يفرغ.
-  const consultLeft = useCountdown(STAGE1_CONSULT_MS, true)
+  const consultLeft = useCountdown(STAGE1_CONSULT_MS, true, undefined, state.timerEndsAt)
 
   return (
     <div className="screen">

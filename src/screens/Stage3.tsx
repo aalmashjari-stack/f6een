@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { GameState } from '../game/session'
 import { STAGE3_POINTS, STAGE3_TIMER_MS } from '../game/session'
 import type { Action } from '../game/reducer'
@@ -19,10 +18,17 @@ export function Stage3({ state, dispatch }: { state: GameState; dispatch: (a: Ac
 }
 
 function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
-  const [started, setStarted] = useState(false)
+  /* البدء حالةٌ في الجلسة لا في الشاشة: الموعد محفوظ، فإعادة التحميل تكمل
+     العدّ ولا تعيده. */
+  const started = state.timerEndsAt !== null
   const team = state.teams[state.s3Team]
   const q = state.s3Queue[state.s3Pos]
-  const left = useCountdown(STAGE3_TIMER_MS, started, () => dispatch({ t: 'S3_END_TURN' }))
+  const left = useCountdown(
+    STAGE3_TIMER_MS,
+    started,
+    () => dispatch({ t: 'S3_END_TURN', team: state.s3Team }),
+    state.timerEndsAt,
+  )
 
   if (!started) {
     return (
@@ -40,7 +46,7 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
             </div>
           </div>
         </div>
-        <button className="action coral" onClick={() => setStarted(true)}>
+        <button className="action coral" onClick={() => dispatch({ t: 'S3_START', at: Date.now() })}>
           ابدأ الآن
         </button>
         <Stage3Styles />
