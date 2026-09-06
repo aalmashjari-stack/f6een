@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Team, TeamId } from '../game/types'
 import { SCORE_FIX_STEP, leader } from '../game/session'
 import { useCountUp } from './useCountUp'
+import { BrandLogo } from './BrandLogo'
 
 /**
  * شريط النتيجة — حاضر في كل شاشة تقريباً.
@@ -106,12 +107,10 @@ function TeamCapsule({
  */
 export function ScoreBar({
   teams,
-  label,
   turnTeam,
   onAdjust,
 }: {
   teams: [Team, Team]
-  label?: string
   turnTeam?: 0 | 1
   onAdjust?: (team: TeamId, delta: number) => void
 }) {
@@ -124,9 +123,12 @@ export function ScoreBar({
         turn={turnTeam === 0}
         onAdjust={onAdjust && ((d) => onAdjust(0, d))}
       />
-      <div className="mid">
-        <span className="mid-dot" aria-hidden="true" />
-        <span>{label ?? 'فطين'}</span>
+      {/* قرص الوسط شعارٌ في كل شاشة (قرار علي ٦ سبتمبر ٢٠٢٦). كان يحمل وسماً
+          نصّياً في كتلةٍ سوداء — «جولة 2 / 4»، «فاصل التعادل» — فحلّ الشعارُ
+          محلَّها كلِّها: الناس تألفه بالتكرار، ولا يُبنى ذلك بظهورٍ واحد في
+          الافتتاح. ولا كتلةَ خلفه: الاسمُ مرسومٌ بحدّه وظلّه. */}
+      <div className="mid mid-brand">
+        <BrandLogo className="mid-logo" />
       </div>
       <TeamCapsule
         team={teams[1]}

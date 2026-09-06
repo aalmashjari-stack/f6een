@@ -222,6 +222,18 @@ html[data-skin] .scorebar .mid {
   font-size: clamp(10px, 1.2vw, 13px);
   font-weight: 700;
 }
+/* وحين يحمل القرصُ الشعارَ فلا قرصَ: خلفيّةٌ شفّافة بلا كتلة ولا ميل
+   (قرار علي ٦ سبتمبر ٢٠٢٦). الشعارُ مرسومٌ بحدّ حبرٍ وظلٍّ مرجانيّ —
+   فالكتلةُ السوداء خلفه إطارٌ على إطار. والوسمُ النصّي يبقى في كتلته:
+   «سؤال 3 / 18» نصٌّ يحتاج ما يحمله. */
+html[data-skin] .scorebar .mid.mid-brand {
+  padding-block: 0;
+  padding-inline: clamp(8px, 1.2vw, 18px);
+  border: 0;
+  background: none;
+  box-shadow: none;
+  transform: none;
+}
 html[data-skin] .mid-dot {
   width: 6px;
   height: 6px;
@@ -353,7 +365,14 @@ html[data-skin] .q-box.s1q:not(.s1q-photo) {
   display: grid;
   place-items: center;
 }
-html[data-skin] .timer-stage.grow { flex: 0 0 auto; }
+/* ‏٦ سبتمبر ٢٠٢٦: عاد المؤقّتُ نامياً. حين سقط من الشاشة سطرُ الجولة
+   وبطاقةُ صاحب الدور، بقي نحو مئتَي بكسلٍ بلا صاحب — وكلُّها تكوّمت أسفل
+   الشاشة لأنّ الكلَّ هنا `flex:none`: فحُشر المحتوى في نصفها الأعلى ونصفُها
+   الأسفل ورقٌ أبيض. والعلّةُ القديمة لا تعود بهذا: يومَها كان المؤقّت وحده
+   النامي وصندوقُ السؤال على مقاس محتواه، فيقيسه useFitText ضيّقاً. أمّا
+   الآن فالصندوقُ ينمو أيضاً (القاعدة فوق) وسقفُه يحدّه، فما فاض عن سقفه
+   يذهب إلى المؤقّت — يتوسّط فيه بدل أن يتكوّم تحت الزرّ. */
+html[data-skin] .timer-stage.grow { flex: 1 1 auto; }
 html[data-skin] .s3-q {
   flex: 1 1 auto;
   min-height: 0;
@@ -1144,15 +1163,20 @@ html[data-skin] .screen.end .winner-stamp {
   transform: none;
 }
 html[data-skin] .screen.end .w-eyebrow { color: var(--n-ink-3); letter-spacing: .06em; }
+/* اسم الفائز بلون الهويّة لا بالحبر، وأكبر من الرقم تحته (قرار علي ٦ سبتمبر
+   ٢٠٢٦): كانا حبراً واحداً بمقاسين متقاربين، فيُقرأ الرقمُ أوّلاً وهو ليس
+   البشارة. والاسمُ يُقرأ لمحةً فيحتمل الكبر، والرقم يُقرأ ويُناقش فيكفيه دونه. */
 html[data-skin] .screen.end .w-title {
-  color: var(--n-ink);
+  color: var(--n-brand);
+  font-size: clamp(32px, min(6.4vw, 8vh), 88px);
   font-weight: 800;
   letter-spacing: -.025em;
 }
-/* نتيجة الليلة هي ما يسأل عنه المجلس — كانت ١٦px تحت اسمٍ ضخم */
+/* نتيجة الليلة هي ما يسأل عنه المجلس — كانت ١٦px تحت اسمٍ ضخم، ثمّ صارت
+   تزاحمه. بينهما الآن مرتبةٌ واضحة. */
 html[data-skin] .screen.end .final-score {
   color: var(--n-ink);
-  font-size: clamp(30px, min(5.4vw, 9vh), 64px);
+  font-size: clamp(26px, min(4.4vw, 7vh), 52px);
   font-weight: 800;
   letter-spacing: -.02em;
 }
@@ -1281,8 +1305,9 @@ html[data-skin] .screen.end .foot-link { text-decoration: underline; text-underl
   }
   html[data-skin] .screen.end .winner-stamp { font-size: 10px; padding: 2px 9px; }
   html[data-skin] .screen.end .w-eyebrow { font-size: clamp(10px, 2.4vh, 14px); }
-  html[data-skin] .screen.end .w-title { font-size: clamp(18px, 5.4vh, 30px); }
-  html[data-skin] .screen.end .final-score { font-size: clamp(22px, 6.6vh, 40px); }
+  /* المرتبة نفسها على الشاشة القصيرة: الاسم فوق الرقم لا تحته. */
+  html[data-skin] .screen.end .w-title { font-size: clamp(22px, 6.6vh, 40px); }
+  html[data-skin] .screen.end .final-score { font-size: clamp(18px, 4.8vh, 28px); }
   html[data-skin] .screen.end .es-block { gap: clamp(4px, .8vh, 8px); }
   html[data-skin] .screen.end .es-row { padding-block: clamp(2px, .5vh, 5px); }
   html[data-skin] .screen.end .es-num { font-size: clamp(12px, 3.2vh, 20px); }

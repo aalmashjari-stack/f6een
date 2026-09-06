@@ -1,8 +1,7 @@
 import type { GameState } from '../game/session'
-import { STAGE1_LEVELS, STAGE1_LEVEL_POINTS, STAGE1_QUESTIONS, cellKey, stage1Owner } from '../game/session'
+import { STAGE1_LEVELS, STAGE1_LEVEL_POINTS, cellKey, stage1Owner } from '../game/session'
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
-import { RoundBar } from '../components/RoundBar'
 import { displayName } from '../game/bank'
 import { categoryArt } from '../components/categoryArt'
 import { play } from '../audio/sfx'
@@ -32,11 +31,17 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
 
   return (
     <div className="screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
-
-      <RoundBar
-        title="الجولة الجماعية"
-        chips={[`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`, `الدور: ${ownerTeam.name}`]}
+      {/* شريطُ الجولة سقط كلّه (٦ سبتمبر ٢٠٢٦): عنوانُه «الجولة الجماعية» يقوله
+          اللوحُ نفسه — ستُّ فئاتٍ بثلاثة مستويات لا تظهر في مرحلةٍ أخرى؛ ورقاقةُ
+          «الدور: فلان» مكرّرةٌ مرّتين حولها (كِكرُ «صاحب الدور» فوق الاسم في
+          شريط النتيجة، وسطرُ «يختار فلانٌ الخليّة» تحت اللوح)؛ وعدُّ الأسئلة
+          يقولُه اللوحُ بخلاياه الباهتة. والسطرُ المحرَّر يذهب إلى الشبكة:
+          قاعدة اللقطة الواحدة تحذف ما يُقرأ مرّةً ولا تصغّره.
+          ولا وسمَ في قرص الوسط، فيحمل الشعار (قرار علي ٦ سبتمبر ٢٠٢٦). */}
+      <ScoreBar
+        onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+        teams={state.teams}
+        turnTeam={owner}
       />
 
       <div className="board-wrap grow">

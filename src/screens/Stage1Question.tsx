@@ -1,12 +1,10 @@
 import type { GameState } from '../game/session'
-import { STAGE1_CONSULT_MS, STAGE1_LEVEL_POINTS, STAGE1_QUESTIONS, stage1Owner } from '../game/session'
+import { STAGE1_CONSULT_MS, stage1Owner } from '../game/session'
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
-import { RoundBar } from '../components/RoundBar'
-import { displayName } from '../game/bank'
 
 /**
  * سؤال الجولة الجماعية.
@@ -18,9 +16,7 @@ import { displayName } from '../game/bank'
  */
 export function Stage1Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
-  const ownerTeam = state.teams[owner]
   const q = state.currentQuestion!
-  const points = STAGE1_LEVEL_POINTS[q.level]
 
   // ينتهي الوقت فينتظر التطبيق بلا مؤقّت (الخطوة ٤ في القسم ٤): المتحدّث يجيب
   // شفهياً، والحكم يكشف حين يفرغ.
@@ -28,20 +24,15 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label={`سؤال ${state.s1Index + 1} / ${STAGE1_QUESTIONS}`} turnTeam={owner} />
-
-      <RoundBar
-        title="الجولة الجماعية"
-        chips={[state.currentCategory && displayName(state.currentCategory), q.level, `${points} نقاط`]}
-      />
-
-      {/* صاحب الدور وحده — الخليّة له، ولا مهلة للفريق الآخر بعده */}
-      <div className="s1-teams">
-        <div className="tpill owner">
-          <span className="role">صاحب الدور</span>
-          <span className="tname">{ownerTeam.name}</span>
-        </div>
-      </div>
+      {/* سطرُ السياق كلّه سقط من هذه الشاشة (٦ سبتمبر ٢٠٢٦، كما سقط من اللوح):
+          عدّادُ «سؤال ن / ١٨» أخلى قرصَ الوسط للشعار؛ وعنوانُ «الجولة
+          الجماعية»؛ وبطاقةُ «صاحب الدور: فلان» — نسخةٌ حرفيّةٌ من كِكر
+          الكبسولة المضيئة في شريط النتيجة فوقها؛ ورقائقُ «سينما · صعب ·
+          30 نقاط» — الفريقُ نادى بها الخليّةَ قبل ثوانٍ على اللوح، وتعود
+          النقاطُ منطوقةً في شاشة الكشف («من أجاب؟ — 30 نقطة»).
+          يبقى السؤالُ والمؤقّتُ وحدَهما. والمكانُ المحرَّر يبقى فارغاً:
+          لا حجمَ كبر ولا خطَّ تمدّد. */}
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
 
       <div className={'s1-question-body' + (q.image ? ' photo' : '')}>
         {/* في سؤال الصورة يتجاور السؤال والمؤقّت أفقياً حتى يبقى الوجه كبيراً
@@ -83,6 +74,11 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           padding-block:clamp(14px, 2.6vh, 28px);
           overflow:hidden;
         }
+        /* فرجةٌ فوق البطاقة تفصلها عن شريط النتيجة (طلب علي ٦ سبتمبر ٢٠٢٦):
+           بعد حذف سطر الجولة صارت تلتصق به. مقيسةٌ بـvh فتتنازل على الشاشة
+           القصيرة، وما تأخذه تأخذه من فائض المؤقّت لا من أحد. */
+        .q-box.s1q:not(.s1q-photo),
+        .s1-question-body.photo { margin-top:clamp(6px, 3vh, 34px); }
         @media (max-height:480px) {
           .q-box.s1q { max-height:clamp(84px, 34vh, 170px); padding-block:clamp(8px, 2vh, 18px); }
           body .screen:has(.s1q-photo) .rd,

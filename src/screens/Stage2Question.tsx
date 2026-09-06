@@ -6,7 +6,6 @@ import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
-import { RoundBar } from '../components/RoundBar'
 
 export function Stage2Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const q = state.currentQuestion!
@@ -16,7 +15,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
 
   return (
     <div className="screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
 
       {/* اسم الفريق فوق اسم المتبارز — كما في شاشة الكشف تماماً. بدونه يقرأ
           المجلس «لاعب ٢ ضد لاعب ٢» ولا يعرف من يمثّل من: الاسم الافتراضي
@@ -34,7 +33,11 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         </span>
       </div>
 
-      <RoundBar title="الديربي" chips={['متوسط', 'لا تشاور']} />
+      {/* سطرُ الجولة سقط (قرار علي ٦ سبتمبر ٢٠٢٦، كما سقط من الجولة الجماعية):
+          «الديربي» يقوله بطاقةُ اللاعبَين فوقه — اسمان وجهاً لوجه لا يقعان في
+          مرحلةٍ أخرى — و«متوسط» مستوىً لا يغيّر شيئاً في يد الحكم.
+          وذهبت معهما رقاقةُ «لا تشاور»، وهي القاعدةُ الوحيدة التي كانت مكتوبةً
+          على شاشة الديربي. */}
 
       {/* في سؤال الصورة يتجاور السؤال والمؤقّت أفقياً كما في الجولة الجماعية:
           الوجه هو السؤال، ومسار المؤقّت تحته كان يأكل مئة وستين بكسلاً فتُقصّ

@@ -32,7 +32,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen s2-reveal-screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} label={`جولة ${state.s2Index + 1} / ${state.s2Rounds}`} />
+      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
 
       {q.image ? (
         <img className="reveal-photo" src={celebSrc(q.image)} alt="" />
@@ -42,10 +42,6 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <div className="reveal-a">
         <span className="a-label">الإجابة</span>
         <FitAnswer as="span" className="a-text">{q.answer}</FitAnswer>
-      </div>
-
-      <div className="eyebrow center">
-        من بادر بالإجابة أولاً هو وحده الذي يُنقَّط — والآخر يبقى بلا شيء. وفي حال لم يُجب أحد انتقل إلى الجولة التالية
       </div>
 
       <div className="mark-cards grow">
@@ -88,18 +84,32 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       </button>
 
       <style>{`
+        /* الفائض يذهب إلى الفجوات لا إلى الأحجام (قرار علي ٦ سبتمبر ٢٠٢٦:
+           «لا تكبّر ولا تصغّر، فقط وازن المسافات»). كلُّ كتلةٍ هنا flex:none
+           بمقاس محتواها، وكان ما يفيض عن الشاشة الطويلة يتكوّم تحت الزرّ
+           فراغاً ميّتاً — و‎space-between‎ يوزّعه فجواتٍ متساوية بين الكتل:
+           الشريط يلزم أعلى الشاشة، والزرّ أسفلها، وما بينهما يتنفّس بالتساوي.
+           والفجوة المعلنة تبقى أرضيةً حين لا فائض (الشاشة القصيرة). */
         body .screen.s2-reveal-screen:not(.setup):not(.end) {
           padding-block:clamp(14px,2vh,24px);
           gap:clamp(12px,1.8vh,20px);
+          justify-content:space-between;
         }
         .s2-reveal-screen .reveal-a {
           align-self:center;
           width:min(94%,1120px);
           padding-block:clamp(12px,2vh,22px);
         }
+        /* «الإجابة» كان يرث من نيو مقاساً نسبياً (‏.42em‎ من خطّ الجسم) —
+           نحو ستّة بكسلات لا تُرى من المجلس (بلاغ علي ٦ سبتمبر ٢٠٢٦). ومقاسه
+           هنا صريحٌ بـmin(vw,vh) فلا ينتفخ على الشاشة العريضة القصيرة. */
+        body .screen.s2-reveal-screen .a-label {
+          font-size:clamp(14px, min(1.6vw, 2.4vh), 22px);
+        }
 
-        /* بطاقتا القرار تأخذان ارتفاعاً حقيقياً. استعمال grow وحده يجعل
-           ارتفاع الحاوية صفراً عندما تزحم الشاشة، فتفيض البطاقتان خلف الزر. */
+        /* بطاقتا القرار تأخذان ارتفاعاً حقيقياً. صنف grow وحده (‏flex:1‎ =
+           ‎1 1 0%‎) يجعل ارتفاع الحاوية صفراً حين تزحم الشاشة فتفيض البطاقتان
+           خلف الزر. */
         .s2-reveal-screen .mark-cards {
           flex:none;
           min-height:clamp(205px,28vh,280px);
@@ -162,12 +172,12 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
         /* الشاشة القصيرة كانت تدفع «الجولة التالية» خارجها: ٦٠٥ بكسلاً مطلوبة
            في ٦٠٠ على 1024×600، و٥١٠ في ٣٩٠ على الجوال الأفقي. الصلبُ فيها
-           شيئان: أرضية بطاقتَي القرار (٢٠٥) وسطرُ قاعدة المبادرة. السطر يُقرأ
-           مرّة واحدة في أول جولة ثم يعرفه المجلس، فيذهب كاملاً — حذفٌ لا
-           تصغير — وتتنازل الأرضية معه. البطاقتان لا تنهاران: مقاسات ما فيهما
-           محسوبة أصلاً بـmin(vw,vh) فتضمر قبل أن تفيض. */
+           شيئان: أرضية بطاقتَي القرار (٢٠٥) وسطرُ قاعدة المبادرة. والسطر
+           حُذف من الشاشة كلّها في ٦ سبتمبر ٢٠٢٦ (قرار علي) — يُقرأ مرّة في
+           أوّل جولة ثم يعرفه المجلس — فلم يبقَ هنا إلّا تنازلُ الأرضية.
+           والبطاقتان لا تنهاران: مقاسات ما فيهما محسوبة أصلاً بـmin(vw,vh)
+           فتضمر قبل أن تفيض. */
         @media (max-height:700px) {
-          .s2-reveal-screen .eyebrow { display:none; }
           .s2-reveal-screen .mark-cards { min-height:clamp(150px,26vh,205px); }
         }
 
