@@ -159,7 +159,6 @@ html[data-skin='blocks'] .scorebar .mid {
   transform: rotate(1deg);
   font-weight: 800;
 }
-html[data-skin='blocks'] .mid-dot { background: var(--n-a-tint); }
 
 /* ─── ٤. سياق الجولة ─────────────────────────────────────────────────── */
 /* اسم المرحلة كتلةٌ برتقالية مائلة بحدّ حبر — كما في المعاينة المعتمدة،
@@ -354,35 +353,6 @@ html[data-skin='blocks'] .timer-progress {
 html[data-skin='blocks'] .timer-progress > span { background: var(--n-a-tint) !important; }
 html[data-skin='blocks'] .screen:has(.s3-q) .timer-progress > span,
 html[data-skin='blocks'] .ring-timer.low .timer-progress > span { background: var(--n-bad) !important; }
-
-/* ─── ٧. كبسولتا الفريقين في الجولة الجماعية ─────────────────────────── */
-/* صاحب الدور كتلةٌ بيضاء ناهضة والآخر غائر — لا لونَي فريقين هنا:
-   الكبسولتان مرتّبتان صاحبَ الدور أوّلاً والدور يتناوب كل سؤال، فأيّ
-   تلوين بالموضع يقلب لوني الفريقين ثماني مرّات في الجولة (فخّ نيو
-   الموثّق مع بطاقات «من أصاب؟»). */
-html[data-skin='blocks'] .tpill { border-radius: var(--n-r2); }
-html[data-skin='blocks'] .tpill.owner {
-  background: var(--n-surface);
-  box-shadow: var(--n-e2);
-  color: var(--n-ink);
-  transform: rotate(-.4deg);
-}
-html[data-skin='blocks'] .tpill.rival {
-  background: var(--n-bg);
-  box-shadow: 0 0 0 2px rgba(34,32,28,.25);
-  transform: rotate(.4deg);
-}
-html[data-skin='blocks'] .tpill.rival.active {
-  background: var(--n-surface);
-  box-shadow: var(--n-e2);
-  color: var(--n-ink);
-}
-html[data-skin='blocks'] .rival-hint {
-  background: var(--n-surface);
-  box-shadow: 0 0 0 2px var(--n-ink);
-  color: var(--n-ink);
-  font-weight: 800;
-}
 
 /* ─── ٨. الكشف والتنقيط ──────────────────────────────────────────────── */
 /* الإجابة بصوت الهويّة البرتقاليّ */
@@ -603,8 +573,6 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
   html[data-skin='blocks'] .scorebar .team-0,
   html[data-skin='blocks'] .scorebar .team-1,
   html[data-skin='blocks'] .scorebar .mid,
-  html[data-skin='blocks'] .tpill.owner,
-  html[data-skin='blocks'] .tpill.rival,
   html[data-skin='blocks'] .il-eyebrow,
   html[data-skin='blocks'] .screen.setup .team-card:first-child,
   html[data-skin='blocks'] .screen.setup .team-card:last-child,
