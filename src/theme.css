@@ -700,21 +700,6 @@ body .screen .cat.spent { opacity: .38; }
 body .screen .cat.cursor { border-color: var(--cream); }
 body .screen .cat.landed { border-color: var(--gold); }
 
-/* الجولة الجماعية: فريق الدور كتلة ذهبية، والخصم سطح زجاجي مقابِل. */
-body .screen .tpill {
-  border-radius: 14px;
-}
-body .screen .tpill.owner {
-  background: linear-gradient(135deg, #FFD47E, var(--gold) 62%, #EFA13A);
-}
-body .screen .tpill.rival {
-  background: rgba(7,25,35,.38);
-  backdrop-filter: blur(12px);
-}
-body .screen .rival-hint {
-  border-radius: 10px;
-  background: rgba(228,103,74,.08);
-}
 body .screen .rv-card,
 body .screen .reveal-a {
   border-radius: 24px;

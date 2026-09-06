@@ -124,25 +124,11 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
             padding-block:clamp(14px,2.2vh,24px);
             gap:clamp(10px,1.8vh,16px);
           }
-          body .screen:has(.s1q-photo) .tpill { padding-block:7px; }
           body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:8px; }
           body .screen:has(.s1q-photo) .q-photo-wrap { gap:6px; }
           body .screen:has(.s1q-photo) > .stack.gap-s { gap:6px; }
           body .screen:has(.s1q-photo) .action.compact { padding-block:8px; }
           body .screen:has(.s1q-photo) .action-note { line-height:1.25; }
-        }
-
-        .s1-teams { display:flex; gap:14px; flex:none; }
-        .tpill {
-          flex:1; display:flex; align-items:center; justify-content:center; gap:12px;
-          padding:12px 24px; border-radius:999px;
-          transition:border-color .3s ease, box-shadow .3s ease, color .3s ease;
-        }
-        .tpill .role { font-size:13px; font-weight:700; opacity:.75; }
-        .tpill .tname { font-size:clamp(17px,2.3vw,25px); font-weight:800; }
-        .tpill.owner {
-          background:linear-gradient(150deg, #FFCE7B, var(--gold) 60%, #F0A93F);
-          color:var(--on-gold); box-shadow:var(--glow-gold);
         }
 
         .timer-stage {
@@ -156,12 +142,6 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           /* المؤقّت لا يتنازل عن ارتفاعه لغيره: رقمه مقيسٌ على بطاقته، فإن
              سُحبت من تحته فاض الرقم عنها. */
           body .screen .timer-stage .ring-timer { flex:none; }
-          /* كبسولتا الفريقين والسطر التفسيري يتنازلان لصالح السؤال والمؤقّت:
-             هما معرّفان بالمكان (يمين/يسار) لا بالحجم، فتصغيرهما لا يُفقد شيئاً. */
-          .s1-teams { gap:8px; }
-          .tpill { padding:5px 16px; gap:8px; }
-          .tpill .role { font-size:11px; line-height:1.3; }
-          .tpill .tname { line-height:1.3; }
           .s1-question-body.photo { gap:clamp(12px,2vw,22px); }
           .s1-question-body.photo .timer-stage { flex-basis:120px; }
         }

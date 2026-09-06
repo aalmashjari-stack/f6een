@@ -234,13 +234,6 @@ html[data-skin] .scorebar .mid.mid-brand {
   box-shadow: none;
   transform: none;
 }
-html[data-skin] .mid-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--n-accent);
-  animation: none;
-}
-
 /* ─── ٤. سياق الجولة ─────────────────────────────────────────────────── */
 html[data-skin] .rd-mark { display: none; }
 html[data-skin] .rd {
@@ -448,38 +441,6 @@ html[data-skin] .timer-progress {
 }
 html[data-skin] .timer-progress > span { border-radius: 999px; }
 
-/* ─── ٨. كبسولتا الفريقين في الجولة الجماعية ─────────────────────────── */
-html[data-skin] .tpill {
-  border: 0;
-  border-radius: var(--n-r2);
-  box-shadow: var(--n-e1);
-  transform: none;
-}
-html[data-skin] .tpill.owner {
-  background: var(--n-surface);
-  color: var(--n-ink);
-  box-shadow: 0 0 0 2px var(--n-ink), var(--n-e1);
-}
-html[data-skin] .tpill.rival {
-  background: var(--n-surface);
-  color: var(--n-ink-2);
-}
-html[data-skin] .tpill.rival.active {
-  background: var(--n-surface);
-  color: var(--n-ink);
-  box-shadow: 0 0 0 2px var(--n-ink), var(--n-e1);
-}
-html[data-skin] .role { color: var(--n-ink-3); font-weight: 700; letter-spacing: .03em; }
-html[data-skin] .tname { font-weight: 800; letter-spacing: -.01em; }
-html[data-skin] .rival-hint {
-  border: 0;
-  border-radius: 999px;
-  background: rgba(23,23,31,.05);
-  color: var(--n-ink-2);
-  transform: none;
-  font-weight: 600;
-}
-html[data-skin] .rival-rule { color: var(--n-ink-3); }
 
 /* ─── ٩. الكشف والتنقيط ──────────────────────────────────────────────── */
 html[data-skin] .rv-card,

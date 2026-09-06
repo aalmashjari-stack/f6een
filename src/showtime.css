@@ -111,7 +111,7 @@ body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{display
 body .screen .scorebar .team .pts.digits-3{font-size:clamp(20px,min(2.8vw,3.8vh),31px)}
 body .screen .scorebar .team .pts.digits-4{font-size:clamp(17px,min(2.3vw,3.2vh),26px)}
 body .screen .scorebar .mid{position:static;min-width:clamp(88px,13vw,150px);display:flex;justify-content:center;gap:7px;padding:8px 14px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-purple);color:var(--festival-white);box-shadow:4px 5px 0 var(--festival-ink);transform:rotate(-2deg);font-size:clamp(11px,1.4vw,15px)}
-.mid-dot{width:8px;height:8px;border-radius:50%;background:var(--festival-yellow);animation:festival-blink 1.2s ease-in-out infinite}@keyframes festival-blink{50%{transform:scale(.45)}}
+@keyframes festival-blink{50%{transform:scale(.45)}}
 
 /* سياق الجولة */
 body .screen .rd{width:100%;display:grid;grid-template-columns:auto auto 1fr;align-items:center;justify-content:start;gap:10px;padding:0;border:0;border-radius:0;background:transparent;backdrop-filter:none;text-align:right}
@@ -175,8 +175,6 @@ body .screen .cat-status{position:absolute;top:8px;inset-inline-end:8px;z-index:
 body .screen .cat.spent{opacity:.34;filter:grayscale(.7);box-shadow:none} body .screen .cat.cursor{transform:translateY(-7px) rotate(-2deg);border-color:var(--festival-purple);background:var(--festival-pink);box-shadow:7px 8px 0 var(--festival-purple)} body .screen .cat.landed{transform:translateY(-9px) rotate(2deg);border-color:var(--festival-ink);background:var(--festival-yellow);box-shadow:8px 9px 0 var(--festival-orange)} body .screen .cat.landed .cat-name{color:var(--festival-ink)}
 
 /* الجولة الجماعية والكشف */
-body .screen .tpill{border:3px solid var(--festival-ink);border-radius:24px 8px 24px 8px;box-shadow:5px 6px 0 var(--festival-ink);clip-path:none} body .screen .tpill.owner{background:var(--festival-yellow);color:var(--festival-ink);transform:rotate(-.5deg)} body .screen .tpill.rival{background:var(--festival-white);color:var(--festival-purple);transform:rotate(.5deg)} body .screen .tpill.rival.active{background:var(--festival-orange);color:var(--festival-white);border-color:var(--festival-ink)}
-body .screen .rival-hint{border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-pink);color:var(--festival-ink);transform:rotate(-1deg)}
 body .screen .rv-card,body .screen .reveal-a{border:4px solid var(--festival-ink);border-radius:40px 12px 40px 12px;background:var(--festival-white);box-shadow:10px 11px 0 var(--festival-yellow);clip-path:none} body .screen .rv-q,body .screen .reveal-q{color:var(--festival-muted)} body .screen .rv-a,body .screen .reveal-a .a-text{color:var(--festival-purple)}
 body .screen .pick,body .screen .none-btn,body .screen .mark-cards .mcard{border:3px solid var(--festival-ink);border-radius:30px 9px 30px 9px;background:var(--festival-white);color:var(--festival-ink);box-shadow:6px 7px 0 var(--festival-ink);backdrop-filter:none}
 body .screen .pick:first-child,body .screen .mark-cards .mcard:first-child{background:#f7e7f3;transform:rotate(-.5deg)} body .screen .pick:nth-child(2),body .screen .mark-cards .mcard:nth-child(2){background:#e5f7ec;transform:translateY(7px) rotate(.5deg)} body .screen .none-btn{border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
@@ -216,7 +214,6 @@ body .screen .stack.gap-s{gap:clamp(12px,1.8vh,18px)}
 body .screen .action-note{margin-top:0}
 
 /* مجموعات متوازية: الفراغ بينها أكبر من الفراغ داخل كل بطاقة. */
-body .screen .s1-teams,
 body .screen .pick-cards,
 body .screen .mark-cards,
 body .screen .tb-picks,
@@ -246,8 +243,7 @@ body .screen.end .foot{gap:clamp(12px,1.8vw,20px)}
 /* الشاشات الأقل ارتفاعاً تتنفس من دون أن تخسر السؤال أو زر الحكم. */
 @media(max-height:560px){
   body .screen:not(.setup){padding:clamp(12px,2.2vw,28px);gap:clamp(10px,1.9vh,17px)}
-  body .screen .s1-teams,
-  body .screen .pick-cards,
+    body .screen .pick-cards,
   body .screen .mark-cards,
     body .screen .tb-picks,
   body .screen .s3-verdicts{gap:clamp(11px,1.8vw,20px)}
@@ -304,7 +300,6 @@ body .screen.setup .setup-body { flex:1; min-height:0; }
 
 /* فصل المجموعات المتوازية والكتل الداخلية في جميع مراحل اللعبة. */
 body .screen .stack.gap-s { gap:clamp(12px,1.8vh,18px); }
-body .screen .s1-teams,
 body .screen .pick-cards,
 body .screen .mark-cards,
 body .screen .tb-picks,
@@ -469,8 +464,7 @@ body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
     gap:clamp(5px,1vh,12px);
   }
   body .screen .stack.gap-s { gap:clamp(9px,1.7vh,14px); }
-  body .screen .s1-teams,
-  body .screen .pick-cards,
+    body .screen .pick-cards,
   body .screen .mark-cards,
     body .screen .tb-picks,
   body .screen .s3-verdicts { gap:clamp(11px,1.8vw,20px); }
