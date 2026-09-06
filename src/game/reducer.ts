@@ -42,9 +42,13 @@ export type Action =
   | { t: 'REPORT_QUESTION'; id: string }
   | { t: 'NEW_GAME' }
 
-/** أوراق الحق ما تلحق التي لم تُعرض بعد — محجوزة فلا تُسحب لمرحلة أخرى. */
-const pendingS3Ids = (s: GameState): Set<string> =>
-  new Set(s.s3Queue.slice(s.s3Pos).map((q) => q.id))
+/**
+ * ما لا يُسحب في هذه الجلسة مهما ضاق المخزون: ما عُرض فيها، وأوراق الحق ما
+ * تلحق التي لم تُعرض بعد (محجوزة فلا تُسحب لمرحلة أخرى). هذه القيود صلبة
+ * في `draw.ts`، وذاكرةُ الحساب ليّنة تُعاد من أقدمها — انظر `DrawGuards`.
+ */
+const excludedIds = (s: GameState): Set<string> =>
+  new Set([...s.askedQuestionIds, ...s.s3Queue.slice(s.s3Pos).map((q) => q.id)])
 
 /** قوالب ممنوعة الآن: ما ظهر في الجلسة + ما ينتظر دوره في طابور الحق ما تلحق. */
 const guardedFamilies = (s: GameState): Set<string> => {
@@ -66,8 +70,10 @@ const S3_REFILL = 10
  */
 const ensureS3Queue = (s: GameState): GameState => {
   if (s.s3Pos < s.s3Queue.length) return s
-  const taken = new Set([...s.usedQuestionIds, ...s.s3Queue.map((q) => q.id)])
-  const more = drawStage3Queue(S3_REFILL, taken, guardedFamilies(s))
+  /* الذاكرة ليّنة والطابور القديم وأسئلةُ الجلسة صلبة: حسابٌ استنفد
+     المخزون يأخذ أقدم ما سمع، لا شاشة «نفد الطابور». */
+  const excluded = new Set([...s.askedQuestionIds, ...s.s3Queue.map((q) => q.id)])
+  const more = drawStage3Queue(S3_REFILL, s.usedQuestionIds, guardedFamilies(s), excluded)
   return more.length > 0 ? { ...s, s3Queue: [...s.s3Queue, ...more] } : s
 }
 
@@ -121,7 +127,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         action.category,
         action.level,
         state.usedQuestionIds,
-        pendingS3Ids(state),
+        excludedIds(state),
         guardedFamilies(state),
       )
       return {
@@ -193,7 +199,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       const q = drawByLevel(
         'متوسط',
         state.usedQuestionIds,
-        pendingS3Ids(state),
+        excludedIds(state),
         guardedFamilies(state),
       )
       return {
@@ -323,10 +329,10 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
             action.category,
             'صعب',
             state.usedQuestionIds,
-            pendingS3Ids(state),
+            excludedIds(state),
             guardedFamilies(state),
           )
-        : drawByLevel('صعب', state.usedQuestionIds, pendingS3Ids(state), guardedFamilies(state))
+        : drawByLevel('صعب', state.usedQuestionIds, excludedIds(state), guardedFamilies(state))
       return {
         ...burn(state, q),
         currentCategory: action.category || null,

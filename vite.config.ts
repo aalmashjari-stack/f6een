@@ -41,6 +41,9 @@ function cacheHeaders() {
 export default defineConfig({
   plugins: [react(), cacheHeaders()],
   base: './',
+  /* اختبارات المشروع في `src/` وحدها: مجلّد `reports/` يحمل نصوصَ فحصٍ من
+     تدقيقٍ خارجيّ بمسارات مطلقة، فلا تُشغَّل مع `npm test`. */
+  test: { include: ['src/**/*.test.ts'] },
   // صفحتان لا واحدة: اللعبة على `index.html` ولوحة الإدارة على `admin.html`.
   // فصلُهما يعني أنّ شيفرة اللوحة وجداولها لا تُحمَّل على جهاز الحكم في
   // المجلس، وأنّ اللوحة لا تحمل محرّك اللعب ولا شاشاته.

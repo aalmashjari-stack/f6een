@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { currentUserId } from './auth'
 import type { StoredState } from '../game/session'
+import { readScoped, removeScoped, writeScoped } from '../game/session'
 
 /**
  * الرصيد والجلسات — SPEC القسمان ٣ و٩.
@@ -100,6 +101,58 @@ export async function closeSession(
   if (state) patch.state = state
   const { error } = await supabase.from('sessions').update(patch).eq('id', id)
   if (error) throw error
+}
+
+/* ======================= الإغلاق المعلَّق ======================= */
+const PENDING_CLOSE_KEY = 'f6een.pendingClose'
+
+export interface PendingClose {
+  id: string
+  status: 'finished' | 'abandoned'
+  state?: StoredState
+}
+
+/**
+ * إغلاقٌ لا يضيع بانقطاع الشبكة.
+ *
+ * كان الختام يمحو معرّف الجلسة قبل أن يردّ الخادم، ويبتلع الفشل بحجّة أنّ
+ * الرصيد لا يُمسّ. والرصيد فعلاً لا يُمسّ، لكنّ الخادم يبقى على لقطةٍ
+ * **سابقة للختام** — آخر حفظٍ مؤجَّل — فيستأنفها التشغيلُ التالي ويعيد
+ * المجلس إلى الجولة الأخيرة من لعبةٍ انتهت (تدقيق ٦ سبتمبر ٢٠٢٦).
+ *
+ * فتُكتب نيّة الإغلاق محلّياً **قبل** الطلب وتُمحى بعد نجاحه: ما بينهما
+ * انقطاعٌ تعالجه `flushPendingClose` عند الإقلاع التالي، وحتى تُعالَج
+ * يعرف التطبيق أنّ تلك الجلسة منتهية فلا يستأنفها (انظر `pendingClose`).
+ */
+export async function closeSessionDurably(
+  id: string,
+  status: 'finished' | 'abandoned',
+  state?: StoredState,
+): Promise<void> {
+  const pending: PendingClose = { id, status, state }
+  writeScoped(PENDING_CLOSE_KEY, JSON.stringify(pending))
+  await closeSession(id, status, state)
+  removeScoped(PENDING_CLOSE_KEY)
+}
+
+/** الإغلاق الذي لم يبلغ الخادم بعد، إن وُجد. */
+export function pendingClose(): PendingClose | null {
+  try {
+    const raw = readScoped(PENDING_CLOSE_KEY)
+    if (!raw) return null
+    const p = JSON.parse(raw) as PendingClose
+    return typeof p.id === 'string' && (p.status === 'finished' || p.status === 'abandoned') ? p : null
+  } catch {
+    return null
+  }
+}
+
+/** يعيد محاولة الإغلاق المعلَّق. الفشل يبقيه معلَّقاً إلى المرّة القادمة. */
+export async function flushPendingClose(): Promise<void> {
+  const p = pendingClose()
+  if (!p) return
+  await closeSession(p.id, p.status, p.state)
+  removeScoped(PENDING_CLOSE_KEY)
 }
 
 /* رسائل أخطاء `redeem_gift_code` — تُترجَم هنا لا تُعرض خاماً: اللاعب لا

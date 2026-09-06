@@ -12,14 +12,34 @@ import { loadUsedIds, persistUsedIds } from '../game/session'
  * تتأخّر المزامنة إلى المرّة القادمة، لا أن تتعطّل لعبة قائمة.
  */
 
-/** ما يعرفه الخادم عن هذا الحساب. */
+/**
+ * حدّ الصفوف في الطلب الواحد — `db-max-rows` في Supabase ألفٌ، وما فوقه
+ * يُقصّ **بصمت**. وقع في لوحة الأسئلة (٥ سبتمبر ٢٠٢٦) ولم يُعمَّم هنا:
+ * حسابٌ لعب نحو عشرين جلسة يتجاوز الألف، فكان جهازه الثاني يستلم ذاكرةً
+ * مبتورة ويعيد أسئلةً سُمعت. فتُقرأ صفحةً صفحةً حتى تقصر الصفحة.
+ */
+const PAGE = 1000
+
+/**
+ * ما يعرفه الخادم عن هذا الحساب — **بترتيب الاستعمال، الأقدم أوّلاً**.
+ * الترتيب ليس زينة: عليه تقوم قاعدة «الأقدم استخداماً» في السحب عند النفاد.
+ */
 export async function fetchServerUsedIds(): Promise<string[]> {
-  const { data, error } = await supabase
-    .from('used_questions')
-    .select('question_id')
-    .eq('user_id', await currentUserId())
-  if (error) throw error
-  return (data ?? []).map((r) => r.question_id as string)
+  const uid = await currentUserId()
+  const ids: string[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from('used_questions')
+      .select('question_id')
+      .eq('user_id', uid)
+      .order('used_at', { ascending: true })
+      .range(from, from + PAGE - 1)
+    if (error) throw error
+    const page = (data ?? []).map((r) => r.question_id as string)
+    ids.push(...page)
+    if (page.length < PAGE) break
+  }
+  return ids
 }
 
 /**
@@ -44,18 +64,21 @@ export async function pushUsedIds(userId: string, ids: string[]): Promise<void> 
  * الاتّجاهان معاً عمداً:
  * - **نزولاً:** ما يعرفه الخادم يدخل الجهاز، فمن لعب على كمبيوتره لا يسمع
  *   الأسئلة نفسها على جواله.
- * - **صعوداً:** ما لعبه على هذا الجهاز *قبل* أن ينشئ حساباً يُرفع مرّة، فلا
- *   تضيع ذاكرته بمجرّد أنّه سجّل متأخّراً.
+ * - **صعوداً:** ما في هذا الجهاز ولم يبلغ الخادم يُرفع مرّة.
  *
- * والدمج اتّحادٌ لا استبدال: الذاكرة تراكميّة بالتعريف.
+ * والدمج اتّحادٌ لا استبدال: الذاكرة تراكميّة بالتعريف. وترتيبُ الخادم
+ * هو الأصل (يحمل `used_at`)، وما انفرد به الجهاز يلحق به — فهو الأحدث.
+ * والمحلّي يُقرأ **بعد** وصول الردّ لا قبله: سؤالٌ عُرض والطلبُ في الطريق
+ * كان يُمحى حين تُكتب النتيجة فوقه.
  * والحفظ المحلّي يسبق الرفع، فلو انقطعت الشبكة بينهما بقي المكسب النازل.
  */
 export async function syncUsedIds(userId: string): Promise<{ merged: Set<string>; pushed: number }> {
+  const server = await fetchServerUsedIds()
+  const known = new Set(server)
   const local = loadUsedIds()
-  const server = new Set(await fetchServerUsedIds())
 
-  const onlyLocal = [...local].filter((id) => !server.has(id))
-  const merged = new Set([...local, ...server])
+  const onlyLocal = [...local].filter((id) => !known.has(id))
+  const merged = new Set([...server, ...onlyLocal])
 
   persistUsedIds(merged)
   await pushUsedIds(userId, onlyLocal)

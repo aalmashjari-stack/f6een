@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { drawByLevel, drawOne, drawStage3Queue } from './draw'
+import { drawByLevel, drawOne, drawStage3Queue, shuffle } from './draw'
 import { ALL_QUESTIONS, familiesOf, familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels, setBlockedQuestionIds } from './bank'
 import type { Level } from './types'
 
@@ -68,26 +68,35 @@ describe('drawOne — الاستبعاد', () => {
   })
 })
 
-describe('drawOne — سلّم التنازل عند ضيق المخزون', () => {
-  /**
-   * الترتيب مقصود: سؤال من قالب مطروق يُحسّ متشابهاً، أما كسر الحجز فيعيد
-   * السؤال نفسه حرفياً في الجلسة. فالقالب يسقط أولاً، ثم الحجز، ثم عدم التكرار.
-   */
-  it('يتنازل عن القالب قبل أن يتنازل عن الحجز', () => {
+/**
+ * قيود الجلسة صلبة وذاكرة الحساب ليّنة (٧ سبتمبر ٢٠٢٦). كان هنا سلّمُ
+ * تنازل ينزل من القالب إلى الحجز إلى التكرار، فيُعيد عند ضيق المخزون
+ * سؤالاً سُمع في الليلة نفسها — وهو ما وجده تدقيقُ الجلسات المتتابعة عند
+ * الجلسة الحادية والثلاثين. الآن ما يُكسر هو حدودُ الخليّة لا الضمانتان.
+ */
+describe('drawOne — ضيق المخزون: الجلسة صلبة والذاكرة ليّنة', () => {
+  it('لا يكسر القالب ولا الحجز — يخرج من الخليّة إلى المستوى', () => {
     const cell = poolByCatLevel(CAT, LEVEL)
     const famQ = cell.find((q) => familyOf(q) !== null)!
-    // كل الخلية محجوزة إلا سؤالاً واحداً، وقالبه مطروق: يجب أن يُختار هو لا المحجوز
+    // كل الخلية محجوزة إلا سؤالاً واحداً، وقالبه مطروق: لا هذا ولا ذاك
     const reserved = new Set(cell.filter((q) => q.id !== famQ.id).map((q) => q.id))
     const spent = new Set([familyOf(famQ)!])
-    expect(drawOne(CAT, LEVEL, new Set(), reserved, spent).id).toBe(famQ.id)
+    for (let i = 0; i < 40; i++) {
+      const picked = drawOne(CAT, LEVEL, new Set(), reserved, spent)
+      expect(picked.level).toBe(LEVEL)
+      expect(reserved.has(picked.id)).toBe(false)
+      expect(familyOf(picked)).not.toBe(familyOf(famQ))
+    }
   })
 
-  it('يتنازل عن الحجز قبل أن يعيد سؤالاً محروقاً', () => {
+  it('يعيد محروقاً من الخليّة قبل أن يمسّ محجوزاً', () => {
     const cell = poolByCatLevel(CAT, LEVEL)
     const spare = cell[0]
     const used = new Set(cell.filter((q) => q.id !== spare.id).map((q) => q.id))
     const reserved = new Set([spare.id]) // الوحيد غير المحروق محجوز
-    expect(drawOne(CAT, LEVEL, used, reserved).id).toBe(spare.id)
+    const picked = drawOne(CAT, LEVEL, used, reserved)
+    expect(picked.id).not.toBe(spare.id)
+    expect(cell.map((q) => q.id)).toContain(picked.id)
   })
 
   it('يعيد سؤالاً حتى لو احترقت الخلية كلها — لا يسقط ولا يعيد undefined', () => {
@@ -96,6 +105,27 @@ describe('drawOne — سلّم التنازل عند ضيق المخزون', () 
     const picked = drawOne(CAT, LEVEL, used)
     expect(picked).toBeDefined()
     expect(cell.map((q) => q.id)).toContain(picked.id)
+  })
+
+  /* SPEC ٨: «الأقدم استخداماً» — ترتيبُ المجموعة هو ترتيبُ الاستعمال. */
+  it('المعاد من خليّةٍ محروقة هو أقدمها في الذاكرة', () => {
+    const cell = poolByCatLevel(CAT, LEVEL)
+    const order = [...cell].reverse()
+    const used = new Set(order.map((q) => q.id))
+    for (let i = 0; i < 10; i++) expect(drawOne(CAT, LEVEL, used).id).toBe(order[0].id)
+    /* وما سبقه في الذاكرة من خلايا أخرى لا يُحسب. */
+    const other = poolByCatLevel(CAT, 'سهل')[0]
+    expect(drawOne(CAT, LEVEL, new Set([other.id, ...order.map((q) => q.id)])).id).toBe(order[0].id)
+  })
+
+  it('ما عُرض في الجلسة لا يعود ولو احترقت الخليّة والمستوى كلّه', () => {
+    const level = poolByLevels([LEVEL])
+    const used = new Set(level.map((q) => q.id))
+    const asked = new Set(poolByCatLevel(CAT, LEVEL).map((q) => q.id))
+    for (let i = 0; i < 40; i++) {
+      const picked = drawOne(CAT, LEVEL, used, asked)
+      expect(asked.has(picked.id), picked.id).toBe(false)
+    }
   })
 })
 
@@ -166,10 +196,31 @@ describe('drawStage3Queue', () => {
     }
   })
 
-  it('يستبعد المحروق', () => {
+  it('يستبعد المحروق ما دام في المخزون جديد', () => {
     const pool = poolByLevels(['سهل', 'متوسط'])
     const used = new Set(pool.slice(0, 300).map((q) => q.id))
     for (const q of drawStage3Queue(40, used)) expect(used.has(q.id)).toBe(false)
+  })
+
+  /**
+   * حسابٌ استنفد المخزون كان يأخذ طابوراً من صفر أوراق — فيقف الفريقان
+   * على «نفد الطابور» والساعة تعدّ على لا شيء. الآن يُكمَل من الأقدم.
+   */
+  it('حين ينفد الجديد يُكمَل من أقدم الذاكرة، بلا ما عُرض في الجلسة', () => {
+    const pool = poolShippedByLevels(['سهل', 'متوسط']).filter((q) => q.question.length <= 80)
+    const order = shuffle(pool)
+    const used = new Set(order.map((q) => q.id))
+    const asked = new Set(order.slice(0, 50).map((q) => q.id))
+    const queue = drawStage3Queue(40, used, new Set(), asked)
+    expect(queue).toHaveLength(40)
+    expect(new Set(queue.map((q) => q.id)).size).toBe(40)
+    for (const q of queue) expect(asked.has(q.id), q.id).toBe(false)
+    /* الأولى هي أقدم ما يصلح: أوّل ما في الذاكرة بعد المعروض. */
+    const oldest = order.find((q) => !asked.has(q.id))!
+    expect(queue[0].id).toBe(oldest.id)
+    /* ولا قالبان — الطابور يقصر ولا يكسر. */
+    const fams = queue.flatMap(familiesOf)
+    expect(new Set(fams).size).toBe(fams.length)
   })
 
   it('من مستويَي سهل ومتوسط فقط — لا صعب في سباق الثلاثين ثانية', () => {
