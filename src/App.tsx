@@ -34,6 +34,7 @@ import {
 import { AccountMenu } from './components/AccountMenu'
 import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
+import { CrashScreen } from './components/CrashScreen'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
@@ -488,7 +489,8 @@ export default function App() {
 
   return (
     <>
-      {screen}
+      {/* شاشةُ اللعب تحت شبكة أمان: خطأٌ في الرسم يُعرض بزرّين بدل جذرٍ فارغ. */}
+      <CrashScreen onNewGame={quit}>{screen}</CrashScreen>
       {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
       {state.phase !== 'endgame' && <QuitGame onQuit={quit} charged={sessionId !== null} />}
     </>

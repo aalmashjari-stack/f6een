@@ -5,11 +5,14 @@ import {
   GameState,
   SetupInput,
   StageKey,
+  STAGE1_CONSULT_MS,
   STAGE1_LEVEL_POINTS,
   STAGE1_QUESTIONS,
   STAGE2_CORRECT,
+  STAGE2_TIMER_MS,
   STAGE2_WRONG,
   STAGE3_POINTS,
+  STAGE3_TIMER_MS,
   TIEBREAK_POINTS,
   cellKey,
   createSession,
@@ -23,17 +26,22 @@ export type Action =
      مفتوحةً سابقة لا التي أُرسلت (نافذة الاستكمال)، ولهذا تُبنى الحالة
      خارج المخفّض ثمّ تُسلَّم إليه بدل أن يبنيها من المدخلات. */
   | { t: 'RESUME'; state: GameState }
-  | { t: 'S1_PICK'; category: string; level: Level } // خليّة من لوح الجولة الجماعية
+  /* `at` = الآن بالميلي ثانية، تعطيه الشاشة: منه يُحسب موعد انتهاء المؤقّت
+     المحفوظ مع الجلسة. بلا `at` لا موعد — كما في الاختبارات القديمة. */
+  | { t: 'S1_PICK'; category: string; level: Level; at?: number } // خليّة من لوح الجولة الجماعية
   | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
   | { t: 'S1_SCORE'; team: TeamId | null }
   | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
   | { t: 'INTERVAL_CONTINUE' }
-  | { t: 'S2_SELECT'; sel: [number, number] } // اختيار اللاعبَين (بعد التشويق)
+  | { t: 'S2_SELECT'; sel: [number, number]; at?: number } // اختيار اللاعبَين (بعد التشويق)
   | { t: 'S2_SET_MARK'; who: 0 | 1; mark: Mark }
   | { t: 'S2_NEXT_ROUND' }
+  | { t: 'S3_START'; at: number } // «ابدأ الآن» — تنطلق الساعة
   | { t: 'S3_REVEAL' }
   | { t: 'S3_JUDGE'; verdict: 'correct' | 'wrong' }
-  | { t: 'S3_END_TURN' } // انتهت الثلاثون ثانية
+  /* `team` = الفريق الذي انتهت ساعته. فعلٌ متأخّر من شاشةٍ ذهبت — أو
+     مكرَّر — كان يُنهي دور الفريق التالي أيضاً. */
+  | { t: 'S3_END_TURN'; team: TeamId } // انتهت الثلاثون ثانية
   | { t: 'TIEBREAK_SPIN'; category: string }
   | { t: 'TIEBREAK_PICK'; team: TeamId | 'none' }
   /* تصحيحُ الحكم: ±5 بجانب نقاط الفريق، في أي طور. لا يحرّك الشاشة ولا
@@ -136,23 +144,25 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         s1Played: [...state.s1Played, key],
         currentCategory: action.category,
         currentQuestion: q,
+        timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CONSULT_MS,
         phase: 'stage1-question',
       }
     }
 
     case 'S1_TO_REVEAL': {
-      if (!state) return state
-      return { ...state, phase: 'stage1-reveal' }
+      if (!state || state.phase !== 'stage1-question') return state
+      return { ...state, timerEndsAt: null, phase: 'stage1-reveal' }
     }
 
     case 'S2_TO_REVEAL': {
-      if (!state) return state
-      return { ...state, phase: 'stage2-reveal' }
+      if (!state || state.phase !== 'stage2-question') return state
+      return { ...state, timerEndsAt: null, phase: 'stage2-reveal' }
     }
 
     /* ---------------- تنقيط الجولة الجماعية ---------------- */
     case 'S1_SCORE': {
       if (!state || !state.s1Cell) return state
+      if (state.phase !== 'stage1-reveal' && state.phase !== 'stage1-question') return state
       /* النقاط لمن أجاب لا لصاحب الدور (قرار علي ٥ سبتمبر ٢٠٢٦): الحكم يختار
          الفريق من اسمه، و`null` تعني أنّ أحداً لم يُصب. */
       let s = state
@@ -165,6 +175,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         s1Cell: null,
         currentCategory: null,
         currentQuestion: null,
+        timerEndsAt: null,
       }
       if (nextIndex < STAGE1_QUESTIONS) return { ...s, ...rest, phase: 'stage1-board' as const }
       // انتهت المرحلة ١ → فاصل ثم الديربي
@@ -178,7 +189,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
     /* ---------------- الفاصل ---------------- */
     case 'INTERVAL_CONTINUE': {
-      if (!state) return state
+      if (!state || state.phase !== 'interval') return state
       return { ...state, phase: state.intervalNext }
     }
 
@@ -209,12 +220,13 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         s2Marks: ['صمت', 'صمت'],
         currentCategory: null,
         currentQuestion: q,
+        timerEndsAt: action.at === undefined ? null : action.at + STAGE2_TIMER_MS,
         phase: 'stage2-question',
       }
     }
 
     case 'S2_SET_MARK': {
-      if (!state) return state
+      if (!state || (state.phase !== 'stage2-question' && state.phase !== 'stage2-reveal')) return state
       const marks = [...state.s2Marks] as [Mark, Mark]
       marks[action.who] = action.mark
       /* لاعب واحد على الأكثر يحمل علامة في الجولة (القسم ٥): من بادر أولاً هو صاحب
@@ -230,6 +242,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
     case 'S2_NEXT_ROUND': {
       if (!state || !state.s2Sel) return state
+      if (state.phase !== 'stage2-question' && state.phase !== 'stage2-reveal') return state
       const sel = state.s2Sel
       // تطبيق النقاط والإحصاء
       let s = state
@@ -267,15 +280,21 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     }
 
     /* ---------------- الحق ما تلحق ---------------- */
+    case 'S3_START': {
+      if (!state || state.phase !== 'stage3-play' || state.timerEndsAt !== null) return state
+      return { ...state, timerEndsAt: action.at + STAGE3_TIMER_MS }
+    }
+
     case 'S3_REVEAL': {
-      if (!state) return state
+      /* الكشف في الحق ما تلحق وفي سؤال الحسم — الشاشتان تستعملان الفعل نفسه. */
+      if (!state || (state.phase !== 'stage3-play' && state.phase !== 'tiebreak')) return state
       return { ...state, s3Revealed: true }
     }
 
     case 'S3_JUDGE': {
       /* لا حكمَ على ما لم يُكشف: زرّا ✓/✗ لا يظهران إلّا بعد الكشف، والحارس
          هنا يمنع ضغطةً مزدوجة من أن تحكم على السؤال التالي وهو ما زال مطويّاً. */
-      if (!state || !state.s3Revealed) return state
+      if (!state || state.phase !== 'stage3-play' || !state.s3Revealed) return state
       let s = state
       if (action.verdict === 'correct') s = addScore(s, s.s3Team, STAGE3_POINTS, 's3')
       const counts = [...s.s3Counts[action.verdict]] as [number, number]
@@ -289,7 +308,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     }
 
     case 'S3_END_TURN': {
-      if (!state) return state
+      if (!state || state.phase !== 'stage3-play' || action.team !== state.s3Team) return state
       const done = state.s3Done.includes(state.s3Team) ? state.s3Done : [...state.s3Done, state.s3Team]
       // السؤال المعروض لحظة انتهاء الوقت ظهر على الشاشة (القسم ٨): يُحرق ويُتجاوز
       // كي لا يبدأ به الفريق التالي من جديد. الحكم يفعل هذا عند كل سؤال، أما هنا
@@ -299,7 +318,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (shown) s = { ...burn(s, shown), s3Pos: s.s3Pos + 1 }
       if (done.length < 2) {
         const nextTeam = (1 - s.s3Team) as TeamId
-        return ensureS3Queue({ ...s, s3Team: nextTeam, s3Done: done, s3Revealed: false })
+        return ensureS3Queue({ ...s, s3Team: nextTeam, s3Done: done, s3Revealed: false, timerEndsAt: null })
       }
       // انتهى الفريقان → تعادل؟ فاصل تعادل : ختام
       // يمرّ بالفاصل أولاً: القفز المباشر إلى سؤال حاسم بلا إنذار يفاجئ المتسابقين
@@ -311,17 +330,18 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
           currentCategory: null,
           currentQuestion: null,
           s3Revealed: false,
+          timerEndsAt: null,
           intervalNext: 'tiebreak',
           phase: 'interval',
         }
       }
-      return { ...s, s3Done: done, phase: 'endgame' }
+      return { ...s, s3Done: done, timerEndsAt: null, phase: 'endgame' }
     }
 
     /* ---------------- فاصل التعادل ---------------- */
     case 'TIEBREAK_SPIN': {
       /* سؤالٌ واحد في كلّ مرّة: سحبٌ ثانٍ وسؤالٌ معروض يحرق ورقةً لم تُقرأ. */
-      if (!state || state.currentQuestion) return state
+      if (!state || state.phase !== 'tiebreak' || state.currentQuestion) return state
       /* بلا فئة (لا فئةَ مكتملة المستويات) يُسحب الصعب من البنك كلّه بدل
          أن تسقط الشاشة الحاسمة على فئةٍ لا وجود لها. */
       const q = action.category
@@ -342,7 +362,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     }
 
     case 'TIEBREAK_PICK': {
-      if (!state) return state
+      if (!state || state.phase !== 'tiebreak' || !state.currentQuestion) return state
       let s = state
       if (action.team !== 'none') s = addScore(s, action.team, TIEBREAK_POINTS, 'tie')
       // إن بقي التعادل (لا أحد أصاب) نعيد سؤالاً صعباً آخر
@@ -357,7 +377,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
        نقاط الفريق تنزل تحته أصلاً بخطأ الديربي (`STAGE2_WRONG`). */
     case 'ADJUST': {
       if (!state) return state
-      return addScore(state, action.team, action.delta, stageOfPhase(state.phase))
+      return addScore(state, action.team, action.delta, stageOfPhase(state))
     }
 
     case 'REPORT_QUESTION': {

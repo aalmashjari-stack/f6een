@@ -4,13 +4,19 @@ import { ALL_QUESTIONS, familyOf, playableCategories, setQuestionOverlay } from 
 import {
   SCORE_FIX_STEP,
   STAGE1_CATEGORIES,
+  STAGE1_CONSULT_MS,
   STAGE1_LEVEL_POINTS,
   STAGE1_LEVELS,
   STAGE2_CORRECT,
+  STAGE2_TIMER_MS,
   STAGE2_WRONG,
   STAGE3_POINTS,
+  STAGE3_TIMER_MS,
   TIEBREAK_POINTS,
   createSession,
+  decodeState,
+  encodeState,
+  isStoredState,
   stage1Owner,
 } from './session'
 import type { GameState } from './session'
@@ -77,7 +83,7 @@ function playSession(): { shown: Question[]; state: GameState } {
        عند إنهاء الدور — فيُحسب فيما عُرض. */
     if (turn === 0) {
       shown.push(s.s3Queue[s.s3Pos])
-      s = step(s, { t: 'S3_END_TURN' })
+      s = step(s, { t: 'S3_END_TURN', team: s.s3Team })
     }
   }
 
@@ -203,7 +209,7 @@ describe('الحق ما تلحق — انتهاء الوقت لا يكرّر ا�
       s = step(s, { t: 'S3_JUDGE', verdict: 'correct' })
     }
     const onScreenAtTimeout = s.s3Queue[s.s3Pos]
-    s = step(s, { t: 'S3_END_TURN' })
+    s = step(s, { t: 'S3_END_TURN', team: s.s3Team })
 
     expect(s.s3Team).toBe(1)
     expect(s.s3Queue[s.s3Pos].id).not.toBe(onScreenAtTimeout.id)
@@ -285,7 +291,7 @@ describe('الحق ما تلحق — الطابور لا ينفد', () => {
       s = step(s, { t: 'S3_REVEAL' })
       s = step(s, { t: 'S3_JUDGE', verdict: 'wrong' })
     }
-    s = step(s, { t: 'S3_END_TURN' })
+    s = step(s, { t: 'S3_END_TURN', team: s.s3Team })
     expect(s.s3Team).toBe(1)
     expect(s.s3Queue[s.s3Pos]).toBeDefined()
   })
@@ -428,10 +434,111 @@ describe('تصحيح الحكم', () => {
     }
   })
 
-  /* الفاصلُ ذيلُ الجولة الجماعية لا بابُ الديربي — والتصحيح فيه يتبعها. */
-  it('التصحيح في الفاصل يُقيَّد على الجولة الجماعية', () => {
-    const s = step({ ...fresh(), phase: 'interval' }, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
-    expect(s.stagePoints.s1[0]).toBe(SCORE_FIX_STEP)
-    expect(s.stagePoints.s2[0]).toBe(0)
+  /* الفاصلُ ذيلُ ما سبقه: قبل الديربي ذيلُ اللوح، وقبل الحق ما تلحق ذيلُ
+     الديربي. كان يُنسب كلُّه إلى اللوح، فتصحيحٌ بعد الديربي يظهر في العمود
+     الخطأ و«وين خسرنا؟» يُجاب غلطاً. */
+  it('التصحيح في الفاصل يُقيَّد على المرحلة التي سبقته', () => {
+    const before2 = step(
+      { ...fresh(), phase: 'interval', intervalNext: 'stage2-selection' },
+      { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP },
+    )
+    expect(before2.stagePoints.s1[0]).toBe(SCORE_FIX_STEP)
+    expect(before2.stagePoints.s2[0]).toBe(0)
+
+    const before3 = step(
+      { ...fresh(), phase: 'interval', intervalNext: 'stage3-play' },
+      { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP },
+    )
+    expect(before3.stagePoints.s2[0]).toBe(SCORE_FIX_STEP)
+    expect(before3.stagePoints.s1[0]).toBe(0)
+
+    const beforeTie = step(
+      { ...fresh(), phase: 'interval', intervalNext: 'tiebreak' },
+      { t: 'ADJUST', team: 1, delta: -SCORE_FIX_STEP },
+    )
+    expect(beforeTie.stagePoints.s3[1]).toBe(-SCORE_FIX_STEP)
+  })
+})
+
+/**
+ * حرّاس الطور — الدفعة الثانية (٧ سبتمبر ٢٠٢٦). فعلٌ متأخّر أو مكرَّر من
+ * شاشةٍ ذهبت لا يحرّك طوراً غير طوره: كان `S3_END_TURN` مرّتين يُنهي دورَي
+ * الفريقين، والكشفُ يقلب الختام إلى كشف، وتنقيطُ الحسم يعمل في اللوح.
+ * الحالة نفسها تُعاد لا نسخة.
+ */
+describe('حرّاس الطور — أفعال متأخّرة ومكرَّرة', () => {
+  it('انتهاء الدور مرّتين لا يُنهي دور الفريق الثاني', () => {
+    let s = driveToStage3()
+    const first = s.s3Team
+    s = step(s, { t: 'S3_END_TURN', team: first })
+    expect(s.s3Team).toBe(1 - first)
+    expect(reducer(s, { t: 'S3_END_TURN', team: first })).toBe(s)
+    expect(s.phase).toBe('stage3-play')
+  })
+
+  it('لا كشف خارج شاشته ولا تنقيط خارج طوره', () => {
+    const board = createSession(INPUT)
+    expect(reducer(board, { t: 'S1_TO_REVEAL' })).toBe(board)
+    expect(reducer(board, { t: 'S2_TO_REVEAL' })).toBe(board)
+    expect(reducer(board, { t: 'S3_REVEAL' })).toBe(board)
+    expect(reducer(board, { t: 'S3_START', at: 0 })).toBe(board)
+    expect(reducer(board, { t: 'S3_END_TURN', team: 0 })).toBe(board)
+    expect(reducer(board, { t: 'INTERVAL_CONTINUE' })).toBe(board)
+    expect(reducer(board, { t: 'TIEBREAK_PICK', team: 0 })).toBe(board)
+    expect(reducer(board, { t: 'S2_NEXT_ROUND' })).toBe(board)
+
+    const end = { ...driveToStage3(), phase: 'endgame' as const }
+    expect(reducer(end, { t: 'S1_TO_REVEAL' })).toBe(end)
+    expect(reducer(end, { t: 'S3_JUDGE', verdict: 'correct' })).toBe(end)
+    expect(reducer(end, { t: 'TIEBREAK_SPIN', category: BOARD[0] })).toBe(end)
+  })
+
+  it('تنقيط الحسم يحتاج سؤالاً معروضاً', () => {
+    const tie = { ...driveToStage3(), phase: 'tiebreak' as const }
+    expect(reducer(tie, { t: 'TIEBREAK_PICK', team: 0 })).toBe(tie)
+  })
+})
+
+/**
+ * المؤقّت موعدٌ في الجلسة لا مدّةٌ في الشاشة (SPEC ٦: «الساعة لا تتوقّف
+ * أبداً»). إعادةُ التحميل في الحق ما تلحق كانت تعطي ثلاثين ثانيةً جديدة
+ * مع إبقاء النقاط.
+ */
+describe('المؤقّت محفوظ مع الجلسة', () => {
+  it('«ابدأ الآن» يثبّت موعد الانتهاء ولا يعيده ضغطٌ ثانٍ', () => {
+    let s = driveToStage3()
+    expect(s.timerEndsAt).toBeNull()
+    s = step(s, { t: 'S3_START', at: 1_000_000 })
+    expect(s.timerEndsAt).toBe(1_000_000 + STAGE3_TIMER_MS)
+    expect(reducer(s, { t: 'S3_START', at: 2_000_000 })).toBe(s)
+  })
+
+  it('انتهاء الدور يمحو الموعد فيبدأ الفريق الثاني من شاشة الاستعداد', () => {
+    let s = step(driveToStage3(), { t: 'S3_START', at: 1_000_000 })
+    s = step(s, { t: 'S3_END_TURN', team: s.s3Team })
+    expect(s.timerEndsAt).toBeNull()
+  })
+
+  it('خليّة اللوح وسؤال الديربي يحملان موعدهما، والكشف يمحوه', () => {
+    let s = createSession(INPUT)
+    s = step(s, { t: 'S1_PICK', category: BOARD[0], level: 'سهل', at: 5_000 })
+    expect(s.timerEndsAt).toBe(5_000 + STAGE1_CONSULT_MS)
+    s = step(s, { t: 'S1_TO_REVEAL' })
+    expect(s.timerEndsAt).toBeNull()
+
+    let d = driveToStage3()
+    d = { ...d, phase: 'stage2-selection' }
+    d = step(d, { t: 'S2_SELECT', sel: [0, 0], at: 7_000 })
+    expect(d.timerEndsAt).toBe(7_000 + STAGE2_TIMER_MS)
+    d = step(d, { t: 'S2_TO_REVEAL' })
+    expect(d.timerEndsAt).toBeNull()
+  })
+
+  /* لقطةٌ من قبل هذا الإصدار بلا موعد تُستأنف كما كانت. */
+  it('لقطة بلا موعد تُقرأ بموعدٍ فارغ', () => {
+    const stored = encodeState(createSession(INPUT)) as Record<string, unknown>
+    delete stored.timerEndsAt
+    expect(isStoredState(stored)).toBe(true)
+    expect(decodeState(stored as never).timerEndsAt).toBeNull()
   })
 })

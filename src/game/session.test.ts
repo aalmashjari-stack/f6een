@@ -103,3 +103,30 @@ describe('التخزين المحلّي باسم الحساب', () => {
     expect([...loadUsedIds()]).toEqual(ids)
   })
 })
+
+/**
+ * الفحص بحسب الطور: لقطةُ «سؤال» بلا سؤال كانت تمرّ من الفحص البنيويّ ثمّ
+ * تسقط الشاشة على `null` — وفي كلّ إقلاع، لأنّ الخادم يعيدها.
+ */
+describe('isStoredState — ما يحتاجه الطور', () => {
+  const base = () => encodeState(createSession(INPUT)) as Record<string, unknown>
+
+  it('يردّ طور السؤال بلا سؤال أو بلا خليّة', () => {
+    const q = { id: 'E001', category: 'x', level: 'سهل', topic: '', question: 'س؟', answer: 'ج' }
+    expect(isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: null })).toBe(false)
+    expect(isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: q, s1Cell: null })).toBe(false)
+    expect(
+      isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: q, s1Cell: { category: 'x', level: 'سهل' } }),
+    ).toBe(true)
+    expect(isStoredState({ ...base(), phase: 'stage2-question', currentQuestion: q, s2Sel: null })).toBe(false)
+    expect(isStoredState({ ...base(), phase: 'stage2-question', currentQuestion: q, s2Sel: [0, 0] })).toBe(true)
+  })
+
+  it('يردّ لاعباً بلا اسم وعموداً ناقصاً', () => {
+    const b = base()
+    const teams = b.teams as { players: unknown[] }[]
+    expect(isStoredState({ ...b, teams: [{ ...teams[0], players: [{ id: 't0p0' }] }, teams[1]] })).toBe(false)
+    expect(isStoredState({ ...b, stagePoints: { s1: [0], s2: [0, 0], s3: [0, 0], tie: [0, 0] } })).toBe(false)
+    expect(isStoredState({ ...b, s3Queue: [null] })).toBe(false)
+  })
+})

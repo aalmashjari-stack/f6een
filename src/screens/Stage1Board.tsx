@@ -26,7 +26,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
   function pick(category: string, level: (typeof STAGE1_LEVELS)[number]) {
     if (state.s1Played.includes(cellKey(category, level))) return
     play('pickLand')
-    dispatch({ t: 'S1_PICK', category, level })
+    dispatch({ t: 'S1_PICK', category, level, at: Date.now() })
   }
 
   return (

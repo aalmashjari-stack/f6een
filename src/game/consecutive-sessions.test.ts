@@ -74,7 +74,7 @@ function playSession(history: Set<string>): { shown: Question[]; state: GameStat
       const q = s.s3Queue[s.s3Pos]
       expect(q, 'نفد الطابور عند انتهاء الدور الأوّل').toBeDefined()
       shown.push(q)
-      s = step(s, { t: 'S3_END_TURN' })
+      s = step(s, { t: 'S3_END_TURN', team: s.s3Team })
     }
   }
 
