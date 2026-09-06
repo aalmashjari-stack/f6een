@@ -24,7 +24,7 @@ import {
 } from './lib/games'
 import type { ServerSession } from './lib/games'
 import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
-import { applyCachedBlocked, reportQuestion, syncBlocked } from './lib/questionFlags'
+import { applyCachedBlocked, flushPendingReports, reportQuestion, syncBlocked } from './lib/questionFlags'
 import {
   applyCachedCategories,
   applyCachedOverlay,
@@ -280,8 +280,11 @@ export default function App() {
   useEffect(() => {
     if (!uid || stateRef.current) return
     let alive = true
-    /* الإغلاق المعلَّق أوّلاً: لو بقي، ردّ الخادمُ جلسةً انتهت على أنّها مفتوحة. */
+    /* الإغلاق المعلَّق أوّلاً: لو بقي، ردّ الخادمُ جلسةً انتهت على أنّها مفتوحة.
+       والبلاغات المعلَّقة بعده — الخادم يقبلها عن جلسةٍ لقطتُها كاملة. */
     flushPendingClose()
+      .catch(() => {})
+      .then(() => flushPendingReports())
       .catch(() => {})
       .then(() => fetchOpenSession())
       .then((row) => {
@@ -332,8 +335,8 @@ export default function App() {
    * البلاغ يُرفع إلى القاعدة فيُحجز السؤال عن الجميع حتى يراجعه المدير.
    *
    * المرجع يمنع الإرسال مرّتين: الحالة تُرسَم مرّات، والقائمة تُقرأ كاملة في
-   * كل مرّة. وفشل الشبكة يُبتلع — البلاغ محفوظ في حالة الجلسة فيصل مع
-   * لقطتها، والحجز المحلّي وقع أصلاً.
+   * كل مرّة. وفشل الشبكة يُبتلع — البلاغ في صندوقٍ صادر يُعاد عند الإقلاع
+   * (`flushPendingReports`)، والحجز المحلّي وقع في لحظة الضغطة.
    */
   const sent = useRef(new Set<string>())
   useEffect(() => {

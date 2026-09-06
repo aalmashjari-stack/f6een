@@ -234,3 +234,39 @@ describe('تصدير الأسئلة ثمّ استيرادها', () => {
     expect(csv.includes('\r\n')).toBe(true)
   })
 })
+
+/**
+ * أسئلة الصور تدور ذهاباً وإياباً: تُصدَّر، وتُصحَّح، وتُرفع. نصّها واحد
+ * «من صاحب الصورة؟» في مئةٍ منها، فكان الرفع يقبل الأوّل ويردّ الباقي
+ * «مكرّر داخل الملفّ» (تدقيق ٦ سبتمبر ٢٠٢٦). الفرق في الصورة لا في النصّ.
+ */
+describe('أسئلة الصور في الرفع', () => {
+  const PHOTOS = Array.from({ length: 5 }, (_, i) => ({
+    id: `X10${i}`,
+    question: 'من صاحب الصورة؟',
+    image: `celeb-${i}`,
+  }))
+  const ctx = { categories: ['مشاهير', 'الكويت'], existing: [...CTX.existing, ...PHOTOS] }
+
+  it('تصديرُها ثمّ رفعُها بمعرّفاتها يمرّ كاملاً', () => {
+    const rows = PHOTOS.map((p) => ['مشاهير', 'سهل', p.question, `جواب ${p.id}`, '', p.id])
+    const plan = buildPlan([HEAD, ...rows], ctx)
+    expect(plan.rejected).toEqual([])
+    expect(plan.updated).toBe(PHOTOS.length)
+    expect(plan.rows.map((r) => r.image)).toEqual(PHOTOS.map((p) => p.image))
+  })
+
+  it('صفٌّ جديد بلا معرّف بنصّ الصورة لا يُعدّ مكرّراً لسؤال صورة', () => {
+    const plan = buildPlan([HEAD, ['الكويت', 'سهل', 'من صاحب الصورة؟', 'ج', '', '']], ctx)
+    expect(plan.rejected).toEqual([])
+    expect(plan.added).toBe(1)
+  })
+
+  it('النصّ العاديّ ما زال يُردّ مكرّراً', () => {
+    const plan = buildPlan(
+      [HEAD, ['الكويت', 'سهل', 'ما هي عاصمة مصر', 'القاهرة', '', ''], ['الكويت', 'سهل', 'س جديد؟', 'ج', '', ''], ['الكويت', 'سهل', 'س جديد', 'ج', '', '']],
+      ctx,
+    )
+    expect(plan.rejected.map((r) => r.reason)).toEqual(['موجود في البنك (M001)', 'السؤال مكرّر داخل الملفّ'])
+  })
+})

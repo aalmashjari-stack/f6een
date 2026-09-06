@@ -1797,7 +1797,11 @@ function ImportDialog({
     setErr(null)
     try {
       const res = await importQuestions(plan.rows, (n) => setDone(n))
-      onDone(`رُفع الملفّ: أُضيف ${res.added} وعُدّل ${res.updated} — تصل اللاعبين عند فتحهم اللعبة`)
+      onDone(
+        `رُفع الملفّ: أُضيف ${res.added} وعُدّل ${res.updated}` +
+          (res.skipped ? ` وتُخطّي ${res.skipped} موجود أصلاً` : '') +
+          ' — تصل اللاعبين عند فتحهم اللعبة',
+      )
     } catch (e) {
       setErr(e instanceof Error ? e.message : 'تعذّر الرفع')
       setBusy(false)
