@@ -76,16 +76,21 @@ export function Endgame({
         <BrandLogo className="end-logo" />
       </div>
 
+      {/* البطاقة مستطيلة لا عمودية (قرار علي ٦ سبتمبر ٢٠٢٦): الختمُ والاسمُ
+          والنتيجةُ في سطر واحد. الشاشة عريضة والبطاقة كانت تصعد أربعة أسطر،
+          فما وفّره الاصطفافُ الأفقي يذهب إلى الجداول تحتها. */}
       <div className="winner">
         <span className="winner-stamp">نتيجة الليلة</span>
-        {win === null ? (
-          <span className="w-title">تعادل</span>
-        ) : (
-          <>
-            <span className="w-eyebrow">الفائز</span>
-            <span className="w-title">{state.teams[win].name}</span>
-          </>
-        )}
+        <span className="w-copy">
+          {win === null ? (
+            <span className="w-title">تعادل</span>
+          ) : (
+            <>
+              <span className="w-eyebrow">الفائز</span>
+              <span className="w-title">{state.teams[win].name}</span>
+            </>
+          )}
+        </span>
         <div className="final-score">
           <span className="tabular">{s0}</span> — <span className="tabular">{s1}</span>
         </div>
@@ -101,6 +106,11 @@ export function Endgame({
           أضعاف ارتفاع الشاشة. الشاشة عريضة والجداول ضيّقة، فالعرض هو
           المتوفّر — وهذا وحده يردّ الختام إلى لقطة واحدة. */}
       <div className="es-grid">
+      {/* عمودٌ يجمع جدولَ النقاط وعدَّ «الحق ما تلحق» تحته: بثلاث كتلٍ
+          متجاورة كانت كتلةُ سطرين تقف بجانب كتلةِ ثمانية، فيبقى تحتها
+          ثلثُ الشاشة فارغاً وتتدرّج الحوافّ. بعمودين تستوي الكفّتان:
+          خمسةُ أسطرٍ وسطران يميناً، وثمانيةٌ يساراً. */}
+      <div className="es-col">
       {/* ——— من أين جاءت النقاط ———
           السؤال الأول بعد «مين فاز» هو «وين خسرنا». الجدول يجيب عنه بثلاثة أسطر:
           كل مرحلة وما كسبه فيها كل فريق. الأرقام هنا تُجمع فتساوي النتيجة النهائية،
@@ -150,6 +160,7 @@ export function Endgame({
           </div>
         </div>
       )}
+      </div>
 
       {/* اللاعب لا يُنقَّط بمفرده إلا في الديربي — والعنوان يقول ذلك صراحةً حتى لا
           يُقرأ صفرٌ أمام اسم لاعب اجتهد في المرحلتين الأخريين على أنه حكم عليه. */}
@@ -158,8 +169,10 @@ export function Endgame({
         <div className="es-table">
           {stats.map((s, i) => (
             <div key={s.player.id} className="es-row player" style={{ animationDelay: `${0.5 + i * 0.05}s` }}>
-              <span className="sr-name">{s.player.name}</span>
-              <span className="sr-team">{state.teams[s.teamId].name}</span>
+              <span className="sr-who">
+                <span className="sr-name">{s.player.name}</span>
+                <span className="sr-team">{state.teams[s.teamId].name}</span>
+              </span>
               {/* رمز بدل كلمة في سطر اللاعب وحده: اثنا عشر سطراً في عمودين،
                   و«صح»/«غلط» مكتوبتين تسرقان من الاسم عرضه حتى يُقصّ. اللون
                   يحمل المعنى نفسه (ذهبي/مرجاني)، والعنوان فوق الجدول يفسّره. */}
@@ -177,6 +190,7 @@ export function Endgame({
           ))}
         </div>
       </div>
+
       </div>
 
       <button className="action" onClick={() => dispatch({ t: 'NEW_GAME' })}>
@@ -221,11 +235,14 @@ export function Endgame({
           align-content:center;
           align-items:start; justify-items:center;
         }
-        /* الأعمدة الثلاثة غير متساوية عمداً: جدول اللاعبين أكثفها (اثنا عشر
-           سطراً في عمودين) فيأخذ الضعف، وجدول «الحق ما تلحق» سطران فيكفيه
-           أقلّها. بأثلاث متساوية كان سطر اللاعب ١٩٥px فيُقصّ الاسم. */
+        /* عمودان متساويان: يمينُهما جدولُ النقاط وتحته عدُّ «الحق ما تلحق»،
+           ويسارُهما لاعبو الديربي. الترتيب من اليمين ترتيبُ اللعب. */
         @media (min-width:900px) {
-          .es-grid { grid-template-columns:minmax(0,1fr) minmax(0,.78fr) minmax(0,1.55fr); }
+          .es-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+        }
+        .es-col {
+          display:flex; flex-direction:column; gap:clamp(10px,1.6vh,20px);
+          width:100%; max-width:680px; min-width:0;
         }
         .brand img {
           width:min(56%, 420px); height:auto; max-height:14vh; object-fit:contain;
@@ -235,7 +252,30 @@ export function Endgame({
           from { opacity:0; transform:scale(.86) translateY(-10px); }
           to   { opacity:1; transform:none; }
         }
-        .winner { display:flex; flex-direction:column; gap:6px; align-items:center; flex:none; }
+        .winner {
+          display:flex; flex-direction:row; align-items:center; justify-content:center;
+          flex-wrap:nowrap; gap:clamp(12px,2.4vw,40px); flex:none;
+        }
+        /* البطاقة تتّسع للصفّ: نيو كانت تحدّها بسبعمئة وستّين لأنّها كانت
+           عمودية، والصفُّ فيها يلتفّ سطرين — فيعود العمودُ من حيث خرج. */
+        html[data-skin] .screen.end .winner {
+          width:max-content; max-width:min(100%, 1180px);
+          flex-wrap:nowrap; gap:clamp(12px,2.4vw,40px);
+        }
+        /* الكِكر فوق الاسم في عمودٍ صغير داخل الصفّ — «الفائز» لا يُقرأ في سطرٍ
+           بجانب الاسم بل فوقه، وهو ما يجعل الاسمَ عنواناً لا كلمةً في جملة. */
+        .w-copy { display:flex; flex-direction:column; align-items:center; gap:2px; min-width:0; }
+        /* خطٌّ يفصل الاسم عن الرقم: بلا فاصلٍ يُقرآن سطراً واحداً متّصلاً. */
+        .winner .final-score {
+          padding-inline-start:clamp(12px,2.4vw,40px);
+          border-inline-start:2px solid var(--border);
+          margin-top:0;
+        }
+        /* الشاشة الضيّقة ترجع بهما عمودين — الصفُّ يحتاج عرضاً. */
+        @media (max-width:620px) {
+          .winner { flex-direction:column; gap:6px; }
+          .winner .final-score { padding-inline-start:0; border-inline-start:0; }
+        }
         .w-eyebrow {
           color:var(--text-2); font-weight:700; line-height:1.2;
           font-size:clamp(12px,min(1.6vw,2vh),18px);
@@ -274,9 +314,11 @@ export function Endgame({
         .es-block { width:100%; max-width:680px; min-width:0; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }
         .es-title { color:var(--text-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7vh),17px); text-align:center; }
         .es-table { display:flex; flex-direction:column; gap:6px; width:100%; }
-        /* من سبعة لاعبين فصاعداً ينقسم الجدول عمودين: اثنا عشر لاعباً في ستة
-           صفوف بدل اثني عشر — وهو أطول جدول في الشاشة. */
-        .es-table:has(.es-row.player:nth-child(7)) {
+        /* من تسعة لاعبين فصاعداً ينقسم الجدول عمودين: اثنا عشر لاعباً في ستة
+           صفوف بدل اثني عشر — وهو أطول جدول في الشاشة. وكان الحدُّ سبعة، فلمّا
+           تساوت الأعمدةُ صار ثمانيةُ لاعبين (أربعة لكلّ فريق، وهي الحالة
+           الشائعة) ينقسمون فيهبط السطر إلى مئتَي بكسل ويُقصّ الاسم. */
+        .es-table:has(.es-row.player:nth-child(9)) {
           display:grid; grid-template-columns:1fr 1fr; gap:6px clamp(6px,.8vw,12px);
         }
         .es-row {
@@ -294,9 +336,15 @@ export function Endgame({
         .es-row.total { border-color:var(--gold); background:transparent; }
         .es-row.total .es-num { color:var(--gold); font-size:clamp(16px,min(2.5vw,2.9vh),36px); }
 
-        .es-row.s3, .es-row.player { grid-template-columns:1fr auto; }
-        .es-row.player { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto; }
+        .es-row.s3, .es-row.player { grid-template-columns:minmax(0,1fr) auto; }
         .es-row.player { animation:rise .45s ease-out both; }
+        /* الاسم والفريق متجاوران على خطّ الأساس بدل عمودين متباعدين: كان
+           اسمُ الفريق يطفو وحده في وسط السطر بفجوةٍ عن الاسم وأخرى عن
+           الرقاقتين، فيُقرأ السطر ثلاث جزرٍ لا سطراً واحداً. */
+        .sr-who {
+          display:flex; align-items:baseline; gap:clamp(5px,.7vw,10px);
+          min-width:0; overflow:hidden;
+        }
         /* سطر واحد لكل لاعب: العمود ضيّق (نصف الكتلة) والأسماء تطول، فبلا
            هذا يلتفّ السطر إلى ثلاثة ويصير الجدول أطول من الشاشة وحده. */
         .sr-name {
