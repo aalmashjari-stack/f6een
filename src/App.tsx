@@ -3,6 +3,8 @@ import type { GameState, SetupInput, StoredState } from './game/session'
 import {
   createSession,
   decodeState,
+  notReadyMessage,
+  sessionNotReady,
   encodeState,
   isStoredState,
   persistUsedIds,
@@ -387,6 +389,11 @@ export default function App() {
    */
   const begin = useCallback(
     async (input: SetupInput) => {
+      /* **قبل الخصم لا بعده.** الخصم عند الإنشاء ولا يُردّ (SPEC ٣)، وفئةٌ
+         خرجت من الصالحة بين رسم الشبكة والضغط تكلّف اللاعب لعبةً كاملة. */
+      const notReady = sessionNotReady(input)
+      if (notReady) throw new Error(notReadyMessage(notReady))
+
       const fresh = createSession(input)
       /* بلا حساب لا خصم ولا جلسة خادم — مسار `REQUIRE_LOGIN = false` وحده. */
       if (!uid) {

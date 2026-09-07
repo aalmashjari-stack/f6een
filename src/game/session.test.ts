@@ -5,10 +5,12 @@ import {
   isStoredState,
   loadUsedIds,
   persistUsedIds,
+  notReadyMessage,
+  sessionNotReady,
   setStorageOwner,
   STAGE1_CATEGORIES,
 } from './session'
-import { playableCategories } from './bank'
+import { playableCategories, poolByCatLevel, poolShippedByLevels, setBlockedQuestionIds } from './bank'
 
 const BOARD = playableCategories().slice(0, STAGE1_CATEGORIES)
 const INPUT = {
@@ -128,5 +130,49 @@ describe('isStoredState — ما يحتاجه الطور', () => {
     expect(isStoredState({ ...b, teams: [{ ...teams[0], players: [{ id: 't0p0' }] }, teams[1]] })).toBe(false)
     expect(isStoredState({ ...b, stagePoints: { s1: [0], s2: [0, 0], s3: [0, 0], tie: [0, 0] } })).toBe(false)
     expect(isStoredState({ ...b, s3Queue: [null] })).toBe(false)
+  })
+})
+
+/**
+ * جاهزيّة الجلسة — تُفحص **قبل الخصم**. الخصم عند الإنشاء ولا يُردّ
+ * (SPEC ٣)، وفئةٌ خرجت من الصالحة بين رسم شبكة الإعداد والضغط على «ابدأ»
+ * تكلّف اللاعب لعبةً كاملة أمام مجلسه.
+ */
+describe('sessionNotReady', () => {
+  it('يمرّ على مدخلات سليمة', () => {
+    expect(sessionNotReady(INPUT)).toBeNull()
+  })
+
+  it('يردّ عدداً ناقصاً من الفئات', () => {
+    const r = sessionNotReady({ ...INPUT, categories: BOARD.slice(0, 3) })
+    expect(r?.kind).toBe('count')
+    expect(notReadyMessage(r!)).toContain(String(STAGE1_CATEGORIES))
+  })
+
+  /* الحالة التي بُني الفحص لأجلها: بلاغٌ يصل بعد رسم الشبكة فيحجز آخر سؤالٍ
+     في خليّة، فتخرج الفئة من الصالحة والاختيارُ قائم. */
+  it('يسمّي الفئة التي خرجت من الصالحة بعد الاختيار', () => {
+    const cat = BOARD[0]
+    const doomed = poolByCatLevel(cat, 'صعب').map((q) => q.id)
+    setBlockedQuestionIds(doomed)
+    try {
+      const r = sessionNotReady(INPUT)
+      expect(r?.kind).toBe('categories')
+      expect(r?.kind === 'categories' && r.names).toContain(cat)
+      expect(notReadyMessage(r!)).toContain(cat)
+    } finally {
+      setBlockedQuestionIds([])
+    }
+  })
+
+  /* حجبُ مخزون الحق ما تلحق يُخرج الفئات من الصالحة قبل أن يُفحص الطابور —
+     ولهذا حُذف فحصُ الطابور من الدالّة: شرطُه لا يُبلغ أبداً. */
+  it('حجبُ المخزون كلّه يظهر فئاتٍ لا طابوراً', () => {
+    setBlockedQuestionIds(poolShippedByLevels(['سهل', 'متوسط']).map((q) => q.id))
+    try {
+      expect(sessionNotReady(INPUT)?.kind).toBe('categories')
+    } finally {
+      setBlockedQuestionIds([])
+    }
   })
 })
