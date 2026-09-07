@@ -35,6 +35,7 @@ import { AccountMenu } from './components/AccountMenu'
 import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
 import { CrashScreen } from './components/CrashScreen'
+import { useWakeLock } from './components/useWakeLock'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
@@ -235,6 +236,10 @@ export default function App() {
      لعبةً بدأها اللاعب في الأثناء. */
   const stateRef = useRef(state)
   stateRef.current = state
+
+  /* الشاشة تبقى مستيقظة ما دامت لعبةٌ قائمة — من الإعداد إلى الختام. وستّون
+     ثانية تشاورٍ بلا لمسةٍ واحدة هي بالضبط ما يُطفئ الشاشة أمام المجلس. */
+  useWakeLock(state !== null)
 
   /**
    * الإقلاع باسم الحساب — قبل كلّ أثرٍ آخر (أثرُ تخطيطٍ فيسبق الآثار كلّها).
