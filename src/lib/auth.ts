@@ -235,3 +235,65 @@ export async function signInWithEmail(email: string, password: string) {
   const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
   if (error) throw error
 }
+
+/**
+ * طلب استعادة كلمة السرّ.
+ *
+ * **لا يُفشى وجودُ البريد من عدمه**: Supabase يردّ بنجاحٍ في الحالين عمداً،
+ * والشاشة تقول «إن كان لديك حساب فستصلك رسالة». وإفشاؤه يجعل النموذج
+ * أداةَ تعدادٍ لحسابات اللاعبين.
+ *
+ * و`redirectTo` يعيده إلى الموقع ومعه رمزٌ في الرابط، فيلتقطه العميل
+ * (`detectSessionInUrl`) ويفتح جلسةً محدودةً تكفي لتغيير كلمة السرّ وحدها.
+ * والعنوان يُشتقّ من `window.location.origin` لا يُكتب: نفس الشيفرة تعمل
+ * على localhost وعلى f6een.com — والعنوانُ نفسه يجب أن يكون في
+ * Authentication ← URL Configuration ← Redirect URLs وإلّا عاد اللاعب إلى
+ * موقعٍ آخر (وقع من قبل، انظر تعليق `signInWithGoogle`).
+ */
+export async function requestPasswordReset(email: string) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${window.location.origin}/?recovery=1`,
+  })
+  if (error) throw error
+}
+
+/** يضع كلمة السرّ الجديدة — يُنادى بعد أن تفتح رابطُ الاستعادة جلسةً. */
+export async function setNewPassword(password: string) {
+  const { error } = await supabase.auth.updateUser({ password })
+  if (error) throw error
+}
+
+/**
+ * إعادة إرسال بريد التأكيد.
+ *
+ * من سجّل ثمّ ضاعت الرسالة أو انتهت صلاحيتها كان يقف بلا مخرج: لا يدخل
+ * لأنّ حسابه غير مؤكَّد، ولا يسجّل ثانيةً لأنّ البريد مأخوذ.
+ */
+export async function resendConfirmation(email: string) {
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email.trim(),
+    options: { emailRedirectTo: window.location.origin },
+  })
+  if (error) throw error
+}
+
+/**
+ * هل فُتحت هذه الجلسة برابط استعادة؟
+ *
+ * يُقرأ من الحدث لا من الرابط: Supabase يمسح المعاملات من العنوان بعد
+ * المبادلة، فقراءةُ `?recovery=1` وحدها تفوت إن تأخّر الرسم. والحدث
+ * `PASSWORD_RECOVERY` هو الإشارة الرسميّة.
+ */
+export function useRecoveryMode(): boolean {
+  const [on, setOn] = useState(
+    typeof location !== 'undefined' && new URLSearchParams(location.search).has('recovery'),
+  )
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setOn(true)
+    })
+    return () => sub.subscription.unsubscribe()
+  }, [])
+  return on
+}

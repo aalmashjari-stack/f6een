@@ -12,7 +12,7 @@ import {
   writeScoped,
 } from './game/session'
 import { reducer } from './game/reducer'
-import { useSession } from './lib/auth'
+import { useRecoveryMode, useSession } from './lib/auth'
 import {
   closeSessionDurably,
   fetchBalance,
@@ -38,6 +38,7 @@ import { CrashScreen } from './components/CrashScreen'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
+import { ResetPassword } from './screens/ResetPassword'
 import { Setup } from './screens/Setup'
 import { Stage1Board } from './screens/Stage1Board'
 import { Stage1Question } from './screens/Stage1Question'
@@ -165,6 +166,9 @@ export default function App() {
   const [navPage, setNavPage] = useState<'buy' | 'account' | 'rules' | 'contact' | null>(null)
   const session = useSession()
   const uid = session?.user.id ?? null
+  /* رابطُ الاستعادة يفتح جلسةً ويطلق `PASSWORD_RECOVERY`. */
+  const recovery = useRecoveryMode()
+  const [recoveryDone, setRecoveryDone] = useState(false)
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
   useEffect(() => {
@@ -423,6 +427,20 @@ export default function App() {
         الدخول لحظةً أمام لاعبٍ مسجَّل أصلاً.
      الأول اختياريّ بالمنصّة، والثاني لازمٌ في الاثنين. فحين لا شعار، يُنتظر
      بسطحٍ صامت بلون الهويّة: لا وميض ولا علامة تحميل تُقلق قبل أن يلزم. */
+  /* شاشةُ تعيين الكلمة تسبق كلَّ شيء بعد الإقلاع: من فتح رابط الاستعادة جاء
+     لهذا، وتركُه على شاشة الإعداد يضيّع الرابط — وصلاحيتُه محدودة. */
+  if (recovery && !recoveryDone && session) {
+    return (
+      <ResetPassword
+        onDone={() => {
+          setRecoveryDone(true)
+          /* المعامل يُمسح من العنوان فلا تعود الشاشة بإعادة تحميل. */
+          window.history.replaceState(null, '', window.location.pathname)
+        }}
+      />
+    )
+  }
+
   if (!splashDone || session === undefined || !booted) {
     return isNativeApp ? (
       <Splash onDone={leaveSplash} />
