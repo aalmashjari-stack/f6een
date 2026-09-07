@@ -2,7 +2,7 @@
 /**
  * يبني ملفَّ **تعديل** لأسئلة قائمة في البنك — لا ملفَّ إضافة.
  *
- *   node scripts/rewrite-answers.mjs <تصدير-اللوحة.csv> <خريطة.json> [خرج.csv]
+ *   node scripts/rewrite-answers.mjs <تصدير-اللوحة.csv> <خريطة.json> <الفئة> [خرج.csv]
  *
  * الخريطة `{"مفتاح الصورة أو نصّ السؤال": "الإجابة الجديدة"}`. والمطابقة
  * تقع على **عمود المعرّف** المأخوذ من تصدير اللوحة نفسه — وهو الشرط الذي
@@ -10,6 +10,11 @@
  *
  * **ولا يُستنتج المعرّف بتسلسل الأسطر أبداً**: معرّفٌ منزاح يعدّل السؤال
  * الخطأ بصمت. فما لم يُطابَق يُترك ويُذكر بالاسم، ولا يدخل الملفّ.
+ *
+ * **والفئة شرطٌ لا خيار** (٨ سبتمبر ٢٠٢٦): المطابقة بالإجابة وحدها أصابت
+ * ثمانية أسئلة في فئاتٍ أخرى تشترك في الجواب — «ما اسم أوّل بيت وُضع
+ * للناس؟» كان سيصير جوابه «الكعبة، السعودية». فالبحث يقتصر على صفوف الفئة
+ * المطلوبة، ولا يخرج منها.
  *
  * والتحقّق قبل الضغط في اللوحة: تعرض «0 إضافة · N تعديل · 0 مردود».
  * أيّ رقمٍ غير هذا يعني أنّ المطابقة انزاحت، فأوقف الرفع.
@@ -36,9 +41,9 @@ function parseCsv(text) {
   return rows.filter((r) => r.some((x) => x.trim() !== ''))
 }
 
-const [exportPath, mapPath, outPath = 'تعديل-الإجابات.csv'] = process.argv.slice(2)
-if (!exportPath || !mapPath) {
-  console.error('الاستعمال: node scripts/rewrite-answers.mjs <تصدير.csv> <خريطة.json> [خرج.csv]')
+const [exportPath, mapPath, category, outPath = 'تعديل-الإجابات.csv'] = process.argv.slice(2)
+if (!exportPath || !mapPath || !category) {
+  console.error('الاستعمال: node scripts/rewrite-answers.mjs <تصدير.csv> <خريطة.json> <الفئة> [خرج.csv]')
   process.exit(1)
 }
 
@@ -62,8 +67,11 @@ for (const [key, next] of Object.entries(map)) {
 }
 
 const out = [], skipped = [], seen = new Set()
+let inCategory = 0
 for (let i = 1; i < table.length; i++) {
   const r = table[i]
+  if ((r[iCat] ?? '').trim() !== category) continue   // الفئة شرط، لا يخرج منه البحث
+  inCategory++
   const id = (r[iId] ?? '').trim()
   const old = (r[iA] ?? '').trim()
   const hit = byOldAnswer.get(old)
@@ -81,6 +89,11 @@ const csv = '﻿' + [['المعرّف','التصنيف','المستوى','الم
   .map((r) => r.map(esc).join(',')).join('\r\n')
 writeFileSync(resolve(outPath), csv)
 
+console.log(`صفوف الفئة «${category}» في التصدير: ${inCategory}`)
+if (inCategory === 0) {
+  console.error('لا صفوف بهذه الفئة — تأكّد من اسم الفئة ومن أنّ التصدير حديث.')
+  process.exit(1)
+}
 console.log(`صفوف التعديل: ${out.length}`)
 if (skipped.length) console.log('تُخطّي:', skipped.join(' · '))
 if (missed.length) console.log(`لم يُطابَق (${missed.length}):`, missed.join('، '))
