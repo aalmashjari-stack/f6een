@@ -84,7 +84,7 @@ const table = parseCsv(readFileSync(resolve(file), 'utf8'))
 const head = table[0].map((h) => h.trim())
 const at = (name) => head.indexOf(name)
 const iCat = at('التصنيف'), iLvl = at('المستوى'), iQ = at('السؤال'), iA = at('الإجابة')
-const iTopic = at('الموضوع'), iId = at('المعرّف')
+const iTopic = at('الموضوع'), iId = at('المعرّف'), iImg = at('الصورة')
 
 if ([iCat, iLvl, iQ, iA].some((i) => i < 0)) {
   console.error('ينقص الملفّ عمود من: التصنيف · المستوى · السؤال · الإجابة')
@@ -104,6 +104,9 @@ for (let i = 1; i < table.length; i++) {
     question: (r[iQ] ?? '').trim(),
     answer: (r[iA] ?? '').trim(),
     topic: iTopic >= 0 ? (r[iTopic] ?? '').trim() : '',
+    /* مفتاح صورة مشحونة (`landmark-…`) أو رابطٌ في دلو art. الخادم يحرس
+       الروابط الخارجية؛ والمفتاح المشحون يحلّه التطبيق من `assets/`. */
+    image: iImg >= 0 ? (r[iImg] ?? '').trim() : '',
   }
   if (!row.question && !row.answer && !row.category) continue
   if (!row.category || !row.question || !row.answer) {
