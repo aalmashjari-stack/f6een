@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import { KeepAwake } from '@capacitor-community/keep-awake'
+import { isNativeApp } from '../lib/platform'
 
 /**
  * يمنع نوم الشاشة أثناء اللعب.
@@ -15,6 +17,11 @@ import { useEffect } from 'react'
  * تطبيق، قفل شاشة، تبويب آخر)، ولا يُعيده وحده. فبدون `visibilitychange`
  * يعمل القفل مرّةً واحدة ثمّ يسقط صامتاً في أوّل مقاطعة — وهي الحالة التي
  * تقع في المجلس لا في التجربة.
+ *
+ * **وطريقان لا واحد** (٨ سبتمبر ٢٠٢٦): واجهةُ الويب للموقع، ومؤقّتُ الخمول
+ * من النظام للتطبيق المثبَّت. لأنّ دعم `navigator.wakeLock` داخل ويب‑ڤيو
+ * Capacitor غيرُ مضمون، والطبقةُ الأصليّة أوثقُ حيث توجد. ويعملان معاً بلا
+ * تعارض: كلاهما يقول للنظام «لا تُطفئ»، ورفعُ أحدهما لا يرفع الآخر.
  */
 export function useWakeLock(active: boolean) {
   useEffect(() => {
@@ -22,10 +29,13 @@ export function useWakeLock(active: boolean) {
     const nav = navigator as Navigator & {
       wakeLock?: { request(type: 'screen'): Promise<{ release(): Promise<void> }> }
     }
-    if (!nav.wakeLock) return
 
     let lock: { release(): Promise<void> } | null = null
     let alive = true
+
+    /* الطبقة الأصليّة: تُرفع مرّةً وتبقى حتى تُنزَع، ولا تحتاج إعادةَ طلبٍ
+       عند العودة — النظام يحفظها للتطبيق لا للصفحة. */
+    if (isNativeApp) KeepAwake.keepAwake().catch(() => {})
 
     const acquire = async () => {
       if (!alive || document.visibilityState !== 'visible' || lock) return
@@ -45,14 +55,17 @@ export function useWakeLock(active: boolean) {
       else lock = null
     }
 
-    void acquire()
-    document.addEventListener('visibilitychange', onVisible)
+    if (nav.wakeLock) {
+      void acquire()
+      document.addEventListener('visibilitychange', onVisible)
+    }
 
     return () => {
       alive = false
       document.removeEventListener('visibilitychange', onVisible)
       void lock?.release().catch(() => {})
       lock = null
+      if (isNativeApp) KeepAwake.allowSleep().catch(() => {})
     }
   }, [active])
 }
