@@ -1992,11 +1992,45 @@ function Messages() {
  * في ٣١ أغسطس ٢٠٢٦.
  */
 function Drafts() {
-  const { data: batches, err, reload } = useLoad<DraftBatch[]>(listDraftBatches)
+  const { data: all, err, reload } = useLoad<DraftBatch[]>(listDraftBatches)
   const [open, setOpen] = useState<string | null>(null)
   const [rows, setRows] = useState<DraftRow[] | null>(null)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  /* المبتوت فيه يُخفى افتراضاً: الشاشة للقرار، والدفعة التي بُتّ فيها صارت
+     سجلّاً. وبدونه تطول القائمة بلا حدّ وتُخفي المعلَّق بين المعتمَد. */
+  const [showDecided, setShowDecided] = useState(false)
+  /* اختيارٌ متعدّد: ستّ دفعات اختبار تُرفض بضغطة لا بستّ. */
+  const [picked, setPicked] = useState<Set<string>>(new Set())
+
+  const pending = useMemo(() => (all ?? []).filter((b) => b.status === 'pending'), [all])
+  const decided = useMemo(() => (all ?? []).filter((b) => b.status !== 'pending'), [all])
+  const batches = showDecided ? all : pending
+
+  const toggle = (id: string) =>
+    setPicked((p) => {
+      const n = new Set(p)
+      if (n.has(id)) n.delete(id)
+      else n.add(id)
+      return n
+    })
+
+  const rejectPicked = async () => {
+    setBusy(true)
+    setMsg(null)
+    let n = 0
+    try {
+      for (const b of picked) n += await rejectDrafts(b)
+      setMsg({ ok: true, text: `رُفضت ${picked.size} دفعة · ${n} مسوّدة` })
+      setPicked(new Set())
+      setOpen(null)
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الرفض' })
+    } finally {
+      setBusy(false)
+    }
+  }
 
   const show = (batch: string) => {
     if (open === batch) {
@@ -2037,16 +2071,44 @@ function Drafts() {
   }
 
   if (err) return <p className="a-err">{err}</p>
-  if (!batches) return <p className="a-muted">…</p>
+  if (!all || !batches) return <p className="a-muted">…</p>
+
+  const bar = (
+    <div className="a-bar">
+      <span className="a-muted">
+        {pending.length} تنتظر · {decided.length} مبتوت فيها
+      </span>
+      {decided.length > 0 && (
+        <button className="a-btn" onClick={() => setShowDecided((v) => !v)}>
+          {showDecided ? 'أخفِ المبتوت فيه' : 'أظهر المبتوت فيه'}
+        </button>
+      )}
+      {picked.size > 0 && (
+        <button className="a-btn danger" disabled={busy} onClick={rejectPicked}>
+          ارفض المحدَّد ({picked.size})
+        </button>
+      )}
+    </div>
+  )
+
   if (batches.length === 0)
-    return <p className="a-muted">لا مسوّدات. ما يصل من طريقٍ خارجيّ يظهر هنا قبل أن يدخل البنك.</p>
+    return (
+      <div className="a-card">
+        {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
+        {bar}
+        <p className="a-muted">لا مسوّدات تنتظر. ما يصل من طريقٍ خارجيّ يظهر هنا قبل أن يدخل البنك.</p>
+        <style>{`.a-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px}`}</style>
+      </div>
+    )
 
   return (
     <div className="a-card">
       {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
+      {bar}
       <table className="a-table">
         <thead>
           <tr>
+            <th></th>
             <th>الدفعة</th>
             <th>الفئة</th>
             <th className="num">سهل</th>
@@ -2061,6 +2123,11 @@ function Drafts() {
           {batches.map((b) => (
             <Fragment key={b.batch}>
               <tr>
+                <td>
+                  {b.status === 'pending' && (
+                    <input type="checkbox" checked={picked.has(b.batch)} onChange={() => toggle(b.batch)} />
+                  )}
+                </td>
                 <td className="a-muted">{stamp(b.created_at)}</td>
                 <td>
                   {b.categories}
@@ -2102,7 +2169,7 @@ function Drafts() {
               </tr>
               {open === b.batch && (
                 <tr>
-                  <td colSpan={8}>
+                  <td colSpan={9}>
                     {!rows ? (
                       <p className="a-muted">…</p>
                     ) : (
@@ -2128,6 +2195,7 @@ function Drafts() {
         </tbody>
       </table>
       <style>{`
+        .a-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .a-table.sub { margin: 6px 0 10px; background: rgba(0,0,0,.03); }
         .a-table.sub td { padding: 4px 8px; font-size: 13px; }
         .tag.warn { margin-inline-start: 8px; background: #ffe6e0; color: #8a2c14; }
