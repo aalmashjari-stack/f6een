@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { signInWithEmail, signUpWithEmail } from '../lib/auth'
+import { requestPasswordReset, resendConfirmation, signInWithEmail, signUpWithEmail } from '../lib/auth'
 
 /* رموز الاتصال — الخليج أوّلاً ثم الأكثر وروداً. الكويت الافتراضيّة. */
 const DIAL_CODES = [
@@ -58,6 +58,9 @@ export function SignUp({ onBack }: { onBack: () => void }) {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const [sent, setSent] = useState(false)
+  /* «أُرسل» يشمل الاستعادة وإعادة التأكيد معاً: كلاهما ينتهي بالرسالة نفسها
+     «افحص بريدك»، فشاشةٌ واحدة تكفيهما بنصٍّ مختلف. */
+  const [note, setNote] = useState<string | null>(null)
 
   const signup = mode === 'signup'
 
@@ -78,6 +81,36 @@ export function SignUp({ onBack }: { onBack: () => void }) {
     return null
   }
 
+  /**
+   * الاستعادة وإعادة التأكيد — كلتاهما تحتاج البريد وحده.
+   *
+   * **ولا يُفشى وجود الحساب**: الرسالة واحدة سواء وُجد البريد أم لا، وإلّا
+   * صار النموذج أداةَ تعدادٍ لحسابات اللاعبين.
+   */
+  async function byEmail(kind: 'reset' | 'resend') {
+    const e = email.trim()
+    if (!e || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+      setErr('اكتب بريدك الإلكتروني أولاً')
+      return
+    }
+    setErr(null)
+    setBusy(true)
+    try {
+      if (kind === 'reset') await requestPasswordReset(e)
+      else await resendConfirmation(e)
+      setNote(
+        kind === 'reset'
+          ? 'إن كان لديك حساب بهذا البريد فستصلك رسالة لتغيير كلمة المرور.'
+          : 'أُرسلت رسالة التأكيد من جديد. افحص بريدك ومجلّد غير المرغوب.',
+      )
+    } catch {
+      /* الرسالة نفسها عند الفشل: الفرق يفشي ما نخفيه. */
+      setNote('إن كان لديك حساب بهذا البريد فستصلك رسالة.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     const bad = validate()
@@ -86,6 +119,7 @@ export function SignUp({ onBack }: { onBack: () => void }) {
       return
     }
     setErr(null)
+    setNote(null)
     setBusy(true)
     try {
       if (signup) {
@@ -183,14 +217,29 @@ export function SignUp({ onBack }: { onBack: () => void }) {
         )}
 
         {err && <p className="su-err">{err}</p>}
+        {note && <p className="su-note">{note}</p>}
 
         <button className="su-submit" type="submit" disabled={busy}>
           {busy ? 'لحظة…' : signup ? 'إنشاء الحساب' : 'دخول'}
         </button>
 
+        {/* المخرجان اللذان لم يكونا: من نسي كلمته، ومن ضاعت رسالة تأكيده
+            فلا يدخل ولا يسجّل ثانيةً لأنّ بريده مأخوذ. وموضعهما في وضع
+            الدخول: من يُنشئ حساباً لا يحتاجهما. */}
+        {!signup && (
+          <div className="su-foot su-recover">
+            <button type="button" className="su-link" disabled={busy} onClick={() => byEmail('reset')}>
+              نسيت كلمة المرور
+            </button>
+            <button type="button" className="su-link" disabled={busy} onClick={() => byEmail('resend')}>
+              أعد إرسال رسالة التأكيد
+            </button>
+          </div>
+        )}
+
         <div className="su-foot">
           <button type="button" className="su-link"
-                  onClick={() => { setMode(signup ? 'signin' : 'signup'); setErr(null) }}>
+                  onClick={() => { setMode(signup ? 'signin' : 'signup'); setErr(null); setNote(null) }}>
             {signup ? 'لديك حساب؟ سجّل الدخول' : 'ليس لديك حساب؟ أنشئ واحداً'}
           </button>
           <button type="button" className="su-link" onClick={onBack}>رجوع</button>
@@ -244,6 +293,10 @@ const CSS = `
   }
   .su-submit:disabled { background:rgba(23,23,31,.07); color:var(--n-ink-3,#948CA8); box-shadow:none; }
   .su-foot { display:flex; justify-content:space-between; gap:10px; }
+  .su-note { margin:0; color:var(--n-ink-2,#5C5470); font-weight:700; line-height:1.5;
+             font-size:clamp(12px,1.5vh,14px); }
+  .su-recover { justify-content:space-between; gap:10px; }
+  .su-link:disabled { opacity:.5; cursor:default; }
   .su-link { background:none; border:0; cursor:pointer; font:inherit; font-weight:700;
              font-size:clamp(11px,1.4vw,14px); color:var(--n-ink-3,#948CA8); }
   .su-link:hover { color:var(--n-brand,#7A3E9D); }
