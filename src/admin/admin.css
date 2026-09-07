@@ -225,3 +225,25 @@ label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
   border: 1px solid rgba(0, 0, 0, .12); display: block; background: #f2f2f2;
 }
 .q-thumb.empty { background: repeating-linear-gradient(45deg, #eee, #eee 6px, #e0e0e0 6px, #e0e0e0 12px); }
+
+/* طبقة تكبير صورة السؤال في اللوحة. الإغلاق ثلاث طرق: الزرّ، والخلفية،
+   ومفتاح الهروب — والزرّ أظهرها، فمن يراجع خمسين صورة يريد هدفاً ثابتاً
+   لا يبحث عنه في كلّ مرّة. */
+.q-thumb.tap { cursor: zoom-in; }
+.q-thumb.tap:focus-visible { outline: 2px solid #333; outline-offset: 2px; }
+.pv-back {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  padding: 28px; background: rgba(12, 12, 16, .93); cursor: zoom-out;
+}
+.pv-back img { max-width: 92vw; max-height: 80vh; object-fit: contain; border-radius: 10px; cursor: default; }
+.pv-label { color: #fff; font-size: 20px; font-weight: 700; }
+.pv-x {
+  position: absolute; top: 16px; inset-inline-end: 16px;
+  width: 46px; height: 46px; display: grid; place-items: center;
+  font-size: 22px; line-height: 1; color: #fff; padding: 0;
+  background: rgba(255, 255, 255, .16); border: 2px solid rgba(255, 255, 255, .55);
+  border-radius: 50%; cursor: pointer;
+}
+.pv-x:hover { background: rgba(255, 255, 255, .3); }
+.pv-x:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
