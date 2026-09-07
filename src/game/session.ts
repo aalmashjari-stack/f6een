@@ -1,6 +1,7 @@
 import type { Level, Mark, Phase, Player, Team, TeamId } from './types'
 import type { Question } from './types'
 import { drawStage3Queue } from './draw'
+import { playableCategories } from './bank'
 
 /* ============================ الثوابت — القسم ٢ ============================ */
 // وضع اختبار سريع: أضف ?fast للرابط لتقليص المؤقتات ×١٠ (للتنقّل السريع فقط، لا يؤثّر على اللعب العادي).
@@ -177,6 +178,47 @@ export function largestTeamSize(players: [string[], string[]]): number {
  * المحلّي في اللعب، وتُمرَّر صراحةً في الاختبار الذي يقود جلساتٍ متتابعة
  * بذاكرةٍ تتراكم — وهو الاختبار الوحيد الذي يبلغ نفاد البنك.
  */
+/**
+ * أسبابُ منع البدء — ما يُفحص **قبل الخصم** لا بعده.
+ *
+ * الخصم عند إنشاء الجلسة (SPEC ٣) ولا يُردّ. فجلسةٌ تبدأ ثمّ تتعثّر عند
+ * خليّةٍ لا سؤال فيها تكلّف اللاعب لعبةً كاملة أمام مجلسه.
+ *
+ * **والباب الذي يُغلق هنا هو التأخّر لا الخطأ**: `playableCategories` تحرس
+ * شبكةَ الإعداد لحظةَ رسمها، لكنّ بلاغاً يصل بعدها — من هذا الجهاز أو من
+ * غيره — يحجز آخر سؤالٍ في خليّةٍ ضيّقة، فتخرج الفئةُ من الصالحة والاختيارُ
+ * قائم. وبين الرسم والضغط دقائق: أسماءُ اللاعبين والقرعة واختيار الستّ.
+ */
+export type NotReady =
+  | { kind: 'categories'; names: string[] }
+  | { kind: 'count'; picked: number }
+
+/** رسالةٌ عربيّة لكلّ سبب — الشاشة تعرضها كما هي. */
+export function notReadyMessage(r: NotReady): string {
+  if (r.kind === 'count') return `اختر ${STAGE1_CATEGORIES} فئات`
+  return r.names.length === 1
+    ? `فئة «${r.names[0]}» لم تعد متاحة — اخترها من جديد`
+    : `فئات لم تعد متاحة: ${r.names.join('، ')} — اخترها من جديد`
+}
+
+/**
+ * هل تصلح هذه المدخلات لبدء جلسة؟ `null` تعني نعم.
+ *
+ * **ولا يُفحص هنا ما يحرسه المحرّك أصلاً.** خلايا اللوح تسقط عند الضيق إلى
+ * المستوى ثمّ إلى البنك (`drawOne`)، وطابورُ الحق ما تلحق يُكمَل من أقدم ما
+ * سُمع، فلا يُسقط واحدٌ منهما اللعبة. وفحصُ الطابور هنا جُرّب فوُجد شفرةً
+ * ميتة: حجبُ مخزونه يُخرج الفئات من الصالحة أوّلاً، فلا يُبلغ شرطُه أبداً.
+ * فلم يبقَ إلّا ما لا مخرج منه: فئةٌ خرجت من الصالحة بعد أن اختيرت.
+ */
+export function sessionNotReady(input: SetupInput): NotReady | null {
+  if (input.categories.length !== STAGE1_CATEGORIES)
+    return { kind: 'count', picked: input.categories.length }
+
+  const ok = new Set(playableCategories())
+  const gone = input.categories.filter((c) => !ok.has(c))
+  return gone.length > 0 ? { kind: 'categories', names: gone } : null
+}
+
 export function createSession(input: SetupInput, used: Set<string> = loadUsedIds()): GameState {
   const teams: [Team, Team] = [0, 1].map((id) => ({
     id: id as TeamId,
