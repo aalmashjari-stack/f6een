@@ -17,6 +17,7 @@ import type {
 } from '../lib/admin'
 import { uploadArt } from '../lib/uploads'
 import { celebImage, isImageUrl } from '../game/celebs'
+import { landmarkImage } from '../game/landmarks'
 import type { Plan } from '../lib/importQuestions'
 import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
@@ -1244,8 +1245,23 @@ function Questions() {
                   </span>
                 </td>
                 <td>
-                  {r.q.image ? <span className="muted">[صورة] </span> : null}
-                  {r.q.question}
+                  {/* مصغَّرةٌ لا كلمةُ «[صورة]»: خمسون سؤالَ معالم لا تُراجَع
+                      بفتح كلّ واحدٍ منها على حدة (بلاغ علي ٨ سبتمبر ٢٠٢٦).
+                      والضغطة تفتح الأصل في لسانٍ جديد لمن أراد التدقيق. */}
+                  {r.q.image ? (
+                    <span className="q-thumb-wrap">
+                      {resolveImage(r.q.image) ? (
+                        <a href={resolveImage(r.q.image)!} target="_blank" rel="noreferrer">
+                          <img className="q-thumb" src={resolveImage(r.q.image)!} alt="" loading="lazy" />
+                        </a>
+                      ) : (
+                        <span className="q-thumb empty" title={r.q.image} />
+                      )}
+                      <span>{r.q.question}</span>
+                    </span>
+                  ) : (
+                    r.q.question
+                  )}
                 </td>
                 <td>{r.q.answer}</td>
                 <td>{r.q.category}</td>
@@ -1315,7 +1331,11 @@ function Questions() {
  * تعديل سؤال «مشاهير» يُظهر إطاراً فارغاً كأنّ صورته ضاعت — وهي سليمة.
  */
 function resolveImage(image: string): string | null {
-  return isImageUrl(image) ? image : celebImage(image)
+  if (isImageUrl(image)) return image
+  /* المجلّدان معاً: مفاتيح المشاهير (`celeb-…`) ومفاتيح المعالم
+     (`landmark-…`). كانت تسأل الأوّل وحده، فصورة المعلم تظهر إطاراً فارغاً
+     في اللوحة وهي سليمة في اللعبة — وبلاغُ علي ٨ سبتمبر ٢٠٢٦. */
+  return celebImage(image) ?? landmarkImage(image)
 }
 
 function toQuestion(e: AdminQuestionEdit): Question {
