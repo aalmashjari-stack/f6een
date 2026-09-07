@@ -969,6 +969,16 @@ function Questions() {
 
   /* المشحونُ بلا صفٍّ في القاعدة لا يُحذف. وبعد النقل لكل سؤالٍ صفٌّ،
      فيصير الجميع قابلاً للتحديد. */
+  /* الصورة المكبَّرة داخل اللوحة لا في لسانٍ جديد: مراجعة خمسين صورة
+     بفتح خمسين لساناً وإغلاقها ليست مراجعة (طلب علي ٨ سبتمبر ٢٠٢٦). */
+  const [zoom, setZoom] = useState<{ src: string; label: string } | null>(null)
+  useEffect(() => {
+    if (!zoom) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setZoom(null)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [zoom])
+
   const selectable = useMemo(() => (shown ?? []).filter((r) => r.deletable), [shown])
   const allPicked = selectable.length > 0 && selectable.every((r) => picked.has(r.q.id))
 
@@ -1190,6 +1200,27 @@ function Questions() {
 
       {msg && <p className="a-note">{msg}</p>}
 
+      {/* طبقةُ التكبير: الخلفية تُغلق بالضغط، ومعها زرُّ ✕ ظاهر ومفتاحُ
+          الهروب. والإجابةُ تحت الصورة، فمراجعةُ فئةٍ مصوَّرة أن ترى الصورة
+          وجوابَها معاً لا الصورةَ وحدها. */}
+      {zoom && (
+        <div className="pv-back" role="dialog" aria-modal="true" onClick={() => setZoom(null)}>
+          <button
+            type="button"
+            className="pv-x"
+            aria-label="إغلاق"
+            onClick={(e) => {
+              e.stopPropagation()
+              setZoom(null)
+            }}
+          >
+            ✕
+          </button>
+          <img src={zoom.src} alt="" onClick={(e) => e.stopPropagation()} />
+          <span className="pv-label">{zoom.label}</span>
+        </div>
+      )}
+
       <div className="a-card a-scroll">
         <table className="a-tbl a-tbl-q">
           {/* الأعمدة تُقاس هنا لا من محتواها (`table-layout: fixed` في
@@ -1251,9 +1282,22 @@ function Questions() {
                   {r.q.image ? (
                     <span className="q-thumb-wrap">
                       {resolveImage(r.q.image) ? (
-                        <a href={resolveImage(r.q.image)!} target="_blank" rel="noreferrer">
-                          <img className="q-thumb" src={resolveImage(r.q.image)!} alt="" loading="lazy" />
-                        </a>
+                        <img
+                          className="q-thumb tap"
+                          src={resolveImage(r.q.image)!}
+                          alt=""
+                          loading="lazy"
+                          role="button"
+                          tabIndex={0}
+                          title="اضغط للتكبير"
+                          onClick={() => setZoom({ src: resolveImage(r.q.image!)!, label: r.q.answer })}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault()
+                              setZoom({ src: resolveImage(r.q.image!)!, label: r.q.answer })
+                            }
+                          }}
+                        />
                       ) : (
                         <span className="q-thumb empty" title={r.q.image} />
                       )}
