@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import type { ImportRow } from './importQuestions'
+import type { Level } from '../game/types'
 
 /**
  * لوحة الإدارة — نداءات القاعدة.
@@ -208,6 +209,9 @@ const ERRORS: Record<string, string> = {
   no_such_category: 'لا فئة بهذا الاسم',
   bad_payload: 'صيغة الدفعة غير صالحة',
   too_many_rows: 'الرزمة فوق ألف صفّ',
+  unknown_category: 'فئة الدفعة غير موجودة — أنشئها أوّلاً',
+  bad_key: 'مفتاح الطريق غير صالح أو منتهٍ',
+  daily_limit: 'تجاوزت الدفعة سقف اليوم لهذا المفتاح',
   bank_incomplete: 'البنك في القاعدة ناقص — خليّة تحت الحدّ. أكمل الزرع أوّلاً',
   cell_floor: 'لا يمكن — تبقى الخليّة تحت عشرين سؤالاً. أفرِغها كلَّها أو أبقِ عشرين',
 }
@@ -449,4 +453,62 @@ export async function setBankMode(on: boolean, expect = 0): Promise<number> {
   })
   if (error) throw new Error(translate(error.message))
   return (data as { total: number }).total
+}
+
+/* ============================ المسوّدات ============================ */
+/**
+ * اقتراحات أسئلة كتبها طريقٌ خارجيّ بمفتاحه، تنتظر اعتماد المدير.
+ *
+ * **لا تمسّ البنك حتى تُعتمد.** الطريق يكتب هنا وحده — لا حذف ولا تعديل
+ * سؤالٍ قائم — والاعتماد بيد المدير هو ما ينقلها إلى `question_overrides`.
+ * فخطأٌ في المسوّدة يراه المدير قبل أن يراه المجلس.
+ */
+export interface DraftBatch {
+  batch: string
+  source: string
+  status: 'pending' | 'approved' | 'rejected'
+  n: number
+  categories: string
+  created_at: string
+  easy: number
+  medium: number
+  hard: number
+  /** فئةٌ من فئات الدفعة لم تُنشأ بعد — الاعتماد يُردّ حتى تُنشأ. */
+  missing_category: boolean
+}
+
+export interface DraftRow {
+  id: number
+  category: string
+  level: Level
+  topic: string | null
+  question: string
+  answer: string
+  status: string
+  question_id: string | null
+}
+
+export async function listDraftBatches(): Promise<DraftBatch[]> {
+  const { data, error } = await supabase.rpc('admin_draft_batches')
+  if (error) throw new Error(translate(error.message))
+  return (data ?? []) as DraftBatch[]
+}
+
+export async function listDraftRows(batch: string): Promise<DraftRow[]> {
+  const { data, error } = await supabase.rpc('admin_draft_rows', { p_batch: batch })
+  if (error) throw new Error(translate(error.message))
+  return (data ?? []) as DraftRow[]
+}
+
+/** يعتمد الدفعة كلّها: تُضاف إلى البنك، وما تكرّر نصُّه يُتخطّى. */
+export async function approveDrafts(batch: string): Promise<{ added: number; skipped: number }> {
+  const { data, error } = await supabase.rpc('admin_approve_drafts', { p_batch: batch })
+  if (error) throw new Error(translate(error.message))
+  return data as { added: number; skipped: number }
+}
+
+export async function rejectDrafts(batch: string): Promise<number> {
+  const { data, error } = await supabase.rpc('admin_reject_drafts', { p_batch: batch })
+  if (error) throw new Error(translate(error.message))
+  return data as number
 }

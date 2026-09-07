@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { signInWithEmail, signInWithGoogle, signOut, useSession } from '../lib/auth'
 import { day, stamp } from '../lib/date'
@@ -12,6 +12,8 @@ import type {
   AdminStats,
   AdminUser,
   CategoryRow,
+  DraftBatch,
+  DraftRow,
 } from '../lib/admin'
 import { uploadArt } from '../lib/uploads'
 import { celebImage, isImageUrl } from '../game/celebs'
@@ -20,6 +22,7 @@ import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
 import {
   addCategory,
+  approveDrafts,
   bankMode,
   createCode,
   deleteCategory,
@@ -32,12 +35,15 @@ import {
   isSuper,
   setAdminRole,
   listCodes,
+  listDraftBatches,
+  listDraftRows,
   listFlags,
   listCategoryRows,
   listExtraCategories,
   listQuestionEdits,
   listSessions,
   listUsers,
+  rejectDrafts,
   saveCategoryArt,
   saveQuestion,
   seedBank,
@@ -159,7 +165,7 @@ function NotAdmin({ email }: { email: string }) {
 
 /* ================================ اللوحة ================================ */
 
-type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'messages' | 'questions' | 'categories'
+type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'messages' | 'questions' | 'categories' | 'drafts'
 
 /**
  * الألسنة مرتّبةٌ بالعمل لا بتاريخ إضافتها: **المحتوى أوّلاً** (الأسئلة
@@ -173,6 +179,7 @@ type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'messages' | 'questions'
  */
 const TABS: [Tab, string, boolean][] = [
   ['questions', 'الأسئلة', false],
+  ['drafts', 'المسوّدات', false],
   ['categories', 'الفئات', false],
   ['reports', 'البلاغات', false],
   ['users', 'الحسابات', true],
@@ -257,6 +264,7 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       {tab === 'messages' && <Messages />}
       {tab === 'questions' && <Questions />}
       {tab === 'categories' && <Categories />}
+      {tab === 'drafts' && <Drafts />}
     </div>
   )
 }
@@ -1966,6 +1974,164 @@ function Messages() {
           </tbody>
         </table>
       </div>
+    </div>
+  )
+}
+
+/* ================================ المسوّدات ================================ */
+/**
+ * اقتراحات أسئلة كتبها طريقٌ خارجيّ بمفتاحه، تنتظر قرار المدير.
+ *
+ * **الشاشة قرارٌ لا تحرير.** الدفعة تُعتمد أو تُرفض كتلةً واحدة: مئةٌ
+ * وخمسون سؤالاً قرارٌ واحد لا مئة وخمسون ضغطة. ومن أراد تصحيح سؤالٍ بعينه
+ * يعتمد الدفعة ثمّ يصحّحه من شاشة الأسئلة كأيّ سؤالٍ مضاف — فالتصحيح هناك
+ * موجودٌ ومختبَر، وتكرارُه هنا شاشةٌ ثانية بلا داعٍ.
+ *
+ * وفئةٌ لم تُنشأ بعد تُعرَض تحذيراً **قبل** الضغط لا خطأً بعده: الاعتماد
+ * يُردّ من القاعدة (`unknown_category`)، والفئة لا تُنشأ من دفعة بقرار علي
+ * في ٣١ أغسطس ٢٠٢٦.
+ */
+function Drafts() {
+  const { data: batches, err, reload } = useLoad<DraftBatch[]>(listDraftBatches)
+  const [open, setOpen] = useState<string | null>(null)
+  const [rows, setRows] = useState<DraftRow[] | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  const show = (batch: string) => {
+    if (open === batch) {
+      setOpen(null)
+      return
+    }
+    setOpen(batch)
+    setRows(null)
+    listDraftRows(batch)
+      .then(setRows)
+      .catch((e) => setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّرت القراءة' }))
+  }
+
+  const decide = async (b: DraftBatch, approve: boolean) => {
+    setBusy(true)
+    setMsg(null)
+    try {
+      if (approve) {
+        const res = await approveDrafts(b.batch)
+        setMsg({
+          ok: true,
+          text:
+            `اعتُمدت: أُضيف ${res.added}` +
+            (res.skipped ? ` وتُخطّي ${res.skipped} نصُّه موجود` : '') +
+            ' — تصل اللاعبين عند فتحهم اللعبة',
+        })
+      } else {
+        const n = await rejectDrafts(b.batch)
+        setMsg({ ok: true, text: `رُفضت ${n} مسوّدة` })
+      }
+      setOpen(null)
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر التنفيذ' })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (err) return <p className="a-err">{err}</p>
+  if (!batches) return <p className="a-muted">…</p>
+  if (batches.length === 0)
+    return <p className="a-muted">لا مسوّدات. ما يصل من طريقٍ خارجيّ يظهر هنا قبل أن يدخل البنك.</p>
+
+  return (
+    <div className="a-card">
+      {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
+      <table className="a-table">
+        <thead>
+          <tr>
+            <th>الدفعة</th>
+            <th>الفئة</th>
+            <th className="num">سهل</th>
+            <th className="num">متوسط</th>
+            <th className="num">صعب</th>
+            <th className="num">المجموع</th>
+            <th>الحالة</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {batches.map((b) => (
+            <Fragment key={b.batch}>
+              <tr>
+                <td className="a-muted">{stamp(b.created_at)}</td>
+                <td>
+                  {b.categories}
+                  {b.missing_category && (
+                    <span className="tag warn" title="أنشئ الفئة من لسان الفئات قبل الاعتماد">
+                      الفئة غير موجودة
+                    </span>
+                  )}
+                </td>
+                <td className="num">{b.easy}</td>
+                <td className="num">{b.medium}</td>
+                <td className="num">{b.hard}</td>
+                <td className="num">{b.n}</td>
+                <td>
+                  <span className={'tag' + (b.status === 'pending' ? ' open' : '')}>
+                    {b.status === 'pending' ? 'تنتظر' : b.status === 'approved' ? 'معتمدة' : 'مرفوضة'}
+                  </span>
+                </td>
+                <td className="a-actions">
+                  <button className="a-btn" onClick={() => show(b.batch)}>
+                    {open === b.batch ? 'أخفِ' : 'اعرض'}
+                  </button>
+                  {b.status === 'pending' && (
+                    <>
+                      <button
+                        className="a-btn primary"
+                        disabled={busy || b.missing_category}
+                        title={b.missing_category ? 'أنشئ الفئة أوّلاً من لسان الفئات' : ''}
+                        onClick={() => decide(b, true)}
+                      >
+                        اعتمد
+                      </button>
+                      <button className="a-btn danger" disabled={busy} onClick={() => decide(b, false)}>
+                        ارفض
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+              {open === b.batch && (
+                <tr>
+                  <td colSpan={8}>
+                    {!rows ? (
+                      <p className="a-muted">…</p>
+                    ) : (
+                      <table className="a-table sub">
+                        <tbody>
+                          {rows.map((r) => (
+                            <tr key={r.id}>
+                              <td className="a-muted">{r.level}</td>
+                              <td>{r.question}</td>
+                              <td>
+                                <b>{r.answer}</b>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+      <style>{`
+        .a-table.sub { margin: 6px 0 10px; background: rgba(0,0,0,.03); }
+        .a-table.sub td { padding: 4px 8px; font-size: 13px; }
+        .tag.warn { margin-inline-start: 8px; background: #ffe6e0; color: #8a2c14; }
+      `}</style>
     </div>
   )
 }
