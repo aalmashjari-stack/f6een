@@ -66,6 +66,22 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
             aria-label="الصورة مكبّرة"
             onClick={() => setZoomed(false)}
           >
+            {/* زرُّ إغلاقٍ ظاهر إلى جانب «اضغط في أي مكان»: السطرُ يُقرأ،
+                والزرُّ يُرى من آخر المجلس ويُصاب بالإبهام من أوّل مرّة
+                (طلب علي ٨ سبتمبر ٢٠٢٦). و`stopPropagation` ليست لازمةً
+                للإغلاق — الطبقة تغلق على أيّ حال — لكنّها تمنع ضغطتين
+                محسوبتين على حدثٍ واحد. */}
+            <button
+              type="button"
+              className="photo-zoom-x"
+              aria-label="إغلاق الصورة"
+              onClick={(e) => {
+                e.stopPropagation()
+                setZoomed(false)
+              }}
+            >
+              ✕
+            </button>
             <img src={src} alt="" />
             <span className="photo-zoom-hint">اضغط في أي مكان للإغلاق</span>
           </div>,
@@ -100,6 +116,19 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
           cursor:zoom-out;
           animation:photo-zoom-fade .18s ease-out both;
         }
+        .photo-zoom-x {
+          position:absolute; z-index:2;
+          top:max(env(safe-area-inset-top), 14px);
+          inset-inline-end:max(env(safe-area-inset-right), 14px);
+          width:clamp(44px, 6vh, 64px); height:clamp(44px, 6vh, 64px);
+          display:grid; place-items:center;
+          font-size:clamp(20px, 3vh, 30px); line-height:1;
+          color:#fff; background:rgba(255,255,255,.14);
+          border:2px solid rgba(255,255,255,.5); border-radius:50%;
+          cursor:pointer; padding:0;
+        }
+        .photo-zoom-x:hover { background:rgba(255,255,255,.26); }
+        .photo-zoom-x:focus-visible { outline:3px solid #fff; outline-offset:3px; }
         .photo-zoom img {
           max-width:100%; max-height:100%; min-height:0;
           object-fit:contain; border-radius:14px;
