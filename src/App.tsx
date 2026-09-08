@@ -452,6 +452,9 @@ export default function App() {
           /* المعامل يُمسح من العنوان فلا تعود الشاشة بإعادة تحميل. ومن جاء
              برابطٍ ميّت يقع بعدها على شاشة الدخول، وفيها «نسيت كلمة المرور». */
           window.history.replaceState(null, '', window.location.pathname)
+          /* وبوّابةُ الاتجاه تعود: الاستثناء لشاشة كلمة السرّ وحدها، وما
+             بعدها لعبةٌ لا تُعرض طولية. */
+          document.documentElement.removeAttribute('data-portrait-ok')
         }}
       />
     )

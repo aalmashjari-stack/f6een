@@ -13,6 +13,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>فطين</title>
+    <!-- رابطُ الاستعادة يُفتح من البريد على الجوال، وشاشتُه حقلان لا لعبة —
+         فتُرفع عنه بوّابةُ الاتجاه (القاعدة في `theme.css`). وهنا لا في
+         React: مِن يد المستعمل إلى أوّل رسمٍ لحظةٌ ترى فيها العينُ البوّابةَ
+         ثمّ تختفي، وهذا السطر يسبقها. -->
+    <script>
+      try {
+        if (new URLSearchParams(location.search).has('recovery'))
+          document.documentElement.setAttribute('data-portrait-ok', '')
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <!-- بوابة الاتجاه: تظهر فقط على أجهزة اللمس في الوضع الطولي (media query في theme.css).
