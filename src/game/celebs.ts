@@ -1,5 +1,6 @@
 import placeholder from '../../assets/celebrities/_placeholder.svg'
 import { landmarkImage } from './landmarks'
+import { zamanImage } from './zaman'
 
 /**
  * صور أسئلة «من صاحب الصورة؟». المفتاح في البنك (حقل image) يُحلّ هنا إلى ملفٍ
@@ -48,5 +49,5 @@ export function celebSrc(key?: string): string {
   if (key && isImageUrl(key)) return key
   /* المفتاح قد يكون لصورة مشهور أو لصورة معلم — المجلّدان منفصلان والدالّة
      واحدة، فشاشةُ السؤال لا تعرف نوع الفئة ولا يلزمها أن تعرفه. */
-  return (key && (celebImage(key) ?? landmarkImage(key))) || placeholder
+  return (key && (celebImage(key) ?? landmarkImage(key) ?? zamanImage(key))) || placeholder
 }
