@@ -13,13 +13,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>فطين</title>
-    <!-- رابطُ الاستعادة يُفتح من البريد على الجوال، وشاشتُه حقلان لا لعبة —
-         فتُرفع عنه بوّابةُ الاتجاه (القاعدة في `theme.css`). وهنا لا في
-         React: مِن يد المستعمل إلى أوّل رسمٍ لحظةٌ ترى فيها العينُ البوّابةَ
-         ثمّ تختفي، وهذا السطر يسبقها. -->
+    <!-- روابطُ البريد — الاستعادة والتأكيد — تُفتح على الجوال، وشاشاتُها
+         نموذجٌ أو بطاقةٌ لا لعبة، فتُرفع عنها بوّابةُ الاتجاه (القاعدة في
+         `theme.css`). وهنا لا في React: مِن يد المستعمل إلى أوّل رسمٍ لحظةٌ
+         ترى فيها العينُ البوّابةَ ثمّ تختفي، وهذا السطر يسبقها. -->
     <script>
       try {
-        if (new URLSearchParams(location.search).has('recovery'))
+        var q = new URLSearchParams(location.search)
+        if (q.has('recovery') || q.has('confirm'))
           document.documentElement.setAttribute('data-portrait-ok', '')
       } catch (e) {}
     </script>

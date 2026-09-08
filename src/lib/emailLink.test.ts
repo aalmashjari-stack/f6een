@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { codeExchangeWorked, readRecoveryLink } from './recoveryLink'
+import { codeExchangeWorked, readConfirmLink, readRecoveryLink } from './emailLink'
 
 /**
  * الحالة التي بُنيت لأجلها: رابطُ استعادةٍ فُتح في متصفّح غير الذي طلبه، فلا
@@ -43,5 +43,26 @@ describe('codeExchangeWorked', () => {
      قراءةُ بقاء `code` لقيل «جاهز» ثمّ سقط الحفظ بلا سبب مفهوم. */
   it('فشلٌ حين تبقى code في العنوان ولو وُجدت جلسة قديمة', () => {
     expect(codeExchangeWorked('?recovery=1&code=abc', true)).toBe(false)
+  })
+})
+
+/**
+ * رابط التأكيد — علّته علّةُ الاستعادة، وأثرُها أوسع: تقع عند أوّل لقاء
+ * لاعبٍ جديد باللعبة، لا عند نسيان كلمة.
+ */
+describe('readConfirmLink', () => {
+  it('لا يخلط معاملَ رسالةٍ برسالةٍ أخرى', () => {
+    expect(readConfirmLink('?recovery=1&token_hash=H1').kind).toBe('none')
+    expect(readRecoveryLink('?confirm=1&token_hash=H1').kind).toBe('none')
+  })
+
+  it('يقرأ الرمز من رابط التأكيد', () => {
+    const l = readConfirmLink('?confirm=1&token_hash=H2&type=signup')
+    expect(l.kind).toBe('token')
+    expect(l.kind === 'token' && l.tokenHash).toBe('H2')
+  })
+
+  it('الشكل القديم بلا رمز يبقى مقروءاً', () => {
+    expect(readConfirmLink('?confirm=1').kind).toBe('session')
   })
 })

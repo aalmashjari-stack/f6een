@@ -14,7 +14,7 @@ import {
   writeScoped,
 } from './game/session'
 import { reducer } from './game/reducer'
-import { useRecoveryMode, useSession } from './lib/auth'
+import { useEmailConfirm, useRecoveryMode, useSession } from './lib/auth'
 import {
   closeSessionDurably,
   fetchBalance,
@@ -41,6 +41,7 @@ import { useWakeLock } from './components/useWakeLock'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { Intro } from './screens/Intro'
+import { ConfirmEmail } from './screens/ConfirmEmail'
 import { ResetPassword } from './screens/ResetPassword'
 import { Setup } from './screens/Setup'
 import { Stage1Board } from './screens/Stage1Board'
@@ -172,6 +173,9 @@ export default function App() {
   /* رابطُ الاستعادة: يُفحص نفعُه لا وجودُه — انظر `useRecoveryMode`. */
   const recovery = useRecoveryMode()
   const [recoveryDone, setRecoveryDone] = useState(false)
+  /* رابطُ التأكيد: نجاحُه يدخل اللاعب بلا شاشة، وفشلُه وحده يُعرض. */
+  const confirm = useEmailConfirm()
+  const [confirmDone, setConfirmDone] = useState(false)
   const leaveSplash = useCallback(() => setSplashDone(true), [])
 
   useEffect(() => {
@@ -441,6 +445,22 @@ export default function App() {
      بسطحٍ صامت بلون الهويّة: لا وميض ولا علامة تحميل تُقلق قبل أن يلزم. */
   /* شاشةُ تعيين الكلمة تسبق كلَّ شيء بعد الإقلاع: من فتح رابط الاستعادة جاء
      لهذا، وتركُه على شاشة الإعداد يضيّع الرابط — وصلاحيتُه محدودة. */
+  /* رابطُ تأكيد الحساب — بعد الاستعادة في الترتيب ولا يجتمعان: لكلِّ رسالةٍ
+     معاملُها. والنجاح يمرّ من هنا صامتاً إلى اللعبة بجلسةٍ مفتوحة. */
+  if (confirm !== 'off' && !confirmDone) {
+    if (confirm === 'checking') return <BootHold />
+    if (confirm === 'failed')
+      return (
+        <ConfirmEmail
+          onDone={() => {
+            setConfirmDone(true)
+            window.history.replaceState(null, '', window.location.pathname)
+            document.documentElement.removeAttribute('data-portrait-ok')
+          }}
+        />
+      )
+  }
+
   if (recovery !== 'off' && !recoveryDone) {
     /* ريثما يُتحقَّق من الرابط: سطحٌ صامت لا شاشةُ دخولٍ تومض ثمّ تُستبدل. */
     if (recovery === 'checking') return <BootHold />
