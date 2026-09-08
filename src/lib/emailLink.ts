@@ -1,5 +1,8 @@
 /**
- * قراءةُ رابط الاستعادة من العنوان — بلا عميل Supabase، فتُختبر وحدها.
+ * قراءةُ الروابط الآتية من البريد — بلا عميل Supabase، فتُختبر وحدها.
+ *
+ * رابطان يصلان في البريد: **الاستعادة** لمن نسي كلمته، و**التأكيد** لمن
+ * أنشأ حساباً. وعلّتهما واحدة، وعلاجُهما واحد.
  *
  * لرابط الاستعادة شكلان، والفرق بينهما ليس تجميليّاً:
  *
@@ -40,4 +43,21 @@ export function readRecoveryLink(search: string): RecoveryLink {
  */
 export function codeExchangeWorked(searchNow: string, hasSession: boolean): boolean {
   return hasSession && !new URLSearchParams(searchNow).has('code')
+}
+
+/**
+ * رابط تأكيد الحساب. علّتُه علّةُ الاستعادة نفسها: `{{ .ConfirmationURL }}`
+ * الافتراضيّ يعود بـ`?code=` فيطلب `code_verifier` من ذاكرة المتصفّح الذي
+ * سجّل — ومن سجّل على جواله وفتح بريده على حاسوبه لا يتأكّد حسابه. وأثرُها
+ * هنا أوسع: تقع عند أوّل لقاء لاعبٍ جديد باللعبة لا عند نسيان كلمة.
+ *
+ * ولا شكل قديم يُقبل هنا: مسار `?code=` للتأكيد كان يمرّ من
+ * `detectSessionInUrl` بلا شيفرةٍ منّا، ويبقى كذلك — فهذه الدالّة لا تُسأل
+ * إلّا عن الشكل الجديد.
+ */
+export function readConfirmLink(search: string): RecoveryLink {
+  const p = new URLSearchParams(search)
+  if (!p.has('confirm')) return { kind: 'none' }
+  const hash = p.get('token_hash')
+  return hash ? { kind: 'token', tokenHash: hash } : { kind: 'session' }
 }

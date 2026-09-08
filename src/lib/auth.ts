@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { SocialLogin } from '@capgo/capacitor-social-login'
 import { supabase } from './supabase'
-import { codeExchangeWorked, readRecoveryLink } from './recoveryLink'
+import { codeExchangeWorked, readConfirmLink, readRecoveryLink } from './emailLink'
 import { isNativeApp } from './platform'
 
 /* معرّفا غوغل — علنيّان كمفتاح Supabase، والحارس هو تسجيلُهما في
@@ -336,6 +336,69 @@ export function useRecoveryMode(): RecoveryState {
       .getSession()
       .then(({ data }) => settle(codeExchangeWorked(window.location.search, !!data.session)))
       .catch(() => settle(false))
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  return state
+}
+
+/** حالُ رابط التأكيد: `ok` تعني أنّ الحساب تأكّد وفُتحت جلسته. */
+export type ConfirmState = 'off' | 'checking' | 'ok' | 'failed'
+
+/**
+ * تأكيدُ الحساب برابط البريد.
+ *
+ * `verifyOtp` يتحقّق من `token_hash` عند الخادم بلا حاجةٍ إلى ذاكرة متصفّح،
+ * فيعمل ولو سجّل اللاعب على جهاز وفتح بريده على آخر — وهي الحالة الغالبة:
+ * يسجّل على جواله ثمّ يفتح البريد حيث كان مفتوحاً.
+ *
+ * والنجاح لا شاشة له: تُفتح الجلسة فيدخل اللاعب لعبته، ودخولُه هو التأكيد.
+ * والفشل وحده يحتاج قولاً — انظر `ConfirmEmail`.
+ */
+export function useEmailConfirm(): ConfirmState {
+  const [state, setState] = useState<ConfirmState>(() =>
+    readConfirmLink(BOOT_SEARCH).kind === 'none' ? 'off' : 'checking',
+  )
+
+  useEffect(() => {
+    const link = readConfirmLink(BOOT_SEARCH)
+    if (link.kind === 'none') return
+    let alive = true
+    /* المعاملات تُمسح في الحالين — يُستهلك الرمز مرّةً، وإعادةُ التحميل به
+       تفشل بلا سبب ظاهر. **وبوّابةُ الاتجاه لا تُعاد هنا**: شاشةُ الفشل
+       تأتي بعد هذا السطر، وإعادتُها تحجبها. تُعاد عند مغادرة الشاشة. */
+    const strip = () => {
+      const url = new URL(window.location.href)
+      for (const k of ['confirm', 'token_hash', 'type']) url.searchParams.delete(k)
+      window.history.replaceState(window.history.state, '', url.toString())
+    }
+    const gateBack = () => document.documentElement.removeAttribute('data-portrait-ok')
+
+    /* بلا `token_hash` فالرابط بالشكل القديم: العميل يبادل `?code=` وحده
+       أثناء الإقلاع، فيُقرأ ما انتهى إليه لا أكثر. */
+    if (link.kind !== 'token') {
+      supabase.auth.getSession().then(({ data }) => {
+        strip()
+        if (data.session) gateBack()
+        if (alive) setState(data.session ? 'ok' : 'failed')
+      })
+      return () => {
+        alive = false
+      }
+    }
+
+    supabase.auth
+      .verifyOtp({ type: 'signup', token_hash: link.tokenHash })
+      .then(({ data, error }) => {
+        const ok = !error && !!data.session
+        /* والنجاحُ يمضي إلى اللعبة، واللعبةُ أفقيّة. */
+        if (ok) gateBack()
+        if (alive) setState(ok ? 'ok' : 'failed')
+      })
+      .catch(() => alive && setState('failed'))
+      .finally(strip)
     return () => {
       alive = false
     }
