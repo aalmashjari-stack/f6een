@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { setNewPassword } from '../lib/auth'
+import { AUTH_CSS } from './authStyles'
 
 const MIN_PASSWORD = 8
 
@@ -54,6 +55,7 @@ export function ResetPassword({ onDone, failed = false }: { onDone: () => void; 
   if (failed) {
     return (
       <div className="screen su">
+        <style>{AUTH_CSS}</style>
         <div className="su-card su-done">
           <h1 className="su-title">الرابط لم يعد صالحاً</h1>
           <p className="su-sub">
@@ -71,6 +73,7 @@ export function ResetPassword({ onDone, failed = false }: { onDone: () => void; 
   if (done) {
     return (
       <div className="screen su">
+        <style>{AUTH_CSS}</style>
         <div className="su-card su-done">
           <h1 className="su-title">تغيّرت كلمة المرور</h1>
           <p className="su-sub">تستطيع الآن الدخول بها.</p>
@@ -84,6 +87,7 @@ export function ResetPassword({ onDone, failed = false }: { onDone: () => void; 
 
   return (
     <div className="screen su">
+        <style>{AUTH_CSS}</style>
       <form className="su-card" onSubmit={submit} noValidate>
         <h1 className="su-title">كلمة مرور جديدة</h1>
         <p className="su-sub">اكتبها مرّتين، ولا نطلب القديمة.</p>

@@ -613,6 +613,13 @@ body::after {
     font-weight: 700;
   }
   #root { display: none; }
+
+  /* **وشاشةُ كلمة السرّ مستثناة.** من فتح رابط الاستعادة من بريده على جواله
+     جاء ليكتب كلمةً في حقلين، لا ليلعب على شاشةٍ عريضة — ومطالبتُه بإدارة
+     الجهاز قبل ذلك ضريبةٌ بلا مقابل (ملاحظة علي، ٨ سبتمبر ٢٠٢٦). والسمة
+     تُوضع في `index.html` قبل أوّل رسم، فلا تومض البوّابة ثمّ تختفي. */
+  :root[data-portrait-ok] #rotate-gate { display: none; }
+  :root[data-portrait-ok] #root { display: block; }
 }
 
 @keyframes rotate-gate-tilt {
