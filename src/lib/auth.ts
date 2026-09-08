@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { SocialLogin } from '@capgo/capacitor-social-login'
 import { supabase } from './supabase'
+import { codeExchangeWorked, readRecoveryLink } from './recoveryLink'
 import { isNativeApp } from './platform'
 
 /* معرّفا غوغل — علنيّان كمفتاح Supabase، والحارس هو تسجيلُهما في
@@ -278,22 +279,67 @@ export async function resendConfirmation(email: string) {
   if (error) throw error
 }
 
+/* عنوانُ الإقلاع يُلتقط عند تحميل الوحدة: تحميلُ الوحدات متزامن ويسبق أيّ
+   عملٍ غير متزامن لعميل Supabase، فهذه القراءة وحدها ترى الرابط كما وصل. */
+const BOOT_SEARCH = typeof location !== 'undefined' ? location.search : ''
+
 /**
- * هل فُتحت هذه الجلسة برابط استعادة؟
- *
- * يُقرأ من الحدث لا من الرابط: Supabase يمسح المعاملات من العنوان بعد
- * المبادلة، فقراءةُ `?recovery=1` وحدها تفوت إن تأخّر الرسم. والحدث
- * `PASSWORD_RECOVERY` هو الإشارة الرسميّة.
+ * حالُ رابط الاستعادة: `off` لا رابط، و`checking` ريثما يُتحقَّق، ثمّ
+ * `ready` بجلسةٍ تكفي لتغيير الكلمة، أو `failed` لرابطٍ لم يعد صالحاً.
  */
-export function useRecoveryMode(): boolean {
-  const [on, setOn] = useState(
-    typeof location !== 'undefined' && new URLSearchParams(location.search).has('recovery'),
+export type RecoveryState = 'off' | 'checking' | 'ready' | 'failed'
+
+/**
+ * هل فُتحت هذه الجلسة برابط استعادة، وهل نفع الرابط؟
+ *
+ * **و`failed` حالةٌ أولى لا استثناء**: كانت الشيفرة تشترط جلسةً لعرض الشاشة،
+ * فمن فتح رابطاً ميّتاً رأى الصفحة الرئيسة بلا حرفٍ يشرح — وهذا ما رآه علي
+ * في ٨ سبتمبر ٢٠٢٦. صمتُ الفشل أسوأ من الفشل: يظنّه اللاعب عطباً في اللعبة
+ * فلا يعيد المحاولة.
+ *
+ * ولا يُعتمد على حدث `PASSWORD_RECOVERY`: يُطلق مرّةً عند الإقلاع، وقد يسبق
+ * اشتراكَ React فيضيع بلا رجعة — فالحكم من الجلسة والعنوان لا من الحدث.
+ */
+export function useRecoveryMode(): RecoveryState {
+  const [state, setState] = useState<RecoveryState>(() =>
+    readRecoveryLink(BOOT_SEARCH).kind === 'none' ? 'off' : 'checking',
   )
+
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setOn(true)
-    })
-    return () => sub.subscription.unsubscribe()
+    const link = readRecoveryLink(BOOT_SEARCH)
+    if (link.kind === 'none') return
+    let alive = true
+    const settle = (ok: boolean) => alive && setState(ok ? 'ready' : 'failed')
+
+    if (link.kind === 'token') {
+      /* `token_hash` يُتحقَّق منه عند الخادم، فيعمل ولو فُتح في متصفّح غير
+         الذي طلب. ويُمحى من العنوان بعده: يُستهلك مرّةً واحدة، وإعادةُ
+         التحميل به تفشل بلا سبب ظاهر. */
+      supabase.auth
+        .verifyOtp({ type: 'recovery', token_hash: link.tokenHash })
+        .then(({ data, error }) => settle(!error && !!data.session))
+        .catch(() => settle(false))
+        .finally(() => {
+          const url = new URL(window.location.href)
+          url.searchParams.delete('token_hash')
+          url.searchParams.delete('type')
+          window.history.replaceState(window.history.state, '', url.toString())
+        })
+      return () => {
+        alive = false
+      }
+    }
+
+    /* مسار `?code=`: العميل يبادله أثناء إقلاعه، و`getSession` ينتظر انتهاء
+       ذلك الإقلاع — فتُقرأ النتيجة بعده لا قبله. */
+    supabase.auth
+      .getSession()
+      .then(({ data }) => settle(codeExchangeWorked(window.location.search, !!data.session)))
+      .catch(() => settle(false))
+    return () => {
+      alive = false
+    }
   }, [])
-  return on
+
+  return state
 }
