@@ -16,8 +16,8 @@ import type {
   DraftRow,
 } from '../lib/admin'
 import { uploadArt } from '../lib/uploads'
-import { celebImage, isImageUrl } from '../game/celebs'
-import { landmarkImage } from '../game/landmarks'
+import { isImageUrl } from '../game/celebs'
+import { shippedImage } from '../game/shippedImage'
 import type { Plan } from '../lib/importQuestions'
 import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
@@ -1376,10 +1376,9 @@ function Questions() {
  */
 function resolveImage(image: string): string | null {
   if (isImageUrl(image)) return image
-  /* المجلّدان معاً: مفاتيح المشاهير (`celeb-…`) ومفاتيح المعالم
-     (`landmark-…`). كانت تسأل الأوّل وحده، فصورة المعلم تظهر إطاراً فارغاً
-     في اللوحة وهي سليمة في اللعبة — وبلاغُ علي ٨ سبتمبر ٢٠٢٦. */
-  return celebImage(image) ?? landmarkImage(image)
+  /* السلسلة في `shippedImage` موضعاً واحداً تخدم اللوحة وشاشة اللعب معاً:
+     كانت مكتوبةً هنا وهناك، فغاب مجلّدٌ عن أحدهما مرّتين في يومٍ واحد. */
+  return shippedImage(image)
 }
 
 function toQuestion(e: AdminQuestionEdit): Question {
