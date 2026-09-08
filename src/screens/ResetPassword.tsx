@@ -12,8 +12,12 @@ const MIN_PASSWORD = 8
  *
  * **ولا تُطلب الكلمة القديمة**: من نسيها هو من وصل إلى هنا، وحقُّه في
  * التغيير أثبتَه بفتح بريده.
+ *
+ * و`failed` تعني أنّ الرابط وصل ولم ينفع — منتهيَ الصلاحية، أو مستهلَكاً،
+ * أو مفتوحاً في متصفّح غير الذي طُلب منه. ويُقال ذلك صراحةً: الشاشة الصامتة
+ * تجعل اللاعب يظنّ العطبَ في اللعبة فلا يعيد الطلب.
  */
-export function ResetPassword({ onDone }: { onDone: () => void }) {
+export function ResetPassword({ onDone, failed = false }: { onDone: () => void; failed?: boolean }) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [busy, setBusy] = useState(false)
@@ -45,6 +49,23 @@ export function ResetPassword({ onDone }: { onDone: () => void }) {
     } finally {
       setBusy(false)
     }
+  }
+
+  if (failed) {
+    return (
+      <div className="screen su">
+        <div className="su-card su-done">
+          <h1 className="su-title">الرابط لم يعد صالحاً</h1>
+          <p className="su-sub">
+            رابط الاستعادة يُفتح مرّة واحدة وتنتهي صلاحيتُه بسرعة. اطلب رابطاً
+            جديداً وافتحه على الجهاز نفسه الذي طلبته منه.
+          </p>
+          <button className="su-submit" onClick={onDone}>
+            اطلب رابطاً جديداً
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (done) {

@@ -169,7 +169,7 @@ export default function App() {
   const [navPage, setNavPage] = useState<'buy' | 'account' | 'rules' | 'contact' | null>(null)
   const session = useSession()
   const uid = session?.user.id ?? null
-  /* رابطُ الاستعادة يفتح جلسةً ويطلق `PASSWORD_RECOVERY`. */
+  /* رابطُ الاستعادة: يُفحص نفعُه لا وجودُه — انظر `useRecoveryMode`. */
   const recovery = useRecoveryMode()
   const [recoveryDone, setRecoveryDone] = useState(false)
   const leaveSplash = useCallback(() => setSplashDone(true), [])
@@ -441,12 +441,16 @@ export default function App() {
      بسطحٍ صامت بلون الهويّة: لا وميض ولا علامة تحميل تُقلق قبل أن يلزم. */
   /* شاشةُ تعيين الكلمة تسبق كلَّ شيء بعد الإقلاع: من فتح رابط الاستعادة جاء
      لهذا، وتركُه على شاشة الإعداد يضيّع الرابط — وصلاحيتُه محدودة. */
-  if (recovery && !recoveryDone && session) {
+  if (recovery !== 'off' && !recoveryDone) {
+    /* ريثما يُتحقَّق من الرابط: سطحٌ صامت لا شاشةُ دخولٍ تومض ثمّ تُستبدل. */
+    if (recovery === 'checking') return <BootHold />
     return (
       <ResetPassword
+        failed={recovery === 'failed'}
         onDone={() => {
           setRecoveryDone(true)
-          /* المعامل يُمسح من العنوان فلا تعود الشاشة بإعادة تحميل. */
+          /* المعامل يُمسح من العنوان فلا تعود الشاشة بإعادة تحميل. ومن جاء
+             برابطٍ ميّت يقع بعدها على شاشة الدخول، وفيها «نسيت كلمة المرور». */
           window.history.replaceState(null, '', window.location.pathname)
         }}
       />
