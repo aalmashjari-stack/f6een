@@ -1074,6 +1074,7 @@ function Questions() {
         question: b.question,
         answer: b.answer,
         image: b.image ?? null,
+        answer_image: b.answerImage ?? null,
         family: b.family ?? null,
       }))
       setSeeding({ done: 0, total: payload.length })
@@ -1281,33 +1282,24 @@ function Questions() {
                       والضغطة تفتح الأصل في لسانٍ جديد لمن أراد التدقيق. */}
                   {r.q.image ? (
                     <span className="q-thumb-wrap">
-                      {resolveImage(r.q.image) ? (
-                        <img
-                          className="q-thumb tap"
-                          src={resolveImage(r.q.image)!}
-                          alt=""
-                          loading="lazy"
-                          role="button"
-                          tabIndex={0}
-                          title="اضغط للتكبير"
-                          onClick={() => setZoom({ src: resolveImage(r.q.image!)!, label: r.q.answer })}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault()
-                              setZoom({ src: resolveImage(r.q.image!)!, label: r.q.answer })
-                            }
-                          }}
-                        />
-                      ) : (
-                        <span className="q-thumb empty" title={r.q.image} />
-                      )}
+                      <QThumb image={r.q.image} label={r.q.answer} onZoom={setZoom} />
                       <span>{r.q.question}</span>
                     </span>
                   ) : (
                     r.q.question
                   )}
                 </td>
-                <td>{r.q.answer}</td>
+                {/* وجهُ الإجابة يجاور الإجابة لا السؤال — هناك يظهر في اللعب. */}
+                <td>
+                  {r.q.answerImage ? (
+                    <span className="q-thumb-wrap">
+                      <QThumb image={r.q.answerImage} label={r.q.answer} onZoom={setZoom} />
+                      <span>{r.q.answer}</span>
+                    </span>
+                  ) : (
+                    r.q.answer
+                  )}
+                </td>
                 <td>{r.q.category}</td>
                 <td>{r.q.level}</td>
                 <td className="mid">
@@ -1339,7 +1331,12 @@ function Questions() {
       {importing && rows && (
         <ImportDialog
           categories={categories}
-          existing={rows.map((r) => ({ id: r.q.id, question: r.q.question, image: r.q.image }))}
+          existing={rows.map((r) => ({
+            id: r.q.id,
+            question: r.q.question,
+            image: r.q.image,
+            answerImage: r.q.answerImage,
+          }))}
           onClose={() => setImporting(false)}
           onDone={(text) => {
             setImporting(false)
@@ -1374,6 +1371,43 @@ function Questions() {
  * نصّية لا صوراً، والصورة وحدها تُطلب عند عرضها. أمّا الخسارة فكانت أنّ
  * تعديل سؤال «مشاهير» يُظهر إطاراً فارغاً كأنّ صورته ضاعت — وهي سليمة.
  */
+/**
+ * مصغَّرةُ صورةٍ في الجدول — للسؤال والإجابة معاً.
+ *
+ * جسمٌ واحد لا جسمان: نسخُه للإجابة كان يكرّر ستّة عشر سطراً بمُعالِجَي
+ * ضغطٍ ولوحةِ مفاتيح، وأوّلُ تعديلٍ في أحدهما ينسى الآخر.
+ */
+function QThumb({
+  image,
+  label,
+  onZoom,
+}: {
+  image: string
+  label: string
+  onZoom: (z: { src: string; label: string }) => void
+}) {
+  const src = resolveImage(image)
+  if (!src) return <span className="q-thumb empty" title={image} />
+  return (
+    <img
+      className="q-thumb tap"
+      src={src}
+      alt=""
+      loading="lazy"
+      role="button"
+      tabIndex={0}
+      title="اضغط للتكبير"
+      onClick={() => onZoom({ src, label })}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onZoom({ src, label })
+        }
+      }}
+    />
+  )
+}
+
 function resolveImage(image: string): string | null {
   if (isImageUrl(image)) return image
   /* السلسلة في `shippedImage` موضعاً واحداً تخدم اللوحة وشاشة اللعب معاً:
@@ -1390,6 +1424,7 @@ function toQuestion(e: AdminQuestionEdit): Question {
     question: e.question,
     answer: e.answer,
     ...(e.image ? { image: e.image } : {}),
+    ...(e.answer_image ? { answerImage: e.answer_image } : {}),
     ...(e.family ? { family: e.family } : {}),
   }
 }
@@ -1421,6 +1456,7 @@ function QuestionForm({
   const [question, setQuestion] = useState(base?.question ?? '')
   const [answer, setAnswer] = useState(base?.answer ?? '')
   const [image, setImage] = useState<string | null>(base?.image ?? null)
+  const [answerImage, setAnswerImage] = useState<string | null>(base?.answerImage ?? null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
@@ -1437,6 +1473,7 @@ function QuestionForm({
         question,
         answer,
         image,
+        answerImage,
       })
       onSaved()
     } catch (e2) {
@@ -1536,6 +1573,29 @@ function QuestionForm({
               بدل النصّ وفوقها «من صاحب الصورة؟». */}
           <p className="a-note" style={{ padding: 0 }}>
             سؤالٌ بصورة يُعرض صورةً فوقها «من صاحب الصورة؟» — والنصّ لا يظهر، والإجابة اسم صاحبها.
+          </p>
+        </div>
+
+        <div className="a-field">
+          <label>صورة الإجابة</label>
+          <ArtCell
+            src={answerImage ? resolveImage(answerImage) : null}
+            uploaded={answerImage !== null}
+            onPick={async (f) => {
+              setErr(null)
+              try {
+                setAnswerImage(await uploadArt(f, 'questions'))
+              } catch (e2) {
+                setErr(e2 instanceof Error ? e2.message : 'تعذّر رفع الصورة')
+              }
+            }}
+            onClear={() => setAnswerImage(null)}
+          />
+          {/* عكسُ الحقل الذي فوقه: السؤال يبقى نصّاً، والوجه لا يظهر إلّا في
+              شاشة الكشف إلى جانب الاسم. فسؤالٌ عن شيءٍ مشهور واسمٍ مجهول
+              يبقى تعجيزيّاً، ويُكافأ المجلس بالوجه حين يُكشف. */}
+          <p className="a-note" style={{ padding: 0 }}>
+            تظهر في شاشة الكشف إلى جانب الإجابة — والسؤال يبقى نصّاً. لا تضع الاثنتين معاً.
           </p>
         </div>
 

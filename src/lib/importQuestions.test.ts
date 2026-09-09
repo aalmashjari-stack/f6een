@@ -189,6 +189,50 @@ describe('خطّة الرفع', () => {
     expect(p.rows[1].image).toBeNull()
   })
 
+  /* عكسُ الفحص الذي فوقه: `answer_image` وجهٌ يظهر في الكشف لا في السؤال،
+     ويُمحى بنفس الطريقة — ملفُّ تصحيحٍ لا يحمل عمود الصورة يمرّ على السؤال
+     فيعود بلا وجه. */
+  it('التعديل يحمل صورة الإجابة القائمة كما هي', () => {
+    const ctx = {
+      categories: ['الكويت'],
+      existing: [
+        { id: 'ADM9001', question: 'من مؤسّس واتساب؟', answerImage: 'celeb-002-q6892571' },
+      ],
+    }
+    const p = buildPlan(
+      [
+        HEAD,
+        ['الكويت', 'صعب', 'من مؤسّس واتساب؟', 'جان كوم', '', 'ADM9001'],
+        ['الكويت', 'صعب', 'سؤال جديد', 'ج', '', ''],
+      ],
+      ctx,
+    )
+    expect(p.rejected).toEqual([])
+    expect(p.rows[0].answerImage).toBe('celeb-002-q6892571')
+    expect(p.rows[0].image).toBeNull()
+    expect(p.rows[1].answerImage).toBeNull()
+  })
+
+  /* العمود يُنشئ وجهاً لا يحمله البنك: مفاتيحُ الصور المشحونة لا سبيل إلى
+     تعيينها من نموذج اللوحة (منتقيه يرفع ملفّاً)، فهذا بابُها الوحيد. */
+  it('عمود «صورة الإجابة» يُعيّن الوجه، وفراغه يُبقي القائم', () => {
+    const ctx = {
+      categories: ['مشاهير'],
+      existing: [{ id: 'ADM9002', question: 'من مؤسّس سبوتيفاي؟', answerImage: 'celeb-003-q1951896' }],
+    }
+    const p = buildPlan(
+      [
+        [...HEAD, 'صورة الإجابة'],
+        ['مشاهير', 'تعجيزي', 'من مؤسّس واتساب؟', 'جان كوم', '', '', 'celeb-002-q6892571'],
+        ['مشاهير', 'تعجيزي', 'من مؤسّس سبوتيفاي؟', 'دانييل إيك', '', 'ADM9002', ''],
+      ],
+      ctx,
+    )
+    expect(p.rejected).toEqual([])
+    expect(p.rows[0].answerImage).toBe('celeb-002-q6892571')
+    expect(p.rows[1].answerImage).toBe('celeb-003-q1951896')
+  })
+
   it('يتخطّى الأسطر الفارغة بلا شكوى', () => {
     const p = plan([['', '', '', '', '', ''], ['الكويت', 'سهل', 'سؤال', 'جواب', '', '']])
     expect(p.rejected).toEqual([])

@@ -231,6 +231,8 @@ export interface AdminQuestionEdit {
   question: string
   answer: string
   image: string | null
+  /** صورةُ الإجابة — تظهر في الكشف لا في السؤال. */
+  answer_image: string | null
   family: string | null
   origin: 'bank' | 'override' | 'new'
   updated_at: string
@@ -257,6 +259,7 @@ export interface QuestionInput {
   question: string
   answer: string
   image?: string | null
+  answerImage?: string | null
 }
 
 /** معرّف فارغ = سؤال جديد يُولَّد له `ADM####`. يُرجع المعرّف. */
@@ -269,6 +272,7 @@ export async function saveQuestion(q: QuestionInput): Promise<string> {
     p_question: q.question,
     p_answer: q.answer,
     p_image: q.image ?? null,
+    p_answer_image: q.answerImage ?? null,
   })
   if (error) throw new Error(translate(error.message))
   return data as string
@@ -344,7 +348,13 @@ export async function importQuestions(
   let skipped = 0
 
   for (let i = 0; i < rows.length; i += CHUNK) {
-    const slice = rows.slice(i, i + CHUNK)
+    /* اسمُ الحقل على السلك اسمُ العمود (`answer_image`) لا اسمُه في الشيفرة:
+       الدالّة تقرأ `r ->> 'answer_image'`، وصمتُ jsonb عن مفتاحٍ لا يعرفه
+       كان سيمحو وجهَ الإجابة في كلّ صفٍّ يمرّ برفع ملفّ. */
+    const slice = rows.slice(i, i + CHUNK).map(({ answerImage, ...r }) => ({
+      ...r,
+      answer_image: answerImage,
+    }))
     const { data, error } = await supabase.rpc('admin_import_questions', { p_rows: slice })
     if (error) throw new Error(translate(error.message))
     const res = data as { added: number; updated: number; skipped?: number }
@@ -394,6 +404,7 @@ export interface SeedRow {
   question: string
   answer: string
   image: string | null
+  answer_image: string | null
   family: string | null
 }
 

@@ -5,6 +5,7 @@ import { ScoreBar } from '../components/ScoreBar'
 import { play } from '../audio/sfx'
 import { questionSizeSuffix } from '../components/QuestionText'
 import { FitAnswer } from '../components/FitAnswer'
+import { AnswerFace } from '../components/AnswerFace'
 import { celebSrc } from '../game/celebs'
 
 /**
@@ -41,7 +42,11 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       )}
       <div className="reveal-a">
         <span className="a-label">الإجابة</span>
-        <FitAnswer as="span" className="a-text">{q.answer}</FitAnswer>
+        {/* الوجه يجاور الاسم — السؤال نصٌّ قائمٌ فوقهما، بخلاف `q.image`
+            التي تحلّ محلّ النصّ. */}
+        <AnswerFace q={q}>
+          <FitAnswer as="span" className="a-text">{q.answer}</FitAnswer>
+        </AnswerFace>
       </div>
 
       <div className="mark-cards grow">

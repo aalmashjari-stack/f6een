@@ -400,6 +400,23 @@ body::after {
   object-fit: contain;
 }
 
+/* صفُّ الإجابة المصوَّرة (`answerImage`) — الوجه إلى **جانب** الاسم لا محلَّ
+   السؤال. البطاقة تحمل السؤال فوقهما، فالرصُّ الرأسيّ كان يدفع «من أجاب؟»
+   خارج الشاشة القصيرة. والاسم يبقى الأكبر: الصورة تُسنده ولا تزاحمه.
+   وهنا لا في الشاشتين: `.rv-photo` نفسُها هاجرت إلى هنا لأنّ كشفَ الجماعيّ
+   وكشفَ الديربي يعرضان الصورة نفسها بقاعدتين لا واحدة. */
+.rv-answer-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(10px, 2vw, 28px); min-width: 0; max-width: 100%;
+}
+.rv-face {
+  flex: 0 0 auto;
+  width: clamp(56px, min(11vw, 16vh), 132px); aspect-ratio: 1;
+  object-fit: cover; border-radius: 50%;
+  border: 2px solid var(--gold); box-shadow: var(--lift);
+}
+.rv-answer-row .rv-a, .rv-answer-row .a-text { min-width: 0; }
+
 /* ===================== عناصر عامة ===================== */
 .eyebrow {
   color: var(--text-2);
