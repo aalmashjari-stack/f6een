@@ -2,6 +2,7 @@ import {
   STAGE1_LEVEL_POINTS,
   STAGE2_CORRECT,
   STAGE2_WRONG,
+  STAGE1_LEVELS,
   STAGE3_POINTS,
   STAGE3_TIMER_MS,
 } from './session'
@@ -15,7 +16,9 @@ export const STAGES = [
   {
     name: 'الجولة الجماعية',
     desc: 'الفريقان يختاران ستّ فئات، ويجيب صاحب الدور على خليّة من اللوح',
-    points: `${STAGE1_LEVEL_POINTS['سهل']} · ${STAGE1_LEVEL_POINTS['متوسط']} · ${STAGE1_LEVEL_POINTS['صعب']}`,
+    /* من `STAGE1_LEVELS` لا بعدٍّ يدويّ: أُضيف «تعجيزي» في ٩ سبتمبر ٢٠٢٦
+       فبقي السطر يقول «10 · 20 · 30» ويكذب على اللاعب في أوّل شاشة. */
+    points: STAGE1_LEVELS.map((l) => STAGE1_LEVEL_POINTS[l]).join(' · '),
   },
   {
     name: 'الديربي',
