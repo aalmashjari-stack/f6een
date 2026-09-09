@@ -5,6 +5,7 @@ import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
+import { AnswerFace } from '../components/AnswerFace'
 import { FitAnswer } from '../components/FitAnswer'
 
 /**
@@ -68,9 +69,11 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
           <div className="s3-inner">
             <QuestionView q={q} />
             {state.s3Revealed && (
-              <FitAnswer as="p" className="s3-answer" fitKey={q.answer}>
-                <span className="a-label">الإجابة:</span> {q.answer}
-              </FitAnswer>
+              <AnswerFace q={q}>
+                <FitAnswer as="p" className="s3-answer" fitKey={q.answer}>
+                  <span className="a-label">الإجابة:</span> {q.answer}
+                </FitAnswer>
+              </AnswerFace>
             )}
           </div>
         ) : (

@@ -24,6 +24,8 @@ interface Row {
   question: string
   answer: string
   image: string | null
+  /** صورةٌ تظهر مع الإجابة لا مع السؤال. قد تغيب — قاعدةٌ لم تُرقَّ بعد. */
+  answer_image?: string | null
   /** الموضوع المصرَّح به — يمنع سؤالين جوابهما واحد في جلسة. قد يغيب. */
   family?: string | null
 }
@@ -59,6 +61,7 @@ function toQuestion(r: Row): Question | null {
     question: r.question,
     answer: r.answer,
     ...(r.image ? { image: r.image } : {}),
+    ...(r.answer_image ? { answerImage: r.answer_image } : {}),
     ...(r.family ? { family: r.family } : {}),
   }
 }

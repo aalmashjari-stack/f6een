@@ -83,6 +83,22 @@ describe('طبقة الأسئلة من القاعدة', () => {
     expect(allQuestions().length).toBeGreaterThan(0)
   })
 
+  /* `answer_image` عمودٌ جديد (٩ سبتمبر ٢٠٢٦): وجهٌ يظهر في الكشف إلى جانب
+     الإجابة، والسؤالُ يبقى نصّاً. صمتُ `toQuestion` عنه كان يعني عموداً
+     يُملأ في اللوحة ولا يصل الشاشة أبداً. */
+  it('صورة الإجابة تصل من القاعدة، وغيابها لا يضرّ', async () => {
+    const withFace: Record<string, unknown>[] = fullRows()
+    withFace[0].answer_image = 'celeb-002-q6892571'
+    rows.push(...withFace)
+    await syncOverlay()
+
+    const q = allQuestions().find((x) => x.id === withFace[0].question_id)
+    expect(q?.answerImage).toBe('celeb-002-q6892571')
+    expect(q?.image).toBeUndefined()
+    const plain = allQuestions().find((x) => x.id === withFace[1].question_id)
+    expect(plain?.answerImage).toBeUndefined()
+  })
+
   it('الصفّ الفاسد وحده يُطرح ولا يُسقط الطبقة', async () => {
     rows.push(...fullRows(), {
       question_id: '',

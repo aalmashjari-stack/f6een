@@ -5,6 +5,7 @@ import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
 import { questionSizeSuffix } from '../components/QuestionText'
 import { FitAnswer } from '../components/FitAnswer'
+import { AnswerFace } from '../components/AnswerFace'
 import { celebSrc } from '../game/celebs'
 
 /**
@@ -50,7 +51,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
         )}
         <span className="rv-rule" aria-hidden="true" />
-        <FitAnswer className="rv-a">{q.answer}</FitAnswer>
+        {/* صورةُ الإجابة تجاور الاسمَ ولا تحلّ محلّ السؤال: السؤال هنا نصٌّ
+            قائم بنفسه، والوجهُ ثمرةُ الكشف. */}
+        <AnswerFace q={q}>
+          <FitAnswer className="rv-a">{q.answer}</FitAnswer>
+        </AnswerFace>
       </div>
 
       {/* حُذف شريط «قرار الحكم» في ٢٥ أغسطس ٢٠٢٦ بقرار علي: «مسوية زحمة

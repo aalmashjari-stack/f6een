@@ -28,6 +28,12 @@ export interface ImportRow {
    * بلا صورة، فيعود السؤال نصّاً عارياً «من صاحب الصورة؟». `null` للمضاف.
    */
   image: string | null
+  /**
+   * صورةُ الإجابة القائمة كما هي — تُحمل مع التعديل ولا يحرّرها الملفّ،
+   * تماماً كـ`image`. بدونها كان تصحيحُ نصّ سؤالٍ من ملفٍّ يمحو وجهَ
+   * إجابته فيعود السؤال بلا صورة.
+   */
+  answerImage: string | null
 }
 
 export interface Rejected {
@@ -212,6 +218,8 @@ export interface KnownQuestion {
   question: string
   /** مفتاح الصورة أو رابطها إن كان سؤالَ صورة — يُحمل مع التعديل كما هو. */
   image?: string
+  /** صورةُ الإجابة إن وُجدت — تُحمل مع التعديل كما هي. */
+  answerImage?: string
 }
 
 /**
@@ -320,6 +328,7 @@ export function buildPlan(
       question,
       answer,
       image: (id && byId.get(id)?.image) || null,
+      answerImage: (id && byId.get(id)?.answerImage) || null,
     })
   }
 
