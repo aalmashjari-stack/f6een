@@ -18,7 +18,10 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-const LEVELS = ['سهل', 'متوسط', 'صعب']
+/* المستويات الأربعة — و«تعجيزي» رابعُها منذ ٩ سبتمبر ٢٠٢٦. وهذه القائمة
+   شقيقةٌ لقوائمَ في `types.ts` و`bank.test.ts` واللوحة والقاعدة؛ من زاد
+   مستوىً فليمرّ عليها كلّها، وإلّا ردّ السكربتُ دفعةً صحيحة. */
+const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
 
 /** يقرأ ملفّ `KEY=value` بلا اعتماد على حزمة. */
 function readEnv(path) {
