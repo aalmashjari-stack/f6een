@@ -184,11 +184,21 @@ const norm = (s: string) =>
  * الملفّ كلَّه صفّاً واحداً.
  */
 export function questionsToCsv(
-  rows: { id: string; category: string; level: string; topic?: string | null; question: string; answer: string }[],
+  rows: {
+    id: string
+    category: string
+    level: string
+    topic?: string | null
+    question: string
+    answer: string
+    answerImage?: string | null
+  }[],
 ): string {
   const esc = (v: string | null | undefined) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
-  const head = ['المعرّف', 'التصنيف', 'المستوى', 'الموضوع', 'السؤال', 'الإجابة']
-  const body = rows.map((r) => [r.id, r.category, r.level, r.topic ?? '', r.question, r.answer])
+  const head = ['المعرّف', 'التصنيف', 'المستوى', 'الموضوع', 'السؤال', 'الإجابة', 'صورة الإجابة']
+  const body = rows.map((r) => [
+    r.id, r.category, r.level, r.topic ?? '', r.question, r.answer, r.answerImage ?? '',
+  ])
   return '\ufeff' + [head, ...body].map((r) => r.map(esc).join(',')).join('\r\n')
 }
 
@@ -200,6 +210,12 @@ const HEADERS: Record<string, string[]> = {
   answer: ['الإجابة', 'الاجابة', 'الجواب'],
   topic: ['الموضوع'],
   id: ['المعرّف', 'المعرف', 'الرقم'],
+  /* صورةُ الإجابة — العمود الوحيد الذي **يُكتب** من ملفّ. صورةُ السؤال لا
+     تُكتب منه أبداً (تُحمل كما هي) لأنّها تُرفع من اللوحة؛ أمّا وجهُ الإجابة
+     فأكثرُه مفاتيحُ صورٍ مشحونةٍ في التطبيق (`celeb-###-q###`)، ولا سبيل
+     إلى تعيينها من نموذج اللوحة: منتقي الصور يرفع ملفّاً ولا يشير إلى
+     مشحون. فبلا هذا العمود لا تُنشأ أسئلةُ الوجوه إلّا بـSQL. */
+  answerImage: ['صورة الإجابة', 'صورة الاجابة', 'وجه الإجابة'],
 }
 
 function headerMap(head: string[]): Record<string, number> {
@@ -328,7 +344,9 @@ export function buildPlan(
       question,
       answer,
       image: (id && byId.get(id)?.image) || null,
-      answerImage: (id && byId.get(id)?.answerImage) || null,
+      /* عمودٌ مكتوب يفوز، وخانةٌ فارغة تُبقي القائم — كما في `image`. فملفّ
+         تصحيحٍ لا يحمل العمود لا يمحو وجهاً، وملفٌّ يحمله يعيّنه. */
+      answerImage: at('answerImage') || (id && byId.get(id)?.answerImage) || null,
     })
   }
 
