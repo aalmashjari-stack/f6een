@@ -68,7 +68,12 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
                 </span>
               </div>
 
-              <div className="blevels">
+              {/* عددُ الصفوف من `STAGE1_LEVELS` لا من ثابتٍ في CSS: زيادةُ
+                  مستوىً كانت تترك الشبكة على ثلاثة فيُقصّ الرابع. */}
+              <div
+                className="blevels"
+                style={{ '--rows': STAGE1_LEVELS.length } as React.CSSProperties}
+              >
                 {STAGE1_LEVELS.map((level) => {
                   const played = state.s1Played.includes(cellKey(cat.name, level))
                   return (
@@ -157,7 +162,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
 
         /* ===== عمود المستويات ===== */
         .blevels {
-          display:grid; grid-template-rows:repeat(3, 1fr);
+          display:grid; grid-template-rows:repeat(var(--rows), 1fr);
           gap:clamp(4px,.6vh,9px);
           min-width:0; min-height:0;
         }

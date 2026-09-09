@@ -126,7 +126,9 @@ describe('جلسات متتابعة بذاكرة دائمة — حتى ما بع
    * ترتيبُ الاستعمال، والمعاد أوّلُ ما فيها ممّا يصلح للخليّة.
    */
   it('ما يُعاد بعد النفاد هو أقدم ما في الذاكرة', () => {
-    const full = new Set(poolShippedByLevels(['سهل', 'متوسط', 'صعب']).map((q) => q.id))
+    /* مستويات اللوح كلُّها لا قائمةٌ مكتوبة هنا: «تعجيزي» أُضيف في ٩ سبتمبر
+       ٢٠٢٦ فبقيت خاناتُه طازجةً خارج «الذاكرة الكاملة»، فسقط الفحص. */
+    const full = new Set(poolShippedByLevels([...STAGE1_LEVELS]).map((q) => q.id))
     /* ذاكرةٌ كاملة بترتيب مخلوط: الأقدم فيها ليس أوّل البنك. */
     const history = new Set(shuffle([...full]))
     const cats = shuffle(playableCategories()).slice(0, STAGE1_CATEGORIES)
