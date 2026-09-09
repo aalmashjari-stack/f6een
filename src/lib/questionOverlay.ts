@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { setExtraCategories, setQuestionOverlay } from '../game/bank'
 import { setCategoryArt } from '../components/categoryArt'
+import { BOARD_LEVELS } from '../game/levels'
 import type { Level, Question } from '../game/types'
 
 /**
@@ -35,7 +36,16 @@ interface BankPayload {
   sig?: string
 }
 
-const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+/**
+ * المستوياتُ المقبولة من القاعدة — من موضعها الواحد (`levels.ts`).
+ *
+ * كانت مكتوبةً هنا بيدها على ثلاثة، فلمّا دخل «تعجيزي» في ٩ سبتمبر ٢٠٢٦
+ * صار كلُّ صفٍّ تعجيزيٍّ يأتي من القاعدة يُطرح هنا صامتاً. وفي وضع `db`
+ * القاعدةُ هي البنك كلُّه، فخلا الصفُّ الرابع من كلّ تصنيف —
+ * و`playableCategories` تشترط الصفوف الأربعة، فرجعت **فارغة**: لا فئة
+ * تظهر في الإعداد لا في الموقع ولا في التطبيق (بلاغ علي في اليوم نفسه).
+ */
+const LEVELS: Level[] = BOARD_LEVELS
 
 /** صفٌّ من القاعدة إلى سؤال. الصفّ الفاسد يُطرح ولا يُسقط الطبقة كلّها. */
 function toQuestion(r: Row): Question | null {
@@ -139,9 +149,9 @@ export async function syncOverlay(): Promise<void> {
 
 /* ========================= الفئات المضافة ========================= */
 /**
- * فئة أضافها المدير من اللوحة. لا تدخل العجلة إلّا حين تكتمل مستوياتها
- * الثلاثة — الشرط في `playableCategories`، وهو الذي يمنع لعبةً تسقط عند
- * أوّل سؤالٍ «صعب» في فئةٍ ليس فيها صعب.
+ * فئة أضافها المدير من اللوحة. لا تدخل العجلة إلّا حين تكتمل صفوف اللوح
+ * كلُّها (`BOARD_LEVELS`) — الشرط في `playableCategories`، وهو الذي يمنع
+ * لعبةً تسقط عند أوّل سؤالٍ «صعب» في فئةٍ ليس فيها صعب.
  */
 interface CatRow {
   name: string
