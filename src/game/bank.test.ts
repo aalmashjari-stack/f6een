@@ -17,8 +17,19 @@ import {
   subscribeBank,
 } from './bank'
 import type { Level } from './types'
+import { STAGE1_LEVELS } from './session'
 
-const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+/** كلُّ ما يعرفه النوع — لفحص أنّ سؤالاً لا يحمل مستوىً مجهولاً. */
+const ALL_LEVELS: Level[] = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
+
+/**
+ * **وحدُّ الخليّة يُقاس على صفوف اللوح لا على قائمةٍ مكتوبةٍ هنا.**
+ *
+ * فحين يُضاف «تعجيزي» إلى `STAGE1_LEVELS` يطالب هذا الفحصُ بعشرين سؤالاً
+ * تعجيزيّاً في كلّ تصنيف — ويسقط إن لم تكتمل. وهذا مقصود: تشغيلُ المستوى
+ * قبل المحتوى يُفرغ اللوح من فئاته كلّها، فلا يُترك للنيّة.
+ */
+const LEVELS: Level[] = STAGE1_LEVELS
 
 /** تطبيع عربي للمقارنة: تجريد التشكيل وتوحيد الهمزة والتاء المربوطة والألف المقصورة. */
 const norm = (s: string) =>
@@ -56,7 +67,7 @@ describe('بنك الأسئلة', () => {
       expect(q.question.trim(), q.id).not.toBe('')
       expect(q.answer.trim(), q.id).not.toBe('')
       expect(CATEGORIES, q.id).toContain(q.category)
-      expect(LEVELS, q.id).toContain(q.level)
+      expect(ALL_LEVELS, q.id).toContain(q.level)
     }
   })
 
