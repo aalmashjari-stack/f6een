@@ -832,7 +832,7 @@ function Reports() {
 
 /* ================================ الأسئلة ================================ */
 
-const LEVELS = ['سهل', 'متوسط', 'صعب']
+const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
 const PAGE = 60
 
 type Source = 'bank' | 'edited' | 'added'
