@@ -75,7 +75,11 @@ describe('drawOne — الاستبعاد', () => {
  * الجلسة الحادية والثلاثين. الآن ما يُكسر هو حدودُ الخليّة لا الضمانتان.
  */
 describe('drawOne — ضيق المخزون: الجلسة صلبة والذاكرة ليّنة', () => {
-  it('لا يكسر القالب ولا الحجز — يخرج من الخليّة إلى المستوى', () => {
+  /* **ويخرج إلى مستوىً آخر في التصنيف نفسه لا إلى تصنيفٍ آخر** (٩ سبتمبر
+     ٢٠٢٦): اللاعب اختار التصنيف ويرى اسمه فوق الخليّة، فسؤالٌ من غيره يُقرأ
+     عطباً — بلاغُ علي حين ظهر سؤال تمثيلٍ في «أحياء وفلك». أمّا مستوىً آخر
+     فلا يراه أحد. */
+  it('لا يكسر القالب ولا الحجز — يخرج من الخليّة ويبقى في التصنيف', () => {
     const cell = poolByCatLevel(CAT, LEVEL)
     const famQ = cell.find((q) => familyOf(q) !== null)!
     // كل الخلية محجوزة إلا سؤالاً واحداً، وقالبه مطروق: لا هذا ولا ذاك
@@ -83,7 +87,7 @@ describe('drawOne — ضيق المخزون: الجلسة صلبة والذاك�
     const spent = new Set([familyOf(famQ)!])
     for (let i = 0; i < 40; i++) {
       const picked = drawOne(CAT, LEVEL, new Set(), reserved, spent)
-      expect(picked.level).toBe(LEVEL)
+      expect(picked.category).toBe(CAT)
       expect(reserved.has(picked.id)).toBe(false)
       expect(familyOf(picked)).not.toBe(familyOf(famQ))
     }
@@ -142,14 +146,33 @@ describe('drawOne — الخليّة الفارغة لا تُسقط المحرّ
     expect(q.level).toBe('صعب')
   })
 
-  it('خليّة حُجزت كلّها بالبلاغات تسقط إلى المستوى بلا محجوز', () => {
+  /**
+   * البلاغ الذي أنشأ هذا الفحص: صفُّ «تعجيزي» وصل فارغاً إلى جهاز علي
+   * (نسخةٌ مخزَّنة قديمة)، فسقط السحبُ إلى المستوى بلا تصنيف — وظهر سؤال
+   * تمثيلٍ في خليّة «أحياء وفلك». والخليّة الفارغة حالٌ واردة دائماً:
+   * بلاغاتٌ تحجز، أو مزامنةٌ لم تصل بعد.
+   */
+  it('صفٌّ كامل فارغ لا يُخرج الخليّة عن تصنيفها', () => {
+    const row = poolByCatLevel(CAT, 'تعجيزي')
+    expect(row.length, 'الفحص بلا معنى إن كان الصفّ فارغاً أصلاً').toBeGreaterThan(0)
+    setBlockedQuestionIds(row.map((q) => q.id))
+    try {
+      for (let i = 0; i < 20; i++) {
+        expect(drawOne(CAT, 'تعجيزي', new Set()).category).toBe(CAT)
+      }
+    } finally {
+      setBlockedQuestionIds([])
+    }
+  })
+
+  it('خليّة حُجزت كلّها بالبلاغات تسقط داخل التصنيف بلا محجوز', () => {
     const cell = poolByCatLevel(CAT, LEVEL)
     const blocked = new Set(cell.map((q) => q.id))
     setBlockedQuestionIds(blocked)
     try {
       for (let i = 0; i < 20; i++) {
         const q = drawOne(CAT, LEVEL, new Set())
-        expect(q.level).toBe(LEVEL)
+        expect(q.category).toBe(CAT)
         expect(blocked.has(q.id)).toBe(false)
       }
     } finally {

@@ -1,4 +1,5 @@
 import type { Level, Question } from './types'
+import { BOARD_LEVELS } from './levels'
 import { familiesOf, poolByCatLevel, poolByLevels, poolShippedByLevels } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -10,7 +11,8 @@ export function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+/* صفوف اللوح من موضعها الواحد — انظر `levels.ts`. */
+const LEVELS = BOARD_LEVELS
 
 /**
  * قيود السحب — صنفان لا صنف واحد (٧ سبتمبر ٢٠٢٦):
@@ -75,8 +77,28 @@ function oldestUsed(pool: Question[], used: Set<string>): Question | null {
  * والقيود الصلبة تبقى صلبةً هنا أيضاً: سؤالٌ من فئةٍ أخرى أهون من سؤالٍ
  * سُمع قبل دقائق.
  */
-function fallback(level: Level, g: DrawGuards): Question {
-  const q = pickFrom(poolByLevels([level]), g) ?? pickFrom(poolByLevels(LEVELS), g)
+/**
+ * سلّم التنازل حين تفرغ الخليّة — **والتصنيف يسبق المستوى فيه**.
+ *
+ * كان ينزل من الخليّة إلى المستوى مباشرةً، فيأتي بسؤالٍ من تصنيفٍ آخر:
+ * ظهر سؤالُ تمثيلٍ في خليّة «أحياء وفلك» (بلاغ علي ٩ سبتمبر ٢٠٢٦). واللاعب
+ * اختار التصنيف ويرى اسمه فوق الخليّة، فالخروجُ منه يُقرأ عطباً لا تنازلاً.
+ * أمّا الخروج من المستوى — سؤالٌ متوسّط في خانة الصعب — فلا يراه أحد.
+ *
+ * فالترتيب: الخليّة، ثمّ **التصنيف نفسه بأيّ مستوى**، ثمّ المستوى نفسه بأيّ
+ * تصنيف، ثمّ البنك كلُّه. ولا يعود بلا سؤال أبداً.
+ */
+function fallback(category: string | null, level: Level, g: DrawGuards): Question {
+  const inCategory = category
+    ? pickFrom(
+        LEVELS.flatMap((l) => poolByCatLevel(category, l)),
+        g,
+      )
+    : null
+  const q =
+    inCategory ??
+    pickFrom(poolByLevels([level]), g) ??
+    pickFrom(poolByLevels(LEVELS), g)
   if (!q) throw new Error('بنك الأسئلة فارغ')
   return q
 }
@@ -112,7 +134,7 @@ export function drawOne(
   spentFamilies: Set<string> = EMPTY,
 ): Question {
   const g = guards(used, excluded, spentFamilies)
-  return pickFrom(poolByCatLevel(category, level), g) ?? fallback(level, g)
+  return pickFrom(poolByCatLevel(category, level), g) ?? fallback(category, level, g)
 }
 
 /**
@@ -135,7 +157,7 @@ export function drawByLevel(
   spentFamilies: Set<string> = EMPTY,
 ): Question {
   const g = guards(used, excluded, spentFamilies)
-  return pickFrom(poolShippedByLevels([level]), g) ?? fallback(level, g)
+  return pickFrom(poolShippedByLevels([level]), g) ?? fallback(null, level, g)
 }
 
 /**

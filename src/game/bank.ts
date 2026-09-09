@@ -1,6 +1,7 @@
 import raw from '../../data/questions-bank-v5.json'
 import extraRaw from '../../data/questions-extra.json'
 import type { Level, Question } from './types'
+import { BOARD_LEVELS } from './levels'
 
 interface Bank {
   categories: string[]
@@ -168,7 +169,8 @@ export function allCategories(): string[] {
   return [...CATEGORIES, ...extra_.filter((c) => !CATEGORIES.includes(c))]
 }
 
-const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب']
+/* صفوف اللوح من موضعها الواحد — انظر `levels.ts`. */
+const LEVELS = BOARD_LEVELS
 
 /**
  * الفئات الصالحة للّعب — **ما اكتملت مستوياتها الثلاثة وحده**. تدخل عجلةَ

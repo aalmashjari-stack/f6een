@@ -308,11 +308,14 @@ describe('الإخطار عند وصول المزامنة', () => {
     ])
     expect(playableCategories()).not.toContain('فئة ناقصة')
 
-    /* وباكتمال المستويات الثلاثة تدخل — وهي القراءة الثانية التي أتاحها الإخطار. */
+    /* وباكتمال صفوف اللوح **الأربعة** تدخل — وهي القراءة الثانية التي أتاحها
+       الإخطار. وثلاثةٌ لا تكفي منذ ٩ سبتمبر ٢٠٢٦: صفٌّ فارغ يُسقط السحب إلى
+       تصنيفٍ آخر، فالشرط أن تمتلئ الصفوف كلُّها لا أكثرُها. */
     setQuestionOverlay([
       { id: 'ADM9001', category: 'فئة ناقصة', level: 'سهل', topic: '', question: 'س١؟', answer: 'ج' },
       { id: 'ADM9002', category: 'فئة ناقصة', level: 'متوسط', topic: '', question: 'س٢؟', answer: 'ج' },
       { id: 'ADM9003', category: 'فئة ناقصة', level: 'صعب', topic: '', question: 'س٣؟', answer: 'ج' },
+      { id: 'ADM9004', category: 'فئة ناقصة', level: 'تعجيزي', topic: '', question: 'س٤؟', answer: 'ج' },
     ])
     expect(playableCategories()).toContain('فئة ناقصة')
     expect(playableCategories().length).toBe(before.length + 1)
