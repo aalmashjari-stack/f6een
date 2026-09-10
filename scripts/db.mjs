@@ -52,9 +52,17 @@ if (!url) {
 
 ضعه في ملفّ .env.db بجذر المشروع (متجاهَل في git):
 
-  SUPABASE_DB_URL=postgresql://postgres.<المعرّف>:<كلمة السرّ>@<المضيف>:6543/postgres
+  SUPABASE_DB_URL=postgresql://...
 
-وتجده في Supabase ← Project Settings ← Database ← Connection string ← URI.
+ومن Supabase ← Project Settings ← Database ← Connection string، خُذ
+**Session pooler** أو **Direct connection**.
+
+  ✗ لا تأخذ «Transaction pooler» (المنفذ 6543): لا يحمل حالةَ الجلسة،
+    والهجرات تحتاجها — فيفشل الدفع برسالةٍ غامضة.
+
+  ✗ وكلمةُ السرّ تُرمَّز (percent-encoded): الـCLI يشترط ذلك، فحرفٌ مثل
+    @ أو # أو / فيها يقطع الرابط. بدّلها بـ %40 و%23 و%2F.
+
 ضَعه بيدك في الملفّ ولا تكتبه في رسالة.`)
   process.exit(1)
 }
@@ -62,7 +70,13 @@ if (!url) {
 /** يُخفي كلمة السرّ من أيّ نصٍّ قبل طباعته. */
 const hide = (s) => String(s ?? '').replace(/:\/\/[^@]*@/g, '://***@')
 
-/** يشغّل الـCLI ويعيد خرجَه — والرابط يمرّ في البيئة لا في سطر الأوامر. */
+/**
+ * يشغّل الـCLI ويعيد خرجَه.
+ *
+ * والرابط يمرّ في `--db-url` لأنّه الخيار الموثَّق الوحيد — فيراه `ps` على
+ * هذا الجهاز لحظةَ التشغيل. مقبولٌ على جهازٍ شخصيّ، ويُذكر لأنّه حقيقة.
+ * وكلُّ ما يخرج من هنا يمرّ على `hide` فلا تظهر كلمةُ السرّ في سجلّ.
+ */
 function cli(args, { quiet = false } = {}) {
   const r = spawnSync('npx', ['--yes', 'supabase@latest', ...args, '--db-url', url], {
     cwd: root,
@@ -99,34 +113,60 @@ if (cmd === 'push') {
 }
 
 /**
- * **يُنفَّذ مرّةً واحدة وعن قصد.**
+ * **يُنفَّذ مرّةً واحدة وعن قصد، وبحدٍّ صريح.**
  *
  * هجراتُ هذا المشروع طُبّقت كلُّها باللصق اليدويّ، فجدولُ التتبّع عند
- * Supabase فارغ — ودفعةٌ بلا هذا التسجيل تعيد تشغيل أربعٍ وخمسين هجرة على
- * قاعدةٍ حيّة. فيُسجَّل الموجودُ «مطبَّقاً» **بلا تشغيله**، ثمّ يصير
- * `db:push` يطبّق الجديد وحده.
+ * Supabase فارغ — ودفعةٌ بلا هذا التسجيل تعيد تشغيلها كلَّها على قاعدةٍ
+ * حيّة. فتُسجَّل «مطبَّقة» بلا تشغيلها.
  *
- * ويشترط تأكيداً صريحاً: `npm run db:adopt -- --yes`.
+ * **ويشترط `--through <النسخة>` ولا افتراض له.** أوّل ما كتبتُه كان يسجّل
+ * كلَّ ما في المجلّد — ومنه هجراتُ اليوم التي لم تُطبَّق بعد، فتُدفن صامتةً
+ * ولا تُشغَّل أبداً. والحدُّ يُعرف من `npm run db:status`: آخرُ ما تقول
+ * القاعدةُ إنّها تحمله.
  */
 if (cmd === 'adopt') {
   const v = versions()
+  const i = process.argv.indexOf('--through')
+  const through = i > 0 ? process.argv[i + 1] : null
+
+  if (!through) {
+    console.error(`ينقص --through <النسخة>.
+
+    شغّل «npm run db:status» أوّلاً واعرف آخرَ هجرةٍ تحملها القاعدة فعلاً،
+    ثمّ سجّل حتّاها وحدها:
+
+      npm run db:adopt -- --through 20260910130000 --yes
+
+    وما بعدها يبقى منتظِراً ليطبّقه «npm run db:push».
+
+    **ولا تسجّل هجرةً لم تُطبَّق**: تُدفن صامتةً ولا تُشغَّل أبداً.
+    نسخُ هذا المجلّد: ${v[0]} … ${v[v.length - 1]} (${v.length} هجرة)`)
+    process.exit(1)
+  }
+
+  const pick = v.filter((x) => x <= through)
+  if (pick.length === 0) {
+    console.error(`لا هجرةَ عند ${through} أو قبلها.`)
+    process.exit(1)
+  }
+  const after = v.filter((x) => x > through)
+
   if (!process.argv.includes('--yes')) {
-    console.log(`سيُسجَّل ${v.length} هجرةً «مطبَّقة» بلا تشغيلها — من ${v[0]} إلى ${v[v.length - 1]}.
+    console.log(`سيُسجَّل ${pick.length} «مطبَّقة» بلا تشغيلها: ${pick[0]} … ${pick[pick.length - 1]}
+${after.length ? `وسيبقى ${after.length} منتظِراً: ${after.join('، ')}` : 'ولا شيء بعدها.'}
 
-**لا تفعل هذا إلّا إن كانت القاعدة الحيّة تحمل هذه الهجرات فعلاً** (وهي كذلك
-هنا: طُبّقت باللصق اليدويّ). وإلّا ظنّ النظامُ أنّها طُبّقت وهي لم تُطبَّق.
-
-للتنفيذ:  npm run db:adopt -- --yes`)
+أضِف --yes للتنفيذ.`)
     process.exit(0)
   }
+
   let ok = 0
-  for (const ver of v) {
+  for (const ver of pick) {
     const { code } = cli(['migration', 'repair', '--status', 'applied', ver], { quiet: true })
     if (code === 0) ok++
     else console.error(`  ✗ ${ver}`)
   }
-  console.log(`سُجّلت ${ok} من ${v.length}. شغّل «npm run db:status» للتأكّد.`)
-  process.exit(ok === v.length ? 0 : 1)
+  console.log(`سُجّلت ${ok} من ${pick.length}. شغّل «npm run db:status» للتأكّد، ثمّ «npm run db:push».`)
+  process.exit(ok === pick.length ? 0 : 1)
 }
 
 console.error(`أمرٌ غير معروف «${cmd}» — status أو push أو adopt.`)
