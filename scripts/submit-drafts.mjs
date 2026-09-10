@@ -87,7 +87,7 @@ const table = parseCsv(readFileSync(resolve(file), 'utf8'))
 const head = table[0].map((h) => h.trim())
 const at = (name) => head.indexOf(name)
 const iCat = at('التصنيف'), iLvl = at('المستوى'), iQ = at('السؤال'), iA = at('الإجابة')
-const iTopic = at('الموضوع'), iId = at('المعرّف'), iImg = at('الصورة')
+const iTopic = at('الموضوع'), iId = at('المعرّف'), iImg = at('الصورة'), iFam = at('العائلة')
 
 if ([iCat, iLvl, iQ, iA].some((i) => i < 0)) {
   console.error('ينقص الملفّ عمود من: التصنيف · المستوى · السؤال · الإجابة')
@@ -110,6 +110,18 @@ for (let i = 1; i < table.length; i++) {
     /* مفتاح صورة مشحونة (`landmark-…`) أو رابطٌ في دلو art. الخادم يحرس
        الروابط الخارجية؛ والمفتاح المشحون يحلّه التطبيق من `assets/`. */
     image: iImg >= 0 ? (r[iImg] ?? '').trim() : '',
+    /**
+     * **العائلة المصرَّح بها — موضوعُ السؤال حين يتكرّر بصيغٍ مختلفة.**
+     *
+     * المحرّك يستنتج العائلة من أوّل أربع كلمات، وذلك يمسك القالبَ المتشابه
+     * ولا يمسك ما اتّحد معناه واختلف لفظه. وفي فئةٍ كـ«قصص الأنبياء» تتكرّر
+     * الإجاباتُ بطبعها — سبعةُ أسئلةٍ جوابُها إبراهيم عليه السلام — واللوحُ
+     * يسحب من الفئة أربعةَ أسئلة في الجلسة، فيلتقي اثنان بلا هذا التصريح.
+     *
+     * كان العمود مفقوداً هنا بينما تقبله `agent_submit_drafts` في القاعدة،
+     * فكانت كلُّ دفعةٍ تصل بلا عائلاتٍ مصرَّح بها.
+     */
+    family: iFam >= 0 ? (r[iFam] ?? '').trim() : '',
   }
   if (!row.question && !row.answer && !row.category) continue
   if (!row.category || !row.question || !row.answer) {
