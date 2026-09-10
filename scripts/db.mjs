@@ -67,6 +67,39 @@ if (!url) {
   process.exit(1)
 }
 
+/**
+ * **يُفحص شكلُ الرابط قبل تشغيل أيّ شيء.**
+ *
+ * وقع علي في هذا: نافذةُ Connect فيها زرّ «Copy prompt» يجاور الرابط،
+ * وهو ينسخ تعليماتٍ نصّيّة لا رابطاً — فحُفظ في الملفّ نصٌّ يبدأ بـ
+ * «1. Connection…»، وتعلّق الـCLI ينتظر ما لا يأتي. فالفحصُ هنا يقول
+ * السبب في سطرٍ بدل أن يُترك المستعمِل مع خطأٍ غامض.
+ */
+function validate(u) {
+  const bad = (why, hint) => {
+    console.error(`الرابط في .env.db غير صالح — ${why}.\n\n${hint}`)
+    process.exit(1)
+  }
+  if (!/^postgres(ql)?:\/\//.test(u)) {
+    bad(
+      'لا يبدأ بـ postgresql://',
+      `الغالبُ أنّك ضغطت «Copy prompt» في نافذة Connect — وهي تنسخ تعليماتٍ لا رابطاً.
+انزل تحتها إلى الصندوق الذي فيه النصّ نفسه، واضغط أيقونة النسخ الصغيرة عليه.`,
+    )
+  }
+  if (!u.includes('@')) bad('لا يحمل مضيفاً بعد @', 'انسخ النصّ كاملاً بلا قصّ.')
+  if (u.includes('[YOUR-PASSWORD]') || u.includes('[your-password]')) {
+    bad('ما زال فيه [YOUR-PASSWORD]', 'استبدلها بكلمة سرّ القاعدة، ورمّز الحروف المحجوزة (@ ← %40).')
+  }
+  if (u.includes(':6543')) {
+    bad(
+      'المنفذ 6543 — وهو Transaction pooler',
+      'ارجع إلى نافذة Connect واختر Session pooler (منفذه 5432)؛ الهجرات تحتاج حالةَ الجلسة.',
+    )
+  }
+}
+validate(url)
+
 /** يُخفي كلمة السرّ من أيّ نصٍّ قبل طباعته. */
 const hide = (s) => String(s ?? '').replace(/:\/\/[^@]*@/g, '://***@')
 
@@ -78,9 +111,12 @@ const hide = (s) => String(s ?? '').replace(/:\/\/[^@]*@/g, '://***@')
  * وكلُّ ما يخرج من هنا يمرّ على `hide` فلا تظهر كلمةُ السرّ في سجلّ.
  */
 function cli(args, { quiet = false } = {}) {
+  /* المدخلُ موروثٌ عمداً: أوّلُ تشغيلٍ قد ينزّل الـCLI، وبأنبوبٍ مغلق
+     يتعلّق بلا أثرٍ على الشاشة — وهو ما وقع لعلي فقطعه بـCtrl+C. */
   const r = spawnSync('npx', ['--yes', 'supabase@latest', ...args, '--db-url', url], {
     cwd: root,
     encoding: 'utf8',
+    stdio: ['inherit', 'pipe', 'pipe'],
     env: { ...process.env, SUPABASE_DB_URL: url },
   })
   const out = hide((r.stdout ?? '') + (r.stderr ?? ''))
@@ -159,14 +195,14 @@ ${after.length ? `وسيبقى ${after.length} منتظِراً: ${after.join('�
     process.exit(0)
   }
 
-  let ok = 0
-  for (const ver of pick) {
-    const { code } = cli(['migration', 'repair', '--status', 'applied', ver], { quiet: true })
-    if (code === 0) ok++
-    else console.error(`  ✗ ${ver}`)
+  /* نداءٌ واحد بالنسخ كلّها: `migration repair` تقبل `version...`. وكان
+     نداءً لكلّ نسخة — أربعةً وخمسين اتّصالاً بالقاعدة تستغرق دقائق. */
+  console.log(`يسجّل ${pick.length} هجرة…`)
+  const { code } = cli(['migration', 'repair', '--status', 'applied', ...pick])
+  if (code === 0) {
+    console.log(`\nتمّ. شغّل «npm run db:status» للتأكّد، ثمّ «npm run db:push».`)
   }
-  console.log(`سُجّلت ${ok} من ${pick.length}. شغّل «npm run db:status» للتأكّد، ثمّ «npm run db:push».`)
-  process.exit(ok === pick.length ? 0 : 1)
+  process.exit(code)
 }
 
 console.error(`أمرٌ غير معروف «${cmd}» — status أو push أو adopt.`)
