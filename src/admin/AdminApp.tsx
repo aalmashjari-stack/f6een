@@ -12,6 +12,7 @@ import type {
   AdminStats,
   AdminUser,
   CategoryRow,
+  GroupRow,
   DraftBatch,
   DraftRow,
 } from '../lib/admin'
@@ -23,11 +24,13 @@ import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
 import {
   addCategory,
+  addGroup,
   approveDrafts,
   bankMode,
   createCode,
   deleteCategory,
   deleteCode,
+  deleteGroup,
   deleteQuestionEdit,
   deleteQuestions,
   fetchStats,
@@ -41,11 +44,15 @@ import {
   listFlags,
   listCategoryRows,
   listExtraCategories,
+  listGroups,
   listQuestionEdits,
   listSessions,
   listUsers,
   rejectDrafts,
+  renameGroup,
+  reorderGroups,
   saveCategoryArt,
+  setCategoryGroup,
   saveQuestion,
   seedBank,
   setBalance,
@@ -833,6 +840,15 @@ function Reports() {
 /* ================================ الأسئلة ================================ */
 
 const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
+
+/**
+ * حدّ الخليّة — عشرون سؤالاً لكل (فئة × مستوى)، وهو ما تفرضه
+ * `assert_cell_floor` في القاعدة و`bank.test.ts` على الملفّ.
+ *
+ * مكتوبٌ هنا للعرض وحده: اللوحة تقوله قبل أن تُردّ المحاولة، والقاعدة هي
+ * التي تمنع. فمن غيّره في الهجرة فليغيّره هنا — ولا عكس.
+ */
+const CELL_FLOOR = 20
 const PAGE = 60
 
 type Source = 'bank' | 'edited' | 'added'
@@ -1629,6 +1645,9 @@ function Categories() {
   const bank = useBank()
   const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
   const { data: cats, err, reload } = useLoad<CategoryRow[]>(listCategoryRows)
+  /* التصنيفات تُقرأ مستقلّةً عن الفئات: التصنيف الفارغ الذي لم تدخله فئةٌ
+     بعدُ لا أثر له في صفوف الفئات — انظر `listGroups`. */
+  const { data: groups, reload: reloadGroups } = useLoad<GroupRow[]>(listGroups)
   const [art, setArt] = useState<Record<string, string> | null>(null)
   const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
@@ -1664,9 +1683,25 @@ function Categories() {
         uploaded: row?.art_url ?? null,
         shipped: art?.[cat] ?? null,
         missing: LEVELS.filter((_, i) => counts[i] === 0),
+        group: row?.group_name ?? null,
+        /* ما دون الحدّ يُرى من هنا لا من محاولةٍ تُردّ: الخليّة تحت عشرين
+           تمنع الحذف والنقل (`assert_cell_floor`)، وهي أيضاً ما ينقص الفئة
+           الجديدة لتصير كاملة. */
+        thin: LEVELS.filter((_, i) => counts[i] > 0 && counts[i] < CELL_FLOOR),
       }
     })
   }, [bank, edits, cats, art])
+
+  /** ترتيب العرض: التصنيفات بترتيبها ثمّ ما لا تصنيف له — كشاشة الإعداد. */
+  const ordered = useMemo(() => {
+    if (!rows) return null
+    const at = new Map((groups ?? []).map((g, i) => [g.name, i]))
+    return [...rows].sort((a, b) => {
+      const ga = a.group === null ? Number.MAX_SAFE_INTEGER : (at.get(a.group) ?? 1e6)
+      const gb = b.group === null ? Number.MAX_SAFE_INTEGER : (at.get(b.group) ?? 1e6)
+      return ga - gb || a.cat.localeCompare(b.cat, 'ar')
+    })
+  }, [rows, groups])
 
   async function add(e: React.FormEvent) {
     e.preventDefault()
@@ -1704,6 +1739,33 @@ function Categories() {
     }
   }
 
+  /* ── التصنيفات: مظلّاتٌ تجمع الفئات في شاشة الإعداد ── */
+  async function moveToGroup(cat: string, group: string | null) {
+    setMsg(null)
+    try {
+      await setCategoryGroup(cat, group)
+      setMsg({
+        ok: true,
+        text: group ? `«${cat}» صارت تحت «${group}»` : `«${cat}» خرجت من تصنيفها`,
+      })
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر النقل' })
+    }
+  }
+
+  async function groupAction(run: () => Promise<unknown>, text: string) {
+    setMsg(null)
+    try {
+      await run()
+      setMsg({ ok: true, text })
+      reloadGroups()
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الفعل' })
+    }
+  }
+
   async function art_(cat: string, file: File | null) {
     setMsg(null)
     try {
@@ -1717,10 +1779,25 @@ function Categories() {
   }
 
   if (err) return <p className="a-err">{err}</p>
-  if (!rows) return <p className="a-note">…</p>
+  if (!rows || !ordered) return <p className="a-note">…</p>
 
   return (
     <>
+      {/* التصنيفات أوّلاً: الفئة تُنشأ ثمّ تُوضع تحت مظلّة، فالمظلّات تُقرأ
+          قبلها. وهي طبقةُ عرضٍ لا لعب — قِيلت هنا مرّةً حتى لا تُفهم على
+          أنّها تغيّر السحب أو النقاط. */}
+      <GroupsBar
+        groups={groups ?? []}
+        counts={rows.reduce<Record<string, number>>((acc, r) => {
+          if (r.group) acc[r.group] = (acc[r.group] ?? 0) + 1
+          return acc
+        }, {})}
+        onAdd={(n) => groupAction(() => addGroup(n), `أُضيف تصنيف «${n}»`)}
+        onRename={(o, n) => groupAction(() => renameGroup(o, n), `صار «${o}» يُسمّى «${n}»`)}
+        onDelete={(n) => groupAction(() => deleteGroup(n), `حُذف «${n}» — وفئاتُه بلا تصنيف الآن`)}
+        onReorder={(names) => groupAction(() => reorderGroups(names), 'رُتّبت التصنيفات')}
+      />
+
       <form className="a-form" onSubmit={add}>
         <div className="a-field">
           <label htmlFor="cat-name">فئة جديدة</label>
@@ -1751,17 +1828,40 @@ function Categories() {
             <tr>
               <th>الصورة</th>
               <th>الفئة</th>
+              <th>التصنيف</th>
               <th>المصدر</th>
-              <th>سهل</th>
-              <th>متوسط</th>
-              <th>صعب</th>
-              <th>في العجلة</th>
+              {/* عناوينُ المستويات من مصدرها الواحد. كانت مكتوبةً بيدها على
+                  ثلاثة، فلمّا دخل «تعجيزي» في ٩ سبتمبر ٢٠٢٦ صار الجدول
+                  أربعةَ أرقامٍ تحت ثلاثة عناوين — و«في العجلة» يقف فوق
+                  أرقام التعجيزي. */}
+              {LEVELS.map((l) => (
+                <th key={l}>{l}</th>
+              ))}
+              <th>في اللوح</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
-              <tr key={r.cat}>
+            {ordered.map((r, i) => (
+              <Fragment key={r.cat}>
+                {/* عنوانُ المظلّة فوق فئاتها — صفٌّ واحد لا عمودٌ يتكرّر في
+                    كل سطر. الجدول مرتَّبٌ بالمظلّة أصلاً (`ordered`)، فتبدُّلُ
+                    الاسم عن الصفّ السابق هو الحدُّ بين قسمٍ وقسم. */}
+                {(i === 0 || ordered[i - 1].group !== r.group) && (
+                  <tr className="grp-row">
+                    {/* رقمٌ أكبر من عدد الأعمدة عمداً: المتصفّح يقصّه إلى
+                        عرض الصفّ، فلا يحتاج عدّاً يدويّاً ينزاح كلّما
+                        أُضيف عمود — وقد انزاح فعلاً في هذا الجدول نفسه
+                        (أربعة أرقامٍ تحت ثلاثة عناوين، ٩ سبتمبر ٢٠٢٦). */}
+                    <th colSpan={99} scope="colgroup">
+                      {r.group ?? 'بلا مظلّة'}
+                      <span className="grp-n">
+                        {ordered.filter((x) => x.group === r.group).length} فئة
+                      </span>
+                    </th>
+                  </tr>
+                )}
+              <tr>
                 <td>
                   <ArtCell
                     src={r.uploaded ?? r.shipped}
@@ -1774,18 +1874,46 @@ function Categories() {
                   <b>{r.cat}</b>
                 </td>
                 <td>
+                  {/* قائمةٌ لا حقلٌ يُكتب: تصنيفٌ بخطأ مطبعيّ يصير مظلّةً
+                      ثانية بفئةٍ واحدة — نفس علّة الفئة في رفع الملفّ. */}
+                  <select
+                    className="a-in slim"
+                    value={r.group ?? ''}
+                    onChange={(e) => moveToGroup(r.cat, e.target.value || null)}
+                  >
+                    <option value="">— بلا تصنيف —</option>
+                    {(groups ?? []).map((g) => (
+                      <option key={g.name} value={g.name}>
+                        {g.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td>
                   <span className={'tag' + (r.added ? ' open' : '')}>
                     {r.added ? 'مضافة' : 'البنك'}
                   </span>
                 </td>
                 {r.counts.map((n, i) => (
-                  <td key={i} className={'num' + (n === 0 ? ' muted' : '')}>
+                  <td
+                    key={i}
+                    /* الخليّة الرقيقة تُرى قبل أن تُردّ: تحت عشرين يمنع
+                       القاعدةُ النقلَ منها والحذفَ فيها. */
+                    className={'num' + (n === 0 ? ' muted' : n < CELL_FLOOR ? ' thin' : '')}
+                    title={n > 0 && n < CELL_FLOOR ? `تحت الحدّ — ينقصها ${CELL_FLOOR - n}` : ''}
+                  >
                     {n}
                   </td>
                 ))}
                 <td>
                   {r.missing.length === 0 ? (
-                    <span className="tag finished">نعم</span>
+                    r.thin.length === 0 ? (
+                      <span className="tag finished">نعم</span>
+                    ) : (
+                      /* تدخل اللوح فعلاً — الشرط سؤالٌ واحد لا عشرون — لكنّ
+                         خليّتها الرقيقة تمنع التعديل عليها، فتُقال. */
+                      <span className="tag open">نعم · {r.thin.join(' و')} تحت الحدّ</span>
+                    )
                   ) : (
                     <span className="tag abandoned">ينقصها {r.missing.join(' و')}</span>
                   )}
@@ -1803,11 +1931,133 @@ function Categories() {
                   )}
                 </td>
               </tr>
+              </Fragment>
             ))}
           </tbody>
         </table>
       </div>
     </>
+  )
+}
+
+/**
+ * شريط التصنيفات — إضافةٌ وتسميةٌ وترتيبٌ وحذف.
+ *
+ * **الترتيب يُرسَل كاملاً** لا خطوةً خطوة: «ارفع هذا» يحتاج قراءة الجار
+ * وكتابتَه، وضغطتان متسارعتان تتبادلان الرقم نفسه.
+ *
+ * والحذف لا يشترط الفراغ بخلاف حذف الفئة: الفئة تحمل أسئلتها فتضيع معها،
+ * والتصنيف لا يحمل شيئاً — فئاتُه تخرج من مظلّتها وتبقى كما هي.
+ */
+function GroupsBar({
+  groups,
+  counts,
+  onAdd,
+  onRename,
+  onDelete,
+  onReorder,
+}: {
+  groups: GroupRow[]
+  counts: Record<string, number>
+  onAdd: (name: string) => void
+  onRename: (oldName: string, newName: string) => void
+  onDelete: (name: string) => void
+  onReorder: (names: string[]) => void
+}) {
+  const [name, setName] = useState('')
+
+  function move(i: number, dir: -1 | 1) {
+    const next = [...groups.map((g) => g.name)]
+    const j = i + dir
+    if (j < 0 || j >= next.length) return
+    ;[next[i], next[j]] = [next[j], next[i]]
+    onReorder(next)
+  }
+
+  function rename(g: GroupRow) {
+    const v = window.prompt(`اسمٌ جديد لـ«${g.name}»`, g.name)
+    if (v === null) return
+    const clean = v.trim()
+    if (!clean || clean === g.name) return
+    onRename(g.name, clean)
+  }
+
+  return (
+    <div className="a-card groups-bar">
+      <div className="gb-head">
+        <b>التصنيفات</b>
+        <span className="a-note gb-note">
+          مظلّاتٌ تجمع الفئات في شاشة الإعداد — لا تُلعب ولا يُسحب منها، وترتيبُها هنا هو ترتيبُ
+          عناوينها هناك.
+        </span>
+      </div>
+
+      <form
+        className="gb-add"
+        onSubmit={(e) => {
+          e.preventDefault()
+          const clean = name.trim()
+          if (clean.length < 2) return
+          onAdd(clean)
+          setName('')
+        }}
+      >
+        <input
+          className="a-in"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="تصنيف جديد — «رياضة» مثلاً"
+        />
+        <button className="a-btn go" type="submit" disabled={name.trim().length < 2}>
+          إضافة
+        </button>
+      </form>
+
+      {groups.length === 0 ? (
+        <p className="a-note">لا تصنيف بعد — الفئات كلّها تُعرض في قسمٍ واحد كما كانت.</p>
+      ) : (
+        <ul className="gb-list">
+          {groups.map((g, i) => (
+            <li key={g.name}>
+              <span className="gb-name">{g.name}</span>
+              <span className="gb-count">{counts[g.name] ?? 0} فئة</span>
+              <button className="a-btn" onClick={() => move(i, -1)} disabled={i === 0}>
+                ↑
+              </button>
+              <button
+                className="a-btn"
+                onClick={() => move(i, 1)}
+                disabled={i === groups.length - 1}
+              >
+                ↓
+              </button>
+              <button className="a-btn" onClick={() => rename(g)}>
+                تسمية
+              </button>
+              <button className="a-btn danger" onClick={() => onDelete(g.name)}>
+                حذف
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <style>{`
+        .groups-bar { padding:14px 16px; margin-bottom:14px; }
+        .gb-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+        .gb-note { margin:0; }
+        .gb-add { display:flex; gap:8px; margin:10px 0; max-width:520px; }
+        .gb-add .a-in { flex:1; }
+        .gb-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+        .gb-list li {
+          display:flex; align-items:center; gap:8px;
+          padding:6px 10px; border-radius:10px; background:var(--n-surface-2);
+        }
+        .gb-name { font-weight:800; }
+        /* العدّاد يدفع الأزرار إلى الطرف فتصطفّ عمودياً مهما طالت الأسماء. */
+        .gb-count { margin-inline-end:auto; opacity:.7; font-size:13px; }
+      `}</style>
+    </div>
   )
 }
 

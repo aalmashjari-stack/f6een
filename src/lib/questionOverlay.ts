@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { setExtraCategories, setQuestionOverlay } from '../game/bank'
 import { setCategoryArt } from '../components/categoryArt'
+import { setCategoryGroups } from '../components/categoryGroups'
 import { BOARD_LEVELS } from '../game/levels'
 import type { Level, Question } from '../game/types'
 
@@ -160,6 +161,9 @@ interface CatRow {
   name: string
   art_url: string | null
   is_extra: boolean
+  /** التصنيف الذي تنتمي إليه الفئة — مظلّةُ عرضٍ في الإعداد، انظر `categoryGroups`. */
+  group_name?: string | null
+  group_sort?: number | null
 }
 
 function loadCats(): CatRow[] {
@@ -178,6 +182,15 @@ function loadCats(): CatRow[] {
 }
 
 function applyCats(rows: CatRow[]) {
+  /* التصنيفات قبل الفئات: `setExtraCategories` هي التي تُخطر المشتركين
+     (`notifyBank`)، فما وُضع بعدها لا تراه الشاشة إلّا في الإخطار التالي. */
+  setCategoryGroups(
+    Object.fromEntries(
+      rows
+        .filter((r) => r.group_name)
+        .map((r) => [r.name, { name: r.group_name as string, sort: r.group_sort ?? 0 }]),
+    ),
+  )
   /* الصفّ الذي لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة لا يدخل قائمة الفئات —
      وإلّا ظهرت الفئة مرّتين. */
   setExtraCategories(rows.filter((r) => r.is_extra !== false).map((r) => r.name))
