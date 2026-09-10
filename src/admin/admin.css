@@ -91,6 +91,9 @@ table.a-tbl { width: 100%; min-width: max-content; border-collapse: collapse; wh
 .num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
 .ltr { direction: ltr; unicode-bidi: isolate; text-align: start; }
 .muted { color: var(--n-ink-3); font-weight: 700; }
+/* خليّةٌ فيها أسئلة ولا تبلغ حدَّ العشرين: تلعب ولا تُعدَّل — القاعدة تردّ
+   الحذفَ والنقلَ منها. لونُ تنبيهٍ لا لونُ خطأ. */
+.num.thin { color: var(--n-warn); font-weight: 800; }
 
 /* ── الحالات ── */
 .tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;
@@ -117,6 +120,8 @@ table.a-tbl { width: 100%; min-width: max-content; border-collapse: collapse; wh
   border: 1px solid var(--n-line); background: var(--n-surface-2); color: var(--n-ink);
 }
 .a-num { width: 72px; text-align: center; font-variant-numeric: tabular-nums; }
+/* قائمةٌ داخل خليّة جدول — أضيق وأخفّ من حقل النموذج. */
+.a-in.slim { padding: 5px 8px; font-size: 12px; max-width: 150px; }
 .a-in:focus, .a-num:focus { outline: none; border-color: var(--n-brand); background: #fff; }
 .a-btn {
   font: inherit; font-weight: 800; font-size: 13px; cursor: pointer;

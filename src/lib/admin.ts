@@ -203,10 +203,12 @@ const ERRORS: Record<string, string> = {
   no_category: 'اختر تصنيفاً',
   bad_level: 'المستوى: سهل أو متوسط أو صعب',
   no_such_question: 'لا تعديل محفوظاً لهذا السؤال',
-  name_too_short: 'اسم الفئة حرفان فأكثر',
+  name_too_short: 'الاسم حرفان فأكثر',
   category_exists: 'هذه الفئة موجودة',
   category_in_use: 'الفئة تحمل أسئلة — انقلها أو احذفها أوّلاً',
   no_such_category: 'لا فئة بهذا الاسم',
+  group_exists: 'هذا التصنيف موجود',
+  no_such_group: 'لا تصنيف بهذا الاسم',
   bad_payload: 'صيغة الدفعة غير صالحة',
   too_many_rows: 'الرزمة فوق ألف صفّ',
   unknown_category: 'فئة الدفعة غير موجودة — أنشئها أوّلاً',
@@ -297,6 +299,79 @@ export interface CategoryRow {
   art_url: string | null
   /** false = صفٌّ لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة، فلا يزيد في القائمة. */
   is_extra: boolean
+  /** التصنيف الذي تنتمي إليه — `null` = بلا مظلّة. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
+  group_name?: string | null
+  group_sort?: number | null
+}
+
+/* ============================= التصنيفات ============================= */
+/**
+ * التصنيف مظلّةٌ فوق الفئة — «رياضة» يضمّ «كأس العالم» و«الدوري الإنجليزي»
+ * (قرار علي ١٠ سبتمبر ٢٠٢٦). لا يُلعب ولا يُسحب منه، وأثرُه في شاشة الإعداد
+ * وحدها: عناوينُ فوق شبكةٍ صارت أربعين بطاقة.
+ *
+ * **ويُعاد تسميته بخلاف الفئة**: اسمُ الفئة مكتوبٌ في كل سؤال، واسمُ
+ * التصنيف في عمودٍ واحد ينقله المفتاحُ الأجنبيّ معه.
+ */
+export interface GroupRow {
+  name: string
+  sort: number
+  /** عدد الفئات تحته — يُحسب في اللوحة من صفوف الفئات لا من القاعدة. */
+  count?: number
+}
+
+/**
+ * قائمة التصنيفات كلّها — **بما فيها الفارغ الذي لم تدخله فئةٌ بعد**، ولذلك
+ * تُقرأ من الجدول لا من `extra_categories`: تلك تعرف التصنيف من فئةٍ تحمله،
+ * فتصنيفٌ أُنشئ للتوّ لا أثر له فيها.
+ *
+ * وقراءةٌ مباشرة لا دالّة: الحارس سياسةُ RLS («يقرأ المديرُ الكلّ»)، وهذا
+ * الجدولُ الوحيد الذي لا يقرؤه إلّا اللوحة.
+ */
+export async function listGroups(): Promise<GroupRow[]> {
+  const { data, error } = await supabase
+    .from('category_groups')
+    .select('name, sort')
+    .order('sort')
+    .order('name')
+  if (error) throw new Error(translate(error.message))
+  return (data ?? []) as GroupRow[]
+}
+
+export async function addGroup(name: string): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_add_group', { p_name: name })
+  if (error) throw new Error(translate(error.message))
+  return data as string
+}
+
+export async function renameGroup(oldName: string, newName: string): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_rename_group', {
+    p_old: oldName,
+    p_new: newName,
+  })
+  if (error) throw new Error(translate(error.message))
+  return data as string
+}
+
+/** الفئات تحته تخرج من مظلّتها ولا تُحذف — ولذلك لا يشترط أن يكون فارغاً. */
+export async function deleteGroup(name: string): Promise<void> {
+  const { error } = await supabase.rpc('admin_delete_group', { p_name: name })
+  if (error) throw new Error(translate(error.message))
+}
+
+/** الترتيب يُرسَل كاملاً — انظر `admin_reorder_groups`. */
+export async function reorderGroups(names: string[]): Promise<void> {
+  const { error } = await supabase.rpc('admin_reorder_groups', { p_names: names })
+  if (error) throw new Error(translate(error.message))
+}
+
+/** `null` يُخرج الفئة من مظلّتها فتقع في قسم «بلا تصنيف» آخرَ الإعداد. */
+export async function setCategoryGroup(cat: string, group: string | null): Promise<void> {
+  const { error } = await supabase.rpc('admin_set_category_group', {
+    p_name: cat,
+    p_group: group,
+  })
+  if (error) throw new Error(translate(error.message))
 }
 
 /** صفوف جدول الفئات: المضافة، وصفوف الصور البديلة لفئات البنك. */

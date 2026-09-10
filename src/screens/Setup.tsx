@@ -5,6 +5,7 @@ import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
 import { categoryArt } from '../components/categoryArt'
+import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 const MIN = 2
@@ -83,6 +84,16 @@ export function Setup({
   useEffect(() => subscribeBank(() => setBankRev((v) => v + 1)), [])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const allCats = useMemo<string[]>(playableCategories, [bankRev])
+  /**
+   * الفئات موزّعةً على تصنيفاتها — «رياضة» و«ثقافة عامة» عناوينُ فوق شبكةٍ
+   * صارت أربعين بطاقة (قرار علي ١٠ سبتمبر ٢٠٢٦). والاختيار يبقى على الفئة:
+   * ستٌّ منها للّوح، والعنوان لا يُضغط.
+   *
+   * وما لم يُصنَّف بعدُ يقع في قسمٍ أخيرٍ بلا عنوان، فلا تختفي فئةٌ من
+   * الشاشة لأنّها بلا مظلّة — انظر `groupCategories`.
+   */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const catSections = useMemo(() => groupCategories(allCats), [allCats, bankRev])
 
   /**
    * الفئات الستّ للّوح لا للفريقين (قرار علي ٥ سبتمبر ٢٠٢٦). كان كلٌّ يختار
@@ -323,12 +334,29 @@ export function Setup({
               </span>
             )}
           </div>
-          <div className="cats-grid">
-            {allCats.map((cat, i) => {
-              const picked = isPicked(cat)
-              return (
-                <button
-                  key={cat}
+          {/* قسمٌ لكل تصنيف، وعنوانٌ فوقه — وقسمٌ واحد بلا عنوان حين لا تصنيف
+              في القاعدة أصلاً، فتبقى الشاشة كما كانت قبل ١٠ سبتمبر ٢٠٢٦.
+              ورقمُ الحركة `--i` متّصلٌ عبر الأقسام لا يبدأ من الصفر في كلّ
+              واحد: الشبكة تتدفّق بموجةٍ واحدة كما كانت. */}
+          {catSections.map((sec) => (
+            <div className="cats-sec" key={sec.name ?? '—'}>
+              {/* القسم بلا تصنيف يأخذ عنواناً **حين يكون فوقه تصنيفٌ آخر
+                  وحده**: بلا عنوانٍ يبدو ذيلاً للقسم الذي قبله. وقبل أن
+                  يُنشأ أوّل تصنيف، الشبكةُ كلُّها قسمٌ واحد فلا عنوان لها —
+                  وإلّا ظهر «متفرّقات» فوق الفئات جميعها بلا معنى.
+                  والكلمة من صياغتي وتنتظر علي. */}
+              {sec.name ? (
+                <h3 className="cats-sec-title">{sec.name}</h3>
+              ) : (
+                catSections.length > 1 && <h3 className="cats-sec-title">متفرّقات</h3>
+              )}
+              <div className="cats-grid">
+                {sec.cats.map((cat) => {
+                  const i = allCats.indexOf(cat)
+                  const picked = isPicked(cat)
+                  return (
+                    <button
+                      key={cat}
                   className={
                     'catchip' +
                     (picked ? ' taken' : '') +
@@ -356,10 +384,12 @@ export function Setup({
                   <span className="cc-plate">
                     <span className="cc-name">{displayName(cat)}</span>
                   </span>
-                </button>
-              )
-            })}
-          </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </section>
 
         {/* القرعة والزرّان مجموعان عند الحافّة السفلى — كتلة فعل واحدة
@@ -864,6 +894,22 @@ export function Setup({
            تختار الفئة بصورتها لا باسمها وحده، والبطاقة الصغيرة تجعل الرسمة
            زخرفةً لا دليلاً. والارتفاع الزائد يبتلعه تمريرُ الإعداد — وهي
            الشاشة الوحيدة المسموح لها بالتمرير. */
+        /* أقسام التصنيفات — عنوانٌ وشبكةٌ تحته. الفراغ بينها أوسع من الفراغ
+           داخلها: هذا وحده ما يقول إنّ القسم انتهى وبدأ غيرُه، لا خطٌّ فاصل
+           يزيد الشاشةَ أثاثاً. */
+        .cats-sec + .cats-sec { margin-top:clamp(14px,1.8vw,26px); }
+        /* عنوانٌ صغيرٌ هادئ لا يزاحم بطاقاته: البطاقة هي المضغوطة، والعنوان
+           يدلّ عليها. والخطّ تحته بلونٍ خافت يمدّ العنوان عبر الشبكة فتُقرأ
+           الأقسام من آخر المجلس بمسحةِ عين. */
+        .cats-sec-title {
+          margin:0 0 clamp(6px,0.8vw,12px);
+          display:flex; align-items:center; gap:10px;
+          font-size:clamp(13px,1.15vw,17px); font-weight:800;
+          color:var(--text-2); letter-spacing:.2px;
+        }
+        .cats-sec-title::after {
+          content:''; flex:1; height:1px; background:var(--border);
+        }
         .cats-grid {
           display:grid;
           grid-template-columns:repeat(auto-fill, minmax(clamp(116px,13vw,172px), 1fr));
