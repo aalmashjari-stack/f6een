@@ -1842,8 +1842,26 @@ function Categories() {
             </tr>
           </thead>
           <tbody>
-            {ordered.map((r) => (
-              <tr key={r.cat}>
+            {ordered.map((r, i) => (
+              <Fragment key={r.cat}>
+                {/* عنوانُ المظلّة فوق فئاتها — صفٌّ واحد لا عمودٌ يتكرّر في
+                    كل سطر. الجدول مرتَّبٌ بالمظلّة أصلاً (`ordered`)، فتبدُّلُ
+                    الاسم عن الصفّ السابق هو الحدُّ بين قسمٍ وقسم. */}
+                {(i === 0 || ordered[i - 1].group !== r.group) && (
+                  <tr className="grp-row">
+                    {/* رقمٌ أكبر من عدد الأعمدة عمداً: المتصفّح يقصّه إلى
+                        عرض الصفّ، فلا يحتاج عدّاً يدويّاً ينزاح كلّما
+                        أُضيف عمود — وقد انزاح فعلاً في هذا الجدول نفسه
+                        (أربعة أرقامٍ تحت ثلاثة عناوين، ٩ سبتمبر ٢٠٢٦). */}
+                    <th colSpan={99} scope="colgroup">
+                      {r.group ?? 'بلا مظلّة'}
+                      <span className="grp-n">
+                        {ordered.filter((x) => x.group === r.group).length} فئة
+                      </span>
+                    </th>
+                  </tr>
+                )}
+              <tr>
                 <td>
                   <ArtCell
                     src={r.uploaded ?? r.shipped}
@@ -1913,6 +1931,7 @@ function Categories() {
                   )}
                 </td>
               </tr>
+              </Fragment>
             ))}
           </tbody>
         </table>

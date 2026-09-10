@@ -95,6 +95,18 @@ table.a-tbl { width: 100%; min-width: max-content; border-collapse: collapse; wh
    الحذفَ والنقلَ منها. لونُ تنبيهٍ لا لونُ خطأ. */
 .num.thin { color: var(--n-warn); font-weight: 800; }
 
+/* ── صفُّ عنوان المظلّة داخل جدول الفئات ── */
+/* عنوانٌ يمتدّ على الجدول كلّه بدل عمودٍ يتكرّر في كل سطر: الفئات تحته
+   مرتَّبةٌ أصلاً، فالعنوان يفصلها بلا أن يزيد عرضاً. */
+.grp-row th {
+  text-align: start; padding: 12px 10px 6px;
+  font-size: 13px; font-weight: 900; color: var(--n-ink);
+  background: var(--n-surface-2);
+  border-top: 2px solid var(--n-line);
+}
+.grp-row:first-child th { border-top: 0; }
+.grp-n { font-weight: 700; font-size: 12px; color: var(--n-ink-3); margin-inline-start: 8px; }
+
 /* ── الحالات ── */
 .tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;
   background: var(--n-surface-2); color: var(--n-ink-3); }
