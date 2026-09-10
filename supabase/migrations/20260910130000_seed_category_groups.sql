@@ -47,9 +47,15 @@ on conflict (name) do update set group_name = excluded.group_name;
 
 /* ═══════════ ما أُضيف من اللوحة ═══════════ */
 /* **تحديثٌ لا إدراج**: أسماء هذه ليست في الملفّ المشحون، فلا تُقرأ من هنا
-   ولا تُخمَّن. فلو كان الاسم غير «زمن جميل» لم يقع شيء — بدل أن يُخلق صفٌّ
-   لفئةٍ شبحيّة لا سؤال تحتها.
+   ولا تُخمَّن. فلو خالف الاسمُ لم يقع شيء — بدل أن يُخلق صفٌّ لفئةٍ شبحيّة
+   لا سؤال تحتها. وقد وقع ذلك فعلاً: كُتب «زمن جميل» واسمُها الحيّ «الزمن
+   الجميل»، فمرّت البذرةُ عليها ولم تصبها — وهذا عملُ التحديث لا خللُه.
+   والأسماء الخمسة أدناه مقروءةٌ من القاعدة الحيّة في ١٠ سبتمبر ٢٠٢٦.
    وما بقي بلا مظلّة يظهر في «متفرّقات» آخرَ شاشة الإعداد، ويُنقل من
    اللوحة متى شئت. */
 
-update public.categories set group_name = 'فنّ وترفيه' where name = 'زمن جميل';
+update public.categories set group_name = 'ثقافة عامة' where name = 'معالم';
+update public.categories set group_name = 'فنّ وترفيه' where name = 'الزمن الجميل';
+update public.categories set group_name = 'فنّ وترفيه' where name = 'أغاني وطرب';
+update public.categories set group_name = 'دين وتراث'  where name = 'أكلات';
+update public.categories set group_name = 'علوم وصحة'  where name = 'سيارات';
