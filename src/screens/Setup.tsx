@@ -495,7 +495,9 @@ export function Setup({
         /* القائمة: الشراء كتلة الهويّة، والبقيّة كبسولات بيضاء بحدّ حبر */
         /* القائمة إلى يسار الشريط (طلب علي) — تدفع نفسها وزرَّ الصوت إلى
            الطرف المقابل للشعار، ويبقى الشعار وحده في اليمين. */
-        body .screen.setup .hero-nav { display:flex; align-items:center; gap:clamp(6px,1vw,12px); flex-wrap:wrap; margin-inline-start:auto; }
+        /* المسافة بين الكبسولات وُسّعت (طلب علي ١٠ سبتمبر ٢٠٢٦): كانت ١٢px
+           سقفاً، فتتلاصق الأربعُ في شريطٍ نصفُه فارغ على الشاشة العريضة. */
+        body .screen.setup .hero-nav { display:flex; align-items:center; gap:clamp(8px,1.3vw,20px); flex-wrap:wrap; margin-inline-start:auto; }
         body .screen.setup .hnav {
           font:inherit; font-weight:800; cursor:pointer;
           font-size:clamp(11px,1.4vw,15px);
@@ -746,8 +748,17 @@ export function Setup({
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
            فيبقى الفعل الأساسي هو الأكبر، والقرعة إلى جانبه لا فوقه. */
         .setup-actions { display:flex; gap:clamp(10px, 1.4vw, 16px); }
-        .setup-actions .action { flex:2; }
-        .setup-actions .action.ghost { flex:1; }
+        .setup-actions .action { flex:1; min-width:0; }
+        /* **القرعة بمقاس نصّها لا بثلث الصفّ** (طلب علي ١٠ سبتمبر ٢٠٢٦):
+           كانت تأخذ حصّةً من الصفّ فتبلغ ٣٩٣px لكلمتين، وهي فعلٌ ثانويّ إلى
+           جانب «ابدأ اللعبة». وحدُّ العرض الأقصى مع min-width صفراً أعلاه
+           يمنعانها أن تفيض عن الصفّ مهما طال نصُّها أو ضاقت الشاشة.
+           (ولا علامة اقتباسٍ خلفية في تعليقات هذا الملفّ: الأنماط كلُّها
+           داخل template literal، فالعلامة تُنهيه وتُسقط الملفّ كلَّه.) */
+        .setup-actions .action.ghost {
+          flex:0 0 auto; max-width:100%;
+          padding-inline:clamp(16px,2.2vw,30px);
+        }
         /* الزر يتنازل عن سُمكه الرأسي مع ضيق الارتفاع ويبقى عريضاً سهل الإصابة. */
         .setup-actions .action {
           padding:clamp(9px,1.7vh,26px) 28px;
