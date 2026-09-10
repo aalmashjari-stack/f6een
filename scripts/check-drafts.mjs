@@ -27,6 +27,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { loadBank } from './lib/bank.mjs'
 
 const CELL_FLOOR = 20
 const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
@@ -103,10 +104,8 @@ if (!file) {
 }
 
 const root = resolve(import.meta.dirname, '..')
-const bank = [
-  ...JSON.parse(readFileSync(resolve(root, 'data/questions-bank-v5.json'), 'utf8')).questions,
-  ...JSON.parse(readFileSync(resolve(root, 'data/questions-extra.json'), 'utf8')).questions,
-]
+/* البنك من القاعدة الحيّة إن أمكن — انظر `lib/bank.mjs`. */
+const { rows: bank, source: bankSource } = await loadBank()
 
 const table = parseCsv(readFileSync(resolve(file), 'utf8'))
 const head = table[0].map((h) => h.trim())
@@ -194,24 +193,38 @@ for (const r of rows) {
   if (/[٠-٩]/.test(r.question + r.answer)) block(r, 'أرقام هنديّة — الواجهة لاتينيّة دائماً')
 }
 
-/* ٥ — امتلاء الخلايا */
+/* ٥ — امتلاء الخلايا: الدفعةُ **زائداً ما في البنك أصلاً**.
+      دفعةُ تكميلٍ من ستّة أسئلةٍ ليست خليّةً ناقصة إن كان في القاعدة أربعةَ
+      عشر — والعدّ على الملفّ وحده كان يصيح في كل تكميل. */
 const cells = new Map()
+const already = new Map()
+for (const q of bank) {
+  const k = `${q.category}|${q.level}`
+  already.set(k, (already.get(k) ?? 0) + 1)
+}
 for (const r of rows) {
   const k = `${r.category}|${r.level}`
   cells.set(k, (cells.get(k) ?? 0) + 1)
 }
 
-console.log(`\n${rows.length} سؤالاً في ${new Set(rows.map((r) => r.category)).size} فئة\n`)
+console.log(`\n${rows.length} سؤالاً في ${new Set(rows.map((r) => r.category)).size} فئة`)
+console.log(`قُورنت بـ: ${bankSource}\n`)
 for (const cat of new Set(rows.map((r) => r.category))) {
   const line = LEVELS.map((l) => {
-    const n = cells.get(`${cat}|${l}`) ?? 0
-    return `${l} ${n}${n < CELL_FLOOR ? ' ⚠' : ''}`
+    const k = `${cat}|${l}`
+    const n = cells.get(k) ?? 0
+    const have = already.get(k) ?? 0
+    const total = n + have
+    /* «5+15=20»: ما في الدفعة، وما في البنك، ومجموعُهما مقابل الحدّ. */
+    const shown = have ? `${n}+${have}=${total}` : `${n}`
+    return `${l} ${shown}${total < CELL_FLOOR ? ' ⚠' : ''}`
   }).join(' · ')
   console.log(`  ${cat}: ${line}`)
   for (const l of LEVELS) {
-    const n = cells.get(`${cat}|${l}`) ?? 0
-    if (n > 0 && n < CELL_FLOOR) {
-      warning.push(`خليّة ناقصة: ${cat} · ${l} — ${n} من ${CELL_FLOOR}`)
+    const k = `${cat}|${l}`
+    const total = (cells.get(k) ?? 0) + (already.get(k) ?? 0)
+    if (total > 0 && total < CELL_FLOOR) {
+      warning.push(`خليّة ناقصة: ${cat} · ${l} — ${total} من ${CELL_FLOOR} (بعد هذه الدفعة)`)
     }
   }
 }

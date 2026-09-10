@@ -195,14 +195,14 @@ ${after.length ? `وسيبقى ${after.length} منتظِراً: ${after.join('�
     process.exit(0)
   }
 
-  let ok = 0
-  for (const ver of pick) {
-    const { code } = cli(['migration', 'repair', '--status', 'applied', ver], { quiet: true })
-    if (code === 0) ok++
-    else console.error(`  ✗ ${ver}`)
+  /* نداءٌ واحد بالنسخ كلّها: `migration repair` تقبل `version...`. وكان
+     نداءً لكلّ نسخة — أربعةً وخمسين اتّصالاً بالقاعدة تستغرق دقائق. */
+  console.log(`يسجّل ${pick.length} هجرة…`)
+  const { code } = cli(['migration', 'repair', '--status', 'applied', ...pick])
+  if (code === 0) {
+    console.log(`\nتمّ. شغّل «npm run db:status» للتأكّد، ثمّ «npm run db:push».`)
   }
-  console.log(`سُجّلت ${ok} من ${pick.length}. شغّل «npm run db:status» للتأكّد، ثمّ «npm run db:push».`)
-  process.exit(ok === pick.length ? 0 : 1)
+  process.exit(code)
 }
 
 console.error(`أمرٌ غير معروف «${cmd}» — status أو push أو adopt.`)
