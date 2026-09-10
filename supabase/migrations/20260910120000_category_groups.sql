@@ -16,7 +16,12 @@
 
 /* ═══════════ الجدول ═══════════ */
 
-create table public.category_groups (
+/* كلُّ ما في هذا الملفّ يُعاد تشغيلُه بلا ضرر: محرّرُ Supabase لا يلفّ
+   اللصقةَ في معاملةٍ واحدة، فسقوطُ جملةٍ في الوسط يترك ما قبلها مطبَّقاً —
+   وإعادةُ اللصق تصطدم بما نجح. (وقع في ١٠ سبتمبر ٢٠٢٦: `relation
+   "category_groups" already exists`.) */
+
+create table if not exists public.category_groups (
   name       text primary key,
   /* ترتيب العرض في الإعداد. لا `created_at` كترتيب الفئات: التصنيفات صفٌّ
      من العناوين يقرؤه الحكم من فوق، وترتيبُها قرارُ عرضٍ يُعاد لا تاريخُ
@@ -31,6 +36,7 @@ comment on table public.category_groups is
 
 alter table public.category_groups enable row level security;
 
+drop policy if exists "category_groups: admin reads all" on public.category_groups;
 create policy "category_groups: admin reads all"
   on public.category_groups for select using (public.is_admin());
 
@@ -74,7 +80,7 @@ grant  execute on function public.extra_categories() to authenticated;
 
 /* ═══════════ اللوحة — إدارة التصنيفات ═══════════ */
 
-create function public.admin_add_group(p_name text)
+create or replace function public.admin_add_group(p_name text)
 returns text
 language plpgsql
 security definer
@@ -111,7 +117,7 @@ grant  execute on function public.admin_add_group(text) to authenticated;
 
 /* إعادةُ التسمية تنتقل إلى الفئات وحدها بـ`on update cascade` — لا سؤالَ
    يمسّه هذا، فالسؤال يعرف فئتَه لا تصنيفَها. */
-create function public.admin_rename_group(p_old text, p_new text)
+create or replace function public.admin_rename_group(p_old text, p_new text)
 returns text
 language plpgsql
 security definer
@@ -148,7 +154,7 @@ grant  execute on function public.admin_rename_group(text, text) to authenticate
 
 /* الحذف يُخرج الفئات من المظلّة ولا يمسّها — ولذلك لا يشترط أن يكون فارغاً:
    شرطُ الفراغ على الفئة سببُه أنّ أسئلتها تضيع، ولا شيء يضيع هنا. */
-create function public.admin_delete_group(p_name text)
+create or replace function public.admin_delete_group(p_name text)
 returns void
 language plpgsql
 security definer
@@ -172,7 +178,7 @@ grant  execute on function public.admin_delete_group(text) to authenticated;
 
 /* الترتيب يُرسَل كاملاً لا خطوةً خطوة: «ارفع هذا» يحتاج قراءةَ الجار
    وكتابتَه، وطلبان متزامنان يتبادلان الرقم نفسه. */
-create function public.admin_reorder_groups(p_names text[])
+create or replace function public.admin_reorder_groups(p_names text[])
 returns void
 language plpgsql
 security definer
@@ -201,7 +207,7 @@ grant  execute on function public.admin_reorder_groups(text[]) to authenticated;
 
 /* الفئة المشحونة لا صفَّ لها حتى تُصوَّر أو تُصنَّف، فالصفُّ يُنشأ هنا
    بـ`is_extra=false` — وإلّا ظهرت الفئة مرّتين في قائمة اللاعب. */
-create function public.admin_set_category_group(p_name text, p_group text default null)
+create or replace function public.admin_set_category_group(p_name text, p_group text default null)
 returns text
 language plpgsql
 security definer
