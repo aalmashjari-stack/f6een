@@ -559,6 +559,11 @@ export interface DraftBatch {
   easy: number
   medium: number
   hard: number
+  /** «تعجيزي» — رابعُ الصفوف منذ ٩ سبتمبر ٢٠٢٦. قد يغيب: قاعدةٌ لم تُرقَّ. */
+  taajizi?: number
+  /** ما لم يُبتّ فيه بعدُ، وما استُبعد منه — يظهران معاً فيُعرف ما سيُعتمد. */
+  pending?: number
+  rejected?: number
   /** فئةٌ من فئات الدفعة لم تُنشأ بعد — الاعتماد يُردّ حتى تُنشأ. */
   missing_category: boolean
 }
@@ -591,6 +596,18 @@ export async function approveDrafts(batch: string): Promise<{ added: number; ski
   const { data, error } = await supabase.rpc('admin_approve_drafts', { p_batch: batch })
   if (error) throw new Error(translate(error.message))
   return data as { added: number; skipped: number }
+}
+
+/**
+ * **استبعادُ مسوّداتٍ بعينها قبل اعتماد الدفعة** (طلب علي ١١ سبتمبر ٢٠٢٦).
+ *
+ * لا فعلٌ ثالث: المستبعَد **مرفوضٌ** كغيره، و`admin_approve_drafts` تمرّ
+ * على المعلَّق وحده — فيخرج من طريقها بطبعه، ويُعتمد ما بقي.
+ */
+export async function rejectDraftRows(ids: number[]): Promise<number> {
+  const { data, error } = await supabase.rpc('admin_reject_draft_rows', { p_ids: ids })
+  if (error) throw new Error(translate(error.message))
+  return data as number
 }
 
 export async function rejectDrafts(batch: string): Promise<number> {
