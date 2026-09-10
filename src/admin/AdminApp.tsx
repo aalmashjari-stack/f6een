@@ -48,6 +48,7 @@ import {
   listQuestionEdits,
   listSessions,
   listUsers,
+  rejectDraftRows,
   rejectDrafts,
   renameGroup,
   reorderGroups,
@@ -2375,6 +2376,9 @@ function Drafts() {
   const [showDecided, setShowDecided] = useState(false)
   /* اختيارٌ متعدّد: ستّ دفعات اختبار تُرفض بضغطة لا بستّ. */
   const [picked, setPicked] = useState<Set<string>>(new Set())
+  /* المستبعَد في هذه الجلسة — يُرسَم مشطوباً فوراً بلا انتظار قراءةٍ ثانية
+     من القاعدة. والقراءةُ تصحّحه على أيّ حال عند إعادة الفتح. */
+  const [dropped, setDropped] = useState<Set<number>>(new Set())
 
   const pending = useMemo(() => (all ?? []).filter((b) => b.status === 'pending'), [all])
   const decided = useMemo(() => (all ?? []).filter((b) => b.status !== 'pending'), [all])
@@ -2402,6 +2406,29 @@ function Drafts() {
       setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الرفض' })
     } finally {
       setBusy(false)
+    }
+  }
+
+  /**
+   * **استبعادُ سؤالٍ قبل اعتماد دفعته** (طلب علي ١١ سبتمبر ٢٠٢٦).
+   *
+   * ولا فعلَ ثالث في القاعدة: المستبعَد **مرفوضٌ** كغيره، و«اعتمد» تمرّ
+   * على المعلَّق وحده — فيُعتمد ما بقي بلا أن يُعاد إرسال الدفعة منقّحة.
+   */
+  const drop = async (r: DraftRow) => {
+    setMsg(null)
+    /* الشطبُ قبل الردّ: الضغطة تُرى أثرَها في الحال، وفشلُ الشبكة يعيده. */
+    setDropped((d) => new Set(d).add(r.id))
+    try {
+      await rejectDraftRows([r.id])
+      reload()
+    } catch (e) {
+      setDropped((d) => {
+        const n = new Set(d)
+        n.delete(r.id)
+        return n
+      })
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الاستبعاد' })
     }
   }
 
@@ -2487,6 +2514,7 @@ function Drafts() {
             <th className="num">سهل</th>
             <th className="num">متوسط</th>
             <th className="num">صعب</th>
+            <th className="num">تعجيزي</th>
             <th className="num">المجموع</th>
             <th>الحالة</th>
             <th></th>
@@ -2513,7 +2541,13 @@ function Drafts() {
                 <td className="num">{b.easy}</td>
                 <td className="num">{b.medium}</td>
                 <td className="num">{b.hard}</td>
-                <td className="num">{b.n}</td>
+                <td className="num">{b.taajizi ?? 0}</td>
+                <td className="num">
+                  {b.n}
+                  {/* ما سيدخل البنك فعلاً حين تُضغط «اعتمد»: المعلَّق وحده.
+                      يظهر متى استُبعد شيءٌ من الدفعة — وإلّا فهو المجموع. */}
+                  {b.rejected ? <span className="will"> ← {b.pending ?? 0}</span> : null}
+                </td>
                 <td>
                   <span className={'tag' + (b.status === 'pending' ? ' open' : '')}>
                     {b.status === 'pending' ? 'تنتظر' : b.status === 'approved' ? 'معتمدة' : 'مرفوضة'}
@@ -2542,21 +2576,40 @@ function Drafts() {
               </tr>
               {open === b.batch && (
                 <tr>
-                  <td colSpan={9}>
+                  <td colSpan={99}>
                     {!rows ? (
                       <p className="a-muted">…</p>
                     ) : (
                       <table className="a-table sub">
                         <tbody>
-                          {rows.map((r) => (
-                            <tr key={r.id}>
+                          {rows.map((r) => {
+                            /* مستبعَدٌ: إمّا رفضتُه في هذه الجلسة، وإمّا جاء
+                               مرفوضاً من قراءةٍ سابقة. */
+                            const out = dropped.has(r.id) || r.status === 'rejected'
+                            return (
+                            <tr key={r.id} className={out ? 'out' : ''}>
                               <td className="a-muted">{r.level}</td>
                               <td>{r.question}</td>
                               <td>
                                 <b>{r.answer}</b>
                               </td>
+                              <td className="drop-cell">
+                                {out ? (
+                                  <span className="tag">مستبعَد</span>
+                                ) : (
+                                  b.status === 'pending' && (
+                                    <button
+                                      className="a-btn danger"
+                                      onClick={() => drop(r)}
+                                      title="لا يدخل البنك عند اعتماد الدفعة"
+                                    >
+                                      استبعد
+                                    </button>
+                                  )
+                                )}
+                              </td>
                             </tr>
-                          ))}
+                          )})}
                         </tbody>
                       </table>
                     )}
@@ -2568,6 +2621,14 @@ function Drafts() {
         </tbody>
       </table>
       <style>{`
+        /* الصفّ المستبعَد يبقى ظاهراً مشطوباً لا يختفي: المدير يرى ما أسقطه
+           فيتراجع بعينه إن أخطأ، والاختفاءُ يترك الشاشةَ بلا أثرٍ للقرار. */
+        .a-table.sub tr.out td { opacity:.45; text-decoration:line-through; }
+        .a-table.sub tr.out .tag { text-decoration:none; }
+        .drop-cell { white-space:nowrap; text-align:end; }
+        /* «٨٠ ← ٧٥»: المجموع ثمّ ما سيدخل البنك فعلاً عند الاعتماد. */
+        .will { color:var(--n-brand); font-weight:800; }
+
         .a-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .a-table.sub { margin: 6px 0 10px; background: rgba(0,0,0,.03); }
         .a-table.sub td { padding: 4px 8px; font-size: 13px; }
