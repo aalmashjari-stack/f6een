@@ -1316,9 +1316,12 @@ html[data-skin] body .screen .cats-lead { color: var(--n-accent); }
    ١١ سبتمبر ٢٠٢٦) وكانت الطبقة تفوته؛ والتطبيق المثبَّت على آيفون 17 Pro
    ارتفاعُه ٣٨١ فيبقى خارجها كما قِيس. */
 @media (max-height: 370px) {
+  /* المقاسات هنا بـdvh لا بأرقامٍ ثابتة: بتبويبٍ واحد يترك سفاري ٣٤٨ وبشريط
+     تبويبات ٢٩٢، وقيمةٌ واحدة لهما تترك ثلثَ الشاشة فارغاً تحت إجابةٍ صغيرة
+     (لقطة علي الثانية، ١١ سبتمبر ٢٠٢٦). */
   html[data-skin] body .screen:not(.setup):not(.end):not(:has(.picker)) {
-    padding-block: 6px;
-    gap: 6px;
+    padding-block: clamp(4px, 2dvh, 8px);
+    gap: clamp(4px, 2dvh, 8px);
   }
   html[data-skin] body .screen .stack.gap-s { gap: 4px; }
 
@@ -1349,30 +1352,37 @@ html[data-skin] body .screen .cats-lead { color: var(--n-accent); }
   /* كشف الجولة الجماعية: البطاقة لا تنكمش دون محتواها بعد اليوم — سقفُها
      مقيسٌ من الشاشة وما فاضه يهبط به fitText في الإجابة — وبطاقتا «من أجاب؟»
      تأخذان ارتفاع محتواهما لا صفراً. */
-  html[data-skin] body .screen .rv-card { flex: 0 0 auto; max-height: 31dvh; padding: 4px 14px; gap: 2px; }
-  html[data-skin] body .screen .rv-q { font-size: 12px; line-height: 1.3; }
-  html[data-skin] body .screen .rv-q.long { font-size: 11px; }
-  html[data-skin] body .screen .rv-q.xlong { font-size: 10px; }
-  html[data-skin] body .screen .rv-a { font-size: clamp(18px, 7dvh, 26px); line-height: 1.2; }
-  html[data-skin] body .screen .rv-ask { margin-block-start: 2px; font-size: 14px; line-height: 1.2; }
-  html[data-skin] body .screen .pick-cards { flex: 0 0 auto; min-height: 0; gap: 8px; }
-  html[data-skin] body .screen .pick { padding: 3px 10px; gap: 0; min-height: 0; max-height: none; }
-  html[data-skin] body .screen .pick .pk-name { font-size: 17px; }
-  html[data-skin] body .screen .pick .pk-delta { font-size: 12px; }
-  html[data-skin] body .screen .pick-none { margin-top: 2px; padding: 4px 18px; font-size: 13px; border-width: 2px; }
+  /* وما يفضل بعد ذلك يتوزّع بين الكتل لا يتكوّم تحت «لم يجب أحد»: الشريط
+     في أعلى الشاشة والزرّ في أسفلها وما بينهما يتنفّس بالتساوي — كما تفعل
+     شاشة تنقيط الديربي أصلاً. */
+  html[data-skin] body .screen:has(> .rv-card) { justify-content: space-between; }
+  html[data-skin] body .screen .rv-card {
+    flex: 0 0 auto; max-height: 36dvh;
+    padding: clamp(4px, 1.5dvh, 10px) 14px; gap: clamp(2px, 1dvh, 6px);
+  }
+  html[data-skin] body .screen .rv-q { font-size: clamp(11px, 4.2dvh, 15px); line-height: 1.3; }
+  html[data-skin] body .screen .rv-q.long { font-size: clamp(10px, 3.8dvh, 14px); }
+  html[data-skin] body .screen .rv-q.xlong { font-size: clamp(10px, 3.4dvh, 13px); }
+  html[data-skin] body .screen .rv-a { font-size: clamp(20px, 9dvh, 34px); line-height: 1.2; }
+  html[data-skin] body .screen .rv-ask { margin-block-start: clamp(2px, 1dvh, 6px); font-size: clamp(13px, 5dvh, 18px); line-height: 1.2; }
+  html[data-skin] body .screen .pick-cards { flex: 0 0 auto; min-height: 0; gap: clamp(8px, 2vw, 16px); }
+  html[data-skin] body .screen .pick { padding: clamp(3px, 1.5dvh, 8px) 10px; gap: 0; min-height: 0; max-height: none; }
+  html[data-skin] body .screen .pick .pk-name { font-size: clamp(17px, 6.5dvh, 24px); }
+  html[data-skin] body .screen .pick .pk-delta { font-size: clamp(12px, 4dvh, 15px); }
+  html[data-skin] body .screen .pick-none { margin-top: clamp(2px, 1dvh, 6px); padding: clamp(4px, 1.5dvh, 8px) 18px; font-size: clamp(13px, 4.5dvh, 16px); border-width: 2px; }
 
   /* تنقيط الديربي: كان يطلب 297 في 272. */
-  html[data-skin] body .screen.s2-reveal-screen { padding-block: 4px; gap: 5px; }
-  html[data-skin] body .screen .reveal-q { font-size: 11px; line-height: 1.3; }
-  html[data-skin] body .screen .reveal-a { padding-block: 2px; }
-  html[data-skin] body .screen .reveal-a .a-text { font-size: clamp(18px, 7dvh, 26px); }
+  html[data-skin] body .screen.s2-reveal-screen { padding-block: clamp(4px, 1.5dvh, 8px); gap: clamp(5px, 2dvh, 8px); }
+  html[data-skin] body .screen .reveal-q { font-size: clamp(11px, 4dvh, 14px); line-height: 1.3; }
+  html[data-skin] body .screen .reveal-a { padding-block: clamp(2px, 1dvh, 6px); }
+  html[data-skin] body .screen .reveal-a .a-text { font-size: clamp(20px, 9dvh, 34px); }
   html[data-skin] body .screen .mark-cards { flex: 0 0 auto; min-height: 0; }
-  html[data-skin] body .screen .mcard { padding: 4px 8px; gap: 2px; }
-  html[data-skin] body .screen .mc-team { font-size: 11px; }
-  html[data-skin] body .screen .mc-name { font-size: 17px; }
-  html[data-skin] body .screen .choice { padding: 3px 6px; gap: 0; }
-  html[data-skin] body .screen .c-label { font-size: 10px; }
-  html[data-skin] body .screen .c-pts { font-size: 15px; }
+  html[data-skin] body .screen .mcard { padding: clamp(4px, 1.5dvh, 8px) 8px; gap: clamp(2px, .8dvh, 5px); }
+  html[data-skin] body .screen .mc-team { font-size: clamp(11px, 3.8dvh, 13px); }
+  html[data-skin] body .screen .mc-name { font-size: clamp(17px, 6dvh, 22px); }
+  html[data-skin] body .screen .choice { padding: clamp(3px, 1.2dvh, 6px) 6px; gap: 0; }
+  html[data-skin] body .screen .c-label { font-size: clamp(10px, 3.5dvh, 12px); }
+  html[data-skin] body .screen .c-pts { font-size: clamp(15px, 5dvh, 20px); }
   html[data-skin] body .screen.s2-reveal-screen .action.compact { min-height: 36px; padding: 5px 18px; font-size: 14px; }
 
   /* الفاصل: سطرُ «انتقال مباشر» زينةٌ تُقرأ مرّة — يذهب؛ والبطاقة تضيق. */
