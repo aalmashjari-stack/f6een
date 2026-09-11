@@ -73,7 +73,14 @@ const STOP = new Set(
   ('من ما في اي أي على عن الى إلى هو هي التي الذي كم هل عام سنة اسم كان بين مع بعد قبل عند لا و ثم أول اول ذلك هذا هذه كل بلا نفس'
     .split(' ')),
 )
-const words = (s) => norm(s).split(' ').filter((w) => w.length > 3 && !STOP.has(w))
+/**
+ * وصيغُ الأدب تُطرح هنا أيضاً: كانت «رضي الله عنه» في إجابتي تتقاطع مع
+ * «رضي الله عنه» في سؤالٍ قائم فيُقرأ ذلك «صياغةً مقلوبة» — ثلاثةٌ وخمسون
+ * إنذاراً كاذباً في دفعة الصحابة، كلُّها بهذا السبب.
+ */
+const words = (s) => norm(stripHonorifics(s)).split(' ').filter((w) => w.length > 3 && !STOP.has(w))
+/** مفتاح الإجابة للمقارنة: بلا صيغ أدبٍ ولا تشكيل. */
+const akey = (s) => norm(stripHonorifics(s))
 /** العائلة: أوّل أربع كلمات — نفس اشتقاق المحرّك في `bank.ts`. */
 const family = (q) => norm(q).split(' ').slice(0, 4).join(' ')
 
@@ -133,7 +140,7 @@ const warn = (r, why) => warning.push(`سطر ${r.line}: ${why}\n    ${r.questio
 const bankByNorm = new Map(bank.map((q) => [norm(q.question), q]))
 const bankByAnswer = new Map()
 for (const q of bank) {
-  const k = norm(q.answer)
+  const k = akey(q.answer)
   if (!bankByAnswer.has(k)) bankByAnswer.set(k, [])
   bankByAnswer.get(k).push(q)
 }
@@ -163,7 +170,7 @@ for (const r of rows) {
   else seen.set(n, r.line)
 
   /* ٣ — واقعةٌ مقلوبة: إجابتي هي إجابةُ سؤالٍ قائمٍ يتقاطع معه معنىً */
-  for (const q of bankByAnswer.get(norm(r.answer)) ?? []) {
+  for (const q of bankByAnswer.get(akey(r.answer)) ?? []) {
     const mine = new Set(words(r.question))
     const hits = words(q.question).filter((w) => mine.has(w))
     if (hits.length >= 2) {
@@ -178,7 +185,7 @@ for (const r of rows) {
     const qw = words(q.question)
     if (!qw.length) continue
     const overlap = qw.filter((w) => myAnswerWords.has(w))
-    if (overlap.length >= 2 && words(r.question).some((w) => norm(q.answer).includes(w))) {
+    if (overlap.length >= 2 && words(r.question).some((w) => akey(q.answer).includes(w))) {
       warn(r, `صياغةٌ مقلوبة لسؤالٍ قائم ${q.id} [${q.category}]: «${q.question} → ${q.answer}»`)
       break
     }
