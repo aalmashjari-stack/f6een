@@ -81,7 +81,7 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
       </button>
       <style>{`
         .center-col { display:flex; flex-direction:column; }
-        .interval-card { max-width:760px; text-align:center; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(28px,6vh,60px); display:flex; flex-direction:column; gap:16px; }
+        .interval-card { max-width:760px; text-align:center; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(28px,6dvh,60px); display:flex; flex-direction:column; gap:16px; }
         /* القاعدة تظهر بعد الاسم بلحظة: الفريق يقرأ «الديربي» ثم يقرأ قاعدتها،
            وهي أهم سطر في الشاشة لأن قواعد المرحلة تغيّرت للتوّ. */
         .il-eyebrow { color:var(--text-2); font-weight:700; font-size:clamp(14px,1.8vw,18px); animation:il-rise .5s ease-out .1s both; }
@@ -97,10 +97,10 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
            القاعدة أهمّ سطر هنا (قواعد المرحلة تغيّرت للتوّ) فلا تُقصّ — يضمر
            الخطّ والتباعد بدلاً منها. */
         @media (max-height:480px) {
-          .interval-card { padding:clamp(10px,4vh,60px) clamp(16px,4vw,60px); gap:clamp(4px,1.4vh,16px); }
-          .il-eyebrow { font-size:clamp(11px, min(1.8vw,2.6vh), 18px); line-height:1.3; }
-          .il-title { font-size:clamp(24px, min(7vw,11vh), 72px); }
-          .il-rule { font-size:clamp(12px, min(2.4vw,3.4vh), 24px); line-height:1.45; }
+          .interval-card { padding:clamp(10px,4dvh,60px) clamp(16px,4vw,60px); gap:clamp(4px,1.4dvh,16px); }
+          .il-eyebrow { font-size:clamp(11px, min(1.8vw,2.6dvh), 18px); line-height:1.3; }
+          .il-title { font-size:clamp(24px, min(7vw,11dvh), 72px); }
+          .il-rule { font-size:clamp(12px, min(2.4vw,3.4dvh), 24px); line-height:1.45; }
         }
 
         /* التعادل مرجاني لا ذهبي: المرجاني لغة التوتّر في هذه اللعبة (القسم ١١)،

@@ -115,14 +115,14 @@ function Stage3Styles() {
         .s3-q {
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
           border:1px solid var(--border);
-          border-radius:clamp(30px, 6vh, 64px);
-          padding:clamp(22px,4vh,48px) clamp(28px,5vw,64px);
+          border-radius:clamp(30px, 6dvh, 64px);
+          padding:clamp(22px,4dvh,48px) clamp(28px,5vw,64px);
           box-shadow:var(--lift);
         }
         /* عمودٌ مرن لا صندوقٌ بارتفاع محتواه: في سؤال الصورة يجب أن ينتقل ضيقُ
            البطاقة إلى الصورة فتنكمش — وإلا فاضت الصورةُ فوق الإجابة والزرّين. */
         .s3-inner {
-          display:flex; flex-direction:column; gap:clamp(8px,2vh,20px);
+          display:flex; flex-direction:column; gap:clamp(8px,2dvh,20px);
           align-items:center; justify-content:center;
           flex:1 1 auto; min-height:0; width:100%;
         }
@@ -131,29 +131,29 @@ function Stage3Styles() {
            السطر ٥٤px على شاشة عريضة قصيرة فيزاحم الصورة فوقه. */
         .s3-answer {
           flex:none;
-          font-size:clamp(20px,min(4.4vw,6.4vh),54px); font-weight:800; color:var(--gold);
+          font-size:clamp(20px,min(4.4vw,6.4dvh),54px); font-weight:800; color:var(--gold);
           text-align:center; line-height:1.25; overflow-wrap:anywhere;
         }
         .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
         .s3-verdicts { display:flex; gap:14px; align-items:stretch; }
         .v { border:none; cursor:pointer; font-family:inherit; font-weight:800; border-radius:var(--r-lg); display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .08s ease; }
         .v:active { transform:scale(.97); }
-        .v.correct { flex:1; background:var(--gold); color:var(--on-gold); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
+        .v.correct { flex:1; background:var(--gold); color:var(--on-gold); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5dvh,34px); }
         .v.correct .v-pts { font-size:.5em; }
-        .v.wrong { flex:1; background:var(--coral); color:var(--on-coral); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5vh,34px); }
+        .v.wrong { flex:1; background:var(--coral); color:var(--on-coral); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5dvh,34px); }
 
         /* جوال أفقي: أرضيات الحشوة والخط هنا (٢٢ للبطاقة و٣٠ للإجابة و٢٠ لزرَّي
            الحكم) وُضعت لشاشة طويلة، فيفيض السؤالُ والإجابةُ من البطاقة ويركبان
            على الزرّين. ولأنّ الساعة لا تتوقّف في هذه المرحلة، فالفيض هنا أسوأ
            من غيره: الحكم لا يملك ثانية ليتبيّن ما يقرأ. */
         @media (max-height:480px) {
-          .s3-q { padding:clamp(8px,4vh,48px) clamp(16px,5vw,64px); }
-          .s3-inner { gap:clamp(6px,2vh,20px); }
-          .s3-answer { font-size:clamp(20px, min(5vw,7vh), 54px); }
-          .v.correct, .v.wrong { padding:clamp(8px,3.5vh,34px); font-size:clamp(22px, min(5vw,8vh), 52px); }
-          .s3r-team { font-size:clamp(26px, min(6vw,13vh), 64px); }
-          .s3r-eyebrow { font-size:clamp(13px, min(2.2vw,4vh), 22px); }
-          .s3r-note { font-size:clamp(11px, min(1.7vw,3vh), 18px); }
+          .s3-q { padding:clamp(8px,4dvh,48px) clamp(16px,5vw,64px); }
+          .s3-inner { gap:clamp(6px,2dvh,20px); }
+          .s3-answer { font-size:clamp(20px, min(5vw,7dvh), 54px); }
+          .v.correct, .v.wrong { padding:clamp(8px,3.5dvh,34px); font-size:clamp(22px, min(5vw,8dvh), 52px); }
+          .s3r-team { font-size:clamp(26px, min(6vw,13dvh), 64px); }
+          .s3r-eyebrow { font-size:clamp(13px, min(2.2vw,4dvh), 22px); }
+          .s3r-note { font-size:clamp(11px, min(1.7vw,3dvh), 18px); }
           .s3-ready { gap:6px; }
         }
       `}</style>

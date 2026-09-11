@@ -99,7 +99,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
       <style>{`
         .board-wrap {
           flex:1; min-height:0; display:flex; align-items:center; justify-content:center;
-          padding-block:clamp(4px,1vh,12px);
+          padding-block:clamp(4px,1dvh,12px);
         }
         /* ستّ وحدات في شبكة تملأ ما تركه الصفّ المرن — ثلاثة أعمدة وصفّان على
            الشاشة العريضة. لا ثابتَ بكسليّ يُخمَّن، فلا فيض تحت الشريط. */
@@ -119,8 +119,8 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           grid-template-columns:1.35fr .95fr;
           gap:clamp(5px,.7vw,11px);
           min-width:0; min-height:0;
-          padding:clamp(5px,.9vh,11px);
-          border-radius:clamp(13px,2vh,22px);
+          padding:clamp(5px,.9dvh,11px);
+          border-radius:clamp(13px,2dvh,22px);
           border:2px solid var(--border);
           background:var(--surface-2);
         }
@@ -131,7 +131,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         .bhead {
           display:flex; flex-direction:column; justify-content:flex-end;
           min-width:0; min-height:0; overflow:hidden;
-          border-radius:clamp(10px,1.6vh,18px);
+          border-radius:clamp(10px,1.6dvh,18px);
           --art:none;
           background-image:var(--art);
           background-size:cover;
@@ -141,19 +141,19 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         }
         .bh-plate {
           display:flex; flex-direction:column; align-items:center;
-          gap:clamp(1px,.35vh,4px);
+          gap:clamp(1px,.35dvh,4px);
           min-width:0;
-          padding:clamp(12px,2.4vh,26px) 6px clamp(5px,1vh,11px);
+          padding:clamp(12px,2.4dvh,26px) 6px clamp(5px,1dvh,11px);
           background:linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.62) 45%, rgba(14,11,22,0) 100%);
         }
         .bh-name {
-          font-size:clamp(12px, min(1.5vw, 2.6vh), 21px); font-weight:800; line-height:1.15;
+          font-size:clamp(12px, min(1.5vw, 2.6dvh), 21px); font-weight:800; line-height:1.15;
           color:var(--cream); text-align:center; max-width:100%;
           white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
         /* شارة صاحب الاختيار — الفريقان بلونين ثابتين لا بترتيب الظهور. */
         .bh-owner {
-          font-size:clamp(9px, min(1.05vw, 1.8vh), 13px); font-weight:800; line-height:1.2;
+          font-size:clamp(9px, min(1.05vw, 1.8dvh), 13px); font-weight:800; line-height:1.2;
           padding:.18em .7em; border-radius:999px;
           max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
@@ -163,7 +163,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         /* ===== عمود المستويات ===== */
         .blevels {
           display:grid; grid-template-rows:repeat(var(--rows), 1fr);
-          gap:clamp(4px,.6vh,9px);
+          gap:clamp(4px,.6dvh,9px);
           min-width:0; min-height:0;
         }
         .bcell {
@@ -171,15 +171,15 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           gap:clamp(4px,.7vw,10px);
           min-width:0; min-height:0;
           font-family:inherit; cursor:pointer;
-          border-radius:clamp(9px,1.4vh,15px);
+          border-radius:clamp(9px,1.4dvh,15px);
           border:2px solid var(--gold);
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
           color:var(--gold);
           box-shadow:var(--lift);
           transition:transform .18s var(--ease-spring), box-shadow .25s ease, opacity .25s ease;
         }
-        .bc-points { font-size:clamp(15px, min(2vw, 3.6vh), 32px); font-weight:800; line-height:1; }
-        .bc-level  { font-size:clamp(9px, min(1.05vw, 1.9vh), 14px); font-weight:700; color:var(--text-2); }
+        .bc-points { font-size:clamp(15px, min(2vw, 3.6dvh), 32px); font-weight:800; line-height:1; }
+        .bc-level  { font-size:clamp(9px, min(1.05vw, 1.9dvh), 14px); font-weight:700; color:var(--text-2); }
         .bcell:active { transform:scale(.96); }
         .bcell:focus-visible { outline:none; box-shadow:var(--lift), 0 0 0 4px rgba(255,189,89,.5); }
         @media (hover:hover) {
@@ -209,7 +209,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         @media (max-height:480px) {
           .s1-board { --cols:3; gap:6px; }
           .bunit { grid-template-columns:1.25fr 1fr; gap:4px; padding:3px; border-radius:10px; }
-          .bh-plate { padding:clamp(8px,2vh,14px) 3px 3px; }
+          .bh-plate { padding:clamp(8px,2dvh,14px) 3px 3px; }
           .bh-owner { display:none; }
           .blevels { gap:3px; }
           .board-note { display:none; }

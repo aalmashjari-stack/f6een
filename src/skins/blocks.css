@@ -103,7 +103,7 @@ html[data-skin='blocks'] .screen.end .es-num {
 /* بطاقتا الفريقين كتلتان بلونيهما الكاملين — لا صبغة باهتة. والميل
    المتعاكس (‎-.6/+.6‎ درجة) توقيع الهويّة. */
 html[data-skin='blocks'] .scorebar .team {
-  min-height: clamp(58px, 8.2vh, 86px);
+  min-height: clamp(58px, 8.2dvh, 86px);
   border-radius: var(--n-r2);
   box-shadow: var(--n-e2);
 }
@@ -269,13 +269,13 @@ html[data-skin='blocks'] .screen.setup .hero > * { position: relative; z-index: 
    والشاشة الوحيدة المسموح لها بالتمرير هي الإعداد، فالفسحة هنا لا
    تدفع شيئاً خارج نظرةٍ واحدة. */
 html[data-skin='blocks'] .screen.setup .setup-body {
-  margin-top: clamp(18px, 4.5vh, 56px);
+  margin-top: clamp(18px, 4.5dvh, 56px);
 }
 /* وعلى الجوال الأفقيّ تُقلَّص: الإعداد مسموحٌ له بالتمرير (استثناء علي)،
    لكنّ فسحةً زينةً لا تشتري تمريراً — قِيست عند 844×390 فأضافت ٢٨ بكسلاً
    إلى ما يُمرَّر. */
 @media (max-height: 480px) {
-  html[data-skin='blocks'] .screen.setup .setup-body { margin-top: clamp(8px, 2.4vh, 16px); }
+  html[data-skin='blocks'] .screen.setup .setup-body { margin-top: clamp(8px, 2.4dvh, 16px); }
 }
 /* الشعار علامةُ نصٍّ لا صورة — عرضُ الغلاف لا يقيّده، فحجمه من خطّه.
    أصغر ممّا كان بطلب علي، ومسقوفٌ بارتفاع الشريط فلا يفيض عنه. */
@@ -286,14 +286,14 @@ html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
   box-shadow: none;
   /* أكبر قليلاً بطلب علي (١ سبتمبر ٢٠٢٦) — والسقف يبقى دون ارتفاع
      الشريط فلا يفيض عنه. */
-  font-size: clamp(32px, 7.6vh, 58px);
+  font-size: clamp(32px, 7.6dvh, 58px);
   padding: .14em .1em .06em;
 }
-/* الجوال الأفقيّ: الشريط ارتفع، فيتبعه الشعار — ‎7.6vh‎ عند ٣٩٠ ارتفاعاً
+/* الجوال الأفقيّ: الشريط ارتفع، فيتبعه الشعار — ‎7.6dvh‎ عند ٣٩٠ ارتفاعاً
    تعطي ٣٠px وهو دون أرضيّة الـclamp، فيبقى صغيراً في شريطٍ صار أوسع. */
 @media (max-height: 560px) {
   html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
-    font-size: clamp(38px, 11vh, 52px);
+    font-size: clamp(38px, 11dvh, 52px);
   }
 }
 
@@ -315,22 +315,22 @@ html[data-skin='blocks'] .reveal-a {
    هذه سقوفٌ لا فرض: fitText يهبط عنها متى ضاق الصندوق. */
 html[data-skin='blocks'] .q-text {
   font-weight: 800;
-  font-size: clamp(18px, min(3.5vw, 6vh), 44px);
+  font-size: clamp(18px, min(3.5vw, 6dvh), 44px);
 }
-html[data-skin='blocks'] .q-text.long { font-size: clamp(16px, min(3vw, 5.2vh), 38px); }
-html[data-skin='blocks'] .q-text.xlong { font-size: clamp(15px, min(2.5vw, 4.4vh), 31px); }
+html[data-skin='blocks'] .q-text.long { font-size: clamp(16px, min(3vw, 5.2dvh), 38px); }
+html[data-skin='blocks'] .q-text.xlong { font-size: clamp(15px, min(2.5vw, 4.4dvh), 31px); }
 
 /* المؤقّت كتلةٌ برتقالية مائلة والرقم أبيض بداخلها — تكوين المعاينة
    المعتمدة حرفيّاً، لا رقماً عارياً فوق شريط. وفي «الحق ما تلحق» وعند
    اشتداد الوقت تحمرّ الكتلة كلّها: العداء مع الوقت يُرى من آخر المجلس. */
 html[data-skin='blocks'] .ring-timer {
   min-width: clamp(140px, 19vw, 240px);
-  padding: clamp(8px, 1.6vh, 16px) clamp(18px, 2.4vw, 30px) clamp(12px, 2vh, 20px);
+  padding: clamp(8px, 1.6dvh, 16px) clamp(18px, 2.4vw, 30px) clamp(12px, 2dvh, 20px);
   border-radius: var(--n-r3);
   background: var(--n-brand);
   box-shadow: var(--n-e2);
   transform: rotate(.8deg);
-  gap: clamp(6px, 1.1vh, 10px);
+  gap: clamp(6px, 1.1dvh, 10px);
 }
 /* ‎!important‎ يقابل !important القاعدة الحديثة التي تصبغ الرقم حبراً. */
 html[data-skin='blocks'] .ring-timer .secs { color: #FFF8EE !important; }
@@ -570,6 +570,10 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
 /* الميل والظلال البعيدة زينةُ المتّسع. على الجوال الأفقي (تحت 480px)
    كلُّ بكسل محسوب: تستقيم الكتل، ويقترب الظلّ درجة، ويرقّ الحدّ. */
 @media (max-height: 480px) {
+  /* أرضيّة الكتلة (٥٨) كانت تغلب أرضيّة نيو القصيرة (٤٤) بترتيب الاستيراد،
+     فتزيد الشريط أربعة عشر بكسلاً على الجوال — وهي ما كان يُخرج «لم يجب أحد»
+     ستّة بكسلات تحت حافّة 844×390. */
+  html[data-skin='blocks'] .scorebar .team { min-height: 46px; }
   html[data-skin='blocks'] .scorebar .team-0,
   html[data-skin='blocks'] .scorebar .team-1,
   html[data-skin='blocks'] .scorebar .mid,
@@ -600,7 +604,7 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
    ٢ سبتمبر ٢٠٢٦). */
 @media (orientation: portrait) and (hover: none) and (pointer: coarse) {
   html[data-skin='blocks'] #rotate-gate {
-    gap: clamp(18px, 5vh, 34px);
+    gap: clamp(18px, 5dvh, 34px);
     background: var(--n-bg);
     color: var(--n-ink);
   }
@@ -618,7 +622,7 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(10px, 2.4vh, 18px);
+    gap: clamp(10px, 2.4dvh, 18px);
     padding: clamp(20px, 5vw, 32px) clamp(24px, 7vw, 40px);
     border: 3px solid var(--n-ink);
     border-radius: 22px 6px 22px 6px;

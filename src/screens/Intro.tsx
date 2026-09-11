@@ -142,26 +142,32 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           scroll-snap-type:y mandatory;
           scroll-behavior:smooth;
         }
+        /* التوسيط بهامشٍ تلقائيّ لا بـjustify-content:center: حين يطول اللوح
+           عن الشاشة (سفاري الأفقيّ، 292 بكسلاً) يقصّ التوسيطُ الفلكسيّ أوّلَه
+           فيختفي الشعار فوق الحافّة ولا يبلغه تمرير. والهامش التلقائيّ يوسّط
+           حين يتّسع المكان ويبدأ من الأعلى حين يضيق. */
         .intro-pane {
           min-height:100%;
           scroll-snap-align:start;
-          display:flex; flex-direction:column; justify-content:center;
-          gap:clamp(10px,2.2vh,26px);
-          padding:clamp(12px,3vh,32px) clamp(14px,4vw,48px);
+          display:flex; flex-direction:column; justify-content:flex-start;
+          gap:clamp(10px,2.2dvh,26px);
+          padding:clamp(12px,3dvh,32px) clamp(14px,4vw,48px);
           position:relative;
         }
 
+        .intro-pane > :first-child { margin-top:auto; }
+        .intro-pane > :last-child { margin-bottom:auto; }
         .intro-head { text-align:center; }
         .intro-logo { font-size:clamp(34px,7vw,68px); }
         .intro-tag {
-          margin:clamp(4px,1vh,10px) 0 0;
+          margin:clamp(4px,1dvh,10px) 0 0;
           color:var(--n-ink-2); font-weight:700;
           font-size:clamp(12px,1.7vw,18px);
         }
 
         .intro-stages {
           list-style:none; margin:0; padding:0;
-          display:flex; flex-direction:column; gap:clamp(6px,1.4vh,14px);
+          display:flex; flex-direction:column; gap:clamp(6px,1.4dvh,14px);
           max-width:820px; width:100%; margin-inline:auto;
         }
         /* صفٌّ واحد لكل مرحلة: الرقم، ثم الاسم والشرح، ثم التنقيط في الطرف.
@@ -171,7 +177,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           gap:clamp(8px,1.6vw,18px);
           background:var(--n-surface); border-radius:var(--n-r2);
           box-shadow:var(--n-e1);
-          padding:clamp(8px,1.5vh,16px) clamp(10px,2vw,20px);
+          padding:clamp(8px,1.5dvh,16px) clamp(10px,2vw,20px);
         }
         .intro-no {
           font-weight:800; color:var(--n-brand);
@@ -192,7 +198,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           font:inherit; font-weight:800; cursor:pointer; border:none;
           border-radius:var(--n-r3);
           background:var(--n-ink); color:#fff; box-shadow:var(--n-e2);
-          padding:clamp(10px,1.8vh,18px) clamp(16px,3vw,34px);
+          padding:clamp(10px,1.8dvh,18px) clamp(16px,3vw,34px);
           font-size:clamp(14px,2vw,22px);
           max-width:820px; width:100%; margin-inline:auto;
           transition:transform .15s var(--ease-spring);
@@ -207,13 +213,13 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           font-size:clamp(12px,1.7vw,18px);
         }
         .signin-methods {
-          display:flex; flex-direction:column; gap:clamp(8px,1.6vh,14px);
+          display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px);
           max-width:480px; width:100%; margin-inline:auto;
         }
         .method {
           font:inherit; font-weight:800; cursor:pointer;
           border-radius:var(--n-r2);
-          padding:clamp(10px,1.8vh,16px) clamp(14px,2.6vw,24px);
+          padding:clamp(10px,1.8dvh,16px) clamp(14px,2.6vw,24px);
           font-size:clamp(13px,1.9vw,19px);
           border:0; box-shadow:var(--n-e1);
           background:var(--n-surface); color:var(--n-ink);
@@ -240,10 +246,10 @@ export function Intro({ onDone }: { onDone?: () => void }) {
            فلا يُخفى. ينكمش الشعار والحشو بدله. */
         @media (max-height:460px) {
           .intro-logo { font-size:clamp(26px,5vw,40px); }
-          .intro-stage { padding-block:clamp(5px,1vh,10px); }
+          .intro-stage { padding-block:clamp(5px,1dvh,10px); }
           .intro-desc { font-size:clamp(10px,1.35vw,14px); }
           /* الحشو والفجوات تنكمش أيضاً — بدونها يفيض اللوح فيُقصّ الشعار. */
-          .intro-pane { gap:clamp(6px,1.2vh,12px); padding-block:clamp(8px,1.4vh,14px); }
+          .intro-pane { gap:clamp(6px,1.2dvh,12px); padding-block:clamp(8px,1.4dvh,14px); }
           .intro-tag { font-size:clamp(11px,1.5vw,15px); }
         }
       `}</style>

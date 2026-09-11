@@ -98,9 +98,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
              الصورةُ داخلها تدفع بطاقتَي «من أصاب؟» خارج الشاشة. */
           position:relative; overflow:hidden; flex:0 1 auto; min-height:0;
           display:flex; flex-direction:column; align-items:center; justify-content:center;
-          gap:clamp(8px,1.6vh,16px);
-          padding:clamp(14px,3.2vh,36px) clamp(24px,5vw,64px);
-          border-radius:clamp(24px, 5vh, 52px);
+          gap:clamp(8px,1.6dvh,16px);
+          padding:clamp(14px,3.2dvh,36px) clamp(24px,5vw,64px);
+          border-radius:clamp(24px, 5dvh, 52px);
           border:1px solid var(--gold);
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
           box-shadow:var(--lift), var(--glow-gold);
@@ -112,14 +112,14 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
            نفسه الذي كان يفيض به على بطاقة السؤال الحيّ قبل أن تُبنى تلك. */
         .rv-q {
           color:var(--text-2); font-weight:600; text-align:center;
-          font-size:clamp(14px, min(2vw, 2.8vh), 22px); line-height:1.4;
+          font-size:clamp(14px, min(2vw, 2.8dvh), 22px); line-height:1.4;
         }
-        .rv-q.long  { font-size:clamp(12px, min(1.7vw, 2.4vh), 18px); }
-        .rv-q.xlong { font-size:clamp(11px, min(1.5vw, 2.1vh), 15px); line-height:1.35; }
+        .rv-q.long  { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); }
+        .rv-q.xlong { font-size:clamp(11px, min(1.5vw, 2.1dvh), 15px); line-height:1.35; }
         .rv-rule { width:clamp(40px,6vw,72px); height:1px; background:rgba(255,189,89,.32); }
         .rv-a {
           color:var(--gold); font-weight:800; text-align:center;
-          font-size:clamp(28px, min(5.6vw, 9vh), 60px); line-height:1.2;
+          font-size:clamp(28px, min(5.6vw, 9dvh), 60px); line-height:1.2;
           overflow-wrap:anywhere;
           animation:pop-in .5s var(--ease-spring) .1s both;
         }
@@ -144,7 +144,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
            eyebrow الصغيرة الخافتة: يكبر ويشتدّ لونه وينزل عن بطاقة الإجابة
            مسافةً تفصله عنها (ملاحظتا علي ٥ سبتمبر ٢٠٢٦). */
         .rv-ask {
-          margin-block-start:clamp(18px,4.5vh,46px);
+          margin-block-start:clamp(18px,4.5dvh,46px);
           font-size:clamp(17px,2.6vw,28px);
           font-weight:900;
           letter-spacing:0;
@@ -160,7 +160,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
              ميّت. والحلقة التي فرضت stretch سابقاً لا تعود: سببها كان ارتفاعاً
              مئوياً على .pick، وسقفُها اليوم بـvh لا بنسبة. */
           display:flex; gap:clamp(12px,3vw,40px); align-items:center; justify-content:center;
-          flex:1 1 auto; min-height:clamp(78px, 20vh, 220px);
+          flex:1 1 auto; min-height:clamp(78px, 20dvh, 220px);
         }
         /* البطاقتان حكمان لا فريقان، فتلبسان لغة تنقيط الديربي: الصحّ ذهبيّ
            ممتلئ والغلط بإطار مرجانيّ. وتساوي البروز الذي فرضه SPEC كان لأنهما
@@ -171,11 +171,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           /* سقف الارتفاع: بلا هذا تتمدّد البطاقة على كل ما تبقّى من الشاشة
              الطويلة (stretch يملأ الصفّ كاملاً)، فيسبح محتواها في فراغ
              ويضيع تجاورُها مع الاسم. */
-          max-height:clamp(110px, 28vh, 240px);
+          max-height:clamp(110px, 28dvh, 240px);
           display:flex; flex-direction:column; align-items:center; justify-content:center;
-          gap:clamp(4px,1.2vh,12px);
-          padding:clamp(10px,2.4vh,26px) clamp(12px,2vw,28px);
-          border-radius:clamp(16px, 3vh, 28px);
+          gap:clamp(4px,1.2dvh,12px);
+          padding:clamp(10px,2.4dvh,26px) clamp(12px,2vw,28px);
+          border-radius:clamp(16px, 3dvh, 28px);
           cursor:pointer; font-family:inherit;
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
           border:2px solid var(--cream);
@@ -200,17 +200,17 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         /* كل مقاس يأخذ أصغر نصيبيه من العرض والارتفاع — علاج .q-text نفسه:
            بـ vw وحده يتضخّم الخط على شاشة عريضة قصيرة فيفيض على حدود البطاقة. */
         .pk-role {
-          font-size:clamp(11px, min(1.4vw, 2.4vh), 15px); color:var(--text-2);
+          font-size:clamp(11px, min(1.4vw, 2.4dvh), 15px); color:var(--text-2);
           font-weight:700; letter-spacing:.06em; line-height:1.3;
         }
         .pk-name {
-          font-size:clamp(18px, min(3.4vw, 5.6vh), 40px); font-weight:800; line-height:1.15;
+          font-size:clamp(18px, min(3.4vw, 5.6dvh), 40px); font-weight:800; line-height:1.15;
           text-align:center; max-width:100%; overflow-wrap:anywhere;
         }
         /* النتيجة قبل الضغطة وبعدها — الجديد وحده ذهبيّ */
         .pk-delta {
           display:flex; align-items:center; gap:clamp(5px,.8vw,10px);
-          font-size:clamp(13px, min(2vw, 3.2vh), 24px); font-weight:800; line-height:1.2;
+          font-size:clamp(13px, min(2vw, 3.2dvh), 24px); font-weight:800; line-height:1.2;
         }
         .pk-from  { color:var(--text-3); }
         .pk-arrow { color:var(--text-3); font-weight:600; }
@@ -226,8 +226,8 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         /* «لم يجب أحد» دون البطاقتين في البروز — لأنّه الأندر — لكنّه قرارٌ
            يُضغط لا حاشية، فيكبر ويشتدّ حدُّه عمّا كان (ملاحظة علي). */
         .pick-none {
-          align-self:center; margin-top:clamp(10px,2.2vh,22px);
-          padding:clamp(9px,1.8vh,16px) clamp(26px,4.5vw,48px);
+          align-self:center; margin-top:clamp(10px,2.2dvh,22px);
+          padding:clamp(9px,1.8dvh,16px) clamp(26px,4.5vw,48px);
           border-radius:999px; cursor:pointer; font-family:inherit;
           font-size:clamp(14px,1.9vw,21px); font-weight:900;
           background:transparent; border:2.5px solid var(--text-2); color:var(--cream);

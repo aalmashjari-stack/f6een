@@ -63,8 +63,8 @@ export function Timer({
           position:relative; display:grid; place-items:center;
           align-self:center; aspect-ratio:1; min-height:0;
         }
-        .ring-timer.md { flex:0 1 auto; height:clamp(120px,20vh,200px); max-height:100%; }
-        .ring-timer.lg { flex:0 1 auto; height:min(32vh, 40vw, 320px); max-height:100%; }
+        .ring-timer.md { flex:0 1 auto; height:clamp(120px,20dvh,200px); max-height:100%; }
+        .ring-timer.lg { flex:0 1 auto; height:min(32dvh, 40vw, 320px); max-height:100%; }
         .ring-timer svg { width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }
         .ring-timer .track { fill:none; stroke:var(--border); stroke-width:8; opacity:.55; }
         .ring-timer .fill {
@@ -74,7 +74,7 @@ export function Timer({
         }
         .ring-timer .secs {
           position:absolute; font-weight:800; line-height:1;
-          font-size:clamp(34px,9.5vh,104px);
+          font-size:clamp(34px,9.5dvh,104px);
           transition:transform .25s var(--ease-spring);
         }
         .ring-timer.low .secs { animation:tick 1s ease-in-out infinite; }
@@ -92,9 +92,9 @@ export function Timer({
            لها من الارتفاع، فيخرج الرقم من حلقته ويركب على السؤال والزر معاً.
            هنا تنزل الأرضيتان إلى ما تحتمله الشاشة القصيرة. */
         @media (max-height:480px) {
-          .ring-timer.md { height:clamp(56px, 16vh, 200px); }
-          .ring-timer.lg { height:min(26vh, 40vw, 320px); }
-          .ring-timer .secs { font-size:clamp(20px, 8vh, 104px); }
+          .ring-timer.md { height:clamp(56px, 16dvh, 200px); }
+          .ring-timer.lg { height:min(26dvh, 40vw, 320px); }
+          .ring-timer .secs { font-size:clamp(20px, 8dvh, 104px); }
           .ring-timer .track, .ring-timer .fill { stroke-width:10; }
         }
       `}</style>

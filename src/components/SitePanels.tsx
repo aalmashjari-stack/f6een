@@ -47,15 +47,15 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-veil {
           position:fixed; inset:0; z-index:60;
           display:flex; align-items:center; justify-content:center;
-          padding:clamp(8px,2vh,24px);
+          padding:clamp(8px,2dvh,24px);
           background:rgba(20,16,10,.5);
         }
         .sp-panel {
           width:min(680px, 100%);
-          max-height:min(92vh, 640px);
+          max-height:min(92dvh, 640px);
           overflow:auto;
-          display:flex; flex-direction:column; gap:clamp(10px,2vh,18px);
-          padding:clamp(14px,2.6vh,24px) clamp(16px,3vw,28px);
+          display:flex; flex-direction:column; gap:clamp(10px,2dvh,18px);
+          padding:clamp(14px,2.6dvh,24px) clamp(16px,3vw,28px);
           border-radius:22px;
           background:var(--n-surface, #fff);
           box-shadow:0 0 0 3px var(--n-ink, #22201C), 7px 8px 0 var(--n-ink, #22201C);
@@ -72,7 +72,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-packs { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:clamp(8px,1.4vw,14px); }
         .sp-pack {
           display:flex; flex-direction:column; align-items:center; gap:2px;
-          padding:clamp(10px,1.8vh,16px) 8px;
+          padding:clamp(10px,1.8dvh,16px) 8px;
           border-radius:16px;
           background:var(--n-bg, #FFF8EE);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
@@ -95,7 +95,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-note { margin:0; text-align:center; font-size:clamp(12px,1.5vw,14px); font-weight:700; color:var(--n-ink-2, #57524A); line-height:1.8; }
         .sp-note b { color:var(--n-ink, #22201C); }
 
-        .sp-form { display:flex; flex-direction:column; gap:clamp(8px,1.6vh,14px); }
+        .sp-form { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
         .sp-field { display:flex; flex-direction:column; gap:5px; }
         .sp-field > span { font-weight:800; font-size:clamp(12px,1.4vw,14px); color:var(--n-ink-2, #57524A); }
         .sp-in {
@@ -126,7 +126,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         @media (max-height: 480px) {
           .sp-panel { gap:8px; padding:10px clamp(14px,2.6vw,22px); }
           .sp-form { gap:7px; }
-          .sp-area { min-height:0; height:clamp(52px, 15vh, 88px); }
+          .sp-area { min-height:0; height:clamp(52px, 15dvh, 88px); }
           .sp-note { line-height:1.5; }
           .sp-send { padding:8px 30px; }
         }
@@ -180,10 +180,10 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
       </p>
 
       <style>{`
-        .sp-stages { display:flex; flex-direction:column; gap:clamp(8px,1.6vh,14px); }
+        .sp-stages { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
         .sp-stage {
           display:flex; align-items:flex-start; gap:clamp(9px,1.6vw,15px);
-          padding:clamp(10px,1.8vh,16px) clamp(11px,2vw,18px);
+          padding:clamp(10px,1.8dvh,16px) clamp(11px,2vw,18px);
           border-radius:16px;
           background:var(--n-bg, #FFF8EE);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);

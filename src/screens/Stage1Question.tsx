@@ -70,30 +70,30 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           /* سقفٌ يحدّ حصّة السؤال من الشاشة فيبقى للمؤقّت نصيبه مهما طال: السؤال
              القصير سطرٌ واحد دون السقف يبقى بمقاسه، والطويل يبلغ السقف فيهبط
              خطُّه (QuestionText) ليسعه بدل أن يزحم المؤقّت تحته. */
-          max-height:clamp(110px, 24vh, 200px);
-          padding-block:clamp(14px, 2.6vh, 28px);
+          max-height:clamp(110px, 24dvh, 200px);
+          padding-block:clamp(14px, 2.6dvh, 28px);
           overflow:hidden;
         }
         /* فرجةٌ فوق البطاقة تفصلها عن شريط النتيجة (طلب علي ٦ سبتمبر ٢٠٢٦):
            بعد حذف سطر الجولة صارت تلتصق به. مقيسةٌ بـvh فتتنازل على الشاشة
            القصيرة، وما تأخذه تأخذه من فائض المؤقّت لا من أحد. */
         .q-box.s1q:not(.s1q-photo),
-        .s1-question-body.photo { margin-top:clamp(6px, 3vh, 34px); }
+        .s1-question-body.photo { margin-top:clamp(6px, 3dvh, 34px); }
         @media (max-height:480px) {
-          .q-box.s1q { max-height:clamp(84px, 34vh, 170px); padding-block:clamp(8px, 2vh, 18px); }
+          .q-box.s1q { max-height:clamp(84px, 34dvh, 170px); padding-block:clamp(8px, 2dvh, 18px); }
           body .screen:has(.s1q-photo) .rd,
           body .screen:has(.s1q-photo) .action-note { display:none; }
           body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:4px; }
           body .screen:has(.s1q-photo) .q-photo-wrap { gap:3px; }
           body .screen:has(.s1q-photo) .q-prompt {
-            font-size:clamp(14px,4vh,18px);
+            font-size:clamp(14px,4dvh,18px);
             line-height:1.2;
           }
         }
         /* سؤال الصورة يقلب الأولوية: البطاقة تنمو (الصورة هي البطل) بلا سقفٍ
            يخنقها، والمؤقّت يتراجع تحتها (بلا grow، ومقاسه md). */
         .q-box.s1q.s1q-photo {
-          flex:1 1 0; max-height:none; padding-block:clamp(10px, 2vh, 20px);
+          flex:1 1 0; max-height:none; padding-block:clamp(10px, 2dvh, 20px);
         }
 
         /* display:contents يحفظ تخطيط سؤال النص القديم. في سؤال الصورة يتحول
@@ -121,8 +121,8 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
            يحلّ نصف المشكلة، وهذا الضغط الخفيف يعيد المساحة المحرّرة إلى الوجه. */
         @media (max-height:800px) {
           body .screen:has(.s1q-photo) {
-            padding-block:clamp(14px,2.2vh,24px);
-            gap:clamp(10px,1.8vh,16px);
+            padding-block:clamp(14px,2.2dvh,24px);
+            gap:clamp(10px,1.8dvh,16px);
           }
           body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:8px; }
           body .screen:has(.s1q-photo) .q-photo-wrap { gap:6px; }
@@ -138,7 +138,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         /* أرضية للمؤقّت على الجوال الأفقي: بلا هذا ينكمش مكانه إلى ٢٠ بكسل
            فيفيض الرقم فوق بطاقة السؤال والزر — انظر تعليق الحلقة في Timer.tsx. */
         @media (max-height:480px) {
-          .timer-stage { min-height:clamp(46px, 17vh, 120px); gap:6px; }
+          .timer-stage { min-height:clamp(46px, 17dvh, 120px); gap:6px; }
           /* المؤقّت لا يتنازل عن ارتفاعه لغيره: رقمه مقيسٌ على بطاقته، فإن
              سُحبت من تحته فاض الرقم عنها. */
           body .screen .timer-stage .ring-timer { flex:none; }

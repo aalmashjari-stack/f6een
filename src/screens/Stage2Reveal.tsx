@@ -96,20 +96,20 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
            الشريط يلزم أعلى الشاشة، والزرّ أسفلها، وما بينهما يتنفّس بالتساوي.
            والفجوة المعلنة تبقى أرضيةً حين لا فائض (الشاشة القصيرة). */
         body .screen.s2-reveal-screen:not(.setup):not(.end) {
-          padding-block:clamp(14px,2vh,24px);
-          gap:clamp(12px,1.8vh,20px);
+          padding-block:clamp(14px,2dvh,24px);
+          gap:clamp(12px,1.8dvh,20px);
           justify-content:space-between;
         }
         .s2-reveal-screen .reveal-a {
           align-self:center;
           width:min(94%,1120px);
-          padding-block:clamp(12px,2vh,22px);
+          padding-block:clamp(12px,2dvh,22px);
         }
         /* «الإجابة» كان يرث من نيو مقاساً نسبياً (‏.42em‎ من خطّ الجسم) —
            نحو ستّة بكسلات لا تُرى من المجلس (بلاغ علي ٦ سبتمبر ٢٠٢٦). ومقاسه
            هنا صريحٌ بـmin(vw,vh) فلا ينتفخ على الشاشة العريضة القصيرة. */
         body .screen.s2-reveal-screen .a-label {
-          font-size:clamp(14px, min(1.6vw, 2.4vh), 22px);
+          font-size:clamp(14px, min(1.6vw, 2.4dvh), 22px);
         }
 
         /* بطاقتا القرار تأخذان ارتفاعاً حقيقياً. صنف grow وحده (‏flex:1‎ =
@@ -117,13 +117,13 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
            خلف الزر. */
         .s2-reveal-screen .mark-cards {
           flex:none;
-          min-height:clamp(205px,28vh,280px);
+          min-height:clamp(205px,28dvh,280px);
           display:flex;
           gap:clamp(20px,2.6vw,34px);
         }
         .s2-reveal-screen > .action {
           flex:none;
-          margin-top:clamp(4px,.8vh,10px);
+          margin-top:clamp(4px,.8dvh,10px);
         }
 
         /* ارتفاع البطاقة هو ما يتبقّى من الشاشة، أما مقاسات ما فيها فكانت محسوبة
@@ -135,8 +135,8 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .mcard {
           flex:1; min-width:0; min-height:0;
           display:flex; flex-direction:column; align-items:center; justify-content:center;
-          gap:clamp(6px,1.2vh,14px);
-          padding:clamp(10px,1.8vh,22px);
+          gap:clamp(6px,1.2dvh,14px);
+          padding:clamp(10px,1.8dvh,22px);
           border-radius:var(--r-lg); border:2px solid var(--border); background:var(--surface);
           color:var(--cream);
           transition:border-color .18s ease, box-shadow .18s ease;
@@ -145,9 +145,9 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .mcard.صح { border-color:var(--gold); box-shadow:var(--glow-gold); }
         .mcard.غلط { border-color:var(--coral); box-shadow:var(--glow-coral); }
 
-        .mc-team { font-size:clamp(12px, min(1.7vw, 2.4vh), 18px); font-weight:700; color:var(--text-2); }
+        .mc-team { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); font-weight:700; color:var(--text-2); }
         .mc-name {
-          font-size:clamp(22px, min(3.6vw, 4.6vh), 44px);
+          font-size:clamp(22px, min(3.6vw, 4.6dvh), 44px);
           font-weight:800; line-height:1.15; text-align:center; overflow-wrap:anywhere;
         }
 
@@ -155,15 +155,15 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .choice {
           flex:1; min-width:0;
           display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
-          padding:clamp(8px, 1.5vh, 18px) 6px;
+          padding:clamp(8px, 1.5dvh, 18px) 6px;
           border-radius:var(--r-md); border:2px solid var(--border);
           background:transparent; color:var(--text-2);
           font-family:inherit; cursor:pointer;
           transition:transform .08s ease, background .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease;
         }
         .choice:active { transform:scale(.97); }
-        .c-label { font-size:clamp(11px, min(1.5vw, 2vh), 18px); font-weight:700; line-height:1.35; }
-        .c-pts { font-size:clamp(18px, min(2.8vw, 3.6vh), 34px); font-weight:800; line-height:1.15; }
+        .c-label { font-size:clamp(11px, min(1.5vw, 2dvh), 18px); font-weight:700; line-height:1.35; }
+        .c-pts { font-size:clamp(18px, min(2.8vw, 3.6dvh), 34px); font-weight:800; line-height:1.15; }
 
         /* المختار يمتلئ، وغير المختار يخفت — الفرق لون كامل لا درجة أفتح بقليل */
         .choice.ok.on { background:var(--gold); border-color:var(--gold); color:var(--on-gold); }
@@ -183,7 +183,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
            والبطاقتان لا تنهاران: مقاسات ما فيهما محسوبة أصلاً بـmin(vw,vh)
            فتضمر قبل أن تفيض. */
         @media (max-height:700px) {
-          .s2-reveal-screen .mark-cards { min-height:clamp(150px,26vh,205px); }
+          .s2-reveal-screen .mark-cards { min-height:clamp(150px,26dvh,205px); }
         }
 
         /* المقاسات أعلاه تضمر مع الارتفاع، أمّا أرضياتها (١٠ للبطاقة و٨ للمربع)
@@ -194,21 +194,21 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
              بقي ٢٨ بكسلاً زائدة، مصدرها الحشوة (١٤×٢) والفجوات (١٢×٤).
              الفراغ أوّل ما يتنازل — قبل الحرف — فتنزل أرضيتاهما إلى سبعة. */
           body .screen.s2-reveal-screen:not(.setup):not(.end) {
-            padding-block:clamp(4px,2vh,24px);
-            gap:clamp(6px,1.8vh,20px);
+            padding-block:clamp(4px,2dvh,24px);
+            gap:clamp(6px,1.8dvh,20px);
           }
           .s2-reveal-screen .reveal-a {
             width:min(96%,960px);
-            padding-block:clamp(4px,1.2vh,16px);
+            padding-block:clamp(4px,1.2dvh,16px);
           }
           /* «الإجابة» عنوانٌ يُقرأ مرّة، والنصّ الكبير تحت السؤال لا يُشتبه
              فيه. يذهب هنا وحده ليتّسع لإجابةٍ طويلة («أبو عبيدة عامر بن عبد
              الله بن الجراح») والزرِّ تحتها — كانت تدفعه خارج الشاشة. */
           .s2-reveal-screen .a-label { display:none; }
           .s2-reveal-screen > .action { margin-top:0; }
-          .s2-reveal-screen .mark-cards { min-height:clamp(96px,24vh,190px); }
-          .mcard { padding:clamp(6px,1.8vh,22px); gap:clamp(3px,1.2vh,14px); }
-          .choice { padding:clamp(4px,1.5vh,18px) 6px; }
+          .s2-reveal-screen .mark-cards { min-height:clamp(96px,24dvh,190px); }
+          .mcard { padding:clamp(6px,1.8dvh,22px); gap:clamp(3px,1.2dvh,14px); }
+          .choice { padding:clamp(4px,1.5dvh,18px) 6px; }
         }
       `}</style>
     </div>
