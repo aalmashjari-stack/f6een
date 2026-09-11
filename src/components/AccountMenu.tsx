@@ -274,7 +274,7 @@ export function AccountMenu({
         .acct-veil {
           position:fixed; inset:0; z-index:60;
           display:flex; align-items:center; justify-content:center;
-          padding:clamp(8px,2vh,24px);
+          padding:clamp(8px,2dvh,24px);
           background:rgba(10,8,20,.5);
           backdrop-filter:blur(2px);
         }
@@ -283,7 +283,7 @@ export function AccountMenu({
            وحدها تتمرّر داخلها — فتبقى القاعدة «الشاشة الواحدة» قائمة. */
         .acct-panel {
           display:flex; flex-direction:column;
-          width:min(560px, 100%); max-height:min(86vh, 760px);
+          width:min(560px, 100%); max-height:min(86dvh, 760px);
           overflow:hidden;
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
           border-radius:var(--n-r2, 14px);

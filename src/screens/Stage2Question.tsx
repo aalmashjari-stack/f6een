@@ -70,7 +70,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         }
         .s2-versus .p b { font-weight:800; }
         .s2-versus .who {
-          font-size:clamp(11px,min(1.5vw,1.9vh),16px);
+          font-size:clamp(11px,min(1.5vw,1.9dvh),16px);
           font-weight:700; font-style:normal; opacity:.82;
         }
         .s2-versus .vs { color:var(--coral); font-weight:800; font-size:clamp(16px,2vw,22px); }
@@ -99,11 +99,11 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
         }
         .s2-timer-stage {
           flex:none;
-          min-height:clamp(132px,22vh,220px);
+          min-height:clamp(132px,22dvh,220px);
           display:grid;
           place-items:center;
-          padding-block:clamp(12px,2.4vh,26px);
-          scroll-margin-block:clamp(28px,5vh,56px);
+          padding-block:clamp(12px,2.4dvh,26px);
+          scroll-margin-block:clamp(28px,5dvh,56px);
         }
         .screen .s2-timer-stage .ring-timer {
           flex:none;
@@ -123,7 +123,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
            (Stage1Question.tsx) لم يكن قد وصل الديربي. */
         @media (max-height:480px) {
           body .screen:has(.q-photo-wrap) .q-prompt {
-            font-size:clamp(14px,4vh,18px);
+            font-size:clamp(14px,4dvh,18px);
             line-height:1.2;
           }
           body .screen:has(.q-photo-wrap) .s2-question-body.photo .q-box { padding-block:4px; }
@@ -134,7 +134,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
           .s2-timer-stage {
             flex:0 1 auto;
             min-height:0;
-            padding-block:clamp(4px,1vh,12px);
+            padding-block:clamp(4px,1dvh,12px);
           }
           .screen .s2-timer-stage .ring-timer { flex:0 1 auto; max-height:100%; }
         }

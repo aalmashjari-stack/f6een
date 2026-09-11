@@ -94,20 +94,20 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
         .photo-tap-hint {
           flex:none; align-self:center; cursor:zoom-in;
           color:var(--text-3);
-          font-size:clamp(9px, min(1.2vw,1.7vh), 13px); font-weight:700;
+          font-size:clamp(9px, min(1.2vw,1.7dvh), 13px); font-weight:700;
           letter-spacing:.02em;
         }
         .photo-zoom {
           position:fixed; inset:0; z-index:90;
           display:flex; flex-direction:column; align-items:center; justify-content:center;
-          gap:clamp(10px,2vh,20px);
-          padding:clamp(10px,2.5vh,30px);
+          gap:clamp(10px,2dvh,20px);
+          padding:clamp(10px,2.5dvh,30px);
           /* الحواف الآمنة: الطبقة تغطّي الشاشة الفيزيائية كاملةً (viewport-fit=cover)
              فلولاها لمرّ طرفُ الصورة تحت أذن الآيفون في الوضع الأفقي. */
-          padding-top:max(env(safe-area-inset-top), clamp(10px,2.5vh,30px));
-          padding-right:max(env(safe-area-inset-right), clamp(10px,2.5vh,30px));
-          padding-bottom:max(env(safe-area-inset-bottom), clamp(10px,2.5vh,30px));
-          padding-left:max(env(safe-area-inset-left), clamp(10px,2.5vh,30px));
+          padding-top:max(env(safe-area-inset-top), clamp(10px,2.5dvh,30px));
+          padding-right:max(env(safe-area-inset-right), clamp(10px,2.5dvh,30px));
+          padding-bottom:max(env(safe-area-inset-bottom), clamp(10px,2.5dvh,30px));
+          padding-left:max(env(safe-area-inset-left), clamp(10px,2.5dvh,30px));
           /* شبه معتمة لا ٩٣٪: الواجهة تحتها فاتحة، فسبعةٌ بالمئة منها تكفي
              لتظهر بطاقاتُ النتيجة خلف الصورة وتشتّت النظر عن الوجه. */
           background:rgba(9,9,15,.985);
@@ -120,9 +120,9 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
           position:absolute; z-index:2;
           top:max(env(safe-area-inset-top), 14px);
           inset-inline-end:max(env(safe-area-inset-right), 14px);
-          width:clamp(44px, 6vh, 64px); height:clamp(44px, 6vh, 64px);
+          width:clamp(44px, 6dvh, 64px); height:clamp(44px, 6dvh, 64px);
           display:grid; place-items:center;
-          font-size:clamp(20px, 3vh, 30px); line-height:1;
+          font-size:clamp(20px, 3dvh, 30px); line-height:1;
           color:#fff; background:rgba(255,255,255,.14);
           border:2px solid rgba(255,255,255,.5); border-radius:50%;
           cursor:pointer; padding:0;
@@ -140,7 +140,7 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
           bottom:max(env(safe-area-inset-bottom), 14px);
           inset-inline:0; text-align:center;
           color:rgba(255,255,255,.62); text-shadow:0 1px 6px rgba(0,0,0,.7);
-          font-size:clamp(11px,1.6vh,15px); font-weight:700;
+          font-size:clamp(11px,1.6dvh,15px); font-weight:700;
           pointer-events:none;
         }
         @keyframes photo-zoom-fade { from { opacity:0 } to { opacity:1 } }

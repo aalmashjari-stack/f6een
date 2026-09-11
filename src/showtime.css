@@ -96,7 +96,7 @@ body .screen:not(.setup)::after{left:18px;background:var(--festival-mint);transf
 
 /* النتيجة */
 body .screen .scorebar{position:relative;display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(8px,1.4vw,18px);align-items:stretch;padding:0}
-body .screen .scorebar .team{min-width:0;min-height:clamp(66px,9vh,90px);display:grid;grid-template-columns:1fr auto;gap:12px;padding:9px clamp(12px,2vw,22px);border:3px solid var(--festival-ink);border-radius:26px 9px 26px 9px;background:var(--festival-yellow);box-shadow:5px 6px 0 var(--festival-ink);transform:rotate(.5deg);clip-path:none;backdrop-filter:none}
+body .screen .scorebar .team{min-width:0;min-height:clamp(66px,9dvh,90px);display:grid;grid-template-columns:1fr auto;gap:12px;padding:9px clamp(12px,2vw,22px);border:3px solid var(--festival-ink);border-radius:26px 9px 26px 9px;background:var(--festival-yellow);box-shadow:5px 6px 0 var(--festival-ink);transform:rotate(.5deg);clip-path:none;backdrop-filter:none}
 body .screen .scorebar .team-1{grid-template-columns:auto 1fr;background:var(--festival-mint);transform:rotate(-.5deg)}
 body .screen .scorebar .team-1 .team-copy{order:2} body .screen .scorebar .team-1 .pts-disc{order:1}
 body .screen .scorebar .team.lead{border-color:var(--festival-orange);background:var(--festival-white);box-shadow:7px 8px 0 var(--festival-orange);transform:translateY(-3px) rotate(-1deg)}
@@ -106,10 +106,10 @@ body .screen .scorebar .team-kicker{color:var(--festival-purple);font-size:clamp
    والذهبيّ فوقها يذوب. والمحدّد أخصّ من قاعدة theme.css التي تلوّنه ذهباً. */
 body .screen .scorebar .team.turn .team-kicker{color:var(--festival-ink)}
 body .screen .scorebar .team .name,body .screen .scorebar .team.lead .name,body .screen .scorebar .team.lead .team-kicker{min-width:0;color:var(--festival-ink);font-size:clamp(16px,2vw,23px);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-body .screen .scorebar .team .pts-disc{width:clamp(48px,6.4vh,66px);height:clamp(48px,6.4vh,66px);border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white)}
-body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{display:block;justify-self:center;align-self:center;max-width:100%;color:var(--festival-purple);font-size:clamp(24px,min(3.4vw,4.4vh),38px);line-height:1;text-align:center;direction:ltr;white-space:nowrap}
-body .screen .scorebar .team .pts.digits-3{font-size:clamp(20px,min(2.8vw,3.8vh),31px)}
-body .screen .scorebar .team .pts.digits-4{font-size:clamp(17px,min(2.3vw,3.2vh),26px)}
+body .screen .scorebar .team .pts-disc{width:clamp(48px,6.4dvh,66px);height:clamp(48px,6.4dvh,66px);border:3px solid var(--festival-ink);border-radius:50%;background:var(--festival-white)}
+body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{display:block;justify-self:center;align-self:center;max-width:100%;color:var(--festival-purple);font-size:clamp(24px,min(3.4vw,4.4dvh),38px);line-height:1;text-align:center;direction:ltr;white-space:nowrap}
+body .screen .scorebar .team .pts.digits-3{font-size:clamp(20px,min(2.8vw,3.8dvh),31px)}
+body .screen .scorebar .team .pts.digits-4{font-size:clamp(17px,min(2.3vw,3.2dvh),26px)}
 body .screen .scorebar .mid{position:static;min-width:clamp(88px,13vw,150px);display:flex;justify-content:center;gap:7px;padding:8px 14px;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-purple);color:var(--festival-white);box-shadow:4px 5px 0 var(--festival-ink);transform:rotate(-2deg);font-size:clamp(11px,1.4vw,15px)}
 @keyframes festival-blink{50%{transform:scale(.45)}}
 
@@ -134,9 +134,9 @@ body .screen .q-box,body .screen .s3-q{position:relative;overflow:visible;border
 body .screen .q-box::before,body .screen .s3-q::before{content:'';position:absolute;top:-13px;inset-inline-start:8%;width:86px;height:24px;background:rgba(255,212,71,.78);transform:rotate(-4deg);z-index:2}
 body .screen .q-box::after,body .screen .s3-q::after{content:'؟';position:absolute;inset-inline-end:18px;bottom:-28px;color:var(--festival-pink);font-size:clamp(72px,11vw,150px);font-weight:800;line-height:1;opacity:.28;pointer-events:none}
 body .screen .q-text,body .screen .q-photo-wrap{position:relative;z-index:1;color:var(--festival-ink)} body .screen .q-hint{position:relative;z-index:1} body .screen .q-photo{border:4px solid var(--festival-ink);border-radius:26px;box-shadow:7px 8px 0 var(--festival-yellow)}
-body .screen .ring-timer{width:clamp(150px,19vw,230px);height:clamp(112px,15vh,155px);aspect-ratio:auto;display:grid;grid-template-rows:1fr auto;place-items:center;padding:13px 18px 16px;border:4px solid var(--festival-ink);border-radius:28px 8px 28px 8px;background:var(--festival-yellow);box-shadow:8px 9px 0 var(--festival-purple);transform:rotate(-1deg)}
+body .screen .ring-timer{width:clamp(150px,19vw,230px);height:clamp(112px,15dvh,155px);aspect-ratio:auto;display:grid;grid-template-rows:1fr auto;place-items:center;padding:13px 18px 16px;border:4px solid var(--festival-ink);border-radius:28px 8px 28px 8px;background:var(--festival-yellow);box-shadow:8px 9px 0 var(--festival-purple);transform:rotate(-1deg)}
 body .screen .ring-timer::before{display:none} body .screen .ring-timer svg{display:none}
-body .screen .ring-timer .secs{position:static;grid-row:1;color:var(--festival-purple)!important;font-size:clamp(42px,8vh,82px);transform:none}
+body .screen .ring-timer .secs{position:static;grid-row:1;color:var(--festival-purple)!important;font-size:clamp(42px,8dvh,82px);transform:none}
 body .screen .timer-progress{grid-row:2;width:100%;height:12px;display:block;overflow:hidden;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-white)}
 body .screen .timer-progress>span{display:block;height:100%;transition:width .12s linear}
 
@@ -147,18 +147,18 @@ body .screen .timer-progress>span{display:block;height:100%;transition:width .12
 /* الشريط يأخذ ارتفاعه من نسبة البانر نفسها (aspect-ratio) فتظهر الصورة
    كاملةً بلا قصّ — الإعداد يُمرَّر بإذن علي، فلا حاجة لضغط الشريط في
    ارتفاعٍ ثابتٍ يقصّ نصفه. سقفٌ واسع يمنعه من ابتلاع شاشة ضخمة وحده. */
-body .screen.setup .hero{aspect-ratio:var(--banner-ratio);height:auto;min-height:0;max-height:min(400px,46vh);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:0;border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
+body .screen.setup .hero{aspect-ratio:var(--banner-ratio);height:auto;min-height:0;max-height:min(400px,46dvh);display:grid;grid-template-columns:1fr;align-items:center;justify-items:start;padding:0;border:4px solid var(--festival-ink);border-top:0;border-radius:0 0 56px 18px;background:var(--festival-white);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
 /* الشعار الآن داخل شريطٍ يعرض البانر كاملاً، فله مساحة أوسع: نصيبه من
    العرض أكبر (٤٤٪) ومن ارتفاع الشريط أكبر (٨٤٪)، وأصغر النصيبين يحكمه
    فلا يخرج حبره من الصندوق. */
-body .screen.setup .hero-logo{grid-column:1;width:max-content;max-width:min(44%,560px);height:auto;max-height:84%;font-size:clamp(38px,min(8.2vw,12vh),150px);align-self:center;justify-self:start;margin-inline-start:clamp(20px,3.4vw,64px);padding:.22em .16em .12em;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none;filter:drop-shadow(0 10px 14px rgba(48,26,59,.18))}
+body .screen.setup .hero-logo{grid-column:1;width:max-content;max-width:min(44%,560px);height:auto;max-height:84%;font-size:clamp(38px,min(8.2vw,12dvh),150px);align-self:center;justify-self:start;margin-inline-start:clamp(20px,3.4vw,64px);padding:.22em .16em .12em;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none;filter:drop-shadow(0 10px 14px rgba(48,26,59,.18))}
 body .screen.setup .stages-intro{color:var(--festival-muted)} body .screen.setup .brand-inline{color:var(--festival-purple);background:none;-webkit-text-fill-color:currentColor;text-shadow:none}
 body .screen.setup .setup-rule{color:var(--festival-purple)} body .screen.setup .setup-rule::before,body .screen.setup .setup-rule::after{height:4px;background:repeating-linear-gradient(90deg,var(--festival-orange) 0 10px,transparent 10px 17px)}
 body .screen.setup .stage-card,body .screen.setup .team-card{border:4px solid var(--festival-ink);border-radius:32px 10px 32px 10px;background:var(--festival-white);box-shadow:var(--festival-shadow);clip-path:none;backdrop-filter:none}
 body .screen.setup .stage-card:nth-child(1){background:var(--festival-yellow);transform:rotate(-1deg)} body .screen.setup .stage-card:nth-child(2){background:var(--festival-pink);transform:translateY(14px) rotate(1deg)} body .screen.setup .stage-card:nth-child(3){background:var(--festival-mint);transform:rotate(-.5deg)} body .screen.setup .stage-card::before{display:none}
 /* الرقم كان clamp(44px,7vw,80px) — ٨٠px لرقمٍ واحد يزاحم الاسم والنقاط
    على ارتفاع البطاقة. صار يتبع الارتفاع فيكبر على التلفزيون وحده. */
-body .screen.setup .stage-no{width:auto;height:auto;align-self:center;border:0;border-radius:0;background:transparent;color:var(--festival-purple);box-shadow:none;font-size:clamp(22px,4.4vh,72px);line-height:1;transform:none}
+body .screen.setup .stage-no{width:auto;height:auto;align-self:center;border:0;border-radius:0;background:transparent;color:var(--festival-purple);box-shadow:none;font-size:clamp(22px,4.4dvh,72px);line-height:1;transform:none}
 body .screen.setup .stage-tag{order:-1;color:var(--festival-purple);font-size:11px;font-weight:800} body .screen.setup .stage-name{color:var(--festival-ink)} body .screen.setup .stage-desc{color:var(--festival-muted)}
 body .screen.setup .stage-points,body .screen.setup .team-badge{border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
 body .screen.setup .team-card:first-child{background:#f7e7f3;transform:rotate(.4deg)} body .screen.setup .team-card:last-child{background:#e5f7ec;transform:rotate(-.4deg)} body .screen.setup .team-card.starter{background:var(--festival-yellow);border-color:var(--festival-ink);box-shadow:9px 10px 0 var(--festival-orange)}
@@ -181,7 +181,7 @@ body .screen .pick:first-child,body .screen .mark-cards .mcard:first-child{backg
 body .screen .mark-cards .choice{border:3px solid var(--festival-ink);border-radius:14px;background:var(--festival-white);color:var(--festival-ink)} body .screen .mark-cards .choice.ok.on{background:var(--festival-yellow);color:var(--festival-ink);border-color:var(--festival-ink)} body .screen .mark-cards .choice.no.on{background:var(--festival-orange);color:var(--festival-white);border-color:var(--festival-ink)}
 
 /* الفواصل والديربي */
-body .screen .interval-card{position:relative;overflow:hidden;width:min(100%,900px);max-width:none;min-height:min(54vh,450px);justify-content:center;border:4px solid var(--festival-ink);border-radius:58px 15px 58px 15px;background:var(--festival-pink);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
+body .screen .interval-card{position:relative;overflow:hidden;width:min(100%,900px);max-width:none;min-height:min(54dvh,450px);justify-content:center;border:4px solid var(--festival-ink);border-radius:58px 15px 58px 15px;background:var(--festival-pink);box-shadow:12px 13px 0 var(--festival-purple);clip-path:none}
 body .screen .interval-card.tie{background:var(--festival-yellow);border-color:var(--festival-ink);box-shadow:12px 13px 0 var(--festival-orange)} body .screen .interval-card::before,body .screen .interval-card::after{display:none} body .screen .il-title,body .screen .interval-card.tie .il-title{color:var(--festival-purple);text-shadow:none} body .screen .il-rule{color:var(--festival-ink)}
 body .screen .il-stage-no{position:absolute;inset-inline-start:-.04em;bottom:-.3em;color:rgba(109,52,119,.1);font-size:min(40vw,400px);font-weight:800;line-height:1} body .screen .il-live{position:absolute;top:20px;inset-inline-end:24px;display:flex;align-items:center;gap:7px;color:var(--festival-purple);font-size:12px;font-weight:800} body .screen .il-live span{width:10px;height:10px;border-radius:50%;background:var(--festival-orange);animation:festival-blink 1.2s infinite}
 body .screen .s2-versus{border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-yellow);color:var(--festival-ink);box-shadow:5px 6px 0 var(--festival-purple)} body .screen .s2-versus .vs{color:var(--festival-purple)}
@@ -193,9 +193,9 @@ body .screen .s3-ready-rules{display:flex;justify-content:center;gap:10px;flex-w
 body .screen .s3-answer{color:var(--festival-purple)} body .screen .s3-verdicts .v,body .screen .tb{border:4px solid var(--festival-ink);border-radius:24px;box-shadow:7px 8px 0 var(--festival-ink)} body .screen .s3-verdicts .v.correct{background:var(--festival-mint);color:var(--festival-ink)} body .screen .s3-verdicts .v.wrong{background:var(--festival-orange);color:var(--festival-white)} body .screen .tb{background:var(--festival-white);color:var(--festival-purple)}
 
 /* الختام */
-body .screen.end .brand img{width:min(42%,360px);height:auto;max-height:18vh;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;filter:drop-shadow(0 8px 12px rgba(48,26,59,.18));object-fit:contain}
-body .screen.end .brand .f6een-mark{font-size:clamp(43px,min(6.5vw,9.3vh),80px);filter:drop-shadow(0 8px 12px rgba(48,26,59,.18))}
-body .screen.end .winner{width:min(100%,760px);padding:clamp(24px,4vh,44px);border:4px solid var(--festival-ink);border-radius:64px 16px 64px 16px;background:var(--festival-yellow);box-shadow:12px 13px 0 var(--festival-orange);transform:rotate(-.5deg)}
+body .screen.end .brand img{width:min(42%,360px);height:auto;max-height:18dvh;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;filter:drop-shadow(0 8px 12px rgba(48,26,59,.18));object-fit:contain}
+body .screen.end .brand .f6een-mark{font-size:clamp(43px,min(6.5vw,9.3dvh),80px);filter:drop-shadow(0 8px 12px rgba(48,26,59,.18))}
+body .screen.end .winner{width:min(100%,760px);padding:clamp(24px,4dvh,44px);border:4px solid var(--festival-ink);border-radius:64px 16px 64px 16px;background:var(--festival-yellow);box-shadow:12px 13px 0 var(--festival-orange);transform:rotate(-.5deg)}
 body .screen.end .winner-stamp{align-self:center;padding:4px 12px;border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple);font-size:12px;font-weight:800;transform:rotate(2deg)} body .screen.end .w-eyebrow{color:var(--festival-purple)} body .screen.end .w-title{color:var(--festival-purple);text-shadow:none} body .screen.end .final-score{color:var(--festival-ink)}
 body .screen.end .es-title{align-self:flex-start;padding:3px 11px;border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-pink);color:var(--festival-ink)}
 body .screen.end .es-row,body .screen.end .report-note{border:3px solid var(--festival-ink);border-radius:20px 6px 20px 6px;background:var(--festival-white);color:var(--festival-ink)} body .screen.end .es-row.total{background:var(--festival-yellow);border-color:var(--festival-ink)} body .screen.end .es-row.total .es-num,body .screen.end .es-row.total .es-label{color:var(--festival-ink)} body .screen.end .chip.ok{color:var(--festival-purple);border-color:var(--festival-purple)} body .screen.end .chip.no{color:var(--festival-orange);border-color:var(--festival-orange)} body .screen.end .foot,body .screen.end .foot-link{color:var(--festival-purple)}
@@ -205,12 +205,12 @@ body .screen.end .es-row,body .screen.end .report-note{border:3px solid var(--fe
    الأقسام، ثم تصغر داخل المجموعة نفسها، وتحافظ الشاشات القصيرة على محتواها. */
 body .screen:not(.setup){
   padding:clamp(20px,3vw,42px);
-  gap:clamp(18px,2.8vh,32px);
+  gap:clamp(18px,2.8dvh,32px);
 }
 body .screen .scorebar{gap:clamp(12px,1.8vw,24px)}
 body .screen .rd{gap:clamp(12px,1.7vw,20px)}
-body .screen .rd-meta{gap:clamp(9px,1.2vw,14px);padding-bottom:clamp(8px,1.2vh,13px)}
-body .screen .stack.gap-s{gap:clamp(12px,1.8vh,18px)}
+body .screen .rd-meta{gap:clamp(9px,1.2vw,14px);padding-bottom:clamp(8px,1.2dvh,13px)}
+body .screen .stack.gap-s{gap:clamp(12px,1.8dvh,18px)}
 body .screen .action-note{margin-top:0}
 
 /* مجموعات متوازية: الفراغ بينها أكبر من الفراغ داخل كل بطاقة. */
@@ -222,7 +222,7 @@ body .screen .s3-verdicts{
 }
 body .screen .timer-stage,
 body .screen .s3-inner{
-  gap:clamp(18px,2.8vh,30px);
+  gap:clamp(18px,2.8dvh,30px);
 }
 
 /* كانت شارة الحكم تُسحب بهوامش سالبة فوق ما حولها؛ الآن تأخذ مكانها الطبيعي. */
@@ -232,32 +232,32 @@ body .screen .rv-card,
 body .screen .reveal-a,
 body .screen .interval-card,
 body .screen .s3-ready{
-  gap:clamp(16px,2.5vh,28px);
+  gap:clamp(16px,2.5dvh,28px);
 }
-body .screen.end{gap:clamp(24px,3.8vh,46px)}
-body .screen.end .winner{gap:clamp(10px,1.8vh,18px)}
-body .screen.end .es-block{gap:clamp(14px,2vh,22px)}
-body .screen.end .es-table{gap:clamp(10px,1.5vh,16px)}
+body .screen.end{gap:clamp(24px,3.8dvh,46px)}
+body .screen.end .winner{gap:clamp(10px,1.8dvh,18px)}
+body .screen.end .es-block{gap:clamp(14px,2dvh,22px)}
+body .screen.end .es-table{gap:clamp(10px,1.5dvh,16px)}
 body .screen.end .foot{gap:clamp(12px,1.8vw,20px)}
 
 /* الشاشات الأقل ارتفاعاً تتنفس من دون أن تخسر السؤال أو زر الحكم. */
 @media(max-height:560px){
-  body .screen:not(.setup){padding:clamp(12px,2.2vw,28px);gap:clamp(10px,1.9vh,17px)}
+  body .screen:not(.setup){padding:clamp(12px,2.2vw,28px);gap:clamp(10px,1.9dvh,17px)}
     body .screen .pick-cards,
   body .screen .mark-cards,
     body .screen .tb-picks,
   body .screen .s3-verdicts{gap:clamp(11px,1.8vw,20px)}
-  body .screen .timer-stage,body .screen .s3-inner{gap:clamp(10px,1.8vh,17px)}
-  body .screen .rv-card,body .screen .reveal-a,body .screen .interval-card,body .screen .s3-ready{gap:clamp(9px,1.6vh,15px)}
-  body .screen.end{gap:clamp(14px,2.2vh,24px)}
+  body .screen .timer-stage,body .screen .s3-inner{gap:clamp(10px,1.8dvh,17px)}
+  body .screen .rv-card,body .screen .reveal-a,body .screen .interval-card,body .screen .s3-ready{gap:clamp(9px,1.6dvh,15px)}
+  body .screen.end{gap:clamp(14px,2.2dvh,24px)}
 }
 
 @media(max-width:620px){body .screen .scorebar{grid-template-columns:1fr 1fr}body .screen .scorebar .mid{grid-column:1/-1;grid-row:2;justify-self:center;margin-top:-3px}body .screen .scorebar .team{padding:7px 9px}body .screen .scorebar .team-kicker{display:none}body .screen .rd{grid-template-columns:auto 1fr}body .screen .rd-meta{grid-column:1/-1;margin-top:5px}body .screen.setup .hero{grid-template-columns:1fr;min-height:260px}body .screen.setup .hero-logo{grid-column:1;width:min(48%,360px);justify-self:start}body .screen.setup .stage-card:nth-child(2){transform:none}}
-@media(max-height:480px){body .screen .scorebar{grid-template-columns:1fr auto 1fr}body .screen .scorebar .mid{grid-column:auto;grid-row:auto;min-width:74px;padding:4px 8px}body .screen .scorebar .team{min-height:46px;border-width:2px;border-radius:14px 5px 14px 5px;box-shadow:3px 4px 0 var(--festival-ink)}body .screen .scorebar .team .pts-disc{width:36px;height:36px;border-width:2px}body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{font-size:20px}body .screen .scorebar .team .pts.digits-3{font-size:17px}body .screen .scorebar .team .pts.digits-4{font-size:14px}body .screen .ring-timer{width:120px;height:76px;padding:6px 12px 9px;border-width:3px}body .screen .ring-timer .secs{font-size:clamp(30px,8vh,56px)}body .screen .timer-progress{height:8px;border-width:2px}body .screen.setup .hero{min-height:94px;height:94px;grid-template-columns:1fr;padding:8px;box-shadow:6px 7px 0 var(--festival-purple)}body .screen.setup .hero-logo{width:min(30%,240px);max-height:82%;justify-self:start;margin-inline-start:12px;padding:0}body .screen .interval-card{min-height:0}body .screen .s3-ready{padding:clamp(12px,4vh,28px)}body .screen .s3-ready-rules span{padding:3px 9px}}
+@media(max-height:480px){body .screen .scorebar{grid-template-columns:1fr auto 1fr}body .screen .scorebar .mid{grid-column:auto;grid-row:auto;min-width:74px;padding:4px 8px}body .screen .scorebar .team{min-height:46px;border-width:2px;border-radius:14px 5px 14px 5px;box-shadow:3px 4px 0 var(--festival-ink)}body .screen .scorebar .team .pts-disc{width:36px;height:36px;border-width:2px}body .screen .scorebar .team .pts,body .screen .scorebar .team.lead .pts{font-size:20px}body .screen .scorebar .team .pts.digits-3{font-size:17px}body .screen .scorebar .team .pts.digits-4{font-size:14px}body .screen .ring-timer{width:120px;height:76px;padding:6px 12px 9px;border-width:3px}body .screen .ring-timer .secs{font-size:clamp(30px,8dvh,56px)}body .screen .timer-progress{height:8px;border-width:2px}body .screen.setup .hero{min-height:94px;height:94px;grid-template-columns:1fr;padding:8px;box-shadow:6px 7px 0 var(--festival-purple)}body .screen.setup .hero-logo{width:min(30%,240px);max-height:82%;justify-self:start;margin-inline-start:12px;padding:0}body .screen .interval-card{min-height:0}body .screen .s3-ready{padding:clamp(12px,4dvh,28px)}body .screen .s3-ready-rules span{padding:3px 9px}}
 
 @media(max-width:620px){body .screen.setup .hero-logo.f6een-mark{width:max-content;max-width:54%;font-size:clamp(45px,14vw,76px)}}
-@media(max-height:480px){body .screen.setup .hero-logo.f6een-mark{width:max-content;max-width:38%;font-size:clamp(30px,9.3vh,43px);padding:.18em .12em .08em}body .screen.end .brand .f6een-mark{font-size:clamp(32px,8.4vh,45px)}}
-@media(max-height:480px){body .screen:not(.setup){padding:clamp(8px,2vh,16px) clamp(16px,3vw,40px);gap:clamp(7px,1.7vh,11px)}body .screen .stack.gap-s{gap:clamp(5px,1.3vh,8px)}body .screen .rd{gap:6px}body .screen .rd-meta{gap:6px;padding-bottom:4px}body .screen.end{gap:clamp(8px,1.8vh,12px)}}
+@media(max-height:480px){body .screen.setup .hero-logo.f6een-mark{width:max-content;max-width:38%;font-size:clamp(30px,9.3dvh,43px);padding:.18em .12em .08em}body .screen.end .brand .f6een-mark{font-size:clamp(32px,8.4dvh,45px)}}
+@media(max-height:480px){body .screen:not(.setup){padding:clamp(8px,2dvh,16px) clamp(16px,3vw,40px);gap:clamp(7px,1.7dvh,11px)}body .screen .stack.gap-s{gap:clamp(5px,1.3dvh,8px)}body .screen .rd{gap:6px}body .screen .rd-meta{gap:6px;padding-bottom:4px}body .screen.end{gap:clamp(8px,1.8dvh,12px)}}
 @media(orientation:portrait) and (hover:none) and (pointer:coarse){#rotate-gate{background:var(--festival-paper);color:var(--festival-ink)}#rotate-gate .rotate-gate-icon{color:var(--festival-purple)}}
 
 /* ─── قاعدة اللقطة الواحدة (٢١ أغسطس ٢٠٢٦، بقرار علي) ──────────────────
@@ -283,15 +283,15 @@ body .screen.setup {
 
 body .screen:not(.setup):not(.end):not(:has(.picker)) {
   padding:clamp(20px,3vw,42px);
-  gap:clamp(18px,2.8vh,32px);
+  gap:clamp(18px,2.8dvh,32px);
 }
 
 /* هذه الثلاث أكثفها محتوى، فهوامشها أوّل ما يتنازل مع ضيق الارتفاع. */
 body .screen.setup,
 body .screen.end,
 body .screen:has(.picker) {
-  padding:clamp(12px,2.4vh,44px) clamp(20px,3.4vw,56px);
-  gap:clamp(8px,1.8vh,34px);
+  padding:clamp(12px,2.4dvh,44px) clamp(20px,3.4vw,56px);
+  gap:clamp(8px,1.8dvh,34px);
 }
 
 /* عمودٌ مرن يقتسم ما تبقّى بعد الشريط: بـflex:none كان يأخذ ارتفاع محتواه
@@ -299,14 +299,14 @@ body .screen:has(.picker) {
 body .screen.setup .setup-body { flex:1; min-height:0; }
 
 /* فصل المجموعات المتوازية والكتل الداخلية في جميع مراحل اللعبة. */
-body .screen .stack.gap-s { gap:clamp(12px,1.8vh,18px); }
+body .screen .stack.gap-s { gap:clamp(12px,1.8dvh,18px); }
 body .screen .pick-cards,
 body .screen .mark-cards,
 body .screen .tb-picks,
 body .screen .s3-verdicts { gap:clamp(18px,2.6vw,32px); }
 body .screen .timer-stage,
-body .screen .s3-inner { gap:clamp(18px,2.8vh,30px); }
-body .screen .timer-stage { padding-block:clamp(8px,1.5vh,16px); }
+body .screen .s3-inner { gap:clamp(18px,2.8dvh,30px); }
+body .screen .timer-stage { padding-block:clamp(8px,1.5dvh,16px); }
 
 /* سؤال الصورة — قاعدة واحدة لكل بطاقاته (الجولة الجماعية، الديربي، الحق ما
    تلحق). كانت البطاقة flex:none بأرضية ٥٢vh والصورة بسقف ٤٦vh: أرقامٌ من
@@ -337,10 +337,10 @@ body .screen :is(.q-box,.s3-q):has(.q-photo-wrap) .q-photo-wrap {
    من بقية الشاشات، وحشوة البطاقة أضيق ما تكون لأن للصورة إطارها الخاص أصلاً. */
 body .screen:not(.setup):not(.end):has(.q-photo-wrap) {
   padding:clamp(14px,2.2vw,30px);
-  gap:clamp(10px,1.6vh,20px);
+  gap:clamp(10px,1.6dvh,20px);
 }
 body .screen :is(.q-box,.s3-q):has(.q-photo-wrap) {
-  padding:clamp(10px,1.6vh,22px) clamp(14px,2.4vw,28px);
+  padding:clamp(10px,1.6dvh,22px) clamp(14px,2.4vw,28px);
 }
 /* الأسطر التي تُقرأ مرّة واحدة (شرح الزرّ، وقاعدة المبادرة في
    الديربي) تذهب كاملةً على الشاشة القصيرة متى كان في الشاشة وجهٌ يُعرَّف —
@@ -386,24 +386,24 @@ body .screen .s1-question-body.photo .q-photo-wrap { height:100%; width:auto; mi
 body .screen .rv-card,
 body .screen .reveal-a,
 body .screen .interval-card,
-body .screen .s3-ready { gap:clamp(16px,2.5vh,28px); }
-/* كان clamp(32px,5vh,60px) — ثمانية أبناء بفجوة ٥٤px تعني ٣٨٠px فراغاً
+body .screen .s3-ready { gap:clamp(16px,2.5dvh,28px); }
+/* كان clamp(32px,5dvh,60px) — ثمانية أبناء بفجوة ٥٤px تعني ٣٨٠px فراغاً
    وحده على شاشة ١٠٨٠، والختام أكثف الشاشات محتوى (حتى اثنا عشر لاعباً). */
-body .screen.end { gap:clamp(6px,1.5vh,34px); }
-body .screen.end .es-block { gap:clamp(4px,.8vh,14px); }
-body .screen.end .es-table { gap:clamp(4px,.7vh,12px); }
-body .screen.end .winner { padding:clamp(8px,1.6vh,32px) clamp(18px,3vw,44px); gap:clamp(2px,.6vh,12px); }
-body .screen.end .es-row { padding:clamp(4px,.8vh,12px) clamp(9px,1.4vw,18px); }
+body .screen.end { gap:clamp(6px,1.5dvh,34px); }
+body .screen.end .es-block { gap:clamp(4px,.8dvh,14px); }
+body .screen.end .es-table { gap:clamp(4px,.7dvh,12px); }
+body .screen.end .winner { padding:clamp(8px,1.6dvh,32px) clamp(18px,3vw,44px); gap:clamp(2px,.6dvh,12px); }
+body .screen.end .es-row { padding:clamp(4px,.8dvh,12px) clamp(9px,1.4vw,18px); }
 /* بطاقة الفائز والشعار أوّل ما يتنازل مع ضيق الارتفاع: يُنظر إليهما لحظةً،
    والجداول تحتهما هي ما يُقرأ ويُناقَش. */
-body .screen.end .brand .f6een-mark { font-size:clamp(28px,min(5vw,6.6vh),80px); }
-body .screen.end .winner { border-radius:clamp(22px,4vh,64px) 16px clamp(22px,4vh,64px) 16px; }
+body .screen.end .brand .f6een-mark { font-size:clamp(28px,min(5vw,6.6dvh),80px); }
+body .screen.end .winner { border-radius:clamp(22px,4dvh,64px) 16px clamp(22px,4dvh,64px) 16px; }
 @media (max-height:760px) {
-  body .screen.end .winner { padding:clamp(6px,1.2vh,20px) clamp(14px,2.4vw,32px); }
+  body .screen.end .winner { padding:clamp(6px,1.2dvh,20px) clamp(14px,2.4vw,32px); }
   body .screen.end .winner-stamp { padding:2px 10px; font-size:10px; }
-  body .screen.end .action { padding:clamp(8px,1.6vh,18px) 28px; }
-  body .screen.end { gap:clamp(5px,1.1vh,20px); }
-  body .screen.end .brand .f6een-mark { font-size:clamp(24px,4.4vh,52px); }
+  body .screen.end .action { padding:clamp(8px,1.6dvh,18px) 28px; }
+  body .screen.end { gap:clamp(5px,1.1dvh,20px); }
+  body .screen.end .brand .f6een-mark { font-size:clamp(24px,4.4dvh,52px); }
 }
 /* جوال أفقي (٤٨٠px فما دون): لا يتّسع لثلاثة جداول مهما صغر الخط — عشرون
    بكسلاً لكل سطر لا تُقرأ أصلاً. هنا وحدها يعود التمرير، وهو أصدق من حشرٍ
@@ -424,52 +424,52 @@ body .screen.end .winner { border-radius:clamp(22px,4vh,64px) 16px clamp(22px,4v
 /* الإعداد يُمرَّر، فالفراغ هنا يتنفّس بلا خوفٍ من الطيّة: مسافةٌ واضحة بين
    الكتل (المراحل ← الفرق ← الأزرار) وأخرى داخلها. */
 body .screen.setup .setup-body {
-  --gap-block:clamp(22px,3.4vh,60px);
-  --gap-in:clamp(12px,1.8vh,28px);
+  --gap-block:clamp(22px,3.4dvh,60px);
+  --gap-in:clamp(12px,1.8dvh,28px);
 }
 /* البطاقة الوسطى في شرح المراحل مزاحة ١٤px إلى الأسفل (translateY) زينةً،
    والإزاحة لا تحجز مكاناً في التخطيط — فبفجوةٍ أصغر منها تركب البطاقة
    على بطاقتَي الفريقين. الأرضية هنا تحجز ما تحتاجه الإزاحة. */
-body .screen.setup .setup-block + .setup-block { margin-top:max(28px, clamp(3px,.8vh,48px)); }
+body .screen.setup .setup-block + .setup-block { margin-top:max(28px, clamp(3px,.8dvh,48px)); }
 body .screen.setup .stages {
   width:min(94%,1060px);
   margin-inline:auto;
   gap:clamp(10px,1.5vw,40px);
 }
 body .screen.setup .teams-grid { gap:clamp(20px,2.6vw,48px); }
-body .screen.setup .team-card { gap:clamp(12px,1.6vh,26px); padding:clamp(14px,2vh,26px) clamp(14px,1.8vw,24px); }
+body .screen.setup .team-card { gap:clamp(12px,1.6dvh,26px); padding:clamp(14px,2dvh,26px) clamp(14px,1.8vw,24px); }
 body .screen.setup .stages .stage-card {
-  gap:clamp(6px,1vh,18px);
-  padding:clamp(6px,1.1vh,22px) clamp(9px,1.2vw,18px);
+  gap:clamp(6px,1dvh,18px);
+  padding:clamp(6px,1.1dvh,22px) clamp(9px,1.2vw,18px);
 }
-body .screen.setup .players { gap:clamp(10px,1.4vh,18px); }
+body .screen.setup .players { gap:clamp(10px,1.4dvh,18px); }
 body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
 
 /* حتى الشاشات القصيرة تحتفظ بهواء واضح؛ التمرير يتكفّل بالباقي. */
 @media(max-height:560px) {
   body .screen:not(.setup):not(.end):not(:has(.picker)) {
     padding:clamp(12px,2.2vw,28px);
-    gap:clamp(10px,1.9vh,17px);
+    gap:clamp(10px,1.9dvh,17px);
   }
   body .screen.setup,
   body .screen:has(.picker) {
     padding:clamp(18px,3vw,34px);
-    gap:clamp(18px,3vh,28px);
+    gap:clamp(18px,3dvh,28px);
   }
   /* الختام مستثنى من هذا التوسيع: هو أكثف الشاشات، وكان يقفز هنا من حشوة ١٣
      وفجوة ١٠ إلى ٢٧ و١٨ — ستّون بكسلاً من الهواء تدفع الجداول تحت زرّ «لعبة
      جديدة» بلا تمرير يُنقذها. على القصير يضيق الختام لا يتّسع. */
   body .screen.end {
-    padding:clamp(10px,1.8vh,20px) clamp(14px,2.4vw,28px);
-    gap:clamp(5px,1vh,12px);
+    padding:clamp(10px,1.8dvh,20px) clamp(14px,2.4vw,28px);
+    gap:clamp(5px,1dvh,12px);
   }
-  body .screen .stack.gap-s { gap:clamp(9px,1.7vh,14px); }
+  body .screen .stack.gap-s { gap:clamp(9px,1.7dvh,14px); }
     body .screen .pick-cards,
   body .screen .mark-cards,
     body .screen .tb-picks,
   body .screen .s3-verdicts { gap:clamp(11px,1.8vw,20px); }
   body .screen .timer-stage,
-  body .screen .s3-inner { gap:clamp(10px,1.8vh,17px); }
+  body .screen .s3-inner { gap:clamp(10px,1.8dvh,17px); }
   /* الصورة هنا تقتسم ارتفاعاً شحيحاً أصلاً؛ لا سقف إضافي — الحاوية هي السقف. */
 }
 
@@ -487,10 +487,10 @@ body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
 @media (max-height:480px) {
   body .screen:not(.setup) .action-note { display:none; }
   body .screen:not(.setup):not(.end):not(:has(.picker)) {
-    gap:clamp(7px,1.7vh,11px);
-    padding-block:clamp(8px,2vh,16px);
+    gap:clamp(7px,1.7dvh,11px);
+    padding-block:clamp(8px,2dvh,16px);
   }
-  body .screen .stack.gap-s { gap:clamp(6px,1.4vh,11px); }
+  body .screen .stack.gap-s { gap:clamp(6px,1.4dvh,11px); }
   /* شريطا الزينة (::before و::after) يقفان عند top:12 بعرض ٦٤ — وعلى الجوال
      الأفقي يبدأ شريطُ النتيجة عند الثامنة، فيمرّ اللاصق فوق اسم الفريق
      ويقصّه بصرياً. الزينة تتنازل قبل المحتوى: تذهب هنا وحدها. */

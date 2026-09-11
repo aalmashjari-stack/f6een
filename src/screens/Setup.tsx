@@ -483,7 +483,7 @@ export function Setup({
           padding-right:calc(var(--pad-x) + env(safe-area-inset-right));
           display:flex !important; align-items:center;
           gap:clamp(8px,1.4vw,18px);
-          height:clamp(64px, 11vh, 120px);
+          height:clamp(64px, 11dvh, 120px);
           background:var(--n-surface-2, #FFF3E0);
           border-bottom:2.5px solid var(--n-ink, #22201C);
         }
@@ -497,7 +497,7 @@ export function Setup({
         body .screen.setup .hnav {
           font:inherit; font-weight:800; cursor:pointer;
           font-size:clamp(11px,1.4vw,15px);
-          padding:clamp(5px,.9vh,9px) clamp(11px,1.6vw,18px);
+          padding:clamp(5px,.9dvh,9px) clamp(11px,1.6vw,18px);
           border:0; border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
@@ -531,8 +531,8 @@ export function Setup({
            الكبيرة فيتعب تتبّعه. والفراغ بين الكتل (--gap-block) أوسع من
            الفراغ داخلها (--gap-in) — هذا وحده ما يجعل الأقسام تُقرأ منفصلة. */
         .setup-body {
-          --gap-block: clamp(10px, 2.6vh, 44px);
-          --gap-in:    clamp(8px, 1.4vh, 20px);
+          --gap-block: clamp(10px, 2.6dvh, 44px);
+          --gap-in:    clamp(8px, 1.4dvh, 20px);
           /* ‏1 0 auto لا 1 min-height:0: كان الجسم يتقلّص إلى ارتفاع الغلاف
              فيُسحق محتواه — بطاقاتُ الفئات تحديداً — بدل أن يفيض عنه، فلا
              يعمل تمرير .setup-scroll إلا بالكاد. الآن يكبر على الشاشة الطويلة
@@ -542,7 +542,7 @@ export function Setup({
           width:min(100%, 1140px); margin-inline:auto;
           /* فسحة تحت الشريط أوسع من فجوة .screen — المشهد صورة كاملة العرض،
              فيحتاج هواءً يفصله عن النصّ أكثر مما يحتاجه عنصر عاديّ. */
-          margin-top:clamp(8px, 1.8vh, 28px);
+          margin-top:clamp(8px, 1.8dvh, 28px);
           display:flex; flex-direction:column;
           gap:var(--gap-block);
         }
@@ -550,14 +550,14 @@ export function Setup({
         /* فصل بصري أوضح بين شرح المراحل وحقول الفرق: العنوان التالي لا
            يلتصق بظلال البطاقات، مع إبقاء الإيقاع الداخلي لكل قسم كما هو. */
         .setup-block + .setup-block {
-          margin-top:clamp(4px, 1.2vh, 30px);
+          margin-top:clamp(4px, 1.2dvh, 30px);
         }
 
         /* كتلة الفعل عند الحافّة السفلى — تبتلع فراغ التابلت الطولي
            بدل أن تتركه معلّقاً تحتها. */
         .setup-foot {
           margin-top:auto; display:flex; flex-direction:column;
-          gap:clamp(4px, .9vh, 16px); padding-top:clamp(2px, .6vh, 10px);
+          gap:clamp(4px, .9dvh, 16px); padding-top:clamp(2px, .6dvh, 10px);
         }
 
         /* ─── سطر التقديم ──────────────────────────────────────────────── */
@@ -601,13 +601,13 @@ export function Setup({
           position:relative; overflow:hidden;
           display:flex; flex-direction:row; align-items:center; justify-content:center;
           text-align:center;
-          gap:clamp(7px, 1vh, 12px);
-          padding:clamp(8px,1.4vh,16px) clamp(10px,1.2vw,16px);
+          gap:clamp(7px, 1dvh, 12px);
+          padding:clamp(8px,1.4dvh,16px) clamp(10px,1.2vw,16px);
           background:linear-gradient(165deg,
             color-mix(in srgb, var(--surface-2) 92%, transparent),
             color-mix(in srgb, var(--surface) 72%, transparent) 72%);
           border:1px solid var(--border);
-          border-radius:clamp(20px, 3.2vh, 30px);
+          border-radius:clamp(20px, 3.2dvh, 30px);
           box-shadow:0 12px 28px rgba(0,0,0,.22);
           transition:transform .25s var(--ease-spring), border-color .25s ease, box-shadow .25s ease;
         }
@@ -626,7 +626,7 @@ export function Setup({
         /* رقم المرحلة قرص ذهبي — يرتّب المراحل الثلاث بلمحة قبل قراءة الاسم. */
         .stage-no {
           flex:none;
-          width:clamp(26px,3.6vh,46px); height:clamp(26px,3.6vh,46px);
+          width:clamp(26px,3.6dvh,46px); height:clamp(26px,3.6dvh,46px);
           border-radius:50%; display:grid; place-items:center;
           background:var(--grad-gold);
           color:var(--on-gold); font-weight:800; font-size:clamp(14px,1.9vw,22px); line-height:1;
@@ -640,7 +640,7 @@ export function Setup({
         /* في الوضع المُدمَج صفٌّ أفقي كالبطاقة نفسها، والوصف مخفيّ. */
         .stage-body {
           display:flex; flex-direction:row; align-items:center; flex:0 1 auto;
-          gap:clamp(7px, 1vh, 12px); min-width:0;
+          gap:clamp(7px, 1dvh, 12px); min-width:0;
         }
         .stage-name { margin:0; color:var(--gold); font-size:clamp(13px,1.6vw,20px); font-weight:800; white-space:nowrap; }
         /* الوصف سطرٌ يُقرأ مرّة ثم لا يُعاد إليه — أول ما يتنازل حين يشحّ
@@ -658,13 +658,13 @@ export function Setup({
         /* البطاقة تتقلّص مع عمودها بدل أن تفرض عرض محتواها على الشبكة. */
         .team-card { min-width:0; }
         .team-card {
-          display:flex; flex-direction:column; gap:clamp(6px, 1.1vh, 16px);
-          padding:clamp(10px,1.7vh,26px) clamp(12px,1.6vw,24px);
+          display:flex; flex-direction:column; gap:clamp(6px, 1.1dvh, 16px);
+          padding:clamp(10px,1.7dvh,26px) clamp(12px,1.6vw,24px);
           background:linear-gradient(165deg,
             color-mix(in srgb, var(--surface-2) 94%, transparent),
             color-mix(in srgb, var(--surface) 80%, transparent) 68%);
           border:2px solid var(--border);
-          border-radius:clamp(24px, 3.8vh, 36px);
+          border-radius:clamp(24px, 3.8dvh, 36px);
           box-shadow:var(--lift);
           transition:border-color .3s ease, box-shadow .3s ease;
         }
@@ -672,7 +672,7 @@ export function Setup({
 
         /* شارة الترتيب — تسمّي البطاقة قبل أن يُكتب فيها اسم، فلا تبقى مجهولة. */
         .team-badge {
-          align-self:center; padding:clamp(1px,.35vh,5px) 14px; border-radius:999px;
+          align-self:center; padding:clamp(1px,.35dvh,5px) 14px; border-radius:999px;
           border:1px solid var(--border); background:rgba(15,44,66,.55);
           color:var(--text-2); font-size:clamp(10px,1.1vw,13px); font-weight:700; line-height:1.4;
           transition:color .3s ease, border-color .3s ease;
@@ -682,27 +682,27 @@ export function Setup({
         .team-name {
           background:transparent; border:none; border-bottom:2px solid var(--border);
           color:var(--gold); font-weight:800; font-size:clamp(15px,1.9vw,24px);
-          font-family:inherit; text-align:center; padding:clamp(1px,.45vh,9px) 8px; outline:none;
+          font-family:inherit; text-align:center; padding:clamp(1px,.45dvh,9px) 8px; outline:none;
           line-height:1.35;
           transition:border-color .2s ease;
         }
         .team-name::placeholder { color:var(--text-3); font-weight:700; }
 
-        .players { display:flex; flex-direction:column; gap:clamp(4px, .8vh, 11px); }
+        .players { display:flex; flex-direction:column; gap:clamp(4px, .8dvh, 11px); }
         /* من خمسة لاعبين فصاعداً يقف الحقلان جنباً إلى جنب: ستة أسماء في
            ثلاثة صفوف بدل ستة. البطاقة عريضة أصلاً (نصف الشاشة) والاسم قصير،
            فالعرض متوفّر والارتفاع هو الشحيح. هذا يوفّر نصف ارتفاع القائمة
            بلا أن يصغر حرفٌ واحد — والبديل كان ضغط الحقول حتى تتلاصق. */
         .players:has(.player:nth-child(5)) {
           display:grid; grid-template-columns:1fr 1fr;
-          gap:clamp(4px, .8vh, 11px) clamp(6px, .8vw, 12px);
+          gap:clamp(4px, .8dvh, 11px) clamp(6px, .8vw, 12px);
         }
         /* الحشوة الرأسية هي ما يتنازل مع ستّة لاعبين — لا حجم الحرف: الاسم
            يُقرأ عن بُعد، والفراغ حوله لا. */
         .player {
           background:rgba(15,44,66,.6); border:1px solid var(--border);
           border-radius:999px; color:var(--cream); font-family:inherit;
-          font-size:clamp(13px,1.4vw,17px); padding:clamp(5px,.95vh,12px) 20px; outline:none; text-align:center;
+          font-size:clamp(13px,1.4vw,17px); padding:clamp(5px,.95dvh,12px) 20px; outline:none; text-align:center;
           /* بلا هذا لا يتقلّص عمود الشبكة تحت عرض النصّ الافتراضي (min-width
              الضمني = auto)، فتتمدّد البطاقة وتخرج من الشاشة أفقياً. */
           min-width:0;
@@ -716,15 +716,15 @@ export function Setup({
         .counter {
           display:flex; align-items:center; justify-content:center; gap:16px;
           color:var(--text-2); font-weight:700; font-size:clamp(12px,1.3vw,16px);
-          padding-top:clamp(2px, .55vh, 13px);
+          padding-top:clamp(2px, .55dvh, 13px);
           border-top:1px solid var(--border);
         }
         .pill {
           flex:none;
-          width:clamp(24px,3.4vh,40px); height:clamp(24px,3.4vh,40px);
+          width:clamp(24px,3.4dvh,40px); height:clamp(24px,3.4dvh,40px);
           border-radius:50%; border:1px solid var(--border);
           background:rgba(15,44,66,.6); color:var(--cream);
-          font-size:clamp(16px,2.2vh,21px); cursor:pointer;
+          font-size:clamp(16px,2.2dvh,21px); cursor:pointer;
           transition:transform .15s var(--ease-spring), border-color .2s ease, color .2s ease;
         }
         @media (hover:hover) { .pill:not(:disabled):hover { border-color:var(--gold); color:var(--gold); } }
@@ -734,7 +734,7 @@ export function Setup({
         /* ─── القرعة والأزرار ─────────────────────────────────────────── */
         /* الخانة تبقى محجوزة وإن كانت فارغة: نتيجة القرعة تحلّ محلّها لاحقاً،
            وبلا حجزها يقفز الزرّان تحتها لحظة ظهورها. */
-        .toss { text-align:center; min-height:clamp(18px,2.8vh,38px); display:grid; place-items:center; }
+        .toss { text-align:center; min-height:clamp(18px,2.8dvh,38px); display:grid; place-items:center; }
         .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
         .toss-result b { color:var(--gold); }
         .toss-result.missing { color:var(--text-2); font-weight:700; }
@@ -757,7 +757,7 @@ export function Setup({
         }
         /* الزر يتنازل عن سُمكه الرأسي مع ضيق الارتفاع ويبقى عريضاً سهل الإصابة. */
         .setup-actions .action {
-          padding:clamp(9px,1.7vh,26px) 28px;
+          padding:clamp(9px,1.7dvh,26px) 28px;
           font-size:clamp(16px,2.2vw,28px);
         }
 
@@ -772,7 +772,7 @@ export function Setup({
           /* على الجوال تعطي نسبة الصورة شريطاً بارتفاع ٧٦px — رفيعاً تضيع
              فيه العائلة. فيُفرض ارتفاع أعلى، و cover يقصّ الأطراف ويُبقي
              التلفاز ومن حوله. */
-          body .screen.setup .hero { height:clamp(84px, 14vh, 130px); }
+          body .screen.setup .hero { height:clamp(84px, 14dvh, 130px); }
 
           .stage-card {
             flex-direction:row; align-items:flex-start; text-align:start;
@@ -790,11 +790,11 @@ export function Setup({
              فيُفرض ارتفاع صغير و cover يقصّ وسط المشهد. */
           /* أعلى ممّا كان بطلب علي (١ سبتمبر ٢٠٢٦): على الجوال الأفقيّ
              كان الشريط ٦٤px فيخنق الشعار وشريطَ السدو معاً. */
-          body .screen.setup .hero { height:clamp(78px, 20vh, 104px); }
+          body .screen.setup .hero { height:clamp(78px, 20dvh, 104px); }
           .hero-logo { width:min(40%, 320px); max-height:70%; }
           /* الشاشة القصيرة تملأ نفسها بالضبط، فلا فسحة إضافية تُحتمل. */
-          .setup-body { --gap-block:clamp(6px,1.4vh,14px); --gap-in:clamp(5px,1vh,10px); margin-top:0; }
-          .setup-block + .setup-block { margin-top:clamp(5px,1.2vh,12px); }
+          .setup-body { --gap-block:clamp(6px,1.4dvh,14px); --gap-in:clamp(5px,1dvh,10px); margin-top:0; }
+          .setup-block + .setup-block { margin-top:clamp(5px,1.2dvh,12px); }
 
           /* البطاقة أصلاً صفٌّ أفقي في الوضع الافتراضي، فلم يبقَ هنا إلا
              شدّ المقاسات إلى أصغرها. */
@@ -835,10 +835,10 @@ export function Setup({
         @media (min-height:900px) {
           .stage-card {
             flex-direction:column; align-items:center;
-            gap:clamp(8px,1.2vh,13px);
-            padding:clamp(18px,2.8vh,28px) clamp(14px,1.6vw,20px);
+            gap:clamp(8px,1.2dvh,13px);
+            padding:clamp(18px,2.8dvh,28px) clamp(14px,1.6vw,20px);
           }
-          .stage-body { flex-direction:column; align-items:center; flex:1; gap:clamp(8px,1.2vh,13px); }
+          .stage-body { flex-direction:column; align-items:center; flex:1; gap:clamp(8px,1.2dvh,13px); }
           .stage-desc { display:block; }
           .stage-name { white-space:normal; }
           /* margin-top:auto يحاذي الشارات الثلاث في سطر واحد مهما اختلف طول الوصف. */
@@ -848,8 +848,8 @@ export function Setup({
         /* ===== فئات الجولة الجماعية ===== */
         /* الرأس عمودٌ في الوسط: نداءٌ فعدّاد، والثاني أصغر من الأول. */
         .cats-head {
-          display:flex; flex-direction:column; align-items:center; gap:clamp(2px,.5vh,6px);
-          margin:clamp(12px,2.6vh,30px) 0 clamp(10px,2vh,20px);
+          display:flex; flex-direction:column; align-items:center; gap:clamp(2px,.5dvh,6px);
+          margin:clamp(12px,2.6dvh,30px) 0 clamp(10px,2dvh,20px);
           text-align:center;
         }
         .cats-lead { margin:0; font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--gold); }
@@ -954,7 +954,7 @@ export function Setup({
           position:relative; z-index:1;
           display:flex; flex-direction:column; align-items:center; gap:1px;
           min-width:0;
-          padding:clamp(30px,5vh,58px) 7px clamp(8px,1.4vh,15px);
+          padding:clamp(30px,5dvh,58px) 7px clamp(8px,1.4dvh,15px);
           background:linear-gradient(to top, rgba(14,11,22,.9) 0%, rgba(14,11,22,.6) 50%, rgba(14,11,22,0) 100%);
         }
 

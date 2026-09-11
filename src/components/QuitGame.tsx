@@ -52,16 +52,16 @@ export function QuitGame({ onQuit, charged = false }: { onQuit: () => void; char
            على الجوال الأفقي). ولا يُصلحها حجزُ فجوة في الشريط: نصّ الحالة
            الثانية «تأكيد الإنهاء» أعرض من الأولى بضعفين، فيعبرها ثانيةً. */
         .quit-corner {
-          position:fixed; inset-block-end:clamp(6px,1.2vh,14px);
+          position:fixed; inset-block-end:clamp(6px,1.2dvh,14px);
           inset-inline-start:clamp(6px,1.2vw,16px);
           z-index:50;
           display:flex; flex-direction:column; align-items:flex-start;
-          gap:clamp(4px,.7vh,7px);
+          gap:clamp(4px,.7dvh,7px);
         }
         .quit-game {
           font:inherit; font-weight:800; cursor:pointer;
           font-size:clamp(10px,1.3vw,14px);
-          padding:clamp(4px,.8vh,8px) clamp(8px,1.4vw,14px);
+          padding:clamp(4px,.8dvh,8px) clamp(8px,1.4vw,14px);
           border:0; border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-ink-3, #948CA8);
           box-shadow:var(--n-e1, 0 1px 2px rgba(0,0,0,.08));
@@ -80,7 +80,7 @@ export function QuitGame({ onQuit, charged = false }: { onQuit: () => void; char
         .quit-warn {
           margin:0;
           font-weight:800; font-size:clamp(9px,1.15vw,12px);
-          padding:clamp(3px,.6vh,6px) clamp(7px,1.2vw,12px);
+          padding:clamp(3px,.6dvh,6px) clamp(7px,1.2vw,12px);
           border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-bad, #DC4033);
           box-shadow:var(--n-e1, 0 1px 2px rgba(0,0,0,.08));

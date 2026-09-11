@@ -226,11 +226,11 @@ export function Endgame({
           .es-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
         }
         .es-col {
-          display:flex; flex-direction:column; gap:clamp(10px,1.6vh,20px);
+          display:flex; flex-direction:column; gap:clamp(10px,1.6dvh,20px);
           width:100%; max-width:680px; min-width:0;
         }
         .brand img {
-          width:min(56%, 420px); height:auto; max-height:14vh; object-fit:contain;
+          width:min(56%, 420px); height:auto; max-height:14dvh; object-fit:contain;
           animation:brand-in .7s var(--ease-spring) both;
         }
         @keyframes brand-in {
@@ -263,7 +263,7 @@ export function Endgame({
         }
         .w-eyebrow {
           color:var(--text-2); font-weight:700; line-height:1.2;
-          font-size:clamp(12px,min(1.6vw,2vh),18px);
+          font-size:clamp(12px,min(1.6vw,2dvh),18px);
           animation:rise .5s ease-out .18s both;
         }
         /* أحجام الختام تأخذ أصغر نصيبَي العرض والارتفاع — نفس علّة .q-text:
@@ -273,7 +273,7 @@ export function Endgame({
            تحته تُقرأ وتُناقَش. سقفه هنا أقلّ من السابق (٦٤ بدل ٨٤) ونصيبه من
            الارتفاع أقلّ (٦vh بدل ٧٫٤) — الفرق كلّه يذهب إلى الجداول. */
         .w-title {
-          color:var(--gold); font-weight:800; font-size:clamp(26px,min(5vw,6vh),64px); line-height:1.05;
+          color:var(--gold); font-weight:800; font-size:clamp(26px,min(5vw,6dvh),64px); line-height:1.05;
           animation:winner-in .8s var(--ease-spring) .26s both;
           text-shadow:0 0 46px rgba(255,189,89,.42);
         }
@@ -284,7 +284,7 @@ export function Endgame({
           100% { opacity:1; transform:none; filter:none; }
         }
         .final-score {
-          font-size:clamp(16px,min(2.6vw,3.2vh),34px); font-weight:800; color:var(--cream); margin-top:clamp(1px,.5vh,6px);
+          font-size:clamp(16px,min(2.6vw,3.2dvh),34px); font-weight:800; color:var(--cream); margin-top:clamp(1px,.5dvh,6px);
           line-height:1.2;
           animation:rise .5s ease-out .42s both;
         }
@@ -295,7 +295,7 @@ export function Endgame({
 
         /* لا تمرير داخلي: الصفحة كلها تُمرَّر حتى لا يُقتطع لاعب من القائمة (حتى ١٢ لاعباً). */
         .es-block { width:100%; max-width:680px; min-width:0; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }
-        .es-title { color:var(--text-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7vh),17px); text-align:center; }
+        .es-title { color:var(--text-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7dvh),17px); text-align:center; }
         .es-table { display:flex; flex-direction:column; gap:6px; width:100%; }
         /* من تسعة لاعبين فصاعداً ينقسم الجدول عمودين: اثنا عشر لاعباً في ستة
            صفوف بدل اثني عشر — وهو أطول جدول في الشاشة. وكان الحدُّ سبعة، فلمّا
@@ -307,17 +307,17 @@ export function Endgame({
         .es-row {
           display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
           background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
-          padding:clamp(9px,1.4vh,14px) clamp(12px,2vw,20px);
+          padding:clamp(9px,1.4dvh,14px) clamp(12px,2vw,20px);
         }
-        .es-label { color:var(--text-2); font-size:clamp(11px,min(1.6vw,1.9vh),19px); font-weight:700; white-space:nowrap; line-height:1.35; }
+        .es-label { color:var(--text-2); font-size:clamp(11px,min(1.6vw,1.9dvh),19px); font-weight:700; white-space:nowrap; line-height:1.35; }
         .es-label.strong { color:var(--cream); }
-        .es-num { font-size:clamp(14px,min(2.1vw,2.5vh),30px); font-weight:800; color:var(--text-2); line-height:1.25; }
+        .es-num { font-size:clamp(14px,min(2.1vw,2.5dvh),30px); font-weight:800; color:var(--text-2); line-height:1.25; }
         /* الأعلى في المرحلة وحده ذهبي — الفرق يُقرأ بلمحة بلا مقارنة رقمين */
         .es-num.up { color:var(--gold); }
         .es-row.head { background:transparent; border-color:transparent; padding-bottom:0; }
-        .es-row.head span { color:var(--text-2); font-weight:700; font-size:clamp(10px,min(1.4vw,1.6vh),17px); }
+        .es-row.head span { color:var(--text-2); font-weight:700; font-size:clamp(10px,min(1.4vw,1.6dvh),17px); }
         .es-row.total { border-color:var(--gold); background:transparent; }
-        .es-row.total .es-num { color:var(--gold); font-size:clamp(16px,min(2.5vw,2.9vh),36px); }
+        .es-row.total .es-num { color:var(--gold); font-size:clamp(16px,min(2.5vw,2.9dvh),36px); }
 
         .es-row.s3, .es-row.player { grid-template-columns:minmax(0,1fr) auto; }
         .es-row.player { animation:rise .45s ease-out both; }
@@ -331,13 +331,13 @@ export function Endgame({
         /* سطر واحد لكل لاعب: العمود ضيّق (نصف الكتلة) والأسماء تطول، فبلا
            هذا يلتفّ السطر إلى ثلاثة ويصير الجدول أطول من الشاشة وحده. */
         .sr-name {
-          font-weight:800; text-align:right; font-size:clamp(11px,min(1.5vw,1.8vh),20px);
+          font-weight:800; text-align:right; font-size:clamp(11px,min(1.5vw,1.8dvh),20px);
           min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.35;
         }
         /* اسم الفريق يتقلّص هو أيضاً — عمود auto لا يتنازل من تلقائه، فيدفع
            السطر خارج الكتلة أفقياً على الشاشة الأضيق. */
         .sr-team {
-          color:var(--text-3); font-size:clamp(9px,min(1.1vw,1.3vh),14px);
+          color:var(--text-3); font-size:clamp(9px,min(1.1vw,1.3dvh),14px);
           white-space:nowrap; line-height:1.35;
           min-width:0; overflow:hidden; text-overflow:ellipsis;
         }
@@ -346,7 +346,7 @@ export function Endgame({
         .chip {
           display:inline-flex; align-items:center; gap:4px;
           border:1px solid var(--border); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
-          color:var(--text-2); font-size:clamp(9px,min(1.2vw,1.4vh),15px); font-weight:700; white-space:nowrap;
+          color:var(--text-2); font-size:clamp(9px,min(1.2vw,1.4dvh),15px); font-weight:700; white-space:nowrap;
           line-height:1.4;
         }
         .chip .tabular { font-size:1.15em; font-weight:800; }
@@ -442,7 +442,7 @@ function ReportPanel({
         }
         .rp {
           display:flex; flex-direction:column; gap:8px;
-          width:min(760px, 100%); max-height:min(84vh, 720px);
+          width:min(760px, 100%); max-height:min(84dvh, 720px);
           padding:16px; overflow:hidden;
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
           border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.28);
