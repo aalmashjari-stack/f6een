@@ -1,0 +1,765 @@
+[
+  {
+    "key": "anc-agamemnon",
+    "licence": "Public domain",
+    "artist": "Gleb Simonov",
+    "page": "File:Athens — Mask of Agamemnon.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAthens_%E2%80%94_Mask_of_Agamemnon.jpg"
+  },
+  {
+    "key": "anc-antikythera",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Joyofmuseums",
+    "page": "File:Antikythera Mechanism - National Archaeological Museum, Athens by Joy of Museum.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAntikythera_Mechanism_-_National_Archaeological_Museum%2C_Athens_by_Joy_of_Museum.jpg"
+  },
+  {
+    "key": "anc-hammurabi",
+    "licence": "CC BY 3.0",
+    "artist": "Mbzt",
+    "page": "File:P1050763 Louvre code Hammurabi face rwk.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AP1050763_Louvre_code_Hammurabi_face_rwk.JPG"
+  },
+  {
+    "key": "anc-hegra",
+    "licence": "CC BY 2.0",
+    "artist": "Prof. Mortel",
+    "page": "File:Qasr al-Farid, Hegra (Madain Salih), 1st cent. CE, Saudi Arabia (4).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AQasr_al-Farid%2C_Hegra_(Madain_Salih)%2C_1st_cent._CE%2C_Saudi_Arabia_(4).jpg"
+  },
+  {
+    "key": "anc-lamassu",
+    "licence": "CC BY-SA 4.0",
+    "artist": "MohammadHuzam",
+    "page": "File:Iraqi Museum.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AIraqi_Museum.jpg"
+  },
+  {
+    "key": "anc-lascaux",
+    "licence": "Public domain",
+    "artist": "EU",
+    "page": "File:Lascaux painting.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALascaux_painting.jpg"
+  },
+  {
+    "key": "anc-library-celsus",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Benh LIEU SONG",
+    "page": "File:Ephesus Celsus Library Façade.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AEphesus_Celsus_Library_Fa%C3%A7ade.jpg"
+  },
+  {
+    "key": "anc-lion-babylon",
+    "licence": "CC BY 2.0",
+    "artist": "David Stanley",
+    "page": "File:Lion of babylon.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALion_of_babylon.jpg"
+  },
+  {
+    "key": "anc-machu-picchu",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Draceane",
+    "page": "File:Machu Picchu, 2023 (012).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMachu_Picchu%2C_2023_(012).jpg"
+  },
+  {
+    "key": "anc-meroe",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Ahmed Amir",
+    "page": "File:Pyramids of Meroe in Bajrawiya, Sudan 09.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APyramids_of_Meroe_in_Bajrawiya%2C_Sudan_09.jpg"
+  },
+  {
+    "key": "anc-nazca",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Diego Delso",
+    "page": "File:Líneas de Nazca, Nazca, Perú, 2015-07-29, DD 49.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AL%C3%ADneas_de_Nazca%2C_Nazca%2C_Per%C3%BA%2C_2015-07-29%2C_DD_49.JPG"
+  },
+  {
+    "key": "anc-nefertiti",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Philip Pikart",
+    "page": "File:Nofretete Neues Museum.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANofretete_Neues_Museum.jpg"
+  },
+  {
+    "key": "anc-pantheon",
+    "licence": "CC BY-SA 4.0",
+    "artist": "NikonZ7II",
+    "page": "File:Pantheon (Rome) - Right side and front.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APantheon_(Rome)_-_Right_side_and_front.jpg"
+  },
+  {
+    "key": "anc-phaistos",
+    "licence": "Public domain",
+    "artist": "Gleb Simonov",
+    "page": "File:Phaistos Disc — Side A.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APhaistos_Disc_%E2%80%94_Side_A.jpg"
+  },
+  {
+    "key": "anc-pont-du-gard",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Benh LIEU SONG (Flickr)",
+    "page": "File:Pont du Gard BLS.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APont_du_Gard_BLS.jpg"
+  },
+  {
+    "key": "anc-rosetta",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Hans Hillewaert",
+    "page": "File:Rosetta Stone.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARosetta_Stone.JPG"
+  },
+  {
+    "key": "anc-scribe",
+    "licence": "CC0",
+    "artist": "Shonagon",
+    "page": "File:Le Scribe accroupi - Musée du Louvre Antiquités égyptiennes E 3023.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALe_Scribe_accroupi_-_Mus%C3%A9e_du_Louvre_Antiquit%C3%A9s_%C3%A9gyptiennes_E_3023.jpg"
+  },
+  {
+    "key": "anc-standard-ur",
+    "licence": "CC BY 2.0",
+    "artist": "Denis Bourez from France",
+    "page": "File:Denis Bourez - British Museum, London (8747049029) (2).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ADenis_Bourez_-_British_Museum%2C_London_(8747049029)_(2).jpg"
+  },
+  {
+    "key": "anc-taq-kasra",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Safa.daneshvar",
+    "page": "File:001125-TaqKasra-Iraq-IMG 7914-2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:001125-TaqKasra-Iraq-IMG_7914-2.jpg"
+  },
+  {
+    "key": "anc-teotihuacan",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Burkhard Mücke",
+    "page": "File:2020-02-11 Teotihuacan la Avenida de los Muertos y la Pirámide del Sol.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A2020-02-11_Teotihuacan_la_Avenida_de_los_Muertos_y_la_Pir%C3%A1mide_del_Sol.jpg"
+  },
+  {
+    "key": "anc-trajan",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Livioandronico2013",
+    "page": "File:Trajan's Column HD.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATrajan's_Column_HD.jpg"
+  },
+  {
+    "key": "anc-tut-mask",
+    "licence": "Public domain",
+    "artist": "Roland Unger",
+    "page": "File:CairoEgMuseumTaaMaskMostlyPhotographed.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACairoEgMuseumTaaMaskMostlyPhotographed.jpg"
+  },
+  {
+    "key": "anc-ziggurat-ur",
+    "licence": "Public domain",
+    "artist": "Tla2006 at English Wikipedia",
+    "page": "File:Ziggarat of Ur 001.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AZiggarat_of_Ur_001.jpg"
+  },
+  {
+    "key": "anime-akihabara",
+    "licence": "CC0",
+    "artist": "Phineyes",
+    "page": "File:Sotokanda, Akihabara Electric Town at night 20231114.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASotokanda%2C_Akihabara_Electric_Town_at_night_20231114.png"
+  },
+  {
+    "key": "anime-ghibli-museum",
+    "licence": "CC BY 4.0",
+    "artist": "Fotointheworld",
+    "page": "File:Ghibli Museum 2024.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGhibli_Museum_2024.JPG"
+  },
+  {
+    "key": "anime-shinkai",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Elena Ternovaja",
+    "page": "File:Makoto Shinkai, 2023.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMakoto_Shinkai%2C_2023.jpg"
+  },
+  {
+    "key": "arabic-diwani",
+    "licence": "Public domain",
+    "artist": "Mehmet Izzet al-Karkuki (1841-1904).",
+    "page": "File:Diwani Izzet al Karkuki.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ADiwani_Izzet_al_Karkuki.jpg"
+  },
+  {
+    "key": "arabic-kufic",
+    "licence": "Public domain",
+    "artist": "Unknown in Abbasid dynasty",
+    "page": "File:Folio from a Koran (8th-9th century).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFolio_from_a_Koran_(8th-9th_century).jpg"
+  },
+  {
+    "key": "arabic-maghribi",
+    "licence": "Public domain",
+    "artist": "غير مذكور",
+    "page": "File:Maghribi script sura 5.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMaghribi_script_sura_5.jpg"
+  },
+  {
+    "key": "arabic-muhaqqaq",
+    "licence": "Public domain",
+    "artist": "Unknown Calligrapher",
+    "page": "File:Muhaqqaq script - Qur'anic verses.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMuhaqqaq_script_-_Qur'anic_verses.jpg"
+  },
+  {
+    "key": "arabic-namara",
+    "licence": "Public domain",
+    "artist": "Marie-Lan Nguyen",
+    "page": "File:Epitaph Imru-l-Qays Louvre AO4083.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AEpitaph_Imru-l-Qays_Louvre_AO4083.jpg"
+  },
+  {
+    "key": "arabic-naskh",
+    "licence": "Public domain",
+    "artist": "Aziz Efendi (d. 16 August 1934)",
+    "page": "File:FirstSurahKoran.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFirstSurahKoran.jpg"
+  },
+  {
+    "key": "arabic-nastaliq",
+    "licence": "Public domain",
+    "artist": "Mir Emad Hassani",
+    "page": "File:Nastaliq calligraphy, Mir Emad, 11th century AH, Reza Abbasi Museum.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANastaliq_calligraphy%2C_Mir_Emad%2C_11th_century_AH%2C_Reza_Abbasi_Museum.jpg"
+  },
+  {
+    "key": "arabic-qalam",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Faizal Somadi",
+    "page": "File:Different Traditional Wooden Calligraphy Pens.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ADifferent_Traditional_Wooden_Calligraphy_Pens.jpg"
+  },
+  {
+    "key": "arabic-thuluth",
+    "licence": "Public domain",
+    "artist": "Signed by Sultan Mahmud II 1785 Details on Google Art Project",
+    "page": "File:Signed by Sultan Mahmud II - Levha (calligraphic inscription) - Google Art Project.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASigned_by_Sultan_Mahmud_II_-_Levha_(calligraphic_inscription)_-_Google_Art_Project.jpg"
+  },
+  {
+    "key": "arabic-tughra",
+    "licence": "Public domain",
+    "artist": "Thadswanek, taken from here (uploaded by Pagan)",
+    "page": "File:Tughra Suleiman.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATughra_Suleiman.jpg"
+  },
+  {
+    "key": "disney-burbank",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Coolcaesar",
+    "page": "File:Walt Disney Studios Alameda Entrance.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWalt_Disney_Studios_Alameda_Entrance.jpg"
+  },
+  {
+    "key": "disney-catmull",
+    "licence": "CC BY 2.0",
+    "artist": "Web Summit",
+    "page": "File:Ed Catmull at Web Summit 2015 (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AEd_Catmull_at_Web_Summit_2015_(cropped).jpg"
+  },
+  {
+    "key": "disney-cinderella-castle",
+    "licence": "CC BY-SA 4.0",
+    "artist": "TheWanderingTraders",
+    "page": "File:Cinderella Castle, Magic Kingdom (2026).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACinderella_Castle%2C_Magic_Kingdom_(2026).jpg"
+  },
+  {
+    "key": "disney-epcot",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Jedi94",
+    "page": "File:Spaceship Earth (3-4 crop).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASpaceship_Earth_(3-4_crop).jpg"
+  },
+  {
+    "key": "disney-iger",
+    "licence": "CC BY-SA 2.0",
+    "artist": "nagi usano from Tokyo, Japan",
+    "page": "File:Bob Iger 2019 Disney Legends Awards Ceremony D23 EXPO 2019 (51441457900) (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABob_Iger_2019_Disney_Legends_Awards_Ceremony_D23_EXPO_2019_(51441457900)_(cropped).jpg"
+  },
+  {
+    "key": "disney-pixar-hq",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Coolcaesar",
+    "page": "File:Pixaranimationstudios.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APixaranimationstudios.jpg"
+  },
+  {
+    "key": "disney-shanghai",
+    "licence": "CC BY 2.0",
+    "artist": "Josh Grenier",
+    "page": "File:18-03-12 ShanghaiDisney 013.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A18-03-12_ShanghaiDisney_013.jpg"
+  },
+  {
+    "key": "disney-sleeping-beauty-castle",
+    "licence": "CC0",
+    "artist": "Parksfan1955",
+    "page": "File:Sleeping Beauty Castle - February 2024.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASleeping_Beauty_Castle_-_February_2024.png"
+  },
+  {
+    "key": "disney-tokyo-land",
+    "licence": "CC BY-SA 4.0",
+    "artist": "LMP 2001",
+    "page": "File:Tokyo Disneyland Cinderella Castle 2023-07-02.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATokyo_Disneyland_Cinderella_Castle_2023-07-02.jpg"
+  },
+  {
+    "key": "disney-tokyo-sea",
+    "licence": "CC BY-SA 2.5",
+    "artist": "Okwhatev at en.wikipedia",
+    "page": "File:Tokyo DisneySea-Volcania.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATokyo_DisneySea-Volcania.jpg"
+  },
+  {
+    "key": "disney-walt",
+    "licence": "Public domain",
+    "artist": "Boy Scouts of America",
+    "page": "File:Walt Disney 1946 (cropped2).JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWalt_Disney_1946_(cropped2).JPG"
+  },
+  {
+    "key": "games-dreamcast-vmu",
+    "licence": "Public domain",
+    "artist": "Evan-Amos",
+    "page": "File:Sega-Dreamcast-VMU.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASega-Dreamcast-VMU.jpg"
+  },
+  {
+    "key": "games-iwata",
+    "licence": "CC BY 2.0",
+    "artist": "Official GDC",
+    "page": "File:Satoru Iwata - Game Developers Conference 2011 - Day 2 (1).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASatoru_Iwata_-_Game_Developers_Conference_2011_-_Day_2_(1).jpg"
+  },
+  {
+    "key": "games-kojima",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Kolby Ari",
+    "page": "File:Hideo Kojima 2025 SXSW (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHideo_Kojima_2025_SXSW_(cropped).jpg"
+  },
+  {
+    "key": "games-miyamoto",
+    "licence": "CC BY 4.0",
+    "artist": "Minister's Secretariat Personnel Division",
+    "page": "File:Shigeru Miyamoto 20150610 (cropped 4).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AShigeru_Miyamoto_20150610_(cropped_4).jpg"
+  },
+  {
+    "key": "games-newell",
+    "licence": "CC BY 2.0",
+    "artist": "Dota 2 The International",
+    "page": "File:The International 2018 (43263984845) (cropped 2).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AThe_International_2018_(43263984845)_(cropped_2).jpg"
+  },
+  {
+    "key": "games-nintendo-hq",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Tokumeigakarinoaoshima",
+    "page": "File:Headquarters of Nintendo Co., Ltd.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHeadquarters_of_Nintendo_Co.%2C_Ltd.jpg"
+  },
+  {
+    "key": "games-ps2",
+    "licence": "Public domain",
+    "artist": "Evan-Amos",
+    "page": "File:PS2-Versions.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3APS2-Versions.png"
+  },
+  {
+    "key": "games-xbox360",
+    "licence": "Public domain",
+    "artist": "Evan-Amos",
+    "page": "File:Microsoft-Xbox-360-Pro-Console-FL.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft-Xbox-360-Pro-Console-FL.jpg"
+  },
+  {
+    "key": "hajj-black-stone",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Black stone.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABlack_stone.jpg"
+  },
+  {
+    "key": "hajj-jamarat",
+    "licence": "CC BY-SA 4.0",
+    "artist": "saudipics",
+    "page": "File:Jamaraat Bridge 2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJamaraat_Bridge_2.jpg"
+  },
+  {
+    "key": "hajj-maqam",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Saudi press Agency (SPA)",
+    "page": "File:Door of the Holy Kaaba and Maqam Ibrahim in the Grand Mosque, Makkah (2025).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ADoor_of_the_Holy_Kaaba_and_Maqam_Ibrahim_in_the_Grand_Mosque%2C_Makkah_(2025).jpg"
+  },
+  {
+    "key": "hajj-masaa",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Swerveut (talk)",
+    "page": "File:Mount Safa Mecca.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMount_Safa_Mecca.jpg"
+  },
+  {
+    "key": "hajj-mina",
+    "licence": "CC BY 3.0",
+    "artist": "Mubeen Rahman",
+    "page": "File:Mina Overview.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMina_Overview.JPG"
+  },
+  {
+    "key": "hajj-namirah",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Ilhamnobi",
+    "page": "File:Masjid al-Namira.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMasjid_al-Namira.jpg"
+  },
+  {
+    "key": "hajj-rahmah",
+    "licence": "CC BY-SA 2.0",
+    "artist": "Al Jazeera English",
+    "page": "File:Pilgrims cover Arafat's roads, plains and mountain - Flickr - Al Jazeera English.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APilgrims_cover_Arafat's_roads%2C_plains_and_mountain_-_Flickr_-_Al_Jazeera_English.jpg"
+  },
+  {
+    "key": "hajj-tanim",
+    "licence": "CC BY-SA 3.0",
+    "artist": "GusJuned",
+    "page": "File:Al Ayesha Mosque, Taniem, Mecca, Saudi Arabia - panoramio.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAl_Ayesha_Mosque%2C_Taniem%2C_Mecca%2C_Saudi_Arabia_-_panoramio.jpg"
+  },
+  {
+    "key": "prophets-ayyub",
+    "licence": "CC0",
+    "artist": "Wmpearl",
+    "page": "File:Job's tomb - exterior.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJob's_tomb_-_exterior.JPG"
+  },
+  {
+    "key": "prophets-ibrahimi",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Utilisateur:Djampa - User:Djampa",
+    "page": "File:Hebron Cave of the Patriarchs.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHebron_Cave_of_the_Patriarchs.jpg"
+  },
+  {
+    "key": "prophets-nabi-musa",
+    "licence": "CC BY-SA 3.0",
+    "artist": "deror_avi",
+    "page": "File:Nabi Musa IMG 1931.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANabi_Musa_IMG_1931.JPG"
+  },
+  {
+    "key": "prophets-sinai",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Gerd Eichmann",
+    "page": "File:Mount Sinai from the southwest.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMount_Sinai_from_the_southwest.jpg"
+  },
+  {
+    "key": "prophets-yunus",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Roland Unger",
+    "page": "File:NiniveNabiYunisOutside.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANiniveNabiYunisOutside.jpg"
+  },
+  {
+    "key": "quran-birmingham",
+    "licence": "Public domain",
+    "artist": "AnonymousUnknown author",
+    "page": "File:Birmingham Quran manuscript full.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABirmingham_Quran_manuscript_full.jpg"
+  },
+  {
+    "key": "quran-blue",
+    "licence": "CC BY 2.5",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Folio Blue Quran Met 2004.88.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFolio_Blue_Quran_Met_2004.88.jpg"
+  },
+  {
+    "key": "quran-kfc",
+    "licence": "CC BY-SA 3.0",
+    "artist": "علاء",
+    "page": "File:King Fahd Complex for the Printing of the Holy Quran 04.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKing_Fahd_Complex_for_the_Printing_of_the_Holy_Quran_04.jpg"
+  },
+  {
+    "key": "quran-samarkand",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Wiggum",
+    "page": "File:Uthman Koran Taschkent a.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AUthman_Koran_Taschkent_a.jpg"
+  },
+  {
+    "key": "quran-sanaa",
+    "licence": "Public domain",
+    "artist": "UnknownUnknown . The original uploader was Prima meditationes at English Wikipedia., 13 November 2014 (original upload date)",
+    "page": "File:Sana'a1 Stanford '07 recto.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASana'a1_Stanford_'07_recto.jpg"
+  },
+  {
+    "key": "quran-topkapi",
+    "licence": "Public domain",
+    "artist": "Unknown artistUnknown artist",
+    "page": "File:Topkapi 92.8-93.6.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATopkapi_92.8-93.6.png"
+  },
+  {
+    "key": "sahaba-abu-hanifa",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Zaid isam",
+    "page": "File:الامام ابو حنيفة النعمان.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A%D8%A7%D9%84%D8%A7%D9%85%D8%A7%D9%85_%D8%A7%D8%A8%D9%88_%D8%AD%D9%86%D9%8A%D9%81%D8%A9_%D8%A7%D9%84%D9%86%D8%B9%D9%85%D8%A7%D9%86.jpg"
+  },
+  {
+    "key": "sahaba-hussein-cairo",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Tarekheikal",
+    "page": "File:ساحة ومسجد الحسين بالقاهرة.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A%D8%B3%D8%A7%D8%AD%D8%A9_%D9%88%D9%85%D8%B3%D8%AC%D8%AF_%D8%A7%D9%84%D8%AD%D8%B3%D9%8A%D9%86_%D8%A8%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9.jpg"
+  },
+  {
+    "key": "sahaba-khalid",
+    "licence": "Public domain",
+    "artist": "NouraRaslan",
+    "page": "File:Khaled Ebn El-Walid Mosque3.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKhaled_Ebn_El-Walid_Mosque3.jpg"
+  },
+  {
+    "key": "sahaba-sahaba-mosque",
+    "licence": "CC BY 4.0",
+    "artist": "Mheidegger",
+    "page": "File:Al Sahaba Mosque, Massawa.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAl_Sahaba_Mosque%2C_Massawa.jpg"
+  },
+  {
+    "key": "seerah-baqi",
+    "licence": "CC BY 4.0",
+    "artist": "Saleh Al Hussain",
+    "page": "File:Al-Baqi Cemetery 2021.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAl-Baqi_Cemetery_2021.jpg"
+  },
+  {
+    "key": "seerah-ghamama",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Diego Delso",
+    "page": "File:Mezquita de Al-Ghamama, Medina, Arabia Saudita, 2025-05-22, DD 03.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMezquita_de_Al-Ghamama%2C_Medina%2C_Arabia_Saudita%2C_2025-05-22%2C_DD_03.jpg"
+  },
+  {
+    "key": "seerah-green-dome",
+    "licence": "CC0",
+    "artist": "TheHadiRahim",
+    "page": "File:Wide shot of the Green Dome at The Prophet's Mosque (Al Masjid-e-Nabawi).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWide_shot_of_the_Green_Dome_at_The_Prophet's_Mosque_(Al_Masjid-e-Nabawi).jpg"
+  },
+  {
+    "key": "seerah-jabal-nour",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Kaliper1",
+    "page": "File:Jabbal An-Nour (2024).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJabbal_An-Nour_(2024).jpg"
+  },
+  {
+    "key": "seerah-qiblatayn",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Aiman titi",
+    "page": "File:Masjid al-Qiblatain.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMasjid_al-Qiblatain.jpg"
+  },
+  {
+    "key": "seerah-quba",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Diego Delso",
+    "page": "File:Mezquita de Quba, Medina, Arabia Saudita, 2025-05-22, DD 16-18 HDR.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMezquita_de_Quba%2C_Medina%2C_Arabia_Saudita%2C_2025-05-22%2C_DD_16-18_HDR.jpg"
+  },
+  {
+    "key": "seerah-uhud",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bintladen",
+    "page": "File:Jabal-e-Uhud.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJabal-e-Uhud.jpg"
+  },
+  {
+    "key": "wc-al-bayt",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Kabhi2011",
+    "page": "File:Al Bayt Stadium.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAl_Bayt_Stadium.jpg"
+  },
+  {
+    "key": "wc-baggio",
+    "licence": "CC BY-SA 4.0",
+    "artist": "AbolfaZl0990",
+    "page": "File:روبرتو باجو (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A%D8%B1%D9%88%D8%A8%D8%B1%D8%AA%D9%88_%D8%A8%D8%A7%D8%AC%D9%88_(cropped).jpg"
+  },
+  {
+    "key": "wc-beckenbauer",
+    "licence": "Public domain",
+    "artist": "Panini Group",
+    "page": "File:Franz Beckenbauer (1975).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFranz_Beckenbauer_(1975).jpg"
+  },
+  {
+    "key": "wc-bounou",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bryan Berlin",
+    "page": "File:Yassine Bounou Brazil V Morocco 13 June 2026-169.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AYassine_Bounou_Brazil_V_Morocco_13_June_2026-169.jpg"
+  },
+  {
+    "key": "wc-buffon",
+    "licence": "CC BY 4.0",
+    "artist": "MichaelEmilio",
+    "page": "File:Norway Italy - June 2025 A 44 (Gianluigi Buffon).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANorway_Italy_-_June_2025_A_44_(Gianluigi_Buffon).jpg"
+  },
+  {
+    "key": "wc-cannavaro",
+    "licence": "CC BY 2.0",
+    "artist": "Doha Stadium Plus Qatar",
+    "page": "File:Fabio Cannavaro 2011.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFabio_Cannavaro_2011.jpg"
+  },
+  {
+    "key": "wc-casillas",
+    "licence": "CC BY 2.0",
+    "artist": "Web Summit",
+    "page": "File:Iker-Casillas-SportsTrade-2021-cropped.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AIker-Casillas-SportsTrade-2021-cropped.jpg"
+  },
+  {
+    "key": "wc-cruyff",
+    "licence": "CC0",
+    "artist": "Rob Mieremet / Anefo",
+    "page": "File:Johan Cruijff (1974).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJohan_Cruijff_(1974).jpg"
+  },
+  {
+    "key": "wc-hakimi",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bryan Berlin",
+    "page": "File:Achraf Hakimi Morocco v Norway 7 June 2026-16.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAchraf_Hakimi_Morocco_v_Norway_7_June_2026-16.jpg"
+  },
+  {
+    "key": "wc-iniesta",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bryan Berlin",
+    "page": "File:Andrés Iniesta Argentina v Spain 19 July 2026-034 (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAndr%C3%A9s_Iniesta_Argentina_v_Spain_19_July_2026-034_(cropped).jpg"
+  },
+  {
+    "key": "wc-kahn",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Steffen Prößdorf",
+    "page": "File:2022-07-30 Fußball, Männer, DFL-Supercup, RB Leipzig - FC Bayern München 1DX 3179 by Stepro.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A2022-07-30_Fu%C3%9Fball%2C_M%C3%A4nner%2C_DFL-Supercup%2C_RB_Leipzig_-_FC_Bayern_M%C3%BCnchen_1DX_3179_by_Stepro.jpg"
+  },
+  {
+    "key": "wc-kaka",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Евгений Асмолов",
+    "page": "File:Kaká visited Stadium St. Petersburg.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKak%C3%A1_visited_Stadium_St._Petersburg.jpg"
+  },
+  {
+    "key": "wc-klose",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Sven Mandel",
+    "page": "File:2016209185719 2016-07-27 Champions for Charity - Sven - 1D X - 0149 - DV3P4742 mod.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A2016209185719_2016-07-27_Champions_for_Charity_-_Sven_-_1D_X_-_0149_-_DV3P4742_mod.jpg"
+  },
+  {
+    "key": "wc-madjer",
+    "licence": "CC BY 3.0",
+    "artist": "Algeria Press Service",
+    "page": "File:Rabah Madjer, May 2018.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARabah_Madjer%2C_May_2018.png"
+  },
+  {
+    "key": "wc-maradona",
+    "licence": "Public domain",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Maradona-Mundial 86 con la copa.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMaradona-Mundial_86_con_la_copa.JPG"
+  },
+  {
+    "key": "wc-matthaus",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Steffen Prößdorf",
+    "page": "File:2019 Lothar Matthäus.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A2019_Lothar_Matth%C3%A4us.jpg"
+  },
+  {
+    "key": "wc-mbappe",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bryan Berlin",
+    "page": "File:Kylian Mbappe France v Senegal 16 June 2026-391 (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKylian_Mbappe_France_v_Senegal_16_June_2026-391_(cropped).jpg"
+  },
+  {
+    "key": "wc-modric",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bryan Berlin",
+    "page": "File:Luka Modric Croatia v Portugal 2 July 2026-055.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALuka_Modric_Croatia_v_Portugal_2_July_2026-055.jpg"
+  },
+  {
+    "key": "wc-neymar",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Bryan Berlin",
+    "page": "File:Neymar Junior Brazil V Morocco 13 June 2026-40.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANeymar_Junior_Brazil_V_Morocco_13_June_2026-40.jpg"
+  },
+  {
+    "key": "wc-pele",
+    "licence": "Public domain",
+    "artist": "Panini",
+    "page": "File:Pelé México 70.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APel%C3%A9_M%C3%A9xico_70.jpg"
+  },
+  {
+    "key": "wc-ronaldinho",
+    "licence": "CC BY 2.0",
+    "artist": "Marcos Corrêa/PR",
+    "page": "File:Ronaldinho in 2019.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARonaldinho_in_2019.jpg"
+  },
+  {
+    "key": "wc-ronaldo-nazario",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Lula Oficial",
+    "page": "File:12.12.2025 – Cerimônia de lançamento do SBT News - 54980664160 (cropped2).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A12.12.2025_%E2%80%93_Cerim%C3%B4nia_de_lan%C3%A7amento_do_SBT_News_-_54980664160_(cropped2).jpg"
+  },
+  {
+    "key": "wc-trophy",
+    "licence": "CC BY 2.0",
+    "artist": "Djuradj Vujcic",
+    "page": "File:FIFA World Cup Trophy photo by Djuradj Vujcic.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFIFA_World_Cup_Trophy_photo_by_Djuradj_Vujcic.jpg"
+  },
+  {
+    "key": "wc-wembley-old",
+    "licence": "CC BY-SA 2.0",
+    "artist": "Merv Payne",
+    "page": "File:Wembley Stadium Twin Towers.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWembley_Stadium_Twin_Towers.jpg"
+  }
+]
