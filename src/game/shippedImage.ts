@@ -11,8 +11,9 @@
 import { celebImage } from './celebs'
 import { landmarkImage } from './landmarks'
 import { zamanImage } from './zaman'
+import { picImage } from './pics'
 
 /** ملفُّ المفتاح في أيّ من مجلّدات الصور المشحونة، أو `null`. */
 export function shippedImage(key: string): string | null {
-  return celebImage(key) ?? landmarkImage(key) ?? zamanImage(key)
+  return celebImage(key) ?? landmarkImage(key) ?? zamanImage(key) ?? picImage(key)
 }

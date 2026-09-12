@@ -118,6 +118,7 @@ const table = parseCsv(readFileSync(resolve(file), 'utf8'))
 const head = table[0].map((h) => h.trim())
 const at = (n) => head.indexOf(n)
 const iCat = at('التصنيف'), iLvl = at('المستوى'), iQ = at('السؤال'), iA = at('الإجابة')
+const iImg = at('الصورة')
 if ([iCat, iLvl, iQ, iA].some((i) => i < 0)) {
   console.error('ينقص عمود من: التصنيف · المستوى · السؤال · الإجابة')
   process.exit(1)
@@ -129,6 +130,7 @@ const rows = table.slice(1).map((r, i) => ({
   level: (r[iLvl] ?? '').trim(),
   question: (r[iQ] ?? '').trim(),
   answer: (r[iA] ?? '').trim(),
+  image: iImg >= 0 ? (r[iImg] ?? '').trim() : '',
 }))
 
 const blocking = []
@@ -161,13 +163,19 @@ for (const r of rows) {
     block(r, 'الإجابة مذكورة في نصّ السؤال')
   }
 
-  /* ٢ — تكرارٌ حرفيّ */
+  /* ٢ — تكرارٌ حرفيّ. **والمصوَّر خارج المقارنة**: نصّ أسئلة الصور واحدٌ
+        بطبعه («من هذا اللاعب؟» عشرين مرّة) والفرقُ في الصورة لا في النصّ —
+        وهو ما يفعله مستورِد اللوحة و`admin_approve_drafts` سواء. فدفعةُ
+        ١٢ سبتمبر ٢٠٢٦ (24 وجهاً في «كأس العالم») رُدّت كلُّها هنا وكانت
+        ستمرّ في القاعدة. */
   const n = norm(r.question)
-  if (bankByNorm.has(n)) {
-    block(r, `مكرّر حرفيّاً مع البنك (${bankByNorm.get(n).id})`)
+  if (!r.image) {
+    if (bankByNorm.has(n)) {
+      block(r, `مكرّر حرفيّاً مع البنك (${bankByNorm.get(n).id})`)
+    }
+    if (seen.has(n)) block(r, `مكرّر داخل الدفعة (سطر ${seen.get(n)})`)
+    else seen.set(n, r.line)
   }
-  if (seen.has(n)) block(r, `مكرّر داخل الدفعة (سطر ${seen.get(n)})`)
-  else seen.set(n, r.line)
 
   /* ٣ — واقعةٌ مقلوبة: إجابتي هي إجابةُ سؤالٍ قائمٍ يتقاطع معه معنىً */
   for (const q of bankByAnswer.get(akey(r.answer)) ?? []) {
@@ -191,10 +199,13 @@ for (const r of rows) {
     }
   }
 
-  /* ٤ — عائلةٌ واحدة مرّتين في الدفعة */
+  /* ٤ — عائلةٌ واحدة مرّتين في الدفعة — والمصوَّر مستثنى للسبب نفسه،
+        كما يستثنيه المحرّك من استنتاج العائلة. */
   const f = family(r.question)
-  if (seenFamily.has(f)) warn(r, `عائلةٌ مكرّرة مع سطر ${seenFamily.get(f)} — «${f}»`)
-  else seenFamily.set(f, r.line)
+  if (!r.image) {
+    if (seenFamily.has(f)) warn(r, `عائلةٌ مكرّرة مع سطر ${seenFamily.get(f)} — «${f}»`)
+    else seenFamily.set(f, r.line)
+  }
 
   /* ٦ — أرقام هنديّة */
   if (/[٠-٩]/.test(r.question + r.answer)) block(r, 'أرقام هنديّة — الواجهة لاتينيّة دائماً')
