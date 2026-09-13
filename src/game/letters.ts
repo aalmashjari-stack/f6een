@@ -46,20 +46,14 @@ const MARKS = /[ً-ٰٟـ]/g
  * و`check-drafts` يردّه قبل أن يصل إلى الفئة.
  */
 export function firstLetter(answer: string): Letter | null {
-  let s = answer
-    .replace(/\([^)]*\)/g, ' ')
-    .replace(MARKS, '')
-    .replace(/[أإآٱ]/g, 'ا')
-    .replace(/ى/g, 'ي')
-    .replace(/ة/g, 'ه')
-    .trim()
+  const s = answer.replace(/\([^)]*\)/g, ' ').replace(MARKS, '').trim()
   /* أوّل كلمةٍ فيها حرفٌ عربيّ — تُتجاوز علامات الاقتباس والشرطات قبلها. */
-  const word = s.split(/\s+/).find((w) => /[ء-ي]/.test(w))
-  if (!word) return null
-  s = word.replace(/^[^ء-ي]+/, '')
-  /* «ال» تسقط حين يبقى بعدها حرفان فأكثر — «ألم» (بعد التطبيع «الم») تبقى
-     على ألفها، فليست معرَّفة. */
-  if (s.startsWith('ال') && s.length >= 4) s = s.slice(2)
-  const c = s[0]
+  const found = s.split(/\s+/).find((w) => /[ء-ي]/.test(w))
+  if (!found) return null
+  let word = found.replace(/^[^ء-ي]+/, '')
+  /* «ال» تسقط حين يبقى بعدها حرفان فأكثر — وقبل تطبيع الهمزة: «ألمانيا»
+     و«إلياس» و«ألم» ليست معرَّفةً وإن بدت كذلك بعد التطبيع. */
+  if (/^[اٱ]ل/.test(word) && word.length >= 4) word = word.slice(2)
+  const c = word[0]?.replace(/[أإآٱ]/, 'ا').replace('ى', 'ي').replace('ة', 'ه')
   return c !== undefined && LETTER_SET.has(c) ? (c as Letter) : null
 }

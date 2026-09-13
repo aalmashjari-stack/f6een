@@ -18,6 +18,10 @@ describe('firstLetter', () => {
     expect(firstLetter('آسيا')).toBe('ا')
     /* و«ألم» ليست معرَّفة فتبقى على ألفها */
     expect(firstLetter('ألم')).toBe('ا')
+    /* والهمزة قبل اللام ليست «ال»: ألمانيا وإلياس وألماتي على ألفها */
+    expect(firstLetter('ألمانيا')).toBe('ا')
+    expect(firstLetter('إلياس')).toBe('ا')
+    expect(firstLetter('ألماتي')).toBe('ا')
   })
 
   it('المركّب يأخذ حرف كلمته الأولى بلا استثناء: ابن سينا → ا', () => {
