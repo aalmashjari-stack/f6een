@@ -148,6 +148,8 @@ a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
 .a-btn:disabled { opacity: .45; cursor: default; }
 
 .a-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-block-end: 10px; }
+/* «حدّد الكل» في شريط المسوّدات: مربّعٌ ونصّه صنوان يُضغطان معاً. */
+.a-bar .pick-all { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .a-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: end;
   padding: 12px; background: var(--n-surface); border-radius: 14px; margin-block-end: 10px;
   box-shadow: 0 0 0 1.5px var(--n-ink), 2px 2px 0 var(--n-ink); }
