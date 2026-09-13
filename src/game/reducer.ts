@@ -18,6 +18,7 @@ import {
   createSession,
   stageOfPhase,
 } from './session'
+import { firstLetter, isLettersCategory } from './letters'
 
 export type Action =
   | { t: 'START'; input: SetupInput }
@@ -29,6 +30,10 @@ export type Action =
   /* `at` = الآن بالميلي ثانية، تعطيه الشاشة: منه يُحسب موعد انتهاء المؤقّت
      المحفوظ مع الجلسة. بلا `at` لا موعد — كما في الاختبارات القديمة. */
   | { t: 'S1_PICK'; category: string; level: Level; at?: number } // خليّة من لوح الجولة الجماعية
+  /* وقفت بلاطةُ الحروف على حرف السؤال ← السؤال، ومنه يبدأ التشاور. الشاشة
+     تعطي `at` لأنّ المؤقّت لا يبدأ قبل أن تقف البلاطة — وإلّا أكلت الحركةُ
+     من وقت الفريق. */
+  | { t: 'S1_LETTER_DONE'; at?: number }
   | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
   | { t: 'S1_SCORE'; team: TeamId | null }
   | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
@@ -138,12 +143,29 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         excludedIds(state),
         guardedFamilies(state),
       )
-      return {
+      const next = {
         ...burn(state, q),
         s1Cell: { category: action.category, level: action.level },
         s1Played: [...state.s1Played, key],
         currentCategory: action.category,
         currentQuestion: q,
+      }
+      /* فئة «حروف»: بلاطةٌ تقف على حرف الجواب قبل السؤال، والمؤقّت ينتظرها.
+         الحرف يُشتقّ من الجواب هنا لا يُختار — انظر `letters.ts`؛ وجوابٌ بلا
+         حرفٍ عربيّ (لا يقع، و`check-drafts` يردّه) يمرّ إلى السؤال مباشرة. */
+      if (isLettersCategory(action.category) && firstLetter(q.answer) !== null)
+        return { ...next, timerEndsAt: null, phase: 'stage1-letter' }
+      return {
+        ...next,
+        timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CONSULT_MS,
+        phase: 'stage1-question',
+      }
+    }
+
+    case 'S1_LETTER_DONE': {
+      if (!state || state.phase !== 'stage1-letter') return state
+      return {
+        ...state,
         timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CONSULT_MS,
         phase: 'stage1-question',
       }

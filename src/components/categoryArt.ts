@@ -16,6 +16,8 @@ import cinemaDrama from '../../assets/categories/cinema-drama.jpg'
 import whoAmI from '../../assets/categories/who-am-i.jpg'
 import celebrities from '../../assets/categories/celebrities.jpg'
 import proverbsRiddles from '../../assets/categories/proverbs-riddles.jpg'
+import letters from '../../assets/categories/letters.jpg'
+import { LETTERS_CATEGORY } from '../game/letters'
 
 /**
  * صورة كل تصنيف في لوحة التصنيفات — اختارها علي في ٥ أغسطس ٢٠٢٦.
@@ -38,6 +40,8 @@ export const CATEGORY_ART: Record<string, string> = {
   'مشاهير': celebrities,
   // أُضيفت في ٢٣ أغسطس ٢٠٢٦ مع فئة الأمثال والألغاز — ٣:٢ أصلاً فلا تُقصّ
   'أمثال وألغاز': proverbsRiddles,
+  // «حروف» (١٣ سبتمبر ٢٠٢٦) — بلاطاتٌ بألوان الهويّة، مرسومة لا مصوَّرة؛ ٣:٢
+  [LETTERS_CATEGORY]: letters,
 }
 
 /* ===================== الصور المرفوعة من اللوحة ===================== */

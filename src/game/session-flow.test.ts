@@ -13,6 +13,7 @@ import {
   STAGE3_POINTS,
   STAGE3_TIMER_MS,
   TIEBREAK_POINTS,
+  cellKey,
   createSession,
   decodeState,
   encodeState,
@@ -22,6 +23,7 @@ import {
 import type { GameState } from './session'
 import type { Level, Question } from './types'
 import { shuffle } from './draw'
+import { ALPHABET, LETTERS_CATEGORY, firstLetter } from './letters'
 
 /** كم سؤالاً يُعرض فعلاً في دور الحق ما تلحق الواحد (٣٠ ثانية ≈ ١٠–١٤). */
 const S3_PER_TURN = 12
@@ -540,5 +542,69 @@ describe('المؤقّت محفوظ مع الجلسة', () => {
     delete stored.timerEndsAt
     expect(isStoredState(stored)).toBe(true)
     expect(decodeState(stored as never).timerEndsAt).toBeNull()
+  })
+})
+
+/**
+ * فئة «حروف» — بلاطةٌ تقف على حرف الجواب قبل السؤال (قرار علي ١٣ سبتمبر
+ * ٢٠٢٦). الحرف يتبع السؤال المسحوب، والمؤقّت ينتظر وقوف البلاطة.
+ */
+describe('فئة حروف', () => {
+  const rows: Question[] = Array.from({ length: 80 }, (_, i) => ({
+    id: `ADM${8000 + i}`,
+    category: LETTERS_CATEGORY,
+    level: STAGE1_LEVELS[i % STAGE1_LEVELS.length],
+    topic: '',
+    question: `سؤال حروف رقم ${i}؟`,
+    answer: `${ALPHABET[i % ALPHABET.length]}واب ${i}`,
+  }))
+
+  const withLetters = (fn: (s: GameState) => void) => {
+    setQuestionOverlay(rows)
+    try {
+      const board = [LETTERS_CATEGORY, ...BOARD.slice(0, STAGE1_CATEGORIES - 1)]
+      fn(createSession({ ...INPUT, categories: board }))
+    } finally {
+      setQuestionOverlay([])
+    }
+  }
+
+  it('خليّة حروف تمرّ بالبلاطة، والمؤقّت لا يبدأ إلّا بعد وقوفها', () => {
+    withLetters((s0) => {
+      let s = step(s0, { t: 'S1_PICK', category: LETTERS_CATEGORY, level: 'سهل', at: 1_000 })
+      expect(s.phase).toBe('stage1-letter')
+      expect(s.timerEndsAt).toBeNull()
+      expect(s.currentQuestion!.category).toBe(LETTERS_CATEGORY)
+      /* الحرف مشتقٌّ من الجواب المسحوب — لا يُختار قبله */
+      expect(firstLetter(s.currentQuestion!.answer)).not.toBeNull()
+      /* الخليّة أُقفلت لحظة الضغط كما في أيّ فئة */
+      expect(s.s1Played).toContain(cellKey(LETTERS_CATEGORY, 'سهل'))
+
+      /* الكشف لا يسبق البلاطة */
+      expect(reducer(s, { t: 'S1_TO_REVEAL' })).toBe(s)
+
+      s = step(s, { t: 'S1_LETTER_DONE', at: 4_000 })
+      expect(s.phase).toBe('stage1-question')
+      expect(s.timerEndsAt).toBe(4_000 + STAGE1_CONSULT_MS)
+      s = step(s, { t: 'S1_TO_REVEAL' })
+      expect(s.phase).toBe('stage1-reveal')
+    })
+  })
+
+  it('S1_LETTER_DONE خارج طور البلاطة لا يفعل شيئاً، والفئة العاديّة لا تمرّ بها', () => {
+    withLetters((s0) => {
+      expect(reducer(s0, { t: 'S1_LETTER_DONE', at: 1 })).toBe(s0)
+      const s = step(s0, { t: 'S1_PICK', category: BOARD[0], level: 'سهل', at: 1_000 })
+      expect(s.phase).toBe('stage1-question')
+      expect(s.timerEndsAt).toBe(1_000 + STAGE1_CONSULT_MS)
+    })
+  })
+
+  it('لقطة طور البلاطة تُستأنف كما تُستأنف لقطة السؤال', () => {
+    withLetters((s0) => {
+      const s = step(s0, { t: 'S1_PICK', category: LETTERS_CATEGORY, level: 'متوسط' })
+      expect(isStoredState(encodeState(s))).toBe(true)
+      expect(isStoredState({ ...encodeState(s), currentQuestion: null })).toBe(false)
+    })
   })
 })

@@ -20,6 +20,9 @@
  *  4. **عائلةٌ واحدة مرّتين** داخل الدفعة — أوّل أربع كلمات، كحارس المحرّك.
  *  5. **خليّةٌ ناقصة** — أقلّ من عشرين في (فئة × مستوى)، وهو حدُّ القاعدة.
  *  6. **أرقام هنديّة** (٠١٢٣) — الواجهة لاتينيّة دائماً.
+ *  7. **فئة «حروف»**: جوابٌ بلا حرفٍ عربيّ أوّل يُردّ (لا بلاطة له)، ويُطبع
+ *     توزيعُ الحروف في كلّ مستوى — الحرفُ المكرّر ثلاثاً في مستوىً إنذار،
+ *     فالبلاطة تعيد الوقوف على الحرف نفسه في الجلسات المتتابعة.
  *
  * والمخرجات صنفان: **مانعٌ** يوقف الإرسال، و**إنذارٌ** يُقرأ بالعين. ونسبةُ
  * الإنذارات الكاذبة في الصنف الأوّل معروفة سلفاً (٣٥ حقيقيّاً من ٧٤ إشارة
@@ -28,6 +31,8 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { loadBank } from './lib/bank.mjs'
+/* قاعدة الحرف من المحرّك نفسه لا نسخةٌ منها — Node يقرأ TS بلا ترجمة. */
+import { LETTERS_CATEGORY, firstLetter } from '../src/game/letters.ts'
 
 const CELL_FLOOR = 20
 const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
@@ -209,6 +214,28 @@ for (const r of rows) {
 
   /* ٦ — أرقام هنديّة */
   if (/[٠-٩]/.test(r.question + r.answer)) block(r, 'أرقام هنديّة — الواجهة لاتينيّة دائماً')
+
+  /* ٧ — حروف: الجواب يجب أن يبدأ بحرفٍ عربيّ تقف عليه البلاطة */
+  if (r.category === LETTERS_CATEGORY && firstLetter(r.answer) === null)
+    block(r, 'جوابٌ لا يبدأ بحرفٍ عربيّ — لا بلاطة له')
+}
+
+/* ٧ — توزيع الحروف في فئة «حروف» */
+const letterRows = rows.filter((r) => r.category === LETTERS_CATEGORY)
+if (letterRows.length) {
+  console.log('\n── حروف: توزيع الحرف الأوّل في كلّ مستوى ──')
+  for (const l of LEVELS) {
+    const count = new Map()
+    for (const r of letterRows.filter((r) => r.level === l)) {
+      const c = firstLetter(r.answer)
+      if (c) count.set(c, (count.get(c) ?? 0) + 1)
+    }
+    if (!count.size) continue
+    const line = [...count.entries()].map(([c, n]) => (n > 1 ? `${c}×${n}` : c)).join(' ')
+    console.log(`  ${l}: ${line}`)
+    for (const [c, n] of count)
+      if (n >= 3) warning.push(`حروف · ${l}: الحرف «${c}» ${n} مرّات — البلاطة ستقف عليه مراراً`)
+  }
 }
 
 /* ٥ — امتلاء الخلايا: الدفعةُ **زائداً ما في البنك أصلاً**.

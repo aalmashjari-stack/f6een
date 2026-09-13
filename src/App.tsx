@@ -45,6 +45,7 @@ import { ConfirmEmail } from './screens/ConfirmEmail'
 import { ResetPassword } from './screens/ResetPassword'
 import { Setup } from './screens/Setup'
 import { Stage1Board } from './screens/Stage1Board'
+import { Stage1Letter } from './screens/Stage1Letter'
 import { Stage1Question } from './screens/Stage1Question'
 import { Stage1Reveal } from './screens/Stage1Reveal'
 import { Interval } from './screens/Interval'
@@ -524,6 +525,8 @@ export default function App() {
     switch (state.phase) {
       case 'stage1-board':
         return <Stage1Board state={state} dispatch={dispatch} />
+      case 'stage1-letter':
+        return <Stage1Letter state={state} dispatch={dispatch} />
       case 'stage1-question':
         return <Stage1Question state={state} dispatch={dispatch} />
       case 'stage1-reveal':

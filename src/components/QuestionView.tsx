@@ -1,5 +1,6 @@
 import type { Question } from '../game/types'
 import { celebSrc } from '../game/celebs'
+import { firstLetter, isLettersCategory } from '../game/letters'
 import { QuestionText } from './QuestionText'
 import { ZoomablePhoto } from './ZoomablePhoto'
 
@@ -40,9 +41,17 @@ export function QuestionView({ q }: { q: Question }) {
       </div>
     )
   }
+  /* فئة «حروف»: الحرف الذي وقفت عليه البلاطة يبقى مع السؤال في التلميح
+     نفسه — بلاطةً صغيرة — فلا يُنسى بعد انتقال الشاشة. */
+  const letter = isLettersCategory(q.category) ? firstLetter(q.answer) : null
   return (
     <>
       {PROVERB_TOPICS.has(q.topic) && <div className="q-hint">أكمل المثل</div>}
+      {letter && (
+        <div className="q-hint q-hint-letter">
+          الحرف الأوّل <span className="q-letter">{letter}</span>
+        </div>
+      )}
       <QuestionText>{q.question}</QuestionText>
     </>
   )
