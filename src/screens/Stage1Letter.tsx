@@ -22,6 +22,8 @@ const SLOW_STEPS = 10 // آخر القفزات التي تتباطأ — الت�
 const FAST_MS = 38
 const SLOWEST_MS = 330
 const SETTLE_MS = 1300
+/** ألوان البلاطات بالتناوب: أصفر · أبيض · تركواز — ألوان الهويّة نفسها. */
+const TONES = ['a', 'w', 'b'] as const
 
 export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
@@ -79,7 +81,15 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
       <div className="letters-wrap grow">
         <div className={'letters-grid' + (landed ? ' landed' : '')} dir="rtl">
           {ALPHABET.map((l, i) => (
-            <div key={l} className={'ltile' + (i === lit ? ' lit' : '')}>
+            /* لونُ البلاطة وميلُها من موضعها لا من الحرف: ثلاثة ألوان تتناوب
+               قطريّاً (كرسمة الفئة نفسها) وميلٌ بين ‎-1.8‎ و‎+1.8‎ درجة —
+               بلاطاتٌ مرصوفةٌ بيدٍ لا شبكةٌ مطبوعة. */
+            <div
+              key={l}
+              className={'ltile' + (i === lit ? ' lit' : '')}
+              data-tone={TONES[((i % 7) * 2 + Math.floor(i / 7)) % TONES.length]}
+              style={{ '--tilt': `${(((i * 7) % 5) - 2) * 0.9}deg` } as React.CSSProperties}
+            >
               <span>{l}</span>
             </div>
           ))}
@@ -115,33 +125,51 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
           background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
           color:var(--gold);
           box-shadow:var(--lift);
-          transition:transform .12s ease-out, background .12s ease-out, color .12s ease-out;
+          transform:rotate(var(--tilt, 0deg));
+          /* الحركة على الهيئة وحدها: لونٌ يتدرّج بين قفزتين يترك بلاطاتٍ رماديّة
+             نصفَ مضاءة خلف الضوء، والقفز يجب أن يكون حادّاً. */
+          transition:transform .1s ease-out, box-shadow .1s ease-out;
         }
         .ltile span {
-          font-size:52cqi; font-weight:800; line-height:1;
+          font-size:54cqi; font-weight:800; line-height:1;
           /* الحرف مفردٌ بلا كلمة — يُرفع قليلاً فوق خطّ القاعدة ليتوسّط البلاطة */
           transform:translateY(-6%);
         }
+        /* الضوء الجاري: البلاطة تقفز قليلاً وتنقلب ألوانها */
         .ltile.lit {
           background:var(--gold); color:var(--on-gold, #1b1508);
-          transform:scale(1.06);
+          transform:rotate(var(--tilt, 0deg)) scale(1.1) translateY(-3%);
         }
-        /* الوقوف: البلاطة تصفع (كصفعة اسم الديربي) وتبقى مرفوعة */
+        /* الوقوف: البلاطة تصفع (كصفعة اسم الديربي) وتبقى مرفوعة، وحلقةٌ
+           تتمدّد منها وتتلاشى — إشارة «وقع الاختيار» نفسها. */
         .letters-grid.landed .ltile.lit {
-          animation:ltile-slam .5s var(--ease-spring) both;
+          position:relative;
+          animation:ltile-slam .55s var(--ease-spring) both;
           background:var(--coral); color:var(--cream); border-color:var(--coral);
         }
-        .letters-grid.landed .ltile:not(.lit) { opacity:.45; }
+        .letters-grid.landed .ltile.lit::after {
+          content:''; position:absolute; inset:-6%;
+          border-radius:inherit; border:3px solid var(--coral);
+          pointer-events:none;
+          animation:ltile-ring .8s ease-out both;
+        }
+        .letters-grid.landed .ltile:not(.lit) { opacity:.42; }
         @keyframes ltile-slam {
-          0%   { transform:scale(1.5); }
-          60%  { transform:scale(.98); }
-          100% { transform:scale(1.14) rotate(-2deg); }
+          0%   { transform:scale(1.6); }
+          60%  { transform:scale(.98) rotate(-3deg); }
+          100% { transform:scale(1.18) rotate(-3deg); }
+        }
+        @keyframes ltile-ring {
+          from { transform:scale(1); opacity:.9; }
+          to   { transform:scale(1.9); opacity:0; }
         }
         .letters-note { flex:none; }
+        /* الميل زينةُ الشاشات الواسعة: يُلغى تحت 480px ارتفاعاً فهناك كلُّ
+           بكسل محسوب والبلاطات المائلة تتلامس (قاعدة الهويّة ٤). */
         @media (max-height:480px) {
           .letters-wrap { padding-block:2px; }
           .letters-grid { gap:4px; }
-          .ltile { border-radius:8px; }
+          .ltile { border-radius:8px; --tilt:0deg; }
           .letters-note { display:none; }
         }
       `}</style>
