@@ -1,4 +1,5 @@
 import type { Level, Mark, Phase, Player, Team, TeamId } from './types'
+import { PHASES } from './types'
 import type { Question } from './types'
 import { drawStage3Queue } from './draw'
 import { playableCategories } from './bank'
@@ -314,19 +315,7 @@ export function decodeState(s: StoredState): GameState {
   return { ...s, usedQuestionIds: new Set(s.usedQuestionIds), timerEndsAt: s.timerEndsAt ?? null }
 }
 
-const PHASES = new Set<string>([
-  'setup',
-  'stage1-board',
-  'stage1-question',
-  'stage1-reveal',
-  'interval',
-  'stage2-selection',
-  'stage2-question',
-  'stage2-reveal',
-  'stage3-play',
-  'tiebreak',
-  'endgame',
-])
+const PHASE_SET = new Set<string>(PHASES)
 
 /**
  * هل هذه لقطةٌ بشكل النسخة الحالية؟ تُفحص **بنيةً لا نسخةً**: الخادم يحفظ
@@ -347,7 +336,7 @@ export function isStoredState(x: unknown): x is StoredState {
   const obj = (k: string) => !!s[k] && typeof s[k] === 'object'
   const teamId = (v: unknown) => v === 0 || v === 1
   const pair = (v: unknown) => Array.isArray(v) && v.length === 2 && v.every((n) => typeof n === 'number')
-  if (typeof s.phase !== 'string' || !PHASES.has(s.phase)) return false
+  if (typeof s.phase !== 'string' || !PHASE_SET.has(s.phase)) return false
   if (!arr('teams') || (s.teams as unknown[]).length !== 2) return false
   const teamsOk = (s.teams as unknown[]).every((t) => {
     if (!t || typeof t !== 'object') return false
@@ -375,6 +364,7 @@ export function isStoredState(x: unknown): x is StoredState {
      بلا سؤال، فتسقط الشاشة على `null` عند كلّ إقلاع بلا مخرج. */
   const phaseOk = (() => {
     switch (s.phase) {
+      case 'stage1-letter':
       case 'stage1-question':
       case 'stage1-reveal':
         return question(s.currentQuestion) && obj('s1Cell')

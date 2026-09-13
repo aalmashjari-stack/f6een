@@ -433,6 +433,41 @@ html[data-skin='blocks'] body .screen .bcell.played {
 }
 html[data-skin='blocks'] body .screen .bh-owner { box-shadow: 0 0 0 1.5px var(--n-ink); }
 
+/* ─── ٩ج. بلاطة الحروف (فئة «حروف») ──────────────────────────────────── */
+/* بلاطاتٌ مشبعة بحدّ حبرٍ وظلٍّ صلب — رسمةُ الفئة نفسها حيّةً على الشاشة:
+   أصفر وتركواز وأبيض بالتناوب، والضوء الجاري كتلةُ حبرٍ بحرفٍ أبيض،
+   والوقوف كتلةٌ برتقاليّة — صوت الهويّة — لا حمراء: الأحمر للغلط (قاعدة ٣).
+   ولونا الفريقين هنا زينةٌ متساوية لا ملكيّة: البلاطتان الصفراء والتركواز
+   بعددٍ واحد ولا تعنيان فريقاً، كما في رسمة الفئة التي اعتُمدت. */
+html[data-skin='blocks'] body .screen .ltile {
+  border: 0; border-radius: var(--n-r2);
+  background: var(--n-surface); color: var(--n-ink);
+  box-shadow: 0 0 0 2.5px var(--n-ink), 4px 5px 0 var(--n-ink);
+}
+html[data-skin='blocks'] body .screen .ltile[data-tone='a'] { background: var(--n-a-tint); }
+html[data-skin='blocks'] body .screen .ltile[data-tone='b'] { background: var(--n-b-tint); }
+html[data-skin='blocks'] body .screen .ltile.lit {
+  background: var(--n-ink); color: #fff;
+  box-shadow: 0 0 0 2.5px var(--n-ink), 7px 8px 0 var(--n-ink);
+}
+html[data-skin='blocks'] body .screen .letters-grid.landed .ltile.lit {
+  background: var(--n-brand); color: #fff;
+  box-shadow: 0 0 0 3px var(--n-ink), 8px 9px 0 var(--n-ink);
+}
+html[data-skin='blocks'] body .screen .letters-grid.landed .ltile.lit::after { border-color: var(--n-brand); }
+/* الباقي يبقى ظاهراً باهتاً بألوانه — لا يختفي ولا يبيضّ */
+html[data-skin='blocks'] body .screen .letters-grid.landed .ltile:not(.lit) {
+  opacity: .38;
+  box-shadow: 0 0 0 2px var(--n-ink);
+}
+/* الحرف مع السؤال: البلاطة الصغيرة نفسها بلون الوقوف، مائلةً كما وقفت */
+html[data-skin='blocks'] .q-letter {
+  background: var(--n-brand); color: #fff;
+  border-radius: var(--n-r1);
+  box-shadow: var(--n-e1);
+  transform: rotate(-3deg);
+}
+
 html[data-skin='blocks'] body .screen .catchip {
   border-radius: var(--n-r1);
   box-shadow: 0 0 0 2px rgba(34,32,28,.28);

@@ -61,16 +61,28 @@ export interface Team {
 /** حالة لاعب في الديربي: صمت ابتدائياً، ثم صح أو غلط. */
 export type Mark = 'صمت' | 'صح' | 'غلط'
 
-/** الشاشات — تدفّق الجلسة في القسم ٣ من SPEC. */
-export type Phase =
-  | 'setup'
-  | 'stage1-board'
-  | 'stage1-question'
-  | 'stage1-reveal'
-  | 'interval'
-  | 'stage2-selection'
-  | 'stage2-question'
-  | 'stage2-reveal'
-  | 'stage3-play'
-  | 'tiebreak'
-  | 'endgame'
+/**
+ * الشاشات — تدفّق الجلسة في القسم ٣ من SPEC.
+ *
+ * قائمةٌ واحدة يُشتقّ منها النوعُ وفحصُ اللقطة المحفوظة (`isStoredState`):
+ * كانت مكتوبةً هنا نوعاً وفي `session.ts` مجموعةً، فطورٌ يُضاف إلى إحداهما
+ * وينسى الأخرى يُرفض عند الاستئناف صامتاً — نمط القوائم المكرّرة نفسه
+ * الذي أسقط «تعجيزي» من القاعدة.
+ */
+export const PHASES = [
+  'setup',
+  'stage1-board',
+  /* بلاطة الحروف بين اللوح والسؤال — لفئة «حروف» وحدها (انظر `letters.ts`) */
+  'stage1-letter',
+  'stage1-question',
+  'stage1-reveal',
+  'interval',
+  'stage2-selection',
+  'stage2-question',
+  'stage2-reveal',
+  'stage3-play',
+  'tiebreak',
+  'endgame',
+] as const
+
+export type Phase = (typeof PHASES)[number]

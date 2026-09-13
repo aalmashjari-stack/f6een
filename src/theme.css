@@ -375,10 +375,22 @@ body::after {
   letter-spacing: .02em; color: var(--text-2);
   margin-bottom: clamp(4px, .9dvh, 10px);
 }
+/* تلميح فئة «حروف»: الحرف الذي وقفت عليه البلاطة، بلاطةً صغيرة بجانب
+   عبارته — أكبر من نصّ التلميح لأنّه هو المعلومة، والعبارة حاشيته. */
+.q-hint-letter { display: inline-flex; align-items: center; gap: .5em; }
+.q-letter {
+  display: inline-grid; place-items: center;
+  width: 1.9em; height: 1.9em; line-height: 1;
+  font-size: clamp(18px, min(2.8vw, 4.4dvh), 34px); font-weight: 800;
+  border-radius: .35em;
+  background: var(--gold); color: var(--on-gold);
+  box-shadow: var(--lift);
+}
 /* جوال أفقي: العمود مزدحم أصلاً قبل التلميح، فيُقلَّص إلى أضيق ما يبقى مقروءاً
    حتى لا يزيد الزحام. الأرضيتان هنا دون أرضيتَي الأعلى عمداً. */
 @media (max-height: 520px) {
   .q-hint { font-size: clamp(9px, 2dvh, 13px); margin-bottom: 2px; }
+  .q-letter { font-size: clamp(14px, 4dvh, 20px); }
 }
 /* الصورة تتقلّص داخل حاويتها (flex-shrink) فلا تفيض مهما ضاق الارتفاع، وسقفٌ
    بـ vh يمنعها أن تتضخّم على شاشةٍ طويلة. contain لأنّ الوجوه لا تُقصّ. */
