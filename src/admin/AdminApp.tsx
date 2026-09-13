@@ -2410,6 +2410,60 @@ function Drafts() {
   }
 
   /**
+   * **اعتمادُ المحدَّد دفعةً دفعة** (طلب علي ١٣ سبتمبر ٢٠٢٦): جاءت حصيلةُ
+   * الموسوعة أربعاً وعشرين دفعة، واعتمادُها ضغطةً ضغطة لا يليق بشاشةٍ
+   * شعارُها «مئةٌ وخمسون سؤالاً قرارٌ واحد».
+   *
+   * كلُّ دفعةٍ تُعتمد بنداءٍ مستقلّ — فما يفشل منها لا يُسقط ما سبقه — وما
+   * فئتُه غير موجودة يُترك جانباً ويُسمّى في الرسالة لا يُخطئ الاعتمادَ
+   * كلّه، وهو ما تفعله القاعدة نفسها لو ضُغط زرُّه منفرداً.
+   */
+  const approvePicked = async () => {
+    setBusy(true)
+    setMsg(null)
+    let added = 0, skipped = 0, done = 0
+    const held: string[] = []
+    try {
+      for (const id of picked) {
+        const b = pending.find((x) => x.batch === id)
+        if (!b) continue
+        if (b.missing_category) {
+          held.push(b.categories)
+          continue
+        }
+        const res = await approveDrafts(id)
+        added += res.added
+        skipped += res.skipped
+        done++
+      }
+      setMsg({
+        ok: true,
+        text:
+          `اعتُمدت ${done} دفعة: أُضيف ${added}` +
+          (skipped ? ` وتُخطّي ${skipped} نصُّه موجود` : '') +
+          (held.length ? ` — وتُركت ${held.length} فئتُها غير موجودة (${held.join('، ')})` : '') +
+          ' — تصل اللاعبين عند فتحهم اللعبة',
+      })
+      setPicked(new Set())
+      setOpen(null)
+      reload()
+    } catch (e) {
+      /* ما اعتُمد قبل الفشل اعتُمد فعلاً؛ فالرسالة تقوله ولا تخفيه. */
+      setMsg({
+        ok: false,
+        text: `${e instanceof Error ? e.message : 'تعذّر الاعتماد'}` + (done ? ` — بعد اعتماد ${done} دفعة` : ''),
+      })
+      reload()
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  /* «حدّد الكل» يحدّد المعلَّق وحده: المبتوتُ فيه لا زرَّ له أصلاً. */
+  const allPicked = pending.length > 0 && pending.every((b) => picked.has(b.batch))
+  const togglePickAll = () => setPicked(allPicked ? new Set() : new Set(pending.map((b) => b.batch)))
+
+  /**
    * **استبعادُ سؤالٍ قبل اعتماد دفعته** (طلب علي ١١ سبتمبر ٢٠٢٦).
    *
    * ولا فعلَ ثالث في القاعدة: المستبعَد **مرفوضٌ** كغيره، و«اعتمد» تمرّ
@@ -2483,10 +2537,21 @@ function Drafts() {
           {showDecided ? 'أخفِ المبتوت فيه' : 'أظهر المبتوت فيه'}
         </button>
       )}
+      {pending.length > 1 && (
+        <label className="a-muted pick-all">
+          <input type="checkbox" checked={allPicked} onChange={togglePickAll} />
+          حدّد الكل ({pending.length})
+        </label>
+      )}
       {picked.size > 0 && (
-        <button className="a-btn danger" disabled={busy} onClick={rejectPicked}>
-          ارفض المحدَّد ({picked.size})
-        </button>
+        <>
+          <button className="a-btn primary" disabled={busy} onClick={approvePicked}>
+            اعتمد المحدَّد ({picked.size})
+          </button>
+          <button className="a-btn danger" disabled={busy} onClick={rejectPicked}>
+            ارفض المحدَّد ({picked.size})
+          </button>
+        </>
       )}
     </div>
   )
