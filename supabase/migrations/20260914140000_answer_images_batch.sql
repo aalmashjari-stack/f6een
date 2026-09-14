@@ -6,8 +6,9 @@
 -- الصور مشحونة في `assets/pics/` بمفاتيح `pic-face-…` و`pic-place-…`،
 -- وسجلّ رخصها في `attribution.json`.
 --
--- `updated_at` تُرفع لتتغيّر `bank_signature`. ولا يُكتب فوق صورةٍ قائمة:
--- `answer_image is null` شرط — ما وضعه علي من اللوحة يبقى.
+-- `updated_at` تُرفع لتتغيّر `bank_signature`. ولا يُكتب فوق صورةٍ قائمة —
+-- ما وضعه علي من اللوحة يبقى — إلّا عيّنات كومنز الثلاث المؤقّتة
+-- (`20260914133000_answer_image_samples.sql`) فتُستبدل بمفاتيحها المشحونة.
 -- والإصدارات التي لم تُشحن فيها هذه الوجوه تُخفي الوجه لا تُظهر مؤقّتاً
 -- (`AnswerFace`)، فالترتيب بين النشر والهجرة لم يعد شرطاً.
 
@@ -548,5 +549,5 @@ update public.question_overrides o
   ('S009', 'pic-place-ملعب-سانتياغو-برنابيو')
   ) as v(question_id, key)
  where o.question_id = v.question_id
-   and o.answer_image is null
+   and (o.answer_image is null or o.answer_image like 'https://upload.wikimedia.org/%')
    and o.image is null;
