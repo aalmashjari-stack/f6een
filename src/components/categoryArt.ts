@@ -32,7 +32,7 @@ export const CATEGORY_ART: Record<string, string> = {
   'أحياء وفلك': biologyAstronomy,
   'أدب وفنون': literatureArts,
   'تقنية ومنوعات': techMisc,
-  'رياضة وأرقام': sportsNumbers,
+  'رياضة عامة': sportsNumbers,
   // الفئات الثلاث المضافة في ٧ أغسطس ٢٠٢٦ — صورها من علي بنسبة ٣:٢ أصلاً فلا تُقصّ
   'الكويت': kuwait,
   'سينما ودراما': cinemaDrama,
