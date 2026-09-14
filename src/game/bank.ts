@@ -313,7 +313,6 @@ export function familiesOf(q: Question): string[] {
 const DISPLAY_NAMES: Record<string, string> = {
   'جغرافيا ومعالم': 'جغرافيا',
   'تاريخ وحضارات': 'تاريخ',
-  'دين وسيرة': 'إسلامي',
   'علوم واختراعات': 'علوم',
   'طب وصحة': 'صحة',
   'أدب وفنون': 'أدب',

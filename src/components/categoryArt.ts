@@ -26,7 +26,7 @@ import { LETTERS_CATEGORY } from '../game/letters'
 export const CATEGORY_ART: Record<string, string> = {
   'جغرافيا ومعالم': geography,
   'تاريخ وحضارات': history,
-  'دين وسيرة': religion,
+  'إسلامي': religion,
   'علوم واختراعات': science,
   'طب وصحة': medicine,
   'أحياء وفلك': biologyAstronomy,
