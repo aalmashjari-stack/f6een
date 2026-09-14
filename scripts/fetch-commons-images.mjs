@@ -102,7 +102,7 @@ for (const t of targets) {
     if (BAD_LICENCE.test(info.licence) || !OK_LICENCE.test(info.licence)) {
       report.push(`✗ ${t.key}: رخصةٌ مرفوضة «${info.licence}» — ${file}`); continue
     }
-    if (Math.max(info.width, info.height) < 600) { report.push(`✗ ${t.key}: صغيرة ${info.width}×${info.height} — ${file}`); continue }
+    if (Math.max(info.width, info.height) < (t.min ?? 600)) { report.push(`✗ ${t.key}: صغيرة ${info.width}×${info.height} — ${file}`); continue }
 
     const res = await fetch(info.thumb, { headers: { 'User-Agent': UA } })
     if (!res.ok) { report.push(`✗ ${t.key}: فشل التنزيل ${res.status}`); continue }
