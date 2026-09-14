@@ -1,8 +1,9 @@
--- صورةٌ مع الإجابة لـ532 سؤالاً جوابها شخصٌ أو معلم (قرار علي ١٤ سبتمبر ٢٠٢٦).
+-- صورةٌ مع الإجابة لـ530 سؤالاً جوابها شخصٌ أو معلم (قرار علي ١٤ سبتمبر ٢٠٢٦).
 --
 -- الأجوبة قُيست على ويكيبيديا/ويكيداتا: إنسانٌ أو معلمٌ له صورةٌ رئيسة برخصةٍ
 -- حرّة، ثمّ حكم على كلّ صورةٍ حكمان مستقلّان بالعين (هل المقالة عن المقصود في
 -- السؤال؟ وهل تصلح دائرةً صغيرة بجانب الاسم؟) وفصل حكمٌ ثالث في الخلاف.
+-- وأسقط علي «الخنساء» بنفسه من صفحة الاستعراض (رسمٌ متخيَّل).
 -- الصور مشحونة في `assets/pics/` بمفاتيح `pic-face-…` و`pic-place-…`،
 -- وسجلّ رخصها في `attribution.json`.
 --
@@ -70,7 +71,6 @@ update public.question_overrides o
   ('ADM1586', 'pic-face-william-harvey'),
   ('ADM1587', 'pic-face-ibn-al-haytham'),
   ('ADM1588', 'pic-face-ludwig-van-beethoven'),
-  ('ADM1591', 'pic-face-al-khansa'),
   ('ADM1592', 'pic-face-wilhelm-rontgen'),
   ('ADM1594', 'pic-face-ismail-al-jazari'),
   ('ADM1597', 'pic-face-ray-tomlinson'),
@@ -412,7 +412,6 @@ update public.question_overrides o
   ('M191', 'pic-face-marie-curie'),
   ('M207', 'pic-face-taha-hussein'),
   ('M208', 'pic-face-tayeb-salih'),
-  ('M310', 'pic-face-al-khansa'),
   ('M315', 'pic-face-wilhelm-rontgen'),
   ('M327', 'pic-face-william-harvey'),
   ('M331', 'pic-face-hippocrates'),
