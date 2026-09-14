@@ -26,13 +26,13 @@ import { LETTERS_CATEGORY } from '../game/letters'
 export const CATEGORY_ART: Record<string, string> = {
   'جغرافيا ومعالم': geography,
   'تاريخ وحضارات': history,
-  'دين وسيرة': religion,
+  'إسلامي': religion,
   'علوم واختراعات': science,
   'طب وصحة': medicine,
   'أحياء وفلك': biologyAstronomy,
   'أدب وفنون': literatureArts,
   'تقنية ومنوعات': techMisc,
-  'رياضة وأرقام': sportsNumbers,
+  'رياضة عامة': sportsNumbers,
   // الفئات الثلاث المضافة في ٧ أغسطس ٢٠٢٦ — صورها من علي بنسبة ٣:٢ أصلاً فلا تُقصّ
   'الكويت': kuwait,
   'سينما ودراما': cinemaDrama,
