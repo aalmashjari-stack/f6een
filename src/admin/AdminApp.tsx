@@ -732,15 +732,22 @@ const FLAG_LABEL: Record<AdminFlag['status'], string> = {
 function Reports() {
   const { data, err, reload } = useLoad<AdminFlag[]>(listFlags)
   const list = useBank()
-  const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: edits, reload: reloadEdits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: extra } = useLoad<string[]>(listExtraCategories)
   /* البنك بعد تركيب التعديلات عليه — كما يراه اللاعب: بالمشحون وحده كان
-     بلاغٌ على سؤالٍ أضافته اللوحة يظهر معرّفاً بلا نصّ، والمعدَّلُ بنصّه القديم. */
+     بلاغٌ على سؤالٍ أضافته اللوحة يظهر معرّفاً بلا نصّ، والمعدَّلُ بنصّه القديم.
+     والصفُّ كاملاً لا السؤال وحده: التعديل والحذف من هنا يحتاجان مصدرَه. */
   const bank = useMemo(
-    () => (list && edits ? new Map(merge(list, edits).map((r) => [r.q.id, r.q])) : null),
+    () => (list && edits ? new Map(merge(list, edits).map((r) => [r.q.id, r])) : null),
     [list, edits],
+  )
+  const categories = useMemo(
+    () => [...new Set([...(list ?? []).map((b) => b.category), ...(extra ?? [])])],
+    [list, extra],
   )
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<string | null>(null)
+  const [editing, setEditing] = useState<Row | null>(null)
 
   async function decide(id: string, status: AdminFlag['status']) {
     setBusy(id)
@@ -750,6 +757,32 @@ function Reports() {
       reload()
     } catch (e) {
       setMsg(e instanceof Error ? e.message : 'تعذّر الحفظ')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  /**
+   * الحذف من طابور البلاغات نفسه (طلب علي ١٤ سبتمبر ٢٠٢٦): البلاغ الصحيح
+   * جوابُه غالباً محوُ السؤال، وكان الحكم يذهب إلى لسان الأسئلة ويبحث عنه.
+   *
+   * والبلاغ لا يُترك «محجوزاً» على سؤالٍ لم يعد موجوداً — يُغلق «ملغى» في
+   * الخطوة نفسها، وإلّا بقي في الطابور صفٌّ بمعرّفٍ بلا نصّ يُقرأ عطباً.
+   * والقاعدة تردّ الحذف إن أنزل خليّةً تحت حدّها، فيبقى البلاغ كما كان.
+   */
+  async function remove(f: AdminFlag, row: Row) {
+    const what = row.deletable ? 'محوُ السؤال نهائياً' : 'إعادةُ السؤال إلى أصله المشحون'
+    if (!window.confirm(`${what} وإغلاقُ بلاغه. متأكّد؟`)) return
+    setBusy(f.question_id)
+    setMsg(null)
+    try {
+      await deleteQuestionEdit(row.q.id)
+      await setFlag(f.question_id, 'disabled', 'حُذف السؤال من اللوحة')
+      setMsg('حُذف السؤال وأُغلق بلاغه')
+      reloadEdits()
+      reload()
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : 'تعذّر الحذف')
     } finally {
       setBusy(null)
     }
@@ -782,7 +815,8 @@ function Reports() {
           </thead>
           <tbody>
             {data.map((f) => {
-              const q = bank?.get(f.question_id)
+              const row = bank?.get(f.question_id)
+              const q = row?.q
               return (
                 <tr key={f.question_id}>
                   <td>
@@ -794,7 +828,8 @@ function Reports() {
                     {q ? (
                       q.question
                     ) : (
-                      <span className="muted">{bank ? f.question_id : '…'}</span>
+                      /* بنكٌ محمَّل ولا سؤال: حُذف. المعرّف وحده كان يُقرأ عطباً. */
+                      <span className="muted">{bank ? `سؤال محذوف · ${f.question_id}` : '…'}</span>
                     )}
                   </td>
                   <td>{q?.answer ?? '—'}</td>
@@ -826,6 +861,26 @@ function Reports() {
                           احجزه
                         </button>
                       )}
+                      {/* التعديل والحذف من الطابور نفسه — لا رحلة إلى لسان الأسئلة.
+                          يغيبان عن سؤالٍ لم يعد موجوداً، لا يُطفآن. */}
+                      {row && (
+                        <>
+                          <button
+                            className="a-btn"
+                            disabled={busy === f.question_id}
+                            onClick={() => setEditing(row)}
+                          >
+                            عدّله
+                          </button>
+                          <button
+                            className="a-btn danger"
+                            disabled={busy === f.question_id}
+                            onClick={() => remove(f, row)}
+                          >
+                            احذفه
+                          </button>
+                        </>
+                      )}
                     </span>
                   </td>
                 </tr>
@@ -834,6 +889,19 @@ function Reports() {
           </tbody>
         </table>
       </div>
+
+      {editing && (
+        <QuestionForm
+          row={editing}
+          categories={categories}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null)
+            setMsg('حُفظ — يصل اللاعبين عند فتحهم اللعبة')
+            reloadEdits()
+          }}
+        />
+      )}
     </>
   )
 }
