@@ -1,0 +1,131 @@
+[
+  {
+    "name": "root HTML cache revalidates",
+    "status": "PASS",
+    "response": {
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "3699",
+        "cache-control": "no-cache",
+        "x-content-type-options": "nosniff",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5"
+      },
+      "bodyLength": 3699
+    }
+  },
+  {
+    "name": "HEAD returns no body",
+    "status": "PASS",
+    "response": {
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "3699",
+        "cache-control": "no-cache",
+        "x-content-type-options": "nosniff",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5"
+      },
+      "bodyLength": 0
+    }
+  },
+  {
+    "name": "missing assets return 404",
+    "status": "PASS",
+    "response": {
+      "status": 404,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked"
+      },
+      "bodyLength": 17
+    }
+  },
+  {
+    "name": "POST rejected",
+    "status": "PASS",
+    "response": {
+      "status": 405,
+      "headers": {
+        "allow": "GET, HEAD",
+        "content-type": "text/plain; charset=utf-8",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked"
+      },
+      "bodyLength": 0
+    }
+  },
+  {
+    "name": "malformed URI returns 400",
+    "status": "PASS",
+    "response": {
+      "status": 400,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked"
+      },
+      "bodyLength": 8
+    }
+  },
+  {
+    "name": "path traversal cannot read package file",
+    "status": "PASS",
+    "response": {
+      "status": 404,
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked"
+      },
+      "bodyLength": 17
+    }
+  },
+  {
+    "name": "fingerprinted JavaScript is immutable",
+    "status": "PASS",
+    "response": {
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "content-length": "47064",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5"
+      },
+      "bodyLength": 47064
+    }
+  },
+  {
+    "name": "server still serves after malformed request",
+    "status": "PASS",
+    "response": {
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "content-length": "15899",
+        "cache-control": "no-cache",
+        "x-content-type-options": "nosniff",
+        "date": "Sun, 06 Sep 2026 20:33:30 GMT",
+        "connection": "keep-alive",
+        "keep-alive": "timeout=5"
+      },
+      "bodyLength": 15899
+    }
+  }
+]
