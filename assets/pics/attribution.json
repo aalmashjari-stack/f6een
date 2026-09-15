@@ -2919,6 +2919,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AZlatan_Ibrahimovi%C4%87_nyc.jpg"
   },
   {
+    "key": "flag-ag",
+    "licence": "Public domain",
+    "artist": "Original: Sir Reginald Samuel Vector: David Benbennick",
+    "page": "File:Flag of Antigua and Barbuda.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Antigua_and_Barbuda.svg"
+  },
+  {
     "key": "flag-al",
     "licence": "Public domain",
     "artist": "Sadik Kaceli",
@@ -2968,6 +2975,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Bosnia_and_Herzegovina.svg"
   },
   {
+    "key": "flag-bb",
+    "licence": "Public domain",
+    "artist": "User:Denelson83",
+    "page": "File:Flag of Barbados.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Barbados.svg"
+  },
+  {
     "key": "flag-bd",
     "licence": "Public domain",
     "artist": "See File history below for details.",
@@ -2989,6 +3003,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Bulgaria.svg"
   },
   {
+    "key": "flag-bs",
+    "licence": "Public domain",
+    "artist": "Government of Bahamas",
+    "page": "File:Flag of the Bahamas.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Bahamas.svg"
+  },
+  {
     "key": "flag-bt",
     "licence": "Public domain",
     "artist": "See File history below for details.",
@@ -3001,6 +3022,13 @@
     "artist": "SKopp, Gabbe, Madden",
     "page": "File:Flag of Botswana.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Botswana.svg"
+  },
+  {
+    "key": "flag-bz",
+    "licence": "Public domain",
+    "artist": "Caleb Moore",
+    "page": "File:Flag of Belize.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Belize.svg"
   },
   {
     "key": "flag-ch",
@@ -3073,6 +3101,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Denmark.svg"
   },
   {
+    "key": "flag-dm",
+    "licence": "Public domain",
+    "artist": "Alwin Bully",
+    "page": "File:Flag of Dominica.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Dominica.svg"
+  },
+  {
     "key": "flag-dz",
     "licence": "Public domain",
     "artist": "Original: National Liberation Front of Algeria Vector: SKopp",
@@ -3108,6 +3143,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Finland.svg"
   },
   {
+    "key": "flag-gd",
+    "licence": "Public domain",
+    "artist": "See file history below for details.",
+    "page": "File:Flag of Grenada.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Grenada.svg"
+  },
+  {
     "key": "flag-ge",
     "licence": "Public domain",
     "artist": "Last update by MapGrid SKopp",
@@ -3129,11 +3171,32 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Greece.svg"
   },
   {
+    "key": "flag-gw",
+    "licence": "Public domain",
+    "artist": "Drawn by User:SKopp",
+    "page": "File:Flag of Guinea-Bissau.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Guinea-Bissau.svg"
+  },
+  {
+    "key": "flag-gy",
+    "licence": "Public domain",
+    "artist": "Whitney Smith",
+    "page": "File:Flag of Guyana.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Guyana.svg"
+  },
+  {
     "key": "flag-hr",
     "licence": "Public domain",
     "artist": "Nightstallion, Elephantus, Neoneo13, Denelson83, Rainman, R-41, Minestrone, Lupo, Zscout370,MaGa (based on Decision of the Parliament)",
     "page": "File:Flag of Croatia.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Croatia.svg"
+  },
+  {
+    "key": "flag-ht",
+    "licence": "Public domain",
+    "artist": "(colours and size changes of the now deleted versions) Madden, Vzb83, Denelson83, Chanheigeorge, Zscout370 and Nightstallion Coat of arms :Lokal_Profil and Myriam Thyes",
+    "page": "File:Flag of Haiti.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Haiti.svg"
   },
   {
     "key": "flag-hu",
@@ -3199,11 +3262,25 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Cambodia.svg"
   },
   {
+    "key": "flag-ki",
+    "licence": "Public domain",
+    "artist": "User:Hanzlan",
+    "page": "File:Flag of Kiribati.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Kiribati.svg"
+  },
+  {
     "key": "flag-km",
     "licence": "Public domain",
     "artist": "Original: Comoros; Vector: see file history",
     "page": "File:Flag of the Comoros.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Comoros.svg"
+  },
+  {
+    "key": "flag-kn",
+    "licence": "Public domain",
+    "artist": "Edrice Lewis",
+    "page": "File:Flag of Saint Kitts and Nevis.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Saint_Kitts_and_Nevis.svg"
   },
   {
     "key": "flag-kr",
@@ -3220,11 +3297,25 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Kazakhstan.svg"
   },
   {
+    "key": "flag-lc",
+    "licence": "Public domain",
+    "artist": "Dunstan St Omer",
+    "page": "File:Flag of Saint Lucia.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Saint_Lucia.svg"
+  },
+  {
     "key": "flag-lk",
     "licence": "Public domain",
     "artist": "Original: Sri Lanka Vectorization: Zscout370, Mike Rohsopht",
     "page": "File:Flag of Sri Lanka.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Sri_Lanka.svg"
+  },
+  {
+    "key": "flag-ls",
+    "licence": "Public domain",
+    "artist": "See File history below for details.",
+    "page": "File:Flag of Lesotho.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Lesotho.svg"
   },
   {
     "key": "flag-ly",
@@ -3246,6 +3337,13 @@
     "artist": "غير مذكور",
     "page": "File:Flag of Madagascar.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Madagascar.svg"
+  },
+  {
+    "key": "flag-mh",
+    "licence": "Public domain",
+    "artist": "No machine-readable author provided. SKopp assumed (based on copyright claims).",
+    "page": "File:Flag of the Marshall Islands.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Marshall_Islands.svg"
   },
   {
     "key": "flag-mm",
@@ -3325,6 +3423,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Nepal.svg"
   },
   {
+    "key": "flag-nr",
+    "licence": "Public domain",
+    "artist": "User:Skimel",
+    "page": "File:Flag of Nauru.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Nauru.svg"
+  },
+  {
     "key": "flag-nz",
     "licence": "Public domain",
     "artist": "Original: Albert Hastings Markham Vector: Zscout370, Hugh Jass, s. File history",
@@ -3337,6 +3442,13 @@
     "artist": "David Benbennick",
     "page": "File:Flag of Peru.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Peru.svg"
+  },
+  {
+    "key": "flag-pg",
+    "licence": "Public domain",
+    "artist": "User:Nightstallion",
+    "page": "File:Flag of Papua New Guinea.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Papua_New_Guinea.svg"
   },
   {
     "key": "flag-ph",
@@ -3381,6 +3493,20 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Russia.svg"
   },
   {
+    "key": "flag-sb",
+    "licence": "Public domain",
+    "artist": "User:SKopp",
+    "page": "File:Flag of the Solomon Islands.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Solomon_Islands.svg"
+  },
+  {
+    "key": "flag-sc",
+    "licence": "Public domain",
+    "artist": "User:Vxb83",
+    "page": "File:Flag of Seychelles.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Seychelles.svg"
+  },
+  {
     "key": "flag-sd",
     "licence": "Public domain",
     "artist": "See File history below for details.",
@@ -3409,6 +3535,20 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Somalia.svg"
   },
   {
+    "key": "flag-st",
+    "licence": "Public domain",
+    "artist": "See File history below for details.",
+    "page": "File:Flag of Sao Tome and Principe.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Sao_Tome_and_Principe.svg"
+  },
+  {
+    "key": "flag-sz",
+    "licence": "Public domain",
+    "artist": "Sobhuza II",
+    "page": "File:Flag of Eswatini.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Eswatini.svg"
+  },
+  {
     "key": "flag-th",
     "licence": "Public domain",
     "artist": "Zscout370",
@@ -3416,11 +3556,32 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Thailand.svg"
   },
   {
+    "key": "flag-tm",
+    "licence": "Public domain",
+    "artist": "غير مذكور",
+    "page": "File:Flag of Turkmenistan.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Turkmenistan.svg"
+  },
+  {
     "key": "flag-tn",
     "licence": "Public domain",
     "artist": "Various Wikimedia Commons' contributors",
     "page": "File:Flag of Tunisia.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Tunisia.svg"
+  },
+  {
+    "key": "flag-tt",
+    "licence": "Public domain",
+    "artist": "See File history, below, for details.",
+    "page": "File:Flag of Trinidad and Tobago.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Trinidad_and_Tobago.svg"
+  },
+  {
+    "key": "flag-tv",
+    "licence": "Public domain",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Flag of Tuvalu.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Tuvalu.svg"
   },
   {
     "key": "flag-tz",
@@ -3451,6 +3612,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Uzbekistan.svg"
   },
   {
+    "key": "flag-vc",
+    "licence": "Public domain",
+    "artist": "No machine-readable author provided. SKopp assumed (based on copyright claims).",
+    "page": "File:Flag of Saint Vincent and the Grenadines.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Saint_Vincent_and_the_Grenadines.svg"
+  },
+  {
     "key": "flag-ve",
     "licence": "Public domain",
     "artist": "Various, see File history below for details.",
@@ -3463,6 +3631,13 @@
     "artist": "See File history below for details.",
     "page": "File:Flag of Vietnam.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Vietnam.svg"
+  },
+  {
+    "key": "flag-vu",
+    "licence": "Public domain",
+    "artist": "Kalontas Mahlon",
+    "page": "File:Flag of Vanuatu.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Vanuatu.svg"
   },
   {
     "key": "flag-ye",
