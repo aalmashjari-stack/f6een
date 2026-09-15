@@ -1,6 +1,7 @@
 import type { Question } from '../game/types'
 import { celebSrc } from '../game/celebs'
 import { firstLetter, isLettersCategory } from '../game/letters'
+import { isEmojiCategory, splitEmojiQuestion } from '../game/emoji'
 import { QuestionText } from './QuestionText'
 import { ZoomablePhoto } from './ZoomablePhoto'
 
@@ -44,6 +45,11 @@ export function QuestionView({ q }: { q: Question }) {
   /* فئة «حروف»: الحرف الذي وقفت عليه البلاطة يبقى مع السؤال في التلميح
      نفسه — بلاطةً صغيرة — فلا يُنسى بعد انتقال الشاشة. */
   const letter = isLettersCategory(q.category) ? firstLetter(q.answer) : null
+  /* فئة «إيموجي»: الرموز على سطرها أكبر من الذيل — لغزٌ يُرى من آخر المجلس. */
+  const emoji = isEmojiCategory(q.category) ? splitEmojiQuestion(q.question) : null
+  if (emoji?.lead) {
+    return <QuestionText lead={emoji.lead}>{emoji.tail}</QuestionText>
+  }
   return (
     <>
       {PROVERB_TOPICS.has(q.topic) && <div className="q-hint">أكمل المثل</div>}
