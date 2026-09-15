@@ -35,7 +35,11 @@ if (!targetsPath) {
 
 const UA = 'F6een-quiz-images/1.0 (https://f6een.com; a.almashjari@gmail.com)'
 const WIDTH = 1100
-const OK_LICENCE = /^(public domain|pd|cc0|no restrictions|cc by(-sa)? ?\d(\.\d)?|cc-by(-sa)?-\d(\.\d)?|attribution)/i
+/* OGL (رخصة الحكومة المفتوحة، ومنها عُمانيّة `OGL-om`) تُجيز الاستعمال التجاريّ
+   بالنسبة — علمُ عُمان في كومنز بها وحدها. ورخصُ البرمجيّات المتساهلة
+   (Apache وMIT وMPL) تحمل بعضَ أيقونات الشعارات (طائر تويتر، فايرفوكس،
+   غيت هب) وتُجيز التوزيع التجاريّ بالنسبة — أمّا GPL فتبقى مردودة. */
+const OK_LICENCE = /^(public domain|pd|cc0|no restrictions|cc by(-sa)? ?\d(\.\d)?|cc-by(-sa)?-\d(\.\d)?|attribution|ogl|apache|mit\b|mpl)/i
 const BAD_LICENCE = /(-nc|-nd|\bnc\b|\bnd\b|fair use|non-free|gfdl 1\.2 only)/i
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -98,18 +102,36 @@ for (const t of targets) {
     if (!file) { report.push(`✗ ${t.key}: لا صورة رئيسة لمقالة «${t.wiki}»`); continue }
     const info = await imageInfo(file)
     if (!info) { report.push(`✗ ${t.key}: لا معلومات لـ${file}`); continue }
-    if (!/^image\/(jpeg|png)$/.test(info.mime)) { report.push(`✗ ${t.key}: نوعٌ غير مقبول ${info.mime} — ${file}`); continue }
+    /* SVG (الأعلام والشعارات كلُّها في كومنز متّجهات) يُقبل عبر نسخته
+       النقطيّة: `iiurlwidth` يعيد PNG مرسوماً بالعرض المطلوب في `thumburl`،
+       وأبعادُ الأصل أبعادٌ اسميّة فلا يُحكم بها على الصغر. */
+    const svg = info.mime === 'image/svg+xml'
+    if (!svg && !/^image\/(jpeg|png)$/.test(info.mime)) { report.push(`✗ ${t.key}: نوعٌ غير مقبول ${info.mime} — ${file}`); continue }
     if (BAD_LICENCE.test(info.licence) || !OK_LICENCE.test(info.licence)) {
       report.push(`✗ ${t.key}: رخصةٌ مرفوضة «${info.licence}» — ${file}`); continue
     }
-    if (Math.max(info.width, info.height) < (t.min ?? 600)) { report.push(`✗ ${t.key}: صغيرة ${info.width}×${info.height} — ${file}`); continue }
+    if (!svg && Math.max(info.width, info.height) < (t.min ?? 600)) { report.push(`✗ ${t.key}: صغيرة ${info.width}×${info.height} — ${file}`); continue }
 
     const res = await fetch(info.thumb, { headers: { 'User-Agent': UA } })
     if (!res.ok) { report.push(`✗ ${t.key}: فشل التنزيل ${res.status}`); continue }
     const tmp = dest + '.tmp'
     writeFileSync(tmp, Buffer.from(await res.arrayBuffer()))
-    /* تصغيرٌ وتحويلٌ إلى JPEG بجودة 82، وأكبر بُعدٍ 1100. */
-    execFileSync('sips', ['-s', 'format', 'jpeg', '-s', 'formatOptions', '82', '-Z', String(WIDTH), tmp, '--out', dest], { stdio: 'ignore' })
+    if (svg) {
+      /* نقطيّةُ SVG تأتي PNG بخلفيّةٍ شفّافة، و`sips` يجعلها سوداء في JPEG —
+         فتُبسَط على أبيض بـPillow، وبجودةٍ أعلى لأنّ حوافّ الأعلام والشعارات
+         حادّة والمساحات مسطّحة. */
+      execFileSync('python3', ['-c', `
+import sys
+from PIL import Image
+im = Image.open(sys.argv[1]).convert('RGBA')
+bg = Image.new('RGB', im.size, (255, 255, 255))
+bg.paste(im, mask=im.split()[3])
+bg.save(sys.argv[2], 'JPEG', quality=90, optimize=True)
+`, tmp, dest], { stdio: 'ignore' })
+    } else {
+      /* تصغيرٌ وتحويلٌ إلى JPEG بجودة 82، وأكبر بُعدٍ 1100. */
+      execFileSync('sips', ['-s', 'format', 'jpeg', '-s', 'formatOptions', '82', '-Z', String(WIDTH), tmp, '--out', dest], { stdio: 'ignore' })
+    }
     unlinkSync(tmp)
 
     const entry = {
