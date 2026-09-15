@@ -1,0 +1,31 @@
+{
+  "freshSessions": 500,
+  "freshViolations": [],
+  "consecutiveViolations": [
+    {
+      "empty": false,
+      "duplicateIds": 2,
+      "duplicateFamilies": 0,
+      "phase": "endgame",
+      "seed": 31,
+      "used": 1603
+    },
+    {
+      "empty": false,
+      "duplicateIds": 2,
+      "duplicateFamilies": 2,
+      "phase": "endgame",
+      "seed": 32,
+      "used": 1649
+    },
+    {
+      "empty": true,
+      "duplicateIds": 2,
+      "duplicateFamilies": 1,
+      "phase": "stage3-play",
+      "seed": 33,
+      "used": 1669
+    }
+  ],
+  "endingHistorySize": 1669
+}

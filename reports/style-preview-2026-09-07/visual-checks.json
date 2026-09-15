@@ -1,0 +1,173 @@
+[
+  {
+    "screen": "board",
+    "device": "desktop",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "board",
+    "device": "desktop",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "question",
+    "device": "desktop",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "question",
+    "device": "desktop",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "reveal",
+    "device": "desktop",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "reveal",
+    "device": "desktop",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "endgame",
+    "device": "desktop",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "endgame",
+    "device": "desktop",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "long",
+    "device": "desktop",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "long",
+    "device": "desktop",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "photo",
+    "device": "desktop",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "photo",
+    "device": "desktop",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "board",
+    "device": "phone",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "board",
+    "device": "phone",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "question",
+    "device": "phone",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "question",
+    "device": "phone",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "reveal",
+    "device": "phone",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "reveal",
+    "device": "phone",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "endgame",
+    "device": "phone",
+    "style": "before",
+    "errors": [],
+    "issues": [
+      "لعبة جديدة",
+      "بلّغ عن سؤال"
+    ]
+  },
+  {
+    "screen": "endgame",
+    "device": "phone",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "long",
+    "device": "phone",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "long",
+    "device": "phone",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "photo",
+    "device": "phone",
+    "style": "before",
+    "errors": [],
+    "issues": []
+  },
+  {
+    "screen": "photo",
+    "device": "phone",
+    "style": "after",
+    "errors": [],
+    "issues": []
+  }
+]

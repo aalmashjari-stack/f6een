@@ -1,0 +1,7 @@
+{
+  mode: 'split',
+  split: '35%',
+  loaded: true,
+  image: 'shots/endgame-phone-after.png'
+}
+{ errors: [] }

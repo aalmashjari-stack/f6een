@@ -1,0 +1,25 @@
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name App --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.5.sdk --xcode-version 17F113 --platform-family iOS --deployment-target 15.0 --bundle-identifier com.f6een.app --output /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app --target-triple arm64-apple-ios15.0-simulator --target-triple x86_64-apple-ios15.0-simulator --binary-file /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app/App --dependency-file /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/arm64/App_dependency_info.dat --dependency-file /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/x86_64/App_dependency_info.dat --stringsdata-file /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --stringsdata-file /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/x86_64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/arm64/App.SwiftFileList --source-file-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/x86_64/App.SwiftFileList --metadata-file-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/App.DependencyMetadataFileList --static-metadata-file-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/App.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/arm64/App.SwiftConstValuesFileList --swift-const-vals-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/Objects-normal/x86_64/App.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-06 23:28:21.928 appintentsmetadataprocessor[4984:57530] Starting appintentsmetadataprocessor export
+2026-09-06 23:28:21.931 appintentsmetadataprocessor[4984:57530] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+AppIntentsSSUTraining (in target 'App' from project 'App')
+    cd /tmp/f6een-final-audit/ios/App
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app/Info.plist --temp-dir-path /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/ssu --bundle-id com.f6een.app --product-path /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app --extracted-metadata-path /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app/Metadata.appintents --metadata-file-list /tmp/f6een-final-audit/ios-build/Build/Intermediates.noindex/App.build/Debug-iphonesimulator/App.build/App.DependencyMetadataFileList --source-file /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app/Info.plist --archive-ssu-assets
+2026-09-06 23:28:21.954 appintentsnltrainingprocessor[4985:57541] Parsing options for appintentsnltrainingprocessor
+2026-09-06 23:28:21.954 appintentsnltrainingprocessor[4985:57541] Starting AppIntents SSU YAML Generation
+2026-09-06 23:28:21.957 appintentsnltrainingprocessor[4985:57541] No AppShortcuts found - Skipping.
+
+RegisterExecutionPolicyException /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app (in target 'App' from project 'App')
+    cd /tmp/f6een-final-audit/ios/App
+    builtin-RegisterExecutionPolicyException /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app
+
+Validate /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app (in target 'App' from project 'App')
+    cd /tmp/f6een-final-audit/ios/App
+    builtin-validationUtility /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app (in target 'App' from project 'App')
+    cd /tmp/f6een-final-audit/ios/App
+    /usr/bin/touch -c /tmp/f6een-final-audit/ios-build/Build/Products/Debug-iphonesimulator/App.app
+
+** BUILD SUCCEEDED **
+

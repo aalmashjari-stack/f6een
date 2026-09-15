@@ -1,0 +1,289 @@
+[
+  {
+    "name": "signed-out entry renders Arabic login without crash",
+    "status": "PASS",
+    "errors": []
+  },
+  {
+    "name": "empty signup shows Arabic validation",
+    "status": "PASS"
+  },
+  {
+    "name": "sprint reload preserves elapsed time",
+    "status": "FAIL",
+    "before": "29",
+    "after": "30",
+    "retainedScore": 10
+  },
+  {
+    "name": "malformed restored question produces recoverable UI",
+    "status": "FAIL",
+    "errors": [
+      "Cannot read properties of null (reading '0')",
+      "Cannot read properties of null (reading '0')",
+      "Cannot read properties of null (reading '0')"
+    ],
+    "bodyText": ""
+  },
+  {
+    "name": "offline report truthfully reflects pending delivery",
+    "status": "FAIL",
+    "label": "بُلّغ",
+    "localBlocked": "[]"
+  },
+  {
+    "name": "image removal does not implicitly submit question form",
+    "status": "PASS",
+    "saveRequests": 0
+  },
+  {
+    "name": "completed game stays completed after failed close and reload",
+    "status": "FAIL",
+    "resumedOldRound": true
+  },
+  {
+    "name": "layout matrix: required controls remain in viewport",
+    "status": "FAIL",
+    "checks": [
+      {
+        "size": "1920x1080",
+        "phase": "stage1-board",
+        "variant": {},
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "stage1-question",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "stage1-question",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "stage1-reveal",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "stage2-question",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "stage2-reveal",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "stage3-play",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "tiebreak",
+        "variant": {
+          "long": true,
+          "revealed": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1920x1080",
+        "phase": "endgame",
+        "variant": {
+          "players": 6
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage1-board",
+        "variant": {},
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage1-question",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage1-question",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage1-reveal",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage2-question",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage2-reveal",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "stage3-play",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "tiebreak",
+        "variant": {
+          "long": true,
+          "revealed": true
+        },
+        "issues": []
+      },
+      {
+        "size": "1024x768",
+        "phase": "endgame",
+        "variant": {
+          "players": 6
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage1-board",
+        "variant": {},
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage1-question",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage1-question",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage1-reveal",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage2-question",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage2-reveal",
+        "variant": {
+          "long": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "stage3-play",
+        "variant": {
+          "photo": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "tiebreak",
+        "variant": {
+          "long": true,
+          "revealed": true
+        },
+        "issues": []
+      },
+      {
+        "size": "844x390",
+        "phase": "endgame",
+        "variant": {
+          "players": 6
+        },
+        "issues": [
+          {
+            "text": "لعبة جديدة",
+            "x": 360.734375,
+            "y": 548.90625,
+            "w": 122.53125,
+            "h": 38.25
+          },
+          {
+            "text": "بلّغ عن سؤال",
+            "x": 432.265625,
+            "y": 593.15625,
+            "w": 61.1875,
+            "h": 22
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "complete browser game: setup, board, derby, both sprint turns, final result",
+    "status": "PASS",
+    "scores": [
+      450,
+      10
+    ],
+    "phase": "endgame",
+    "boardAndDerbyQuestions": 22,
+    "errors": []
+  }
+]

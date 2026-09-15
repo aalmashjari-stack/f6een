@@ -1,0 +1,76 @@
+{
+  "engine": "PGlite embedded PostgreSQL; Supabase auth/storage schemas and default grants modeled locally",
+  "results": [
+    {
+      "name": "all migrations apply on clean PostgreSQL-compatible database",
+      "status": "PASS",
+      "count": 43
+    },
+    {
+      "name": "new accounts get one free game",
+      "status": "PASS"
+    },
+    {
+      "name": "starting a session charges once; resume does not charge again",
+      "status": "PASS"
+    },
+    {
+      "name": "another account cannot update or read the first session",
+      "status": "PASS"
+    },
+    {
+      "name": "ordinary player cannot directly change balance",
+      "status": "PASS"
+    },
+    {
+      "name": "finished sessions cannot be reopened by their owner",
+      "status": "FAIL",
+      "reopened": true,
+      "reusedWithoutBalance": true
+    },
+    {
+      "name": "editor cannot change balances",
+      "status": "PASS"
+    },
+    {
+      "name": "super admin can change balances",
+      "status": "PASS"
+    },
+    {
+      "name": "gift redemption is limited to once per user",
+      "status": "PASS"
+    },
+    {
+      "name": "gift codes accept lowercase input like their uppercase canonical form",
+      "status": "FAIL",
+      "error": "code_not_found"
+    },
+    {
+      "name": "delete floor blocks reduction from twenty to nineteen",
+      "status": "PASS"
+    },
+    {
+      "name": "moving a question respects the same twenty-question floor",
+      "status": "FAIL",
+      "remaining": 19
+    },
+    {
+      "name": "ordinary users cannot call admin question functions",
+      "status": "PASS"
+    },
+    {
+      "name": "only super admins read contact messages",
+      "status": "PASS"
+    },
+    {
+      "name": "reporting only accepts questions actually shown in a completed session",
+      "status": "FAIL",
+      "blockedArbitraryId": true
+    },
+    {
+      "name": "bank mode cannot activate with an incomplete seed when expectation omitted",
+      "status": "FAIL",
+      "activatedWithOnly20Rows": true
+    }
+  ]
+}

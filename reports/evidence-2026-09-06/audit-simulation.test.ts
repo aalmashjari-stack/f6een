@@ -1,0 +1,13 @@
+import {it,expect} from 'vitest'
+import fs from 'node:fs'
+import {ALL_QUESTIONS,playableCategories,familiesOf} from './game/bank'
+import {createSession,encodeState,STAGE1_LEVELS} from './game/session'
+import {reducer} from './game/reducer'
+let rnd=1;const originalRandom=Math.random;const random=()=>{rnd=(1664525*rnd+1013904223)>>>0;return rnd/4294967296}
+const one=(history:Set<string>,seed:number)=>{rnd=seed;Math.random=random;let s=createSession({teamNames:['A','B'],players:[['A1','A2'],['B1','B2']],startingTeam:0,categories:playableCategories().map(c=>({c,k:random()})).sort((a,b)=>a.k-b.k).slice(0,6).map(x=>x.c)});s.usedQuestionIds=history; // recreate initial sprint queue with actual persisted history via storage stub in caller
+const ids:string[]=[],fams:string[]=[];let empty=false;const show=(q:any)=>{if(!q){empty=true;return}ids.push(q.id);fams.push(...familiesOf(q))};const step=(a:any)=>s=reducer(s,a)!;
+for(const c of s.s1Categories)for(const level of STAGE1_LEVELS){step({t:'S1_PICK',category:c.name,level});show(s.currentQuestion);step({t:'S1_TO_REVEAL'});step({t:'S1_SCORE',team:0})}step({t:'INTERVAL_CONTINUE'});
+while(s.phase==='stage2-selection'){step({t:'S2_SELECT',sel:[s.s2Rem[0][0],s.s2Rem[1][0]]});show(s.currentQuestion);step({t:'S2_TO_REVEAL'});step({t:'S2_NEXT_ROUND'})}step({t:'INTERVAL_CONTINUE'});
+for(let t=0;t<2;t++){for(let k=0;k<14;k++){show(s.s3Queue[s.s3Pos]);if(empty)break;step({t:'S3_REVEAL'});step({t:'S3_JUDGE',verdict:'correct'})}if(empty)break;show(s.s3Queue[s.s3Pos]);step({t:'S3_END_TURN'})}
+return {history:s.usedQuestionIds,empty,duplicateIds:ids.length-new Set(ids).size,duplicateFamilies:fams.length-new Set(fams).size,phase:s.phase,seed};}
+it('measures fresh-bank and persistent-history sessions with reproducible seeds',()=>{let history=new Set<string>();Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:()=>JSON.stringify([...history])}});const fresh:any[]=[];for(let n=1;n<=500;n++){history=new Set();const r=one(history,n);if(r.empty||r.duplicateIds||r.duplicateFamilies)fresh.push({...r,history:undefined})}const consecutive:any[]=[];history=new Set();for(let n=1;n<=100;n++){const r=one(history,n);history=r.history;if(r.empty||r.duplicateIds||r.duplicateFamilies)consecutive.push({...r,history:undefined,used:history.size});if(r.empty)break}Math.random=originalRandom;delete (globalThis as any).localStorage;fs.writeFileSync('/private/tmp/f6een-final-audit/simulation-results.json',JSON.stringify({freshSessions:500,freshViolations:fresh,consecutiveViolations:consecutive,endingHistorySize:history.size},null,2));expect(fresh).toEqual([])});
