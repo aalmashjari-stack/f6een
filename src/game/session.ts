@@ -41,9 +41,12 @@ export const STAGE1_LEVEL_POINTS: Record<Level, number> = {
 export const STAGE2_TIMER_MS = 30_000 * TIME_SCALE
 export const STAGE2_CORRECT = 20
 export const STAGE2_WRONG = -10
-export const STAGE3_TIMER_MS = 30_000 * TIME_SCALE
+/* خمسٌ وأربعون لا ثلاثون (قرار علي ١٥ سبتمبر ٢٠٢٦). الدور الواحد يستهلك
+   نحو ١٥–٢١ سؤالاً بدل ١٠–١٤، فالطابور ستّون لا أربعون ليبقى كافياً دورين
+   عاديّين قبل أن يلجأ المحرّك إلى التعبئة (انظر ensureS3Queue). */
+export const STAGE3_TIMER_MS = 45_000 * TIME_SCALE
 export const STAGE3_POINTS = 10
-export const STAGE3_QUEUE_SIZE = 40
+export const STAGE3_QUEUE_SIZE = 60
 export const TIEBREAK_POINTS = 10
 
 /**
