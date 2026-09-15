@@ -206,7 +206,9 @@ export function drawStage3Queue(
   avoidFamilies: Set<string> = EMPTY,
   excluded: Set<string> = EMPTY,
 ): Question[] {
-  const pool = poolShippedByLevels(['سهل', 'متوسط']).filter(
+  /* من فئات الديربي نفسها (قرار علي ١٥ سبتمبر ٢٠٢٦؛ كان من المشحون كلّه
+     بلا فئة) — وبلا قائمة يعود إلى سهل ومتوسط المشحون. */
+  const pool = poolDerby(['سهل', 'متوسط']).filter(
     (q) => !excluded.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
   )
   const fresh = pool.filter((q) => !used.has(q.id))

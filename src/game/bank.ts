@@ -263,14 +263,15 @@ export function poolShippedByLevels(levels: Level[]): Question[] {
 export const DERBY_LEVELS: Level[] = ['سهل', 'متوسط']
 
 /**
- * مخزون الديربي: سهل ومتوسط من فئاته وحدها (SPEC ٥، قرار علي ١٥ سبتمبر ٢٠٢٦)
- * — مشحونةً كانت أو مضافة: فئات إسلاميات الخمس كلُّها مضافة، فقيدُ «المشحون
- * وحده» لم يعد له معنى هنا، وبقي على الحق ما تلحق.
+ * مخزون الديربي والحق ما تلحق: سهل ومتوسط من فئات الديربي وحدها (SPEC ٥ و٦،
+ * قرارا علي ١٥ سبتمبر ٢٠٢٦) — مشحونةً كانت أو مضافة: فئات إسلاميات الخمس
+ * كلُّها مضافة، فقيدُ «المشحون وحده» لم يعد له معنى في المرحلتين.
  *
- * وبلا قائمة فئات (لم تُزامَن قطّ) يعود إلى القانون القديم: متوسط المشحون.
+ * وبلا قائمة فئات (لم تُزامَن قطّ) يعود كلٌّ إلى قانونه القديم من المشحون:
+ * الديربي متوسط، والحق ما تلحق سهل ومتوسط — `fallbackLevels` يقولها المنادي.
  */
-export function poolDerby(): Question[] {
-  if (derby_.size === 0) return poolShippedByLevels(['متوسط'])
+export function poolDerby(fallbackLevels: Level[] = ['متوسط']): Question[] {
+  if (derby_.size === 0) return poolShippedByLevels(fallbackLevels)
   return allowed(DERBY_LEVELS.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => derby_.has(q.category))))
 }
 
