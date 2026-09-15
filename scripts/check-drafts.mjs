@@ -46,9 +46,12 @@ const unifyLetters = (s) =>
     .replace(/ؤ/g, 'و')
     .replace(/ئ/g, 'ي')
     .replace(/ة/g, 'ه')
+/* والرموز التعبيريّة تبقى: فئة «إيموجي» (١٥ سبتمبر ٢٠٢٦) سؤالُها الرموزُ
+   نفسها و«ما الفيلم؟» ذيلٌ مشترك — وحذفُها كان يجعل الدفعة كلَّها سؤالاً
+   واحداً مكرّراً ثمانين مرّة، بينما `norm_question` في القاعدة تُبقيها. */
 const norm = (s) =>
   unifyLetters(stripTashkeel(String(s ?? '')))
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/[^\p{L}\p{N}\p{Extended_Pictographic}\s]/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase()
