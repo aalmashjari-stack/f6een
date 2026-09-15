@@ -169,6 +169,26 @@ export function allCategories(): string[] {
   return [...CATEGORIES, ...extra_.filter((c) => !CATEGORIES.includes(c))]
 }
 
+/* ===================== فئات الديربي ===================== */
+/**
+ * الفئات التي يُسحب منها الديربي — من القاعدة (`categories.derby`) لا من
+ * قائمةٍ في الشيفرة (قرار علي ١٥ سبتمبر ٢٠٢٦: بالتصنيف مع استثناءات، وهي
+ * تتغيّر بلا إصدار متجر). تصل مع الفئات في `syncCategories` وتُخزَّن معها.
+ *
+ * وبلا قائمة — جهازٌ لم يزامن قطّ — يبقى الديربي على قانونه القديم
+ * (`poolShippedByLevels`)، فلا يفتح البابَ كلَّه بالسهو: هو نجمة اللعبة.
+ */
+let derby_: Set<string> = new Set()
+
+export function setDerbyCategories(names: Iterable<string>) {
+  derby_ = new Set(names)
+  notifyBank()
+}
+
+export function derbyCategories(): Set<string> {
+  return derby_
+}
+
 /* صفوف اللوح من موضعها الواحد — انظر `levels.ts`. */
 const LEVELS = BOARD_LEVELS
 
@@ -237,6 +257,22 @@ export function poolShippedByLevels(levels: Level[]): Question[] {
   return allowed(
     levels.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => SHIPPED_IDS.has(q.id))),
   )
+}
+
+/** مستويا الديربي — سهل ومتوسط، لا صعب ولا تعجيزي (SPEC ٥). */
+export const DERBY_LEVELS: Level[] = ['سهل', 'متوسط']
+
+/**
+ * مخزون الديربي والحق ما تلحق: سهل ومتوسط من فئات الديربي وحدها (SPEC ٥ و٦،
+ * قرارا علي ١٥ سبتمبر ٢٠٢٦) — مشحونةً كانت أو مضافة: فئات إسلاميات الخمس
+ * كلُّها مضافة، فقيدُ «المشحون وحده» لم يعد له معنى في المرحلتين.
+ *
+ * وبلا قائمة فئات (لم تُزامَن قطّ) يعود كلٌّ إلى قانونه القديم من المشحون:
+ * الديربي متوسط، والحق ما تلحق سهل ومتوسط — `fallbackLevels` يقولها المنادي.
+ */
+export function poolDerby(fallbackLevels: Level[] = ['متوسط']): Question[] {
+  if (derby_.size === 0) return poolShippedByLevels(fallbackLevels)
+  return allowed(DERBY_LEVELS.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => derby_.has(q.category))))
 }
 
 /* ========================= عائلات القوالب ========================= */

@@ -1,6 +1,6 @@
 import type { Level, Question } from './types'
 import { BOARD_LEVELS } from './levels'
-import { familiesOf, poolByCatLevel, poolByLevels, poolShippedByLevels } from './bank'
+import { familiesOf, poolByCatLevel, poolByLevels, poolDerby, poolShippedByLevels } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -138,17 +138,30 @@ export function drawOne(
 }
 
 /**
- * سحبٌ بمستوىً واحد بلا تصنيف، **من البنك المشحون وحده** — الديربي
- * (SPEC ٥، قرار علي ٤ سبتمبر ٢٠٢٦).
+ * سحب الديربي — سهل ومتوسط من فئات الديربي وحدها، بلا اختيار تصنيف
+ * (SPEC ٥، قرار علي ١٥ سبتمبر ٢٠٢٦؛ كان «متوسط من المشحون» منذ ٤ سبتمبر).
  *
- * أخفُّ على البنك من السحب بالتصنيف لا أثقل: المخزون كلُّ أسئلة المستوى لا
- * خليّةٌ واحدة منه، فلا يجفّ أضعفُ تصنيفٍ ويسحب الجلسة معه.
+ * الفئات من القاعدة (`derbyCategories`)، والمخزون كلُّه دفعةً واحدة لا
+ * خليّةً — فلا يجفّ أضعفُ تصنيفٍ ويسحب الجلسة معه. والقيود نفسها التي في
+ * `drawOne`؛ وآخر الملاذ إن نفد المخزون: متوسط بأيّ فئة ثمّ البنك كلّه —
+ * سؤالٌ من خارج القائمة أهون من شاشةٍ بيضاء.
+ */
+export function drawDerby(
+  used: Set<string>,
+  excluded: Set<string> = EMPTY,
+  spentFamilies: Set<string> = EMPTY,
+): Question {
+  const g = guards(used, excluded, spentFamilies)
+  return pickFrom(poolDerby(), g) ?? fallback(null, 'متوسط', g)
+}
+
+/**
+ * سحبٌ بمستوىً واحد بلا تصنيف، **من البنك المشحون وحده** — فاصل التعادل
+ * (صعب). كان مسارَ الديربي أيضاً حتى ١٥ سبتمبر ٢٠٢٦ (انظر `drawDerby`).
  *
- * والمضافُ من اللوحة (`ADM####`) خارجَه: الديربي نجمةُ اللعبة وأسئلتُه
- * مُراجَعة، والمضافُ يدخل اللعبة من باب لوح الجولة الجماعية وحده.
- * أمّا التعديلُ فيبقى مركَّباً — سؤالُ بنكٍ صُحّح يبقى سؤالَ بنك.
- *
- * والقيود نفسها التي في `drawOne`، وآخر الملاذ نفسه إن حُجز المستوى كلّه.
+ * والمضافُ من اللوحة (`ADM####`) خارجَه، والتعديلُ يبقى مركَّباً — سؤالُ
+ * بنكٍ صُحّح يبقى سؤالَ بنك. والقيود نفسها التي في `drawOne`، وآخر الملاذ
+ * نفسه إن حُجز المستوى كلّه.
  */
 export function drawByLevel(
   level: Level,
@@ -193,7 +206,9 @@ export function drawStage3Queue(
   avoidFamilies: Set<string> = EMPTY,
   excluded: Set<string> = EMPTY,
 ): Question[] {
-  const pool = poolShippedByLevels(['سهل', 'متوسط']).filter(
+  /* من فئات الديربي نفسها (قرار علي ١٥ سبتمبر ٢٠٢٦؛ كان من المشحون كلّه
+     بلا فئة) — وبلا قائمة يعود إلى سهل ومتوسط المشحون. */
+  const pool = poolDerby(['سهل', 'متوسط']).filter(
     (q) => !excluded.has(q.id) && q.question.length <= STAGE3_MAX_Q_LEN,
   )
   const fresh = pool.filter((q) => !used.has(q.id))

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { reducer } from './reducer'
-import { ALL_QUESTIONS, familyOf, playableCategories, setQuestionOverlay } from './bank'
+import { ALL_QUESTIONS, DERBY_LEVELS, familyOf, playableCategories, setDerbyCategories, setQuestionOverlay } from './bank'
 import {
   SCORE_FIX_STEP,
   STAGE1_CATEGORIES,
@@ -300,15 +300,16 @@ describe('الحق ما تلحق — الطابور لا ينفد', () => {
 })
 
 /**
- * قوانين ٤ سبتمبر ٢٠٢٦: الديربي **بلا تصنيفات**، والديربي والحق ما تلحق
- * **من البنك المشحون وحده** لا مما أضافته اللوحة. والمضافُ يدخل اللعبة من
- * باب لوح الجولة الجماعية — الباب الذي يختاره الفريقان بأنفسهما.
+ * قوانين ٤ سبتمبر ٢٠٢٦: الديربي والحق ما تلحق **بلا اختيار تصنيف** و**من
+ * البنك المشحون وحده** لا مما أضافته اللوحة. ثمّ في ١٥ سبتمبر فُتحا على
+ * فئاتٍ بعينها من القاعدة بمستويي سهل ومتوسط (SPEC ٥ و٦) مشحونةً ومضافة —
+ * والفئات تصل مع المزامنة، فبلا قائمة يبقى كلٌّ على قانونه القديم.
  *
  * وقانونُ البنك لا يكشفه تصفّحٌ يدويّ: لوحةٌ فارغة من الإضافات تُخفيه
  * تماماً، ولا يظهر إلّا على حسابٍ رُفعت فيه دفعةُ أسئلة — ثمّ يظهر سؤالٌ
  * مضاف بعد أن تكون الجلسة قد بدأت أمام المجلس.
  */
-describe('الديربي والحق ما تلحق — من البنك المشحون', () => {
+describe('الديربي والحق ما تلحق — مصدر الأسئلة', () => {
   const SHIPPED = new Set(ALL_QUESTIONS.map((q) => q.id))
 
   it('لا يمرّ بشاشة تصنيف: السؤال جاهز مع اختيار اللاعبين', () => {
@@ -323,12 +324,63 @@ describe('الديربي والحق ما تلحق — من البنك المشح
     s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
     expect(s.phase).toBe('stage2-question')
     expect(s.currentQuestion).not.toBeNull()
+    /* بلا قائمة فئات: القانون القديم، متوسط من المشحون. */
     expect(s.currentQuestion!.level).toBe('متوسط')
-    /* ولا تصنيفَ معروضاً — الشريط يقول «متوسط · لا تشاور» لا اسمَ فئة. */
+    /* ولا تصنيفَ معروضاً — الشريط لا يعرض اسمَ فئة. */
     expect(s.currentCategory).toBeNull()
   })
 
-  it('لا الديربي ولا الحق ما تلحق يسحب مضافاً مهما امتلأت الطبقة', () => {
+  it('الديربي والحق ما تلحق بقائمة فئات: سهل ومتوسط من فئات الديربي وحدها — مشحونةً ومضافة', () => {
+    /* فئتان: واحدة مشحونة، وأخرى مضافة كلُّها من اللوحة — كفئات إسلاميات
+       الخمس التي لا معرّف مشحون فيها. */
+    const DERBY = ['تاريخ وحضارات', 'قصص الأنبياء']
+    setQuestionOverlay(
+      Array.from({ length: 120 }, (_, i) => ({
+        id: `ADM${8000 + i}`,
+        category: i % 2 ? 'قصص الأنبياء' : 'أكلات',
+        level: (['سهل', 'متوسط', 'صعب', 'تعجيزي'] as const)[i % 4],
+        topic: '',
+        question: `سؤال مضاف رقم ${i}؟`,
+        answer: `جواب ${i}`,
+      })),
+    )
+    setDerbyCategories(DERBY)
+    try {
+      const seen = new Set<string>()
+      const seenS3 = new Set<string>()
+      for (let n = 0; n < 60; n++) {
+        let s = createSession(INPUT)
+        /* طابور الحق ما تلحق يُسحب عند الإنشاء — القاعدة نفسها عليه كاملاً. */
+        for (const q of s.s3Queue) {
+          expect(DERBY, `طابور ${q.id} في الجلسة ${n}`).toContain(q.category)
+          expect(DERBY_LEVELS, `مستوى الطابور ${q.id} في الجلسة ${n}`).toContain(q.level)
+          seenS3.add(q.category)
+        }
+        for (const cell of boardCells(s)) {
+          s = step(s, { t: 'S1_PICK', ...cell })
+          s = step(s, { t: 'S1_SCORE', team: null })
+        }
+        s = step(s, { t: 'INTERVAL_CONTINUE' })
+        while (s.phase === 'stage2-selection') {
+          s = step(s, { t: 'S2_SELECT', sel: [s.s2Rem[0][0], s.s2Rem[1][0]] })
+          const q = s.currentQuestion!
+          expect(DERBY, `فئة ${q.id} في الجلسة ${n}`).toContain(q.category)
+          expect(DERBY_LEVELS, `مستوى ${q.id} في الجلسة ${n}`).toContain(q.level)
+          seen.add(q.category)
+          s = step(s, { t: 'S2_TO_REVEAL' })
+          s = step(s, { t: 'S2_NEXT_ROUND' })
+        }
+      }
+      /* والمضافة تُسحب فعلاً لا تُستثنى: في ستّين جلسة تظهر الفئتان في المرحلتين. */
+      expect([...seen].sort()).toEqual([...DERBY].sort())
+      expect([...seenS3].sort()).toEqual([...DERBY].sort())
+    } finally {
+      setDerbyCategories([])
+      setQuestionOverlay([])
+    }
+  })
+
+  it('بلا قائمة فئات: لا الديربي ولا الحق ما تلحق يسحب مضافاً مهما امتلأت الطبقة', () => {
     /* طبقةٌ ضخمة من المضاف في المستوى نفسه: لو كان السحب من `effective`
        لغلبت احتمالاً كلَّ جلسةٍ من الجلسات المئة أدناه. */
     setQuestionOverlay(
