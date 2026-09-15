@@ -40,12 +40,17 @@ export function questionSizeSuffix(text: string): '' | ' long' | ' xlong' {
  * تبقى فئات .long/.xlong مقاسَ البداية: تسعون بالمئة من الأسئلة قصيرةٌ تسعُ
  * صندوقها بلا قياس، فلا يمسّها هذا الحلقُ أصلاً.
  */
-export function QuestionText({ children }: { children: string }) {
+/**
+ * `lead` صدرٌ يُرسم أكبر على سطره — رموز فئة «إيموجي» (انظر `game/emoji.ts`).
+ * الحلقُ يقيس الفقرة كلَّها فيدخل الصدرُ في القياس من تلقاء نفسه.
+ */
+export function QuestionText({ children, lead }: { children: string; lead?: string }) {
   const ref = useRef<HTMLParagraphElement>(null)
-  useFitText(ref, children)
+  useFitText(ref, (lead ?? '') + children)
 
   return (
     <p ref={ref} className={'q-text' + questionSizeSuffix(children)}>
+      {lead && <span className="q-emoji">{lead}</span>}
       {children}
     </p>
   )
