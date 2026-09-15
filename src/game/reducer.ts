@@ -1,6 +1,6 @@
 import type { Level, Mark, Question, TeamId } from './types'
 import { familiesOf } from './bank'
-import { drawByLevel, drawOne, drawStage3Queue } from './draw'
+import { drawByLevel, drawDerby, drawOne, drawStage3Queue } from './draw'
 import {
   GameState,
   SetupInput,
@@ -227,14 +227,10 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       ]
       for (const t of [0, 1] as const)
         if (rem[t].length === 0) rem[t] = state.teams[t].players.map((_, i) => i)
-      /* السؤال يُسحب هنا لا في شاشةٍ تالية: الديربي بلا تصنيفات منذ
-         ٤ سبتمبر ٢٠٢٦ (SPEC ٥)، فلم يبقَ بين اختيار اللاعبين والسؤال شيء. */
-      const q = drawByLevel(
-        'متوسط',
-        state.usedQuestionIds,
-        excludedIds(state),
-        guardedFamilies(state),
-      )
+      /* السؤال يُسحب هنا لا في شاشةٍ تالية: الديربي بلا اختيار تصنيف منذ
+         ٤ سبتمبر ٢٠٢٦ (SPEC ٥)، فلم يبقَ بين اختيار اللاعبين والسؤال شيء.
+         ومخزونه سهل ومتوسط من فئاته (١٥ سبتمبر) — انظر `drawDerby`. */
+      const q = drawDerby(state.usedQuestionIds, excludedIds(state), guardedFamilies(state))
       return {
         ...burn(state, q),
         s2Sel: action.sel,
