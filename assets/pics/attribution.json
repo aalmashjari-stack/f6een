@@ -2919,11 +2919,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AZlatan_Ibrahimovi%C4%87_nyc.jpg"
   },
   {
-    "key": "flag-ae",
+    "key": "flag-al",
     "licence": "Public domain",
-    "artist": "Abdulla Mohammed Al Maainah",
-    "page": "File:Flag of the United Arab Emirates.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_United_Arab_Emirates.svg"
+    "artist": "Sadik Kaceli",
+    "page": "File:Flag of Albania.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Albania.svg"
   },
   {
     "key": "flag-am",
@@ -2961,6 +2961,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Azerbaijan.svg"
   },
   {
+    "key": "flag-ba",
+    "licence": "Public domain",
+    "artist": "Mladen Kolobarić",
+    "page": "File:Flag of Bosnia and Herzegovina.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Bosnia_and_Herzegovina.svg"
+  },
+  {
     "key": "flag-bd",
     "licence": "Public domain",
     "artist": "See File history below for details.",
@@ -2975,18 +2982,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Belgium.svg"
   },
   {
-    "key": "flag-bh",
+    "key": "flag-bg",
     "licence": "Public domain",
-    "artist": "Source: Drawn by SKopp, rewritten by Zscout370",
-    "page": "File:Flag of Bahrain.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Bahrain.svg"
-  },
-  {
-    "key": "flag-br",
-    "licence": "Public domain",
-    "artist": "Raimundo Teixeira Mendes",
-    "page": "File:Flag of Brazil.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Brazil.svg"
+    "artist": "SKopp",
+    "page": "File:Flag of Bulgaria.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Bulgaria.svg"
   },
   {
     "key": "flag-bt",
@@ -2996,11 +2996,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Bhutan.svg"
   },
   {
-    "key": "flag-ca",
+    "key": "flag-bw",
     "licence": "Public domain",
-    "artist": "Created by George F. G. Stanley / E Pluribus Anthony / User:Mzajac",
-    "page": "File:Flag of Canada.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Canada.svg"
+    "artist": "SKopp, Gabbe, Madden",
+    "page": "File:Flag of Botswana.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Botswana.svg"
   },
   {
     "key": "flag-ch",
@@ -3017,11 +3017,32 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Chile.svg"
   },
   {
+    "key": "flag-cm",
+    "licence": "Public domain",
+    "artist": "(of code) -xfi-",
+    "page": "File:Flag of Cameroon.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Cameroon.svg"
+  },
+  {
     "key": "flag-cn",
     "licence": "Public domain",
     "artist": "Zeng Liansong",
     "page": "File:Flag of the People's Republic of China.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_People's_Republic_of_China.svg"
+  },
+  {
+    "key": "flag-co",
+    "licence": "Public domain",
+    "artist": "See File history below for details.",
+    "page": "File:Flag of Colombia.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Colombia.svg"
+  },
+  {
+    "key": "flag-cu",
+    "licence": "Public domain",
+    "artist": "Miguel Teurbe Tolón and Narciso López",
+    "page": "File:Flag of Cuba.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Cuba.svg"
   },
   {
     "key": "flag-cy",
@@ -3036,13 +3057,6 @@
     "artist": "Jaroslav Kursa",
     "page": "File:Flag of the Czech Republic.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Czech_Republic.svg"
-  },
-  {
-    "key": "flag-de",
-    "licence": "Public domain",
-    "artist": "User:SKopp, User:Madden, and other users",
-    "page": "File:Flag of Germany.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Germany.svg"
   },
   {
     "key": "flag-dj",
@@ -3066,11 +3080,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Algeria.svg"
   },
   {
-    "key": "flag-eg",
+    "key": "flag-ee",
     "licence": "Public domain",
-    "artist": "See File history below for details.",
-    "page": "File:Flag of Egypt.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Egypt.svg"
+    "artist": "Original: Unknown author Vector: SKopp, PeepP and ‍others",
+    "page": "File:Flag of Estonia.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Estonia.svg"
   },
   {
     "key": "flag-es",
@@ -3092,20 +3106,6 @@
     "artist": "Unknown",
     "page": "File:Flag of Finland.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Finland.svg"
-  },
-  {
-    "key": "flag-fr",
-    "licence": "Public domain",
-    "artist": "Original: Unknown Vector: SKopp",
-    "page": "File:Flag of France.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_France.svg"
-  },
-  {
-    "key": "flag-gb",
-    "licence": "Public domain",
-    "artist": "Original: Acts of Union 1800 Vector: Yaddah",
-    "page": "File:Flag of the United Kingdom.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_United_Kingdom.svg"
   },
   {
     "key": "flag-ge",
@@ -3136,6 +3136,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Croatia.svg"
   },
   {
+    "key": "flag-hu",
+    "licence": "Public domain",
+    "artist": "SKopp",
+    "page": "File:Flag of Hungary.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Hungary.svg"
+  },
+  {
     "key": "flag-id",
     "licence": "Public domain",
     "artist": "Jayakatwang",
@@ -3157,13 +3164,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_India.svg"
   },
   {
-    "key": "flag-iq",
-    "licence": "Public domain",
-    "artist": "See File history below for details.",
-    "page": "File:Flag of Iraq.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Iraq.svg"
-  },
-  {
     "key": "flag-ir",
     "licence": "Public domain",
     "artist": "SVG file: SiBr4Designer: Hamid NadimiConstruction: ISIRI",
@@ -3178,25 +3178,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Iceland.svg"
   },
   {
-    "key": "flag-it",
+    "key": "flag-jm",
     "licence": "Public domain",
-    "artist": "See below.",
-    "page": "File:Flag of Italy.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Italy.svg"
-  },
-  {
-    "key": "flag-jo",
-    "licence": "Public domain",
-    "artist": "Unknown",
-    "page": "File:Flag of Jordan.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Jordan.svg"
-  },
-  {
-    "key": "flag-jp",
-    "licence": "Public domain",
-    "artist": "Various",
-    "page": "File:Flag of Japan.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Japan.svg"
+    "artist": "The SVG code is valid. This vector image was created with Inkscape by SKopp, and then manually edited by Zscout370, Madden and others.",
+    "page": "File:Flag of Jamaica.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Jamaica.svg"
   },
   {
     "key": "flag-ke",
@@ -3204,6 +3190,13 @@
     "artist": "User:Pumbaa80",
     "page": "File:Flag of Kenya.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Kenya.svg"
+  },
+  {
+    "key": "flag-kh",
+    "licence": "Public domain",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Flag of Cambodia.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Cambodia.svg"
   },
   {
     "key": "flag-km",
@@ -3220,25 +3213,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_South_Korea.svg"
   },
   {
-    "key": "flag-kw",
-    "licence": "Public domain",
-    "artist": "Derivative works of this file: Standard of the Emir of Kuwait.svg: Flag of Kuwait, Saudi Arabia and United Arab Emirates.png:",
-    "page": "File:Flag of Kuwait.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Kuwait.svg"
-  },
-  {
     "key": "flag-kz",
     "licence": "Public domain",
     "artist": "Shaken Niyazbekop",
     "page": "File:Flag of Kazakhstan.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Kazakhstan.svg"
-  },
-  {
-    "key": "flag-lb",
-    "licence": "Public domain",
-    "artist": "Henri Pharaon",
-    "page": "File:Flag of Lebanon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Lebanon.svg"
   },
   {
     "key": "flag-lk",
@@ -3260,6 +3239,20 @@
     "artist": "Denelson83, Zscout370",
     "page": "File:Flag of Morocco.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Morocco.svg"
+  },
+  {
+    "key": "flag-ma2",
+    "licence": "Public domain",
+    "artist": "غير مذكور",
+    "page": "File:Flag of Madagascar.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Madagascar.svg"
+  },
+  {
+    "key": "flag-mm",
+    "licence": "Public domain",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Flag of Myanmar.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Myanmar.svg"
   },
   {
     "key": "flag-mn",
@@ -3297,6 +3290,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Malaysia.svg"
   },
   {
+    "key": "flag-mz",
+    "licence": "Public domain",
+    "artist": "FRELIMO",
+    "page": "File:Flag of Mozambique.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Mozambique.svg"
+  },
+  {
     "key": "flag-ng",
     "licence": "Public domain",
     "artist": "Jon Harald Søby.",
@@ -3325,11 +3325,18 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Nepal.svg"
   },
   {
-    "key": "flag-om",
-    "licence": "OGL-om 1.0",
-    "artist": "See File history below for details.",
-    "page": "File:Flag of Oman.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Oman.svg"
+    "key": "flag-nz",
+    "licence": "Public domain",
+    "artist": "Original: Albert Hastings Markham Vector: Zscout370, Hugh Jass, s. File history",
+    "page": "File:Flag of New Zealand.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_New_Zealand.svg"
+  },
+  {
+    "key": "flag-pe",
+    "licence": "Public domain",
+    "artist": "David Benbennick",
+    "page": "File:Flag of Peru.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Peru.svg"
   },
   {
     "key": "flag-ph",
@@ -3353,13 +3360,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Poland.svg"
   },
   {
-    "key": "flag-ps",
-    "licence": "Public domain",
-    "artist": "Orionist, previous versions by Makaristos, Mysid, etc.",
-    "page": "File:Flag of Palestine.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Palestine.svg"
-  },
-  {
     "key": "flag-pt",
     "licence": "Public domain",
     "artist": "Original: Columbano Bordalo Pinheiro (1910; generic design) Vector: Vítor Luís Rodrigues; António Martins-Tuválkin (2004; this specific vector set: see sources)",
@@ -3367,11 +3367,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Portugal.svg"
   },
   {
-    "key": "flag-qa",
+    "key": "flag-rs",
     "licence": "Public domain",
     "artist": "See File history below for details.",
-    "page": "File:Flag of Qatar.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Qatar.svg"
+    "page": "File:Flag of Serbia.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Serbia.svg"
   },
   {
     "key": "flag-ru",
@@ -3379,13 +3379,6 @@
     "artist": "Peter the Great",
     "page": "File:Flag of Russia.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Russia.svg"
-  },
-  {
-    "key": "flag-sa",
-    "licence": "Public domain",
-    "artist": "The Shura Council",
-    "page": "File:Flag of Saudi Arabia.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Saudi_Arabia.svg"
   },
   {
     "key": "flag-sd",
@@ -3430,11 +3423,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Tunisia.svg"
   },
   {
-    "key": "flag-tr",
+    "key": "flag-tz",
     "licence": "Public domain",
-    "artist": "David Benbennick (original author)",
-    "page": "File:Flag of Turkey.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Turkey.svg"
+    "artist": "غير مذكور",
+    "page": "File:Flag of Tanzania.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Tanzania.svg"
   },
   {
     "key": "flag-ua",
@@ -3444,11 +3437,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Ukraine.svg"
   },
   {
-    "key": "flag-us",
+    "key": "flag-ug",
     "licence": "Public domain",
-    "artist": "Uploaded by Dbenbenn; edited by users such as Zscout370, Jacobolus, Indolences, and Technion.",
-    "page": "File:Flag of the United States.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_United_States.svg"
+    "artist": "tobias",
+    "page": "File:Flag of Uganda.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Uganda.svg"
   },
   {
     "key": "flag-uz",
@@ -3456,6 +3449,13 @@
     "artist": "Farhod Yoʻldoshev",
     "page": "File:Flag of Uzbekistan.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Uzbekistan.svg"
+  },
+  {
+    "key": "flag-ve",
+    "licence": "Public domain",
+    "artist": "Various, see File history below for details.",
+    "page": "File:Flag of Venezuela.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Venezuela.svg"
   },
   {
     "key": "flag-vn",
@@ -3605,18 +3605,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AAmazon_icon.svg"
   },
   {
-    "key": "logo-android",
-    "licence": "CC BY 3.0",
-    "artist": "Google Inc., employer for hire; designed by Irina Blok",
-    "page": "File:Android robot.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AAndroid_robot.svg"
-  },
-  {
-    "key": "logo-apple",
-    "licence": "Public domain",
-    "artist": "Original: Rob Janoff",
-    "page": "File:Apple logo black.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AApple_logo_black.svg"
+    "key": "logo-angular",
+    "licence": "CC BY 4.0",
+    "artist": "Emma Twersky",
+    "page": "File:Angular full color logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAngular_full_color_logo.svg"
   },
   {
     "key": "logo-applemusic",
@@ -3626,11 +3619,39 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AApple_Music_icon.svg"
   },
   {
+    "key": "logo-appstore",
+    "licence": "Public domain",
+    "artist": "Apple",
+    "page": "File:App Store (iOS).svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AApp_Store_(iOS).svg"
+  },
+  {
+    "key": "logo-au",
+    "licence": "Public domain",
+    "artist": "African Union - supranational union in Africa",
+    "page": "File:Flag of the African Union.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_African_Union.svg"
+  },
+  {
     "key": "logo-audi",
     "licence": "Public domain",
     "artist": "Strichpunkt / KMS Team",
     "page": "File:Audi-Logo 2016.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AAudi-Logo_2016.svg"
+  },
+  {
+    "key": "logo-beats",
+    "licence": "Public domain",
+    "artist": "Beats Electronics, LLC",
+    "page": "File:Beats Electronics logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABeats_Electronics_logo.svg"
+  },
+  {
+    "key": "logo-binance",
+    "licence": "Public domain",
+    "artist": "Binance",
+    "page": "File:Binance Logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABinance_Logo.svg"
   },
   {
     "key": "logo-biohazard",
@@ -3647,6 +3668,20 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ABitcoin.svg"
   },
   {
+    "key": "logo-blender",
+    "licence": "Public domain",
+    "artist": "™/®Blender Foundation",
+    "page": "File:Blender logo no text.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABlender_logo_no_text.svg"
+  },
+  {
+    "key": "logo-bluesky",
+    "licence": "Public domain",
+    "artist": "Eric Bailey",
+    "page": "File:Bluesky Logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABluesky_Logo.svg"
+  },
+  {
     "key": "logo-bluetooth",
     "licence": "Public domain",
     "artist": "Jnmasek",
@@ -3654,18 +3689,18 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ABluetooth.svg"
   },
   {
-    "key": "logo-chrome",
-    "licence": "Public domain",
-    "artist": "Google",
-    "page": "File:Google Chrome icon (February 2022).svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AGoogle_Chrome_icon_(February_2022).svg"
-  },
-  {
     "key": "logo-citroen",
     "licence": "Public domain",
     "artist": "Unknown",
     "page": "File:Logo-citroen-1919.png",
     "source": "https://commons.wikimedia.org/wiki/File%3ALogo-citroen-1919.png"
+  },
+  {
+    "key": "logo-commons",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Reidab, Grunt, 3247, Pumbaa",
+    "page": "File:Commons-logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACommons-logo.svg"
   },
   {
     "key": "logo-dropbox",
@@ -3703,13 +3738,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_Office_Excel_(2019%E2%80%93present).svg"
   },
   {
-    "key": "logo-facebook",
-    "licence": "Public domain",
-    "artist": "Facebook",
-    "page": "File:2023 Facebook icon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3A2023_Facebook_icon.svg"
-  },
-  {
     "key": "logo-firefox",
     "licence": "MPL 2",
     "artist": "Mozilla Corporation",
@@ -3722,6 +3750,13 @@
     "artist": "Google, LLC",
     "page": "File:Google Drive icon (2020).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AGoogle_Drive_icon_(2020).svg"
+  },
+  {
+    "key": "logo-git",
+    "licence": "CC BY 3.0",
+    "artist": "Jason Long",
+    "page": "File:Git icon.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGit_icon.svg"
   },
   {
     "key": "logo-github",
@@ -3745,13 +3780,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AGoogle_Maps_icon_(2020).svg"
   },
   {
-    "key": "logo-google",
-    "licence": "Public domain",
-    "artist": "Google LLC",
-    "page": "File:Google \"G\" logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AGoogle_%22G%22_logo.svg"
-  },
-  {
     "key": "logo-gplay",
     "licence": "Public domain",
     "artist": "Google",
@@ -3773,18 +3801,18 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AIMessage_logo.svg"
   },
   {
-    "key": "logo-instagram",
-    "licence": "Public domain",
-    "artist": "Original: Instagram Vector: Alexo88",
-    "page": "File:Instagram.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AInstagram.svg"
-  },
-  {
     "key": "logo-juventus",
     "licence": "Public domain",
     "artist": "Interbrand – Global Brand Consultancy / Juventus Football Club SpA",
     "page": "File:Juventus FC - logo black (Italy, 2020).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AJuventus_FC_-_logo_black_(Italy%2C_2020).svg"
+  },
+  {
+    "key": "logo-kubernetes",
+    "licence": "Public domain",
+    "artist": "Google, Inc.",
+    "page": "File:Kubernetes logo without workmark.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKubernetes_logo_without_workmark.svg"
   },
   {
     "key": "logo-linux",
@@ -3794,6 +3822,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ATux.svg"
   },
   {
+    "key": "logo-litecoin",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Albert dro Charlie Lee Bushido",
+    "page": "File:Litecoin.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALitecoin.svg"
+  },
+  {
     "key": "logo-mastercard",
     "licence": "Public domain",
     "artist": "Mastercard Incorporated",
@@ -3801,18 +3836,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AMastercard_2019_logo.svg"
   },
   {
-    "key": "logo-mcdonalds",
+    "key": "logo-mastodon",
     "licence": "Public domain",
-    "artist": "McDonald's",
-    "page": "File:McDonald's Golden Arches.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AMcDonald's_Golden_Arches.svg"
-  },
-  {
-    "key": "logo-mercedes",
-    "licence": "CC BY-SA 4.0",
-    "artist": "Khaled",
-    "page": "File:Mercedes-Logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AMercedes-Logo.svg"
+    "artist": "Eugen Rochko &amp; other Mastodon contributors",
+    "page": "File:Mastodon logotype (simple) new hue.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMastodon_logotype_(simple)_new_hue.svg"
   },
   {
     "key": "logo-messenger",
@@ -3822,11 +3850,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFacebook_Messenger_logo_2020.svg"
   },
   {
-    "key": "logo-microsoft",
-    "licence": "Public domain",
-    "artist": "Ariesk47 Original: Microsoft",
-    "page": "File:Microsoft icon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_icon.svg"
+    "key": "logo-mozilla",
+    "licence": "CC BY 3.0",
+    "artist": "Original: Mozilla Vector: Hilst",
+    "page": "File:Mozilla dinosaur head logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMozilla_dinosaur_head_logo.svg"
   },
   {
     "key": "logo-nato",
@@ -3841,20 +3869,6 @@
     "artist": "CMetalCore",
     "page": "File:Netflix icon.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ANetflix_icon.svg"
-  },
-  {
-    "key": "logo-nike",
-    "licence": "Public domain",
-    "artist": "Carolyn Davidson, Nike",
-    "page": "File:Logo NIKE.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ALogo_NIKE.svg"
-  },
-  {
-    "key": "logo-olympics",
-    "licence": "Public domain",
-    "artist": "Original author: Pierre de Coubertin (1863-1937)",
-    "page": "File:Olympic rings without rims.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AOlympic_rings_without_rims.svg"
   },
   {
     "key": "logo-opec",
@@ -3885,6 +3899,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3APayPal_2024_(Icon).svg"
   },
   {
+    "key": "logo-peace",
+    "licence": "Public domain",
+    "artist": "Gerald Holtom (DW: The original uploader was Schuminweb at English Wikipedia.)",
+    "page": "File:Peace sign.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APeace_sign.svg"
+  },
+  {
     "key": "logo-photoshop",
     "licence": "Public domain",
     "artist": "Adobe Inc.",
@@ -3899,13 +3920,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3APinterest.svg"
   },
   {
-    "key": "logo-playstation",
-    "licence": "Public domain",
-    "artist": "Sony Interactive Entertainment",
-    "page": "File:PlayStation logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3APlayStation_logo.svg"
-  },
-  {
     "key": "logo-powerpoint",
     "licence": "Public domain",
     "artist": "Microsoft Corporation",
@@ -3918,6 +3932,13 @@
     "artist": "Original: Unknown authorUnknown author Vector: Uwe W.",
     "page": "File:Radiation warning symbol.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ARadiation_warning_symbol.svg"
+  },
+  {
+    "key": "logo-react",
+    "licence": "Public domain",
+    "artist": "Facebook",
+    "page": "File:React-icon.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AReact-icon.svg"
   },
   {
     "key": "logo-recycle",
@@ -3941,6 +3962,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Red_Cross.svg"
   },
   {
+    "key": "logo-redcrystal",
+    "licence": "Public domain",
+    "artist": "Adapted from File:Red Diamond.png by User:Denelson83 and Zscout370.",
+    "page": "File:Flag of the Red Crystal.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_the_Red_Crystal.svg"
+  },
+  {
     "key": "logo-renault",
     "licence": "Public domain",
     "artist": "Renault",
@@ -3955,6 +3983,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ARolls-Royce_Motor_Cars_logo.svg"
   },
   {
+    "key": "logo-rust",
+    "licence": "CC BY 4.0",
+    "artist": "™/®Rust Foundation",
+    "page": "File:Rust programming language black logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARust_programming_language_black_logo.svg"
+  },
+  {
     "key": "logo-shazam",
     "licence": "Public domain",
     "artist": "Shazam",
@@ -3967,6 +4002,13 @@
     "artist": "This vector image includes elements that have been taken or adapted from this file:",
     "page": "File:Shell.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AShell.svg"
+  },
+  {
+    "key": "logo-signal",
+    "licence": "Public domain",
+    "artist": "Signal App",
+    "page": "File:Signal-Logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASignal-Logo.svg"
   },
   {
     "key": "logo-skype",
@@ -4004,18 +4046,18 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ASuperman_shield.svg"
   },
   {
+    "key": "logo-target",
+    "licence": "Public domain",
+    "artist": "Target Corporation",
+    "page": "File:Target Corporation logo (vector).svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATarget_Corporation_logo_(vector).svg"
+  },
+  {
     "key": "logo-teams",
     "licence": "Public domain",
     "artist": "Microsoft Corporation",
     "page": "File:Microsoft Office Teams (2018–present).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_Office_Teams_(2018%E2%80%93present).svg"
-  },
-  {
-    "key": "logo-telegram",
-    "licence": "Public domain",
-    "artist": "Telegram FZ LLC",
-    "page": "File:Telegram 2019 Logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ATelegram_2019_Logo.svg"
   },
   {
     "key": "logo-tesla",
@@ -4032,32 +4074,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AThreads_(app)_logo.svg"
   },
   {
-    "key": "logo-tiktok",
-    "licence": "CC0",
-    "artist": "Editantpv Ionic Team (https://github.com/ionic-team / http://ionic.io/) Archive link: https://web.archive.org/web/20230423134841/https://github.com/ionic-team Archive link: https://web.archive.org/web/20230423134854/https://ionic.io/",
-    "page": "File:Tiktok icon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ATiktok_icon.svg"
-  },
-  {
-    "key": "logo-toyota",
-    "licence": "Public domain",
-    "artist": "Toyota",
-    "page": "File:Toyota Symbol.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AToyota_Symbol.svg"
-  },
-  {
     "key": "logo-twitch",
     "licence": "Public domain",
     "artist": "Twitch Interactive, Inc.",
     "page": "File:Twitch Glitch Logo Purple.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ATwitch_Glitch_Logo_Purple.svg"
-  },
-  {
-    "key": "logo-twitterbird",
-    "licence": "Apache License 2.0",
-    "artist": "Martin Grasser, per source",
-    "page": "File:Twitter-logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ATwitter-logo.svg"
   },
   {
     "key": "logo-ubuntu",
@@ -4081,18 +4102,18 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AUSB_icon.svg"
   },
   {
+    "key": "logo-vue",
+    "licence": "CC BY 4.0",
+    "artist": "Evan You, https://github.com/yyx990803",
+    "page": "File:Vue.js Logo 2.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AVue.js_Logo_2.svg"
+  },
+  {
     "key": "logo-vw",
     "licence": "Public domain",
     "artist": "Volkswagen",
     "page": "File:Volkswagen logo 2019.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AVolkswagen_logo_2019.svg"
-  },
-  {
-    "key": "logo-whatsapp",
-    "licence": "Public domain",
-    "artist": "WhatsApp",
-    "page": "File:WhatsApp.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AWhatsApp.svg"
   },
   {
     "key": "logo-who",
@@ -4109,13 +4130,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AWikipedia-logo-v2.svg"
   },
   {
-    "key": "logo-windows",
-    "licence": "Public domain",
-    "artist": "OAOV",
-    "page": "File:Windows logo - 2021.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AWindows_logo_-_2021.svg"
-  },
-  {
     "key": "logo-word",
     "licence": "Public domain",
     "artist": "Microsoft Corporation",
@@ -4130,25 +4144,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AX_logo_2023.svg"
   },
   {
-    "key": "logo-xbox",
-    "licence": "Public domain",
-    "artist": "Microsoft",
-    "page": "File:Xbox app logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AXbox_app_logo.svg"
-  },
-  {
     "key": "logo-xiaomi",
     "licence": "Public domain",
     "artist": "Xiaomi",
     "page": "File:Xiaomi logo (2021-).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AXiaomi_logo_(2021-).svg"
-  },
-  {
-    "key": "logo-youtube",
-    "licence": "Public domain",
-    "artist": "Original: Google, Inc. Vector: Logopedia",
-    "page": "File:YouTube full-color icon (2024).svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AYouTube_full-color_icon_(2024).svg"
   },
   {
     "key": "place-آيا-صوفيا",
