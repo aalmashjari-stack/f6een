@@ -991,6 +991,32 @@ export function Setup({
         }
         .catchip.taken .cc-tick { display:grid; }
 
+        /* ─── الوضع الطوليّ ─────────────────────────────────────────────
+           التطبيقُ المثبَّت يُعرض قبل «ابدأ اللعبة» كيف أُمسك الجهاز (قرار علي
+           ١٦ سبتمبر ٢٠٢٦؛ الاتجاه في src/lib/orientation.ts) — والجوالُ في
+           اليد طوليّ. المقاسات أعلاه مبنيّة على dvh بافتراض شاشةٍ عريضة
+           قصيرة، وفي الطول يتضخّم dvh (874 بدل 390) فينتفخ رقمُ المرحلة إلى
+           38px والشعارُ إلى سقفه. هنا تُقيَّد بالعرض. والموقع لا يبلغ هذه
+           الطبقة على اللمس: بوّابتُه تحجب الطوليّ قبلها. */
+        @media (orientation: portrait) {
+          html[data-skin] body .screen.setup .stage-no { font-size:clamp(22px,6vw,40px); }
+          html[data-skin] body .screen.setup .hero { height:auto; min-height:0; }
+        }
+        /* الجوال الطوليّ: الشريط لا يسع الشعارَ والقائمةَ في صفٍّ — كانت
+           الكبسولاتُ تلتفّ صفّين وتركب الشعار. صفّان مقصودان: الشعار في
+           الوسط، والقائمة تحته تلتفّ كما تشاء. */
+        @media (orientation: portrait) and (max-width:640px) {
+          html[data-skin] body .screen.setup .hero {
+            flex-direction:column; align-items:center; justify-content:center;
+            gap:8px;
+            /* الخلفيّة تعبر شريطَ الحالة والمحتوى يقف تحته — كما تعبر الأذنَ
+               في العرض: الهامش السالب يلغي إزاحة ‎#root‎ والحشوة تردّها. */
+            margin-top:calc(-1 * env(safe-area-inset-top));
+            padding-block:calc(10px + env(safe-area-inset-top)) 16px;
+          }
+          html[data-skin] body .screen.setup .hero-nav { margin-inline-start:0; justify-content:center; }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(36px,12vw,52px); }
+        }
       `}</style>
     </div>
   )

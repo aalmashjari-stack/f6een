@@ -652,7 +652,16 @@ body::after {
      الجهاز قبل ذلك ضريبةٌ بلا مقابل (ملاحظة علي، ٨ سبتمبر ٢٠٢٦). والسمة
      تُوضع في `index.html` قبل أوّل رسم، فلا تومض البوّابة ثمّ تختفي. */
   :root[data-portrait-ok] #rotate-gate { display: none; }
-  :root[data-portrait-ok] #root { display: block; }
+  /* **flex لا block**: الجذر عمودٌ مرن (`#root` أعلاه) والشاشاتُ تأخذ
+     ارتفاعها منه بـflex:1. كانت block هنا فتغلب بوزنها (0,2,0)، ويفقد
+     الإعدادُ تمريرَه — الغلاف يكبر بمحتواه (قِيس: 1981px على 874). */
+  :root[data-portrait-ok] #root { display: flex; }
+
+  /* والتطبيق المثبَّت خارج البوّابة كلّها: اتجاهُه يقفله بنفسه من «ابدأ
+     اللعبة» (`src/lib/orientation.ts`)، وما قبلها يُعرض طوليّاً عن قصد.
+     السمة تُوضع في `index.html` قبل أوّل رسم. */
+  :root[data-native] #rotate-gate { display: none; }
+  :root[data-native] #root { display: flex; }
 }
 
 @keyframes rotate-gate-tilt {

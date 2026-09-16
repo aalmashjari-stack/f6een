@@ -51,9 +51,14 @@ export function QuitGame({ onQuit, charged = false }: { onQuit: () => void; char
            عليها هذا الزرّ — فكان يركب على «صاحب الدور» واسمِ الفريق (٢٧ بكسل
            على الجوال الأفقي). ولا يُصلحها حجزُ فجوة في الشريط: نصّ الحالة
            الثانية «تأكيد الإنهاء» أعرض من الأولى بضعفين، فيعبرها ثانيةً. */
+        /* والزاوية خارج مناطق النظام: ‎fixed‎ يتجاهل إزاحة ‎#root‎ للأمان،
+           فكان الزرّ في التطبيق يقف على شريط المنزل (٢١pt في العرض) الذي
+           يمسك اللمسَ لإيماءة النظام — ضغطاتٌ لا تصل (قِيس في المحاكي ١٦
+           سبتمبر ٢٠٢٦). وعلى الويب ‎env()‎ أصفار فلا يتحرّك بكسل. */
         .quit-corner {
-          position:fixed; inset-block-end:clamp(6px,1.2dvh,14px);
-          inset-inline-start:clamp(6px,1.2vw,16px);
+          position:fixed;
+          inset-block-end:calc(env(safe-area-inset-bottom) + clamp(6px,1.2dvh,14px));
+          inset-inline-start:calc(env(safe-area-inset-right) + clamp(6px,1.2vw,16px));
           z-index:50;
           display:flex; flex-direction:column; align-items:flex-start;
           gap:clamp(4px,.7dvh,7px);
