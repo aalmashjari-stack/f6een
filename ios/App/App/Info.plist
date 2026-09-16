@@ -60,16 +60,19 @@
 	<array>
 		<string>armv7</string>
 	</array>
-	<!-- أفقيّ فقط. النظام لا يعطي الوضع الطولي أصلاً، فبوابة «أدر جهازك»
-	     لا تُستدعى في التطبيق — تبقى في نسخة الويب وحدها حيث لا قفل.
-	     الجهتان معاً (يمين ويسار) ليدير اللاعب الجهاز كيف شاء. -->
+	<!-- الاتجاهات كلّها مفتوحة هنا، والقفل بيد اللعبة (`OrientationPlugin.swift`):
+	     ما قبل «ابدأ اللعبة» بالطول أو العرض كيف أُمسك الجهاز، ومن البدء
+	     أفقيٌّ بجهتيه يفرضه التطبيق نفسه — لا بوّابة «أدر جهازك» فيه، تبقى
+	     في نسخة الويب وحدها (قرار علي ١٦ سبتمبر ٢٠٢٦). -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
+		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
+		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>

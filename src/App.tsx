@@ -40,6 +40,7 @@ import { CrashScreen } from './components/CrashScreen'
 import { useWakeLock } from './components/useWakeLock'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
+import { lockOrientation } from './lib/orientation'
 import { Intro } from './screens/Intro'
 import { ConfirmEmail } from './screens/ConfirmEmail'
 import { ResetPassword } from './screens/ResetPassword'
@@ -154,6 +155,15 @@ export default function App() {
   /* الحالة تُقرأ من المخزن بعد أن يُعرف الحساب لا قبله (انظر أثر الإقلاع
      أدناه): المفتاح باسم الحساب، ولا حساب قبل أن تُقرأ الجلسة. */
   const [state, dispatch] = useReducer(reducer, null)
+  /* الاتجاه يتبع الحالة لا الشاشة: لعبةٌ قائمة — من اللوح إلى الختام —
+     أفقيّة، وما قبلها وما بعدها طوليّ (قرار علي ١٦ سبتمبر ٢٠٢٦؛ كان «كيف
+     أُمسك الجهاز» فعاد الإعدادُ أفقيّاً بعد «لعبة جديدة» والجوالُ ما زال
+     مائلاً — فطلبه مفروضاً). الختام مع اللعبة لا مع الإعداد: نتائجُه تُقرأ
+     من آخر المجلس على الشاشة العريضة. والآيباد مستثنى في الإضافة نفسها. */
+  const inGame = state !== null
+  useEffect(() => {
+    lockOrientation(inGame ? 'landscape' : 'portrait')
+  }, [inGame])
   /* صفّ الجلسة على الخادم. يُقرأ من الحفظ المحلّي كي ينجو من إغلاق المتصفّح:
      بدونه تبقى الجلسة مفتوحة على الخادم بعد أن تنتهي على الجهاز، فيردّها
      `start_session` بدل أن يبدأ لعبةً جديدة. */

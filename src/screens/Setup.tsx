@@ -48,6 +48,9 @@ export function Setup({
      وشيءٌ ناقص — فتحمرّ عندها (طلب علي ٥ سبتمبر ٢٠٢٦). الرماديّ يخبر،
      والأحمر يجيب على ضغطةٍ لم تُثمر. */
   const [nudge, setNudge] = useState(false)
+  /* قائمة الرأس على الجوال الطوليّ (طلب علي ١٦ سبتمبر ٢٠٢٦): الكبسولات
+     الأربع تختفي خلف زرّ ☰ فيصير الشريط صفّاً واحداً. تُغلق مع أيّ اختيار. */
+  const [menuOpen, setMenuOpen] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -218,13 +221,27 @@ export function Setup({
         <BrandLogo className="hero-logo" />
 
         {onNav && (
-          <nav className="hero-nav" aria-label="القائمة">
+          /* زرّ القائمة يظهر في الطوليّ وحده (CSS) ويفتح الكبسولات لوحاً
+             تحت الشريط؛ في العرض تبقى الكبسولات صفّاً ولا زرّ. */
+          <button
+            className={'hnav hnav-menu' + (menuOpen ? ' open' : '')}
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? 'أغلق القائمة' : 'القائمة'}
+          >
+            <span aria-hidden="true">{menuOpen ? '✕' : '☰'}</span>
+          </button>
+        )}
+        {/* ضغطةٌ خارج اللوح تغلقه — ستارٌ شفّاف تحته يلتقطها. */}
+        {onNav && menuOpen && <div className="hero-nav-veil" onClick={() => setMenuOpen(false)} />}
+        {onNav && (
+          <nav className={'hero-nav' + (menuOpen ? ' open' : '')} aria-label="القائمة">
             {/* الشراء أوّلاً وبلون الهويّة: هو النداء التجاريّ الوحيد في
                 الشاشة. والاثنان الآخران كبسولتان محايدتان. */}
-            <button className="hnav hnav-buy" onClick={() => onNav('buy')}>شراء الألعاب</button>
-            <button className="hnav" onClick={() => onNav('account')}>حسابي</button>
-            <button className="hnav" onClick={() => onNav('rules')}>شرح اللعبة</button>
-            <button className="hnav" onClick={() => onNav('contact')}>تواصل معنا</button>
+            <button className="hnav hnav-buy" onClick={() => { setMenuOpen(false); onNav('buy') }}>شراء الألعاب</button>
+            <button className="hnav" onClick={() => { setMenuOpen(false); onNav('account') }}>حسابي</button>
+            <button className="hnav" onClick={() => { setMenuOpen(false); onNav('rules') }}>شرح اللعبة</button>
+            <button className="hnav" onClick={() => { setMenuOpen(false); onNav('contact') }}>تواصل معنا</button>
             {/* الصوت آخر الصفّ ورمزاً بلا نصّ (طلب علي، ٣ سبتمبر ٢٠٢٦ — كان
                 في زاوية الهيرو وحده). القائمة صارت أربعة، وكبسولةٌ خامسة
                 بنصٍّ تُقرأ صفحةً خامسة وهي ضبطٌ لا وجهة — فالرمز يفرّقها،
@@ -237,6 +254,8 @@ export function Setup({
               title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
             >
               <span aria-hidden="true">{mute ? '🔇' : '🔊'}</span>
+              {/* نصٌّ يظهر في لوح الطوليّ وحده: رمزٌ وحيد في صفٍّ عريض لا يُقرأ. */}
+              <span className="hnav-mute-text">{mute ? 'الصوت مكتوم' : 'الصوت يعمل'}</span>
             </button>
           </nav>
         )}
@@ -514,6 +533,11 @@ export function Setup({
           transition:transform .15s var(--ease-spring), box-shadow .15s ease, opacity .2s ease;
         }
         body .screen.setup .hnav-mute.off { opacity:.55; }
+        /* زرّ القائمة للطوليّ وحده — انظر طبقة الطول في آخر الملفّ. */
+        body .screen.setup .hnav-menu { display:none; }
+        body .screen.setup .hnav-mute-text { display:none; }
+        body .screen.setup .hero-nav-veil { display:none; }
+        @media (orientation: portrait) and (max-width:640px) { body .screen.setup .hero-nav-veil { display:block; } }
 
         body .screen.setup .hero-logo {
           position:relative; z-index:1;
@@ -991,6 +1015,65 @@ export function Setup({
         }
         .catchip.taken .cc-tick { display:grid; }
 
+        /* ─── الوضع الطوليّ ─────────────────────────────────────────────
+           التطبيقُ المثبَّت يُعرض قبل «ابدأ اللعبة» كيف أُمسك الجهاز (قرار علي
+           ١٦ سبتمبر ٢٠٢٦؛ الاتجاه في src/lib/orientation.ts) — والجوالُ في
+           اليد طوليّ. المقاسات أعلاه مبنيّة على dvh بافتراض شاشةٍ عريضة
+           قصيرة، وفي الطول يتضخّم dvh (874 بدل 390) فينتفخ رقمُ المرحلة إلى
+           38px والشعارُ إلى سقفه. هنا تُقيَّد بالعرض. والموقع لا يبلغ هذه
+           الطبقة على اللمس: بوّابتُه تحجب الطوليّ قبلها. */
+        @media (orientation: portrait) {
+          html[data-skin] body .screen.setup .stage-no { font-size:clamp(22px,6vw,40px); }
+          html[data-skin] body .screen.setup .hero { height:auto; min-height:0; }
+        }
+        /* الجوال الطوليّ: الشريط لا يسع الشعارَ والقائمةَ في صفٍّ — كانت
+           الكبسولاتُ تلتفّ صفّين وتركب الشعار. صار صفّاً واحداً: الشعار في
+           الوسط وزرّ ☰ في طرفه، والكبسولات لوحٌ ينسدل تحت الشريط عند الضغط
+           (طلب علي ١٦ سبتمبر ٢٠٢٦ — كانت صفّين، شعارٌ ثمّ كبسولات). */
+        @media (orientation: portrait) and (max-width:640px) {
+          html[data-skin] body .screen.setup .hero {
+            justify-content:center; align-items:center;
+            /* الخلفيّة تعبر شريطَ الحالة والمحتوى يقف تحته — كما تعبر الأذنَ
+               في العرض: الهامش السالب يلغي إزاحة ‎#root‎ والحشوة تردّها. */
+            margin-top:calc(-1 * env(safe-area-inset-top));
+            /* السفليّة تحجز خيطَ السدو (26px) وهواءً فوقه، وإلّا جلس الشعارُ عليه. */
+            padding-block:calc(8px + env(safe-area-inset-top)) 34px;
+            /* اللوح المنسدل يقف على الشريط بـabsolute؛ overflow مفتوح ليخرج منه. */
+            overflow:visible;
+          }
+          html[data-skin] body .screen.setup .hnav-menu {
+            display:grid; place-items:center;
+            position:absolute; z-index:2;
+            /* يسار الشريط (طلب علي): نهاية السطر في RTL. */
+            inset-inline-end:var(--pad-x);
+            top:calc(env(safe-area-inset-top) + 11px);
+            width:40px; height:40px; padding:0;
+            font-size:20px; line-height:1;
+          }
+          html[data-skin] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
+          /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت الشريط مباشرةً،
+             بحدّ حبرٍ سفليّ كالشريط نفسه فيُقرأ امتداداً له لا نافذةً غريبة. */
+          html[data-skin] body .screen.setup .hero-nav {
+            display:none;
+            position:absolute; z-index:3; top:100%; inset-inline:0;
+            margin:0; padding:14px var(--pad-x) 18px;
+            flex-direction:column; align-items:stretch; gap:10px;
+            background:var(--n-surface, #fff);
+            border-bottom:2.5px solid var(--n-ink, #22201C);
+            box-shadow:0 12px 24px rgba(34,32,28,.14);
+          }
+          html[data-skin] body .screen.setup .hero-nav.open { display:flex; }
+          html[data-skin] body .screen.setup .hero-nav-veil { position:fixed; inset:0; z-index:2; }
+          html[data-skin] body .screen.setup .hero-nav .hnav {
+            font-size:16px; padding:12px 18px; text-align:center;
+          }
+          /* الصوت في اللوح صفٌّ كأخواته لا مربّعاً صغيراً. */
+          html[data-skin] body .screen.setup .hero-nav .hnav-mute { padding-inline:18px; display:flex; justify-content:center; gap:10px; }
+          html[data-skin] body .screen.setup .hero-nav .hnav-mute-text { display:inline; }
+          /* أصغر بطلب علي (١٦ سبتمبر ٢٠٢٦): بـ12vw كان تاجُ الطاء يلامس
+             الكبسولات تحته. */
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(28px,9vw,40px); }
+        }
       `}</style>
     </div>
   )

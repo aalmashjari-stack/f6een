@@ -1349,6 +1349,20 @@ html[data-skin] body .screen .cats-lead { color: var(--n-accent); }
   html[data-skin] body .screen .s2-versus .who { font-size: 10px; }
   html[data-skin] body .screen .rd { padding: 2px 8px; }
 
+  /* كشف الجولة الجماعية بين ٣٧٠ و٤٨٠ — آيفون 17 Pro في التطبيق (٣٨١ بعد
+     شريط المنزل) وعائلة 15/16/17 (٣٩٣–٤٠٢): البطاقة كانت `flex:0 1 auto`
+     فتنكمش دون محتواها حين تحمل وجهَ الإجابة، وتوسيطُها يقصّ السؤالَ من
+     أعلاها (لقطة علي ١٦ سبتمبر ٢٠٢٦: «بيرتا بنز» بسؤالٍ مقطوع). الطبقة
+     الأدنى (٣٧٠) كانت تحلّها وتفوت هذه الشاشات. البطاقة بمقاس محتواها
+     وحشوةٌ أخفّ، وما يُعصر هو بطاقتا «من أجاب؟» لا السؤال. قِيس على 874×381
+     بسؤالٍ من سطرين ووجه: «لم يجب أحد» ينتهي عند 377. */
+  html[data-skin] body .screen .rv-card {
+    flex: 0 0 auto; max-height: 40dvh;
+    padding-block: clamp(6px, 1.6dvh, 10px); gap: clamp(3px, 1dvh, 6px);
+  }
+  html[data-skin] body .screen .pick-cards { min-height: 56px; }
+  html[data-skin] body .screen .pick { padding: clamp(4px, 1.5dvh, 8px) 10px; gap: 0; }
+
   /* كشف الجولة الجماعية: البطاقة لا تنكمش دون محتواها بعد اليوم — سقفُها
      مقيسٌ من الشاشة وما فاضه يهبط به fitText في الإجابة — وبطاقتا «من أجاب؟»
      تأخذان ارتفاع محتواهما لا صفراً. */
