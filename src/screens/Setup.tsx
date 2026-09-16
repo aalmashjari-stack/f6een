@@ -1015,7 +1015,9 @@ export function Setup({
             padding-block:calc(10px + env(safe-area-inset-top)) 16px;
           }
           html[data-skin] body .screen.setup .hero-nav { margin-inline-start:0; justify-content:center; }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(36px,12vw,52px); }
+          /* أصغر بطلب علي (١٦ سبتمبر ٢٠٢٦): بـ12vw كان تاجُ الطاء يلامس
+             الكبسولات تحته. */
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(28px,9vw,40px); }
         }
       `}</style>
     </div>
