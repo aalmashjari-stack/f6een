@@ -42,9 +42,11 @@ public class OrientationPlugin: CAPPlugin, CAPBridgedPlugin {
                     UIInterfaceOrientation.landscapeRight.rawValue,
                 ]
                 mask = .landscape
-            case "portrait":
+            case "portrait" where UIDevice.current.userInterfaceIdiom != .pad:
                 vc.supportedOrientations = [UIInterfaceOrientation.portrait.rawValue]
                 mask = .portrait
+            /// الآيباد لا يُفرض عليه الطول: يُمسك على حامل أفقيّاً، وiPadOS 26
+            /// لا يُجبر الدوران أصلاً فيعرض المفروضَ بأشرطة سوداء — فيبقى حرّاً.
             default:
                 vc.supportedOrientations = self.allOrientations
                 mask = vc.supportedInterfaceOrientations
