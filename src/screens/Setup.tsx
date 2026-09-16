@@ -1008,11 +1008,13 @@ export function Setup({
         @media (orientation: portrait) and (max-width:640px) {
           html[data-skin] body .screen.setup .hero {
             flex-direction:column; align-items:center; justify-content:center;
-            gap:8px;
+            /* الشعار أعلى بطلب علي (١٦ سبتمبر ٢٠٢٦): حشوةٌ علويّة أخفّ وفجوةٌ
+               أوسع تحته، فيرتفع هو وتبقى الكبسولات في موضعها. */
+            gap:14px;
             /* الخلفيّة تعبر شريطَ الحالة والمحتوى يقف تحته — كما تعبر الأذنَ
                في العرض: الهامش السالب يلغي إزاحة ‎#root‎ والحشوة تردّها. */
             margin-top:calc(-1 * env(safe-area-inset-top));
-            padding-block:calc(10px + env(safe-area-inset-top)) 16px;
+            padding-block:calc(4px + env(safe-area-inset-top)) 16px;
           }
           html[data-skin] body .screen.setup .hero-nav { margin-inline-start:0; justify-content:center; }
           /* أصغر بطلب علي (١٦ سبتمبر ٢٠٢٦): بـ12vw كان تاجُ الطاء يلامس
