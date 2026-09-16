@@ -51,6 +51,10 @@ export function Setup({
   /* قائمة الرأس على الجوال الطوليّ (طلب علي ١٦ سبتمبر ٢٠٢٦): الكبسولات
      الأربع تختفي خلف زرّ ☰ فيصير الشريط صفّاً واحداً. تُغلق مع أيّ اختيار. */
   const [menuOpen, setMenuOpen] = useState(false)
+  /* أيّ مرحلة شرحُها مفتوح (طلب علي ١٧ سبتمبر ٢٠٢٦): البطاقة سطرٌ واحد
+     «1 الجولة الجماعية» وعلامةُ i تفتح الشرح المختصر والنقاط تحته. واحدة
+     في كلّ مرّة — الشرح يُقرأ مرّةً لا يُقارَن. */
+  const [openStage, setOpenStage] = useState<number | null>(null)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -274,19 +278,31 @@ export function Setup({
             تحتاجه الشاشة القصيرة. */}
         <section className="setup-block">
           <div className="stages">
-            {STAGES.map((s, i) => (
-              <article key={s.name} className="stage-card">
-                <span className="stage-no" aria-hidden="true">{i + 1}</span>
-                {/* غلاف شفّاف (display:contents) — لا أثر له في التخطيط العمودي،
-                    ويصير عموداً حقيقياً على الجوال ليقف النصّ بجانب الرقم. */}
-                <div className="stage-body">
-                  <h3 className="stage-name">{s.name}</h3>
-                  <span className="stage-tag">المرحلة {i + 1}</span>
-                  <p className="stage-desc">{s.desc}</p>
-                  <span className="stage-points">{s.points}</span>
-                </div>
-              </article>
-            ))}
+            {STAGES.map((s, i) => {
+              const open = openStage === i
+              return (
+                <article key={s.name} className={'stage-card tone-' + i + (open ? ' open' : '')}>
+                  {/* السطر كلّه زرّ لا العلامةُ وحدها: هدفٌ بعرض البطاقة أسهل
+                      إصابةً من دائرةٍ صغيرة، والعلامة تقول ما يفعله. */}
+                  <button
+                    className="stage-head"
+                    onClick={() => setOpenStage(open ? null : i)}
+                    aria-expanded={open}
+                    aria-controls={'stage-more-' + i}
+                  >
+                    <span className="stage-no" aria-hidden="true">{i + 1}</span>
+                    <h3 className="stage-name">{s.name}</h3>
+                    <span className="stage-info" aria-label={open ? 'أخفِ الشرح' : 'اعرض الشرح'}>i</span>
+                  </button>
+                  {open && (
+                    <div className="stage-more" id={'stage-more-' + i}>
+                      <p className="stage-desc">{s.desc}</p>
+                      <span className="stage-points">{s.points}</span>
+                    </div>
+                  )}
+                </article>
+              )
+            })}
           </div>
         </section>
 
@@ -294,6 +310,9 @@ export function Setup({
             ٢٠٢٦: حقولٌ باسم فريق ولاعبين لا تحتاج عنواناً يسمّيها، وارتفاعه
             أنفع للحقول نفسها. */}
         <section className="setup-block">
+          {/* عنوانٌ يسمّي الكتلة (طلب علي ١٧ سبتمبر ٢٠٢٦) — كان قد حُذف في
+              أغسطس لضيق الارتفاع، وعاد بصياغته. */}
+          <h2 className="setup-title">أدخل بيانات الفرق واللاعبين</h2>
           <div className="teams-grid">
             {[0, 1].map((ti) => {
               const team = ti as TeamId
@@ -615,68 +634,6 @@ export function Setup({
         }
         .setup-rule span { white-space:nowrap; }
 
-        /* ─── بطاقات المراحل ──────────────────────────────────────────── */
-        .stages { display:grid; grid-template-columns:repeat(3, 1fr); gap:clamp(10px, 1.4vw, 20px); }
-        /* الوضع الافتراضي مُدمَج — صفٌّ أفقي: الرقم فالاسم فالنقاط. البطاقة
-           العمودية الكاملة (بالوصف تحتها) تعود على الشاشات الطويلة وحدها
-           في آخر الملف. كان العكس — عموديّة دائماً وتنكمش تحت ٥٦٠px — فكانت
-           تأكل ٣١٢px على لابتوب ٧٢٠ وتدفع زر البدء خارج الشاشة. */
-        .stage-card {
-          position:relative; overflow:hidden;
-          display:flex; flex-direction:row; align-items:center; justify-content:center;
-          text-align:center;
-          gap:clamp(7px, 1dvh, 12px);
-          padding:clamp(8px,1.4dvh,16px) clamp(10px,1.2vw,16px);
-          background:linear-gradient(165deg,
-            color-mix(in srgb, var(--surface-2) 92%, transparent),
-            color-mix(in srgb, var(--surface) 72%, transparent) 72%);
-          border:1px solid var(--border);
-          border-radius:clamp(20px, 3.2dvh, 30px);
-          box-shadow:0 12px 28px rgba(0,0,0,.22);
-          transition:transform .25s var(--ease-spring), border-color .25s ease, box-shadow .25s ease;
-        }
-        /* خيط ذهبي على الحافّة العليا — يربط الثلاث كسلسلة واحدة. */
-        .stage-card::before {
-          content:''; position:absolute; top:0; inset-inline:0; height:2px;
-          background:linear-gradient(90deg, transparent, rgba(255,189,89,.65), transparent);
-        }
-        @media (hover:hover) {
-          .stage-card:hover {
-            transform:translateY(-4px); border-color:rgba(255,189,89,.42);
-            box-shadow:0 18px 36px rgba(0,0,0,.3);
-          }
-        }
-
-        /* رقم المرحلة قرص ذهبي — يرتّب المراحل الثلاث بلمحة قبل قراءة الاسم. */
-        .stage-no {
-          flex:none;
-          width:clamp(26px,3.6dvh,46px); height:clamp(26px,3.6dvh,46px);
-          border-radius:50%; display:grid; place-items:center;
-          background:var(--grad-gold);
-          color:var(--on-gold); font-weight:800; font-size:clamp(14px,1.9vw,22px); line-height:1;
-          box-shadow:0 6px 18px rgba(255,189,89,.26), inset 0 -2px 4px rgba(0,0,0,.12);
-        }
-        /* عمود حقيقي في كل المقاسات: يبتلع الارتفاع الفائض (flex:1) فيبقى
-           margin-top:auto على الشارة محاذياً لها عند قاع البطاقة. كان
-           display:contents يؤدّي الغرض نفسه، لكنه يجعل للغلاف حالتَي تخطيط
-           تتبدّلان مع الاستعلامات — وحين يتحقّق الاستعلامان معاً (جوال
-           أفقي مثلاً) تنتج حالة ثالثة لم يقصدها أحد. */
-        /* في الوضع المُدمَج صفٌّ أفقي كالبطاقة نفسها، والوصف مخفيّ. */
-        .stage-body {
-          display:flex; flex-direction:row; align-items:center; flex:0 1 auto;
-          gap:clamp(7px, 1dvh, 12px); min-width:0;
-        }
-        .stage-name { margin:0; color:var(--gold); font-size:clamp(13px,1.6vw,20px); font-weight:800; white-space:nowrap; }
-        /* الوصف سطرٌ يُقرأ مرّة ثم لا يُعاد إليه — أول ما يتنازل حين يشحّ
-           الارتفاع، ويعود كاملاً على الشاشة الطويلة. */
-        .stage-desc { display:none; margin:0; color:var(--text-2); font-size:clamp(12.5px,1.45vw,15px); line-height:1.6; }
-        .stage-tag { display:none; }
-        .stage-points {
-          padding:4px 12px; border-radius:999px;
-          border:1px solid rgba(255,189,89,.34); background:rgba(255,189,89,.08);
-          color:var(--cream); font-size:clamp(11px,1.2vw,14px); font-weight:700; white-space:nowrap;
-        }
-
         /* ─── بطاقتا الفريقين ─────────────────────────────────────────── */
         .teams-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px, 2.2vw, 28px); }
         /* البطاقة تتقلّص مع عمودها بدل أن تفرض عرض محتواها على الشبكة. */
@@ -798,12 +755,6 @@ export function Setup({
              التلفاز ومن حوله. */
           body .screen.setup .hero { height:clamp(84px, 14dvh, 130px); }
 
-          .stage-card {
-            flex-direction:row; align-items:flex-start; text-align:start;
-            gap:14px; padding:16px 18px;
-          }
-          .stage-body { align-items:flex-start; gap:6px; }
-          .stage-points { margin-top:2px; }
         }
 
         /* ─── شاشة قصيرة (١٠٢٤×٦٠٠ مثلاً) ─────────────────────────────
@@ -820,12 +771,6 @@ export function Setup({
           .setup-body { --gap-block:clamp(6px,1.4dvh,14px); --gap-in:clamp(5px,1dvh,10px); margin-top:0; }
           .setup-block + .setup-block { margin-top:clamp(5px,1.2dvh,12px); }
 
-          /* البطاقة أصلاً صفٌّ أفقي في الوضع الافتراضي، فلم يبقَ هنا إلا
-             شدّ المقاسات إلى أصغرها. */
-          .stage-card { padding:8px 10px; }
-          .stage-no { width:28px; height:28px; font-size:15px; }
-          .stage-name { font-size:clamp(14px,1.6vw,17px); }
-          .stage-points { margin-top:0; padding:4px 12px; font-size:clamp(11px,1.2vw,12.5px); }
 
           /* هذه القيم كانت أكبر من أرضيات الوضع الافتراضي بعد إعادة الضبط،
              فكانت تنفخ الشاشة القصيرة بدل أن تشدّها — وهي مكتوبة صريحة
@@ -850,23 +795,6 @@ export function Setup({
         @media (max-height:480px) {
           /* ثلاثة أعمدة: ستة أسماء في صفّين بدل ثلاثة. */
           .players:has(.player:nth-child(5)) { grid-template-columns:repeat(3, 1fr); }
-        }
-
-        /* ─── الشاشة الطويلة (تلفزيون ١٠٨٠p وما فوق) ────────────────────
-           هنا وحدها يتّسع الارتفاع للبطاقة الكاملة: الرقم فوق الاسم، والوصف
-           تحته، والشارة في القاع. تعود الهيئة الغنيّة حيث تُقرأ من بُعد
-           المجلس بلا أن تدفع زر البدء خارج الشاشة. */
-        @media (min-height:900px) {
-          .stage-card {
-            flex-direction:column; align-items:center;
-            gap:clamp(8px,1.2dvh,13px);
-            padding:clamp(18px,2.8dvh,28px) clamp(14px,1.6vw,20px);
-          }
-          .stage-body { flex-direction:column; align-items:center; flex:1; gap:clamp(8px,1.2dvh,13px); }
-          .stage-desc { display:block; }
-          .stage-name { white-space:normal; }
-          /* margin-top:auto يحاذي الشارات الثلاث في سطر واحد مهما اختلف طول الوصف. */
-          .stage-points { margin-top:auto; padding:6px 16px; }
         }
 
         /* ===== فئات الجولة الجماعية ===== */
@@ -1015,6 +943,86 @@ export function Setup({
         }
         .catchip.taken .cc-tick { display:grid; }
 
+        /* ─── بطاقات المراحل (١٧ سبتمبر ٢٠٢٦، طلب علي) ────────────────────
+           سطرٌ واحد لكلّ مرحلة: رقمٌ في قرص، فالاسم، فعلامة i في الطرف —
+           وضغطةٌ تفتح الشرح المختصر والنقاط تحته. كانت بطاقاتٍ بيضاء باهتة
+           بالوصف كاملاً؛ صارت كتلاً بلونٍ لكلّ مرحلة (أصفر، تركواز، مرجانيّ
+           فاتح) بحدّ حبرٍ وظلٍّ صلب كبطاقتَي الفريقين. الوزن html[data-skin]
+           body .screen.setup ليغلب قواعدَ الهويّتين على .stage-card. */
+        html[data-skin] body .screen.setup .stages {
+          display:grid; grid-template-columns:repeat(3, 1fr);
+          gap:clamp(10px, 1.4vw, 20px); width:100%; margin:0;
+        }
+        html[data-skin] body .screen.setup .stage-card {
+          position:relative; overflow:hidden; display:flex; flex-direction:column;
+          padding:0; border:0; border-radius:var(--n-r3, 22px); transform:none;
+          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+          transition:transform .15s var(--ease-spring);
+        }
+        html[data-skin] body .screen.setup .stage-card.tone-0 { background:#FFCE3C; }
+        html[data-skin] body .screen.setup .stage-card.tone-1 { background:#7BD3D0; }
+        html[data-skin] body .screen.setup .stage-card.tone-2 { background:#FFA98C; }
+        html[data-skin] body .screen.setup .stage-head {
+          display:flex; align-items:center; gap:clamp(8px,1vw,14px); width:100%;
+          padding:clamp(9px,1.5dvh,14px) clamp(12px,1.4vw,18px);
+          font:inherit; color:var(--n-ink, #22201C); background:transparent; border:0;
+          cursor:pointer; text-align:start;
+        }
+        html[data-skin] body .screen.setup .stage-head:active { transform:translate(1px,1px); }
+        html[data-skin] body .screen.setup .stage-no {
+          flex:none; width:clamp(26px,3.4dvh,34px); height:clamp(26px,3.4dvh,34px);
+          border-radius:50%; display:grid; place-items:center;
+          background:var(--n-ink, #22201C); color:#fff;
+          font-weight:800; font-size:clamp(14px,1.6vw,18px); line-height:1;
+          box-shadow:none; transform:none;
+        }
+        html[data-skin] body .screen.setup .stage-name {
+          flex:1; min-width:0; margin:0;
+          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(15px,1.7vw,20px);
+          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        /* علامة i: دائرةٌ بيضاء بحدّ حبر، وتنقلب حبراً حين يُفتح الشرح. */
+        html[data-skin] body .screen.setup .stage-info {
+          flex:none; width:24px; height:24px; border-radius:50%;
+          display:grid; place-items:center;
+          background:#fff; color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
+          font-family:'Cairo', serif; font-style:italic; font-weight:800; font-size:14px; line-height:1;
+          transition:background .15s ease, color .15s ease;
+        }
+        html[data-skin] body .screen.setup .stage-card.open .stage-info { background:var(--n-ink, #22201C); color:#fff; }
+        /* الشرح: لوحٌ أبيض شبه شفّاف داخل الكتلة، يهبط بحركةٍ قصيرة. */
+        html[data-skin] body .screen.setup .stage-more {
+          display:flex; flex-direction:column; align-items:center; gap:8px;
+          margin:0 clamp(10px,1.2vw,14px) clamp(10px,1.4dvh,14px);
+          padding:clamp(10px,1.4dvh,14px) clamp(12px,1.4vw,16px);
+          border-radius:14px; background:rgba(255,255,255,.72);
+          animation:stage-more-in .22s var(--ease-spring) both;
+        }
+        @keyframes stage-more-in {
+          from { opacity:0; transform:translateY(-6px); }
+          to   { opacity:1; transform:none; }
+        }
+        html[data-skin] body .screen.setup .stage-desc {
+          display:block; margin:0; text-align:center;
+          color:var(--n-ink, #22201C); font-weight:600; font-size:clamp(13px,1.45vw,16px); line-height:1.6;
+        }
+        html[data-skin] body .screen.setup .stage-points {
+          margin:0; padding:4px 12px; border-radius:999px; border:0;
+          background:var(--n-ink, #22201C); color:#fff;
+          font-size:clamp(12px,1.2vw,14px); font-weight:800; white-space:nowrap;
+        }
+        @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .stage-more { animation:none; } }
+        /* عنوان كتلة الفريقين — بوزن اسم المرحلة، في الوسط. */
+        html[data-skin] body .screen.setup .setup-title {
+          margin:0; text-align:center;
+          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(16px,1.9vw,22px);
+        }
+        /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
+        @media (max-width:640px) {
+          html[data-skin] body .screen.setup .stages { grid-template-columns:1fr; gap:10px; }
+        }
+
         /* ─── الوضع الطوليّ ─────────────────────────────────────────────
            التطبيقُ المثبَّت يُعرض قبل «ابدأ اللعبة» كيف أُمسك الجهاز (قرار علي
            ١٦ سبتمبر ٢٠٢٦؛ الاتجاه في src/lib/orientation.ts) — والجوالُ في
@@ -1023,7 +1031,6 @@ export function Setup({
            38px والشعارُ إلى سقفه. هنا تُقيَّد بالعرض. والموقع لا يبلغ هذه
            الطبقة على اللمس: بوّابتُه تحجب الطوليّ قبلها. */
         @media (orientation: portrait) {
-          html[data-skin] body .screen.setup .stage-no { font-size:clamp(22px,6vw,40px); }
           html[data-skin] body .screen.setup .hero { height:auto; min-height:0; }
         }
         /* الجوال الطوليّ: الشريط لا يسع الشعارَ والقائمةَ في صفٍّ — كانت
