@@ -37,8 +37,8 @@ export function BootHold() {
  * الموقع أصلاً: هناك تبدأ `splashDone` منتهيةً — انظر `isNativeApp` في `App`،
  * ومن ينتظر في المتصفّح يرى [BootHold] أعلاه بدلها.
  *
- * خلفيّتها من رموز «نيو» (--n-bg) لا من theme.css — الهويّة مثبّتة منذ
- * ٢٧ أغسطس ٢٠٢٦.
+ * خلفيّتها سطحُ الهيرو: أبيض بغسلة الهيرو القطريّة (١٧ سبتمبر ٢٠٢٦) — من
+ * رموز «نيو» لا من theme.css؛ الهويّة مثبّتة منذ ٢٧ أغسطس ٢٠٢٦.
  *
  * تنتقل وحدها بعد `SPLASH_MS`، وتنتقل فوراً بأي نقرة: من رآها مرّة لا يُجبَر
  * على انتظارها مرّة أخرى. والمؤقّت يُلغى عند التفكيك حتى لا ينادي `onDone`
@@ -55,16 +55,24 @@ export function Splash({ onDone }: { onDone: () => void }) {
       <BrandLogo className="splash-logo" />
 
       <style>{`
+        /* الشاشة كلّها سطحُ الهيرو (علي ١٧ سبتمبر ٢٠٢٦: «الخلفيّة كاملة بيضاء
+           مع التدرّج اللونيّ، وسط الشعار»): أبيض بغسلة الهيرو القطريّة نفسها
+           بلونَي الفريقين — بلا حدٍّ ولا تذكرة — والشعار في الوسط. */
         .splash {
+          /* fixed على الشاشة كلّها: ‎#root‎ يترك شريطَ الحالة وشريطَ المنزل
+             للأرضيّة القشديّة، فكانت الغسلةُ تقف دونهما بشريطين قشديّين. */
+          position:fixed; inset:0;
           display:grid; place-items:center;
           min-height:100%;
           cursor:pointer;
-          background:var(--n-bg);
+          background:
+            linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18)),
+            var(--n-surface, #fff);
         }
         /* الشعار يكبر قليلاً ويستقرّ — لا دوران ولا قفز: هويّة تُقدَّم
            لا حركة تُستعرض. */
         .splash-logo {
-          font-size:clamp(56px, 13vw, 132px);
+          font-size:clamp(104px, 27vw, 240px);
           animation:splash-in .75s var(--ease-spring) both;
         }
         @keyframes splash-in {
