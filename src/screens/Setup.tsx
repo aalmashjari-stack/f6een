@@ -1152,6 +1152,9 @@ export function Setup({
             padding:clamp(10px,1.3dvh,15px) clamp(20px,1.6vw,34px);
           }
           html[data-skin] body .screen.setup .hnav-mute { padding-inline:clamp(12px,1vw,18px); }
+          /* فسحة أوسع بين التذكرة و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
+             تغلب clamp(18px,4.5dvh,56px) التي في blocks.css. */
+          html[data-skin] body .screen.setup .setup-body { margin-top:clamp(36px, 8dvh, 104px); }
         }
         /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): حشوةٌ أخفّ فلا تأكل
            التذكرةُ ثلث الشاشة — الإعداد يُمرَّر لكنّ الزينة لا تشتري تمريراً. */
