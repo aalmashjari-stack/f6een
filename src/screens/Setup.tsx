@@ -277,7 +277,7 @@ export function Setup({
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
         <section className="setup-block">
-          <h2 className="setup-title">مراحل اللعبة</h2>
+          <h2 className="setup-title brand">مراحل اللعبة</h2>
           <div className="stages">
             {STAGES.map((s, i) => {
               const open = openStage === i
@@ -1065,6 +1065,12 @@ export function Setup({
           box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
           color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(15px,1.7vw,19px);
           line-height:1.4; text-align:center;
+        }
+        /* لافتة المراحل بلون الهويّة (طلب علي ١٧ سبتمبر ٢٠٢٦: «أضف لون»):
+           البرتقاليّ الأحمر هو لون العناوين في blocks.css، فالكتلة به ونصّها
+           أبيض، والحدّ والظلّ حبرٌ كما هما. */
+        html[data-skin] body .screen.setup .setup-title.brand {
+          background:var(--n-brand, #E8542F); color:#fff;
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
