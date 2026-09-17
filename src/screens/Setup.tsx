@@ -989,6 +989,10 @@ export function Setup({
         html[data-skin] body .screen.setup .stages {
           display:grid; grid-template-columns:repeat(3, 1fr);
           gap:clamp(10px, 1.4vw, 20px); width:100%; margin:0;
+          /* كلّ تذكرة بارتفاع محتواها: الافتراضيّ stretch يمدّ المغلقتين إلى
+             ارتفاع المفتوحة فتنتفخان فراغاً أبيض ولسانهما يقف عند السطر
+             (علي ١٧ سبتمبر ٢٠٢٦: «عند فتح واحدة لماذا يظهر هكذا»). */
+          align-items:start;
         }
         html[data-skin] body .screen.setup .stage-card {
           position:relative; overflow:hidden; display:flex; flex-direction:column;
