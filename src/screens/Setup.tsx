@@ -362,7 +362,10 @@ export function Setup({
               الجماعية» (طلب علي ٥ سبتمبر ٢٠٢٦) — النداء يكفي، والشبكةُ تحته
               تقول ما هي. والعدّاد هنا لأنّ عينَ الحكم على الشبكة لا تحتها. */}
           <div className="cats-head">
-            <p className="cats-lead">قم باختيار الفئات</p>
+            {/* اللافتة نفسُها التي فوق الفريقين (طلب علي ١٧ سبتمبر ٢٠٢٦):
+                عنوانا الكتلتين بهيئةٍ واحدة. والنصّ نصُّه كما هو — بدّلتُه
+                إلى «اختر فئات اللوح» فردّه في الدقيقة نفسها. */}
+            <h2 className="setup-title">قم باختيار الفئات</h2>
             {catsReady ? (
               <span className="cats-turn done">اكتمل اللوح</span>
             ) : (
@@ -424,6 +427,34 @@ export function Setup({
               </div>
             </div>
           ))}
+
+          {/* صينيّة المختارات (طلب علي ١٧ سبتمبر ٢٠٢٦): الفئاتُ المختارة
+              مصغّرةً في أسفل الشاشة ما دام الحكمُ يتصفّح الشبكة — فلا يصعد
+              ليعدّ ما اختار. ستّ خانات: المملوءة رسمةُ فئتها وضغطتُها تسحبها
+              (طريقُ التراجع نفسه)، والفارغة إطارٌ منقّط يقول كم بقي. لاصقةٌ
+              (sticky) داخل هذا القسم وحده: تظهر حين يبلغه التمرير وتغيب معه،
+              فلا تحجب حقولَ الأسماء فوقه. الطوليّ وحده — انظر الأنماط. */}
+          <div className="cats-tray" role="group" aria-label="الفئات المختارة">
+            {Array.from({ length: STAGE1_CATEGORIES }, (_, i) => {
+              const cat = cats[i]
+              return cat ? (
+                <button
+                  key={cat}
+                  className="tray-slot filled"
+                  onClick={() => toggleCat(cat)}
+                  aria-label={`أزل ${displayName(cat)}`}
+                  title={displayName(cat)}
+                  style={
+                    categoryArt(cat)
+                      ? ({ '--art': `url(${categoryArt(cat)})` } as React.CSSProperties)
+                      : undefined
+                  }
+                />
+              ) : (
+                <span key={'empty-' + i} className="tray-slot" aria-hidden="true" />
+              )
+            })}
+          </div>
         </section>
 
         {/* القرعة والزرّان مجموعان عند الحافّة السفلى — كتلة فعل واحدة
@@ -555,6 +586,9 @@ export function Setup({
         /* زرّ القائمة للطوليّ وحده — انظر طبقة الطول في آخر الملفّ. */
         body .screen.setup .hnav-menu { display:none; }
         body .screen.setup .hnav-mute-text { display:none; }
+        /* صينيّة المختارات للجوال الطوليّ وحده: في العرض الشبكةُ كلُّها في
+           نظرةٍ واحدة ولا يحتاج عدّاً تحتها. */
+        body .screen.setup .cats-tray { display:none; }
         body .screen.setup .hero-nav-veil { display:none; }
         @media (orientation: portrait) and (max-width:640px) { body .screen.setup .hero-nav-veil { display:block; } }
 
@@ -944,59 +978,66 @@ export function Setup({
         .catchip.taken .cc-tick { display:grid; }
 
         /* ─── بطاقات المراحل (١٧ سبتمبر ٢٠٢٦، طلب علي) ────────────────────
-           سطرٌ واحد لكلّ مرحلة: رقمٌ في قرص، فالاسم، فعلامة i في الطرف —
-           وضغطةٌ تفتح الشرح المختصر والنقاط تحته. كانت بطاقاتٍ بيضاء باهتة
-           بالوصف كاملاً؛ صارت كتلاً بلونٍ لكلّ مرحلة (أصفر، تركواز، مرجانيّ
-           فاتح) بحدّ حبرٍ وظلٍّ صلب كبطاقتَي الفريقين. الوزن html[data-skin]
-           body .screen.setup ليغلب قواعدَ الهويّتين على .stage-card. */
+           تذكرةٌ لكلّ مرحلة: لسانٌ ملوّن في طرف البداية يحمل الرقم، فالاسم،
+           فعلامة i في الطرف الآخر — وضغطةٌ على السطر تفتح الشرح المختصر
+           والنقاط تحته. الجسم أبيض بحدّ حبرٍ كسائر الكتل، والظلُّ الصلب
+           بلون المرحلة فتُقرأ الثلاث سلسلةً ملوّنة بلا التباسٍ ببطاقتَي
+           الفريقين. الوزن html[data-skin] body .screen.setup ليغلب قواعدَ
+           الهويّتين على .stage-card. */
         html[data-skin] body .screen.setup .stages {
           display:grid; grid-template-columns:repeat(3, 1fr);
           gap:clamp(10px, 1.4vw, 20px); width:100%; margin:0;
         }
         html[data-skin] body .screen.setup .stage-card {
           position:relative; overflow:hidden; display:flex; flex-direction:column;
-          padding:0; border:0; border-radius:var(--n-r3, 22px); transform:none;
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+          padding:0; border:0; border-radius:18px; transform:none;
+          background:var(--n-surface, #fff);
+          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--tone);
           transition:transform .15s var(--ease-spring);
         }
-        html[data-skin] body .screen.setup .stage-card.tone-0 { background:#FFCE3C; }
-        html[data-skin] body .screen.setup .stage-card.tone-1 { background:#7BD3D0; }
-        html[data-skin] body .screen.setup .stage-card.tone-2 { background:#FFA98C; }
+        /* درجاتٌ هادئة فاتحة (طلب علي): اللسانُ يحمل رقماً حبريّاً فلا ينزل
+           اللون تحت ما يُقرأ عليه. */
+        html[data-skin] body .screen.setup .stage-card.tone-0 { --tone:#FFD966; --tone-soft:#FFF4CC; }
+        html[data-skin] body .screen.setup .stage-card.tone-1 { --tone:#8FD9D6; --tone-soft:#E1F5F4; }
+        html[data-skin] body .screen.setup .stage-card.tone-2 { --tone:#FFB399; --tone-soft:#FFE6DC; }
         html[data-skin] body .screen.setup .stage-head {
-          display:flex; align-items:center; gap:clamp(8px,1vw,14px); width:100%;
-          padding:clamp(9px,1.5dvh,14px) clamp(12px,1.4vw,18px);
+          display:flex; align-items:stretch; gap:0; width:100%; padding:0;
           font:inherit; color:var(--n-ink, #22201C); background:transparent; border:0;
           cursor:pointer; text-align:start;
         }
         html[data-skin] body .screen.setup .stage-head:active { transform:translate(1px,1px); }
+        /* اللسان: كتلةٌ بلون المرحلة بارتفاع السطر، يفصلها حدُّ حبر عن الجسم. */
         html[data-skin] body .screen.setup .stage-no {
-          flex:none; width:clamp(26px,3.4dvh,34px); height:clamp(26px,3.4dvh,34px);
-          border-radius:50%; display:grid; place-items:center;
-          background:var(--n-ink, #22201C); color:#fff;
-          font-weight:800; font-size:clamp(14px,1.6vw,18px); line-height:1;
+          flex:none; width:clamp(48px,5.4vw,58px); min-height:clamp(46px,6.2dvh,58px);
+          display:grid; place-items:center; border-radius:0;
+          background:var(--tone); color:var(--n-ink, #22201C);
+          border-inline-end:2.5px solid var(--n-ink, #22201C);
+          font-weight:800; font-size:clamp(20px,2vw,24px); line-height:1;
           box-shadow:none; transform:none;
         }
         html[data-skin] body .screen.setup .stage-name {
-          flex:1; min-width:0; margin:0;
-          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(15px,1.7vw,20px);
+          flex:1; min-width:0; margin:0; align-self:center;
+          padding-inline:clamp(12px,1.4vw,16px);
+          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(16px,1.7vw,20px);
           white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
-        /* علامة i: دائرةٌ بيضاء بحدّ حبر، وتنقلب حبراً حين يُفتح الشرح. */
+        /* علامة i: حلقةُ حبرٍ رفيعة، تمتلئ حبراً حين يُفتح الشرح. */
         html[data-skin] body .screen.setup .stage-info {
-          flex:none; width:24px; height:24px; border-radius:50%;
+          flex:none; align-self:center; margin-inline-end:clamp(12px,1.4vw,16px);
+          width:26px; height:26px; border-radius:50%;
           display:grid; place-items:center;
-          background:#fff; color:var(--n-ink, #22201C);
+          background:var(--tone-soft); color:var(--n-ink, #22201C);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
-          font-family:'Cairo', serif; font-style:italic; font-weight:800; font-size:14px; line-height:1;
+          font-family:'Cairo', serif; font-style:italic; font-weight:800; font-size:15px; line-height:1;
           transition:background .15s ease, color .15s ease;
         }
         html[data-skin] body .screen.setup .stage-card.open .stage-info { background:var(--n-ink, #22201C); color:#fff; }
-        /* الشرح: لوحٌ أبيض شبه شفّاف داخل الكتلة، يهبط بحركةٍ قصيرة. */
+        /* الشرح: لوحٌ بلون المرحلة الخفيف داخل الجسم، يهبط بحركةٍ قصيرة. */
         html[data-skin] body .screen.setup .stage-more {
           display:flex; flex-direction:column; align-items:center; gap:8px;
           margin:0 clamp(10px,1.2vw,14px) clamp(10px,1.4dvh,14px);
           padding:clamp(10px,1.4dvh,14px) clamp(12px,1.4vw,16px);
-          border-radius:14px; background:rgba(255,255,255,.72);
+          border-radius:12px; background:var(--tone-soft);
           animation:stage-more-in .22s var(--ease-spring) both;
         }
         @keyframes stage-more-in {
@@ -1008,15 +1049,21 @@ export function Setup({
           color:var(--n-ink, #22201C); font-weight:600; font-size:clamp(13px,1.45vw,16px); line-height:1.6;
         }
         html[data-skin] body .screen.setup .stage-points {
-          margin:0; padding:4px 12px; border-radius:999px; border:0;
+          margin:0; padding:4px 14px; border-radius:999px; border:0;
           background:var(--n-ink, #22201C); color:#fff;
           font-size:clamp(12px,1.2vw,14px); font-weight:800; white-space:nowrap;
         }
         @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .stage-more { animation:none; } }
-        /* عنوان كتلة الفريقين — بوزن اسم المرحلة، في الوسط. */
+        /* عنوان كتلة الفريقين: لافتةٌ بيضاء بحدّ حبرٍ وظلٍّ صلب في الوسط —
+           شارةُ «الفريق الأول» نفسُها أكبر، فتُقرأ من عائلة الصفحة لا سطراً
+           عارياً (طلب علي ١٧ سبتمبر ٢٠٢٦: «نسّق الجملة»). */
         html[data-skin] body .screen.setup .setup-title {
-          margin:0; text-align:center;
-          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(16px,1.9vw,22px);
+          align-self:center; margin:0;
+          padding:clamp(6px,1dvh,9px) clamp(18px,2.4vw,26px);
+          border-radius:999px; background:var(--n-surface, #fff);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(15px,1.7vw,19px);
+          line-height:1.4; text-align:center;
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
@@ -1033,29 +1080,53 @@ export function Setup({
         @media (orientation: portrait) {
           html[data-skin] body .screen.setup .hero { height:auto; min-height:0; }
         }
-        /* الجوال الطوليّ: الشريط لا يسع الشعارَ والقائمةَ في صفٍّ — كانت
-           الكبسولاتُ تلتفّ صفّين وتركب الشعار. صار صفّاً واحداً: الشعار في
-           الوسط وزرّ ☰ في طرفه، والكبسولات لوحٌ ينسدل تحت الشريط عند الضغط
-           (طلب علي ١٦ سبتمبر ٢٠٢٦ — كانت صفّين، شعارٌ ثمّ كبسولات). */
+        /* ─── الجوال الطوليّ: الهيرو كتلةٌ لا شريط (١٧ سبتمبر ٢٠٢٦) ─────────
+           كان شريطاً أبيض بعرض الشاشة يعبر شريطَ الحالة، بشعارٍ صغير وكبسولات
+           تحته — يُقرأ شريطَ أدوات لا واجهةً. صار تذكرةً كبيرة بلغة الصفحة
+           نفسها: كتلة بيضاء داخل هوامش الصفحة، بحدّ حبرٍ وظلٍّ صلب كبطاقات
+           المراحل والفريقين تحتها، الشعارُ فيها كبيرٌ في الوسط، وخيطُ السدو
+           يجري على حافّتها السفلى داخل زواياها، وزرّ ☰ في زاويتها. والقائمة
+           لوحٌ ينسدل تحتها بالهيئة نفسها. */
         @media (orientation: portrait) and (max-width:640px) {
           html[data-skin] body .screen.setup .hero {
+            position:relative; overflow:visible;
             justify-content:center; align-items:center;
-            /* الخلفيّة تعبر شريطَ الحالة والمحتوى يقف تحته — كما تعبر الأذنَ
-               في العرض: الهامش السالب يلغي إزاحة ‎#root‎ والحشوة تردّها. */
-            margin-top:calc(-1 * env(safe-area-inset-top));
-            /* السفليّة تحجز خيطَ السدو (26px) وهواءً فوقه، وإلّا جلس الشعارُ عليه. */
-            padding-block:calc(8px + env(safe-area-inset-top)) 34px;
-            /* اللوح المنسدل يقف على الشريط بـabsolute؛ overflow مفتوح ليخرج منه. */
-            overflow:visible;
+            height:auto; min-height:0;
+            /* داخل الهوامش لا عابرةً للحافّة: ‎#root‎ يترك شريطَ الحالة فوقها. */
+            margin:10px var(--pad-x) 0;
+            padding:clamp(24px,3.6dvh,32px) 16px;
+            border:0; border-radius:22px;
+            background:var(--n-surface, #fff);
+            box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+          }
+          /* بلا نسيج ولا سدو (علي ١٧ سبتمبر ٢٠٢٦: «ما أبي سدو، مو لازم»)، ثمّ
+             «لمسة خفيفة»: تذكرةٌ حقّاً — غسلةٌ ناعمة بلونَي الفريقين تعبر
+             الكتلة قطريّاً (أصفر عند البداية، تركواز عند النهاية) لا تتجاوز
+             العشرين بالمئة، وخطُّ تثقيبٍ منقّط داخل الحدّ كما في التذاكر.
+             لا شكل ولا نقش — لونٌ خافت وخطٌّ واحد. */
+          html[data-skin='blocks'] body .screen.setup .hero::before {
+            border-radius:inherit;
+            background:linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18));
+          }
+          html[data-skin] body .screen.setup .hero::after {
+            content:''; position:absolute; inset:7px; z-index:0; pointer-events:none;
+            border:1.5px dashed rgba(34,32,28,.34); border-radius:15px;
+          }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark {
+            font-size:clamp(46px,13.5vw,60px);
+            /* بلا هامش: showtime.css يعطيه هامشَ بدايةٍ 20px ليبتعد عن القائمة
+               في العرض، وهنا لا قائمة بجانبه — فكان يزيح الشعار عشرة بكسلات
+               عن المنتصف (قِيس: مركزه 191 والشريط 201). */
+            margin:0;
           }
           html[data-skin] body .screen.setup .hnav-menu {
             display:grid; place-items:center;
             position:absolute; z-index:2;
-            /* يسار الشريط (طلب علي): نهاية السطر في RTL. */
-            inset-inline-end:var(--pad-x);
-            top:calc(env(safe-area-inset-top) + 11px);
-            width:40px; height:40px; padding:0;
-            font-size:20px; line-height:1;
+            /* يسار الكتلة (طلب علي): نهاية السطر في RTL. */
+            inset-inline-end:12px; top:12px;
+            width:38px; height:38px; padding:0;
+            font-size:19px; line-height:1;
+            box-shadow:0 0 0 2px var(--n-ink, #22201C), 2px 3px 0 var(--n-ink, #22201C);
           }
           html[data-skin] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
           /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت الشريط مباشرةً،
@@ -1063,13 +1134,36 @@ export function Setup({
           html[data-skin] body .screen.setup .hero-nav {
             display:none;
             position:absolute; z-index:3; top:100%; inset-inline:0;
-            margin:0; padding:14px var(--pad-x) 18px;
+            margin:12px 0 0; padding:12px;
             flex-direction:column; align-items:stretch; gap:10px;
-            background:var(--n-surface, #fff);
-            border-bottom:2.5px solid var(--n-ink, #22201C);
-            box-shadow:0 12px 24px rgba(34,32,28,.14);
+            background:var(--n-surface, #fff); border-radius:18px;
+            box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
           }
           html[data-skin] body .screen.setup .hero-nav.open { display:flex; }
+          /* ─── صينيّة المختارات ─── */
+          html[data-skin] body .screen.setup .cats-tray {
+            display:flex; justify-content:center; align-items:center; gap:8px;
+            position:sticky; bottom:8px; z-index:4;
+            margin-top:14px; padding:8px 10px;
+            background:var(--n-surface, #fff); border-radius:16px;
+            box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+          }
+          html[data-skin] body .screen.setup .tray-slot {
+            flex:none; width:clamp(38px,11vw,48px); aspect-ratio:1;
+            border-radius:10px; padding:0;
+            border:2px dashed var(--n-ink-3, #8A8578); background:var(--n-bg, #FFF8EE);
+          }
+          html[data-skin] body .screen.setup .tray-slot.filled {
+            border:2px solid var(--n-ink, #22201C); cursor:pointer;
+            background:var(--art) center / cover no-repeat, var(--n-surface-2, #FFF3E0);
+            animation:tray-pop .28s var(--ease-spring) both;
+          }
+          html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.92); }
+          @keyframes tray-pop {
+            from { transform:scale(.6); opacity:0; }
+            to   { transform:none; opacity:1; }
+          }
+          @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .tray-slot.filled { animation:none; } }
           html[data-skin] body .screen.setup .hero-nav-veil { position:fixed; inset:0; z-index:2; }
           html[data-skin] body .screen.setup .hero-nav .hnav {
             font-size:16px; padding:12px 18px; text-align:center;
@@ -1077,9 +1171,6 @@ export function Setup({
           /* الصوت في اللوح صفٌّ كأخواته لا مربّعاً صغيراً. */
           html[data-skin] body .screen.setup .hero-nav .hnav-mute { padding-inline:18px; display:flex; justify-content:center; gap:10px; }
           html[data-skin] body .screen.setup .hero-nav .hnav-mute-text { display:inline; }
-          /* أصغر بطلب علي (١٦ سبتمبر ٢٠٢٦): بـ12vw كان تاجُ الطاء يلامس
-             الكبسولات تحته. */
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(28px,9vw,40px); }
         }
       `}</style>
     </div>
