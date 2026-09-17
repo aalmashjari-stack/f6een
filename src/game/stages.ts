@@ -22,12 +22,12 @@ export const STAGES = [
   },
   {
     name: 'الديربي',
-    desc: 'لاعب ضدّ لاعب بلا تشاور — الأسبق وحده يربح أو يخسر',
+    desc: `لاعب ضد لاعب لوحدهما دون مساعدة من فريقهم، من يجيب اولا بشكل صحيح يحصل على ‎+${STAGE2_CORRECT} وان اخطئ يخصم منه ‎−${Math.abs(STAGE2_WRONG)}`,
     points: `‎+${STAGE2_CORRECT} / −${Math.abs(STAGE2_WRONG)}`,
   },
   {
     name: 'الحق ما تلحق',
-    desc: `كل فريق وحده، ${STAGE3_TIMER_MS / 1000} ثانية لا تتوقّف`,
+    desc: `عندك ${STAGE3_TIMER_MS / 1000} ثانية جاوب فيهم اسئلة كثر ماتقدر كل جواب صحيح بـ‎+${STAGE3_POINTS} نقاط`,
     points: `‎+${STAGE3_POINTS} لكل إجابة`,
   },
 ] as const
