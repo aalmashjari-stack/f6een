@@ -1155,6 +1155,8 @@ export function Setup({
           /* فسحة أوسع بين التذكرة و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
              تغلب clamp(18px,4.5dvh,56px) التي في blocks.css. */
           html[data-skin] body .screen.setup .setup-body { margin-top:clamp(56px, 12dvh, 150px); }
+          /* وبين الأقسام كذلك (علي: «زد» عن المسافة بين التذاكر ولافتة الفريقين). */
+          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(40px, 8dvh, 120px); }
         }
         /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): حشوةٌ أخفّ فلا تأكل
            التذكرةُ ثلث الشاشة — الإعداد يُمرَّر لكنّ الزينة لا تشتري تمريراً. */
