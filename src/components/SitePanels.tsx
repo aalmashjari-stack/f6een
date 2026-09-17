@@ -156,11 +156,6 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
         ))}
       </div>
 
-      <p className="sp-note">
-        <b>الحكم لا يعرف الإجابة</b> — تُكشف للجميع في اللحظة نفسها. ولا إعادة
-        سحبٍ ولا تخطّي سؤال: السحبة نهائية.
-      </p>
-
       <style>{`
         .sp-stages { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
         .sp-stage {
