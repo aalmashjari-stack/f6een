@@ -1,14 +1,6 @@
 import { useState } from 'react'
 import { sendMessage } from '../lib/messages'
 import { STAGES } from '../game/stages'
-import {
-  STAGE1_CONSULT_MS,
-  STAGE1_LEVEL_POINTS,
-  STAGE1_CATEGORIES,
-  STAGE1_QUESTIONS,
-  STAGE2_TIMER_MS,
-  STAGE3_TIMER_MS,
-} from '../game/session'
 
 /**
  * صفحات القائمة خارج اللعب: «شراء الألعاب» و«شرح اللعبة» و«تواصل معنا».
@@ -138,22 +130,13 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
 /**
  * شرح اللعبة — لوحةٌ تُفتح من القائمة (٣ سبتمبر ٢٠٢٦، طلب علي).
  *
- * **أرقامُها من ثوابت المحرّك لا مكتوبةً بيد**، للسبب الذي يشرحه
- * `game/stages.ts`: نسختان من التنقيط تفترقان بصمت أوّل ما يتغيّر رقم،
- * فيقرأ المجلسُ قاعدةً ويلعب أخرى. ولهذا `STAGES` تُعاد استعمالاً هنا
- * بدل نسخها — الاسم والوصف والنقاط تأتي منها كما تأتي إلى شاشة الإعداد.
- *
- * والشرحُ سطرٌ أو سطران لكل مرحلة لا نصُّ SPEC كاملاً: من يفتح هذه الصفحة
- * يريد أن يلحق باللعب لا أن يقرأ مستنداً.
+ * شرحُ كلّ مرحلة هو **جملة `STAGES` نفسُها** التي في التعريف والإعداد
+ * (١٧ سبتمبر ٢٠٢٦، علي: «اكتب الشرح نفسه في قائمة شرح اللعبة») — كان
+ * لهذه اللوحة نصٌّ أطول من عندها، فصار المجلس يقرأ صياغتين لقاعدةٍ
+ * واحدة. والأرقام في الجملة من ثوابت المحرّك لا مكتوبةً بيد، للسبب الذي
+ * يشرحه `game/stages.ts`.
  */
 export function RulesPanel({ onClose }: { onClose: () => void }) {
-  const s1 = `${STAGE1_CONSULT_MS / 1000}`
-  const extra = [
-    `يختار الفريقان ${STAGE1_CATEGORIES} فئات في الإعداد، فيصير اللوح ${STAGE1_QUESTIONS} سؤالاً. صاحبُ الدور يختار الخليّة والحكم يضغطها، ثم يتشاور الفريقان ${s1} ثانية — والنقاط تتبع المستوى: ${STAGE1_LEVEL_POINTS['سهل']} · ${STAGE1_LEVEL_POINTS['متوسط']} · ${STAGE1_LEVEL_POINTS['صعب']}.`,
-    `لاعبٌ من كل فريق وجهاً لوجه، ${STAGE2_TIMER_MS / 1000} ثانية مشتركة بينهما. لا تشاور إطلاقاً — ومن بادر بالإجابة أولاً هو صاحب الجولة وحده: يربح إن أصاب ويخسر إن أخطأ، ولا يرثها خصمه.`,
-    `كل فريق وحده أمام الساعة ${STAGE3_TIMER_MS / 1000} ثانية لا تتوقّف — الكشفُ والحكمُ يُحسبان منها. أسئلةٌ متتابعة، والمجموع مفتوح.`,
-  ]
-
   return (
     <Veil onClose={onClose} label="شرح اللعبة">
       <p className="sp-note">
@@ -167,17 +150,11 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
             <span className="sp-sn" aria-hidden="true">{i + 1}</span>
             <div className="sp-sbody">
               <h3 className="sp-sname">{st.name}</h3>
-              <span className="sp-spts">{st.points}</span>
-              <p className="sp-sdesc">{extra[i]}</p>
+              <p className="sp-sdesc">{st.desc}</p>
             </div>
           </article>
         ))}
       </div>
-
-      <p className="sp-note">
-        <b>الحكم لا يعرف الإجابة</b> — تُكشف للجميع في اللحظة نفسها. ولا إعادة
-        سحبٍ ولا تخطّي سؤال: السحبة نهائية.
-      </p>
 
       <style>{`
         .sp-stages { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
@@ -198,12 +175,6 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
         }
         .sp-sbody { min-width:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }
         .sp-sname { margin:0; font-size:clamp(15px,2vw,19px); font-weight:800; color:var(--n-ink, #22201C); }
-        /* النقاط رقاقةٌ لا سطر: هي أوّل ما تبحث عنه العينُ في شرح لعبة */
-        .sp-spts {
-          font-size:clamp(11px,1.4vw,14px); font-weight:800;
-          padding:.14em .7em; border-radius:999px;
-          background:var(--n-brand-tint, #FFE3D6); color:var(--n-brand, #E8542F);
-        }
         .sp-sdesc {
           flex:1 0 100%; margin:0;
           font-size:clamp(12px,1.5vw,15px); font-weight:600; line-height:1.65;
