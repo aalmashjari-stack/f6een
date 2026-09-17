@@ -273,10 +273,11 @@ export function Setup({
           في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
       <div className="setup-body">
         {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين.
-            حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦: البطاقات الثلاث تقول
-            بنفسها إنها ثلاث جولات، والسطر يكرّر ما تحته ويكلّف ارتفاعاً
-            تحتاجه الشاشة القصيرة. */}
+            حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
+            لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
+            نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
         <section className="setup-block">
+          <h2 className="setup-title brand">مراحل اللعبة</h2>
           <div className="stages">
             {STAGES.map((s, i) => {
               const open = openStage === i
@@ -296,8 +297,9 @@ export function Setup({
                   </button>
                   {open && (
                     <div className="stage-more" id={'stage-more-' + i}>
+                      {/* الشرح وحده: كبسولة النقاط سقطت في ١٧ سبتمبر ٢٠٢٦ (علي:
+                          «شيل سطر النقاط») بعد أن صارت الأرقام داخل الجملة نفسها. */}
                       <p className="stage-desc">{s.desc}</p>
-                      <span className="stage-points">{s.points}</span>
                     </div>
                   )}
                 </article>
@@ -1048,11 +1050,6 @@ export function Setup({
           display:block; margin:0; text-align:center;
           color:var(--n-ink, #22201C); font-weight:600; font-size:clamp(13px,1.45vw,16px); line-height:1.6;
         }
-        html[data-skin] body .screen.setup .stage-points {
-          margin:0; padding:4px 14px; border-radius:999px; border:0;
-          background:var(--n-ink, #22201C); color:#fff;
-          font-size:clamp(12px,1.2vw,14px); font-weight:800; white-space:nowrap;
-        }
         @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .stage-more { animation:none; } }
         /* عنوان كتلة الفريقين: لافتةٌ بيضاء بحدّ حبرٍ وظلٍّ صلب في الوسط —
            شارةُ «الفريق الأول» نفسُها أكبر، فتُقرأ من عائلة الصفحة لا سطراً
@@ -1064,6 +1061,12 @@ export function Setup({
           box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
           color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(15px,1.7vw,19px);
           line-height:1.4; text-align:center;
+        }
+        /* لافتة المراحل بلون الهويّة (طلب علي ١٧ سبتمبر ٢٠٢٦: «أضف لون»):
+           البرتقاليّ الأحمر هو لون العناوين في blocks.css، فالكتلة به ونصّها
+           أبيض، والحدّ والظلّ حبرٌ كما هما. */
+        html[data-skin] body .screen.setup .setup-title.brand {
+          background:var(--n-brand, #E8542F); color:#fff;
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {

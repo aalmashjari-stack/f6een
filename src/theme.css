@@ -720,7 +720,6 @@ body .screen.setup .stage-no {
   border-radius: 10px;
   transform: rotate(3deg);
 }
-body .screen.setup .stage-points,
 body .screen.setup .team-badge {
   border-radius: 8px;
 }

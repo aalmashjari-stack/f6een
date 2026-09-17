@@ -160,7 +160,7 @@ body .screen.setup .stage-card:nth-child(1){background:var(--festival-yellow);tr
    على ارتفاع البطاقة. صار يتبع الارتفاع فيكبر على التلفزيون وحده. */
 body .screen.setup .stage-no{width:auto;height:auto;align-self:center;border:0;border-radius:0;background:transparent;color:var(--festival-purple);box-shadow:none;font-size:clamp(22px,4.4dvh,72px);line-height:1;transform:none}
 body .screen.setup .stage-tag{order:-1;color:var(--festival-purple);font-size:11px;font-weight:800} body .screen.setup .stage-name{color:var(--festival-ink)} body .screen.setup .stage-desc{color:var(--festival-muted)}
-body .screen.setup .stage-points,body .screen.setup .team-badge{border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
+body .screen.setup .team-badge{border:2px solid var(--festival-ink);border-radius:999px;background:var(--festival-white);color:var(--festival-purple)}
 body .screen.setup .team-card:first-child{background:#f7e7f3;transform:rotate(.4deg)} body .screen.setup .team-card:last-child{background:#e5f7ec;transform:rotate(-.4deg)} body .screen.setup .team-card.starter{background:var(--festival-yellow);border-color:var(--festival-ink);box-shadow:9px 10px 0 var(--festival-orange)}
 body .screen.setup .team-name{color:var(--festival-purple);border-bottom:3px dotted var(--festival-purple)}
 body .screen.setup .player{border:3px solid var(--festival-ink);border-radius:15px;background:var(--festival-white);color:var(--festival-ink);box-shadow:3px 4px 0 rgba(48,26,59,.28)} body .screen.setup .team-card.starter .player{background:var(--festival-white);color:var(--festival-ink);border-color:var(--festival-ink)}
