@@ -435,7 +435,8 @@ export function Setup({
               ليعدّ ما اختار. ستّ خانات: المملوءة رسمةُ فئتها وضغطتُها تسحبها
               (طريقُ التراجع نفسه)، والفارغة إطارٌ منقّط يقول كم بقي. لاصقةٌ
               (sticky) داخل هذا القسم وحده: تظهر حين يبلغه التمرير وتغيب معه،
-              فلا تحجب حقولَ الأسماء فوقه. الطوليّ وحده — انظر الأنماط. */}
+              فلا تحجب حقولَ الأسماء فوقه. في كلّ المقاسات (كانت للطوليّ
+              وحده حتى ١٧ سبتمبر ٢٠٢٦). */}
           <div className="cats-tray" role="group" aria-label="الفئات المختارة">
             {Array.from({ length: STAGE1_CATEGORIES }, (_, i) => {
               const cat = cats[i]
@@ -534,10 +535,10 @@ export function Setup({
           body .screen.setup { --pad-x: clamp(16px, 3vw, 40px); }
         }
 
-        /* الرأس شريطٌ بدرجةٍ أدفأ من أرضيّة الصفحة، بحدّ حبرٍ سفليّ —
-           يمتصّ حشوة .screen ليمتدّ من حافّة إلى حافّة، ويحمل الشعار
-           والقائمة. البدائل بعد كل متغيّر لأنّ رموز الهويّة لا تُعرَّف
-           إلا تحت سمتها. */
+        /* الطبقة الأساس للرأس (شريطٌ من حافّة إلى حافّة — الهيئة القديمة):
+           الهيئتان تبنيان فوقها، وطبقة «التذكرة» في آخر الملفّ تغلبها في
+           الهامش والحشوة والارتفاع والخلفيّة. البدائل بعد كل متغيّر لأنّ
+           رموز الهويّة لا تُعرَّف إلا تحت سمتها. */
         body .screen.setup .hero {
           position:relative; flex:none;
           /* الخلفيّة تعبر الأذن والمحتوى يقف عندها — وهما شيئان لا واحد:
@@ -585,14 +586,10 @@ export function Setup({
           transition:transform .15s var(--ease-spring), box-shadow .15s ease, opacity .2s ease;
         }
         body .screen.setup .hnav-mute.off { opacity:.55; }
-        /* زرّ القائمة للطوليّ وحده — انظر طبقة الطول في آخر الملفّ. */
+        /* زرّ القائمة ولوحُها في طبقة التذكرة آخر الملفّ. */
         body .screen.setup .hnav-menu { display:none; }
         body .screen.setup .hnav-mute-text { display:none; }
-        /* صينيّة المختارات للجوال الطوليّ وحده: في العرض الشبكةُ كلُّها في
-           نظرةٍ واحدة ولا يحتاج عدّاً تحتها. */
-        body .screen.setup .cats-tray { display:none; }
         body .screen.setup .hero-nav-veil { display:none; }
-        @media (orientation: portrait) and (max-width:640px) { body .screen.setup .hero-nav-veil { display:block; } }
 
         body .screen.setup .hero-logo {
           position:relative; z-index:1;
@@ -629,7 +626,10 @@ export function Setup({
         /* فصل بصري أوضح بين شرح المراحل وحقول الفرق: العنوان التالي لا
            يلتصق بظلال البطاقات، مع إبقاء الإيقاع الداخلي لكل قسم كما هو. */
         .setup-block + .setup-block {
-          margin-top:clamp(4px, 1.2dvh, 30px);
+          /* أوسع بطلب علي (١٧ سبتمبر ٢٠٢٦: «زد المسافة» بين تذاكر المراحل
+             ولافتة الفريقين) — كانت 1.2dvh بسقف 30px فتُقرأ الأقسام كتلةً
+             واحدة على الشاشة العريضة. */
+          margin-top:clamp(12px, 3.6dvh, 64px);
         }
 
         /* كتلة الفعل عند الحافّة السفلى — تبتلع فراغ التابلت الطولي
@@ -1067,6 +1067,9 @@ export function Setup({
            أبيض، والحدّ والظلّ حبرٌ كما هما. */
         html[data-skin] body .screen.setup .setup-title.brand {
           background:var(--n-brand, #E8542F); color:#fff;
+          /* فسحةٌ أوسع تحتها من فسحة الكتلة (طلب علي): اللافتة تمهيدٌ
+             للتذاكر الثلاث لا سطرَ عنوانٍ ملاصقاً لها. */
+          margin-bottom:clamp(8px, 1.6dvh, 22px);
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
@@ -1080,48 +1083,80 @@ export function Setup({
            قصيرة، وفي الطول يتضخّم dvh (874 بدل 390) فينتفخ رقمُ المرحلة إلى
            38px والشعارُ إلى سقفه. هنا تُقيَّد بالعرض. والموقع لا يبلغ هذه
            الطبقة على اللمس: بوّابتُه تحجب الطوليّ قبلها. */
-        @media (orientation: portrait) {
-          html[data-skin] body .screen.setup .hero { height:auto; min-height:0; }
-        }
-        /* ─── الجوال الطوليّ: الهيرو كتلةٌ لا شريط (١٧ سبتمبر ٢٠٢٦) ─────────
+        /* ─── الهيرو تذكرةٌ لا شريط (١٧ سبتمبر ٢٠٢٦) ────────────────────
            كان شريطاً أبيض بعرض الشاشة يعبر شريطَ الحالة، بشعارٍ صغير وكبسولات
-           تحته — يُقرأ شريطَ أدوات لا واجهةً. صار تذكرةً كبيرة بلغة الصفحة
+           بجانبه — يُقرأ شريطَ أدوات لا واجهةً. صار تذكرةً كبيرة بلغة الصفحة
            نفسها: كتلة بيضاء داخل هوامش الصفحة، بحدّ حبرٍ وظلٍّ صلب كبطاقات
-           المراحل والفريقين تحتها، الشعارُ فيها كبيرٌ في الوسط، وخيطُ السدو
-           يجري على حافّتها السفلى داخل زواياها، وزرّ ☰ في زاويتها. والقائمة
-           لوحٌ ينسدل تحتها بالهيئة نفسها. */
-        @media (orientation: portrait) and (max-width:640px) {
+           المراحل والفريقين تحتها، والشعارُ فيها كبيرٌ.
+           بُنيت للجوال الطوليّ أوّلاً، ثمّ عُمّمت على العرض والموقع في اليوم
+           نفسه (علي: «غيّر الهيرو في الموقع نفس التطبيق») — فسقط شريطُ السدو
+           من العرض. وما يفترق: في العرض تبقى الكبسولات صفّاً داخل التذكرة
+           بلا زرّ ☰ («ما تحتاج toggle menu في الموقع»)، وفي الجوال الطوليّ
+           وحده تنطوي خلف ☰ لوحاً ينسدل تحتها. الوزن html[data-skin] body
+           .screen.setup يغلب قواعد الشريط في blocks.css وneo.css وshowtime.css. */
+        html[data-skin] body .screen.setup .hero {
+          position:relative; overflow:visible;
+          justify-content:space-between; align-items:center;
+          height:auto; min-height:0;
+          /* داخل الهوامش لا عابرةً للحافّة: ‎#root‎ يترك شريطَ الحالة فوقها. */
+          margin:10px var(--pad-x) 0;
+          padding:clamp(24px,3.6dvh,32px) clamp(16px,2vw,28px);
+          border:0; border-radius:22px;
+          background:var(--n-surface, #fff);
+          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+        }
+        /* بلا نسيج ولا سدو (علي ١٧ سبتمبر ٢٠٢٦: «ما أبي سدو، مو لازم»)، ثمّ
+           «لمسة خفيفة»: تذكرةٌ حقّاً — غسلةٌ ناعمة بلونَي الفريقين تعبر
+           الكتلة قطريّاً (أصفر عند البداية، تركواز عند النهاية) لا تتجاوز
+           العشرين بالمئة، وخطُّ تثقيبٍ منقّط داخل الحدّ كما في التذاكر.
+           لا شكل ولا نقش — لونٌ خافت وخطٌّ واحد. */
+        html[data-skin='blocks'] body .screen.setup .hero::before {
+          content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+          border-radius:inherit;
+          background:linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18));
+        }
+        html[data-skin] body .screen.setup .hero::after {
+          content:''; position:absolute; inset:7px; z-index:0; pointer-events:none;
+          border:1.5px dashed rgba(34,32,28,.34); border-radius:15px;
+        }
+        html[data-skin] body .screen.setup .hero-logo.f6een-mark {
+          font-size:clamp(46px,13.5vw,60px);
+          /* بلا هامش: showtime.css يعطيه هامشَ بدايةٍ 20px ليبتعد عن القائمة
+             في العرض — الحشوة هنا تكفي؛ وفي الطوليّ كان يزيح الشعار عشرة
+             بكسلات عن المنتصف (قِيس: مركزه 191 والشريط 201). */
+          margin:0;
+        }
+        /* العرض: الشعار في اليمين (طلب علي: «ضع الشعار في اليمين») والكبسولات
+           صفٌّ في اليسار — الترتيب الذي كان في الشريط، داخل التذكرة؛ والغسلة
+           القطريّة نفسها التي في هيرو التطبيق («أضف تدرّج لوني خفيف»).
+           وعلى الشاشة العريضة تتّسع المساحات (علي: «وسّع المساحات، لديك
+           المساحة الكافية في الموقع»): حشوةٌ أعرض داخل التذكرة، شعارٌ أكبر،
+           وكبسولاتٌ أكبر بفواصل أوسع — مقاسات الجوال كانت تُترك كما هي على
+           شاشةٍ بعرض ألفَي بكسل فتبدو التذكرةُ فارغةً وأطرافُها مزدحمة. */
+        @media (min-width:900px) and (orientation: landscape) {
           html[data-skin] body .screen.setup .hero {
-            position:relative; overflow:visible;
-            justify-content:center; align-items:center;
-            height:auto; min-height:0;
-            /* داخل الهوامش لا عابرةً للحافّة: ‎#root‎ يترك شريطَ الحالة فوقها. */
-            margin:10px var(--pad-x) 0;
-            padding:clamp(24px,3.6dvh,32px) 16px;
-            border:0; border-radius:22px;
-            background:var(--n-surface, #fff);
-            box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+            padding:clamp(28px,4.2dvh,48px) clamp(32px,3.2vw,72px);
+            border-radius:28px;
           }
-          /* بلا نسيج ولا سدو (علي ١٧ سبتمبر ٢٠٢٦: «ما أبي سدو، مو لازم»)، ثمّ
-             «لمسة خفيفة»: تذكرةٌ حقّاً — غسلةٌ ناعمة بلونَي الفريقين تعبر
-             الكتلة قطريّاً (أصفر عند البداية، تركواز عند النهاية) لا تتجاوز
-             العشرين بالمئة، وخطُّ تثقيبٍ منقّط داخل الحدّ كما في التذاكر.
-             لا شكل ولا نقش — لونٌ خافت وخطٌّ واحد. */
-          html[data-skin='blocks'] body .screen.setup .hero::before {
-            border-radius:inherit;
-            background:linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18));
-          }
-          html[data-skin] body .screen.setup .hero::after {
-            content:''; position:absolute; inset:7px; z-index:0; pointer-events:none;
-            border:1.5px dashed rgba(34,32,28,.34); border-radius:15px;
-          }
+          html[data-skin] body .screen.setup .hero::after { inset:9px; border-radius:20px; }
           html[data-skin] body .screen.setup .hero-logo.f6een-mark {
-            font-size:clamp(46px,13.5vw,60px);
-            /* بلا هامش: showtime.css يعطيه هامشَ بدايةٍ 20px ليبتعد عن القائمة
-               في العرض، وهنا لا قائمة بجانبه — فكان يزيح الشعار عشرة بكسلات
-               عن المنتصف (قِيس: مركزه 191 والشريط 201). */
-            margin:0;
+            font-size:clamp(60px,4.6vw,96px);
           }
+          html[data-skin] body .screen.setup .hero-nav { gap:clamp(14px,1.4vw,30px); }
+          html[data-skin] body .screen.setup .hnav {
+            font-size:clamp(15px,1.05vw,21px);
+            padding:clamp(10px,1.3dvh,15px) clamp(20px,1.6vw,34px);
+          }
+          html[data-skin] body .screen.setup .hnav-mute { padding-inline:clamp(12px,1vw,18px); }
+        }
+        /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): حشوةٌ أخفّ فلا تأكل
+           التذكرةُ ثلث الشاشة — الإعداد يُمرَّر لكنّ الزينة لا تشتري تمريراً. */
+        @media (max-height:480px) {
+          html[data-skin] body .screen.setup .hero { padding-block:12px; }
+        }
+        /* ─── الجوال الطوليّ: الكبسولات خلف ☰ ─── */
+        @media (orientation: portrait) and (max-width:640px) {
+          html[data-skin] body .screen.setup .hero { justify-content:center; padding-inline:16px; }
           html[data-skin] body .screen.setup .hnav-menu {
             display:grid; place-items:center;
             position:absolute; z-index:2;
@@ -1132,8 +1167,8 @@ export function Setup({
             box-shadow:0 0 0 2px var(--n-ink, #22201C), 2px 3px 0 var(--n-ink, #22201C);
           }
           html[data-skin] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
-          /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت الشريط مباشرةً،
-             بحدّ حبرٍ سفليّ كالشريط نفسه فيُقرأ امتداداً له لا نافذةً غريبة. */
+          /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت التذكرة مباشرةً،
+             بالهيئة نفسها فيُقرأ امتداداً لها لا نافذةً غريبة. */
           html[data-skin] body .screen.setup .hero-nav {
             display:none;
             position:absolute; z-index:3; top:100%; inset-inline:0;
@@ -1143,37 +1178,48 @@ export function Setup({
             box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
           }
           html[data-skin] body .screen.setup .hero-nav.open { display:flex; }
-          /* ─── صينيّة المختارات ─── */
-          html[data-skin] body .screen.setup .cats-tray {
-            display:flex; justify-content:center; align-items:center; gap:8px;
-            position:sticky; bottom:8px; z-index:4;
-            margin-top:14px; padding:8px 10px;
-            background:var(--n-surface, #fff); border-radius:16px;
-            box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
-          }
-          html[data-skin] body .screen.setup .tray-slot {
-            flex:none; width:clamp(38px,11vw,48px); aspect-ratio:1;
-            border-radius:10px; padding:0;
-            border:2px dashed var(--n-ink-3, #8A8578); background:var(--n-bg, #FFF8EE);
-          }
-          html[data-skin] body .screen.setup .tray-slot.filled {
-            border:2px solid var(--n-ink, #22201C); cursor:pointer;
-            background:var(--art) center / cover no-repeat, var(--n-surface-2, #FFF3E0);
-            animation:tray-pop .28s var(--ease-spring) both;
-          }
-          html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.92); }
-          @keyframes tray-pop {
-            from { transform:scale(.6); opacity:0; }
-            to   { transform:none; opacity:1; }
-          }
-          @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .tray-slot.filled { animation:none; } }
-          html[data-skin] body .screen.setup .hero-nav-veil { position:fixed; inset:0; z-index:2; }
+          html[data-skin] body .screen.setup .hero-nav-veil { display:block; position:fixed; inset:0; z-index:2; }
           html[data-skin] body .screen.setup .hero-nav .hnav {
             font-size:16px; padding:12px 18px; text-align:center;
           }
           /* الصوت في اللوح صفٌّ كأخواته لا مربّعاً صغيراً. */
           html[data-skin] body .screen.setup .hero-nav .hnav-mute { padding-inline:18px; display:flex; justify-content:center; gap:10px; }
           html[data-skin] body .screen.setup .hero-nav .hnav-mute-text { display:inline; }
+        }
+        /* ─── صينيّة المختارات ─── كانت للجوال الطوليّ وحده بحجّة أنّ الشبكة
+           في العرض تُرى في نظرة؛ فطلبها علي في الموقع والآيباد أيضاً (١٧
+           سبتمبر ٢٠٢٦: «لا تظهر الفئات بشكل مصغّر عند اختيارها») — فهي في
+           كلّ مقاس، وعلى الشاشة العريضة كتلةٌ بعرض محتواها في الوسط لا
+           شريطاً أبيض يعبر الصفحة، وخاناتها أكبر. */
+        html[data-skin] body .screen.setup .cats-tray {
+          display:flex; justify-content:center; align-items:center; gap:8px;
+          position:sticky; bottom:8px; z-index:4;
+          margin-top:14px; padding:8px 10px;
+          background:var(--n-surface, #fff); border-radius:16px;
+          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+        }
+        html[data-skin] body .screen.setup .tray-slot {
+          flex:none; width:clamp(38px,11vw,48px); aspect-ratio:1;
+          border-radius:10px; padding:0;
+          border:2px dashed var(--n-ink-3, #8A8578); background:var(--n-bg, #FFF8EE);
+        }
+        html[data-skin] body .screen.setup .tray-slot.filled {
+          border:2px solid var(--n-ink, #22201C); cursor:pointer;
+          background:var(--art) center / cover no-repeat, var(--n-surface-2, #FFF3E0);
+          animation:tray-pop .28s var(--ease-spring) both;
+        }
+        html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.92); }
+        @keyframes tray-pop {
+          from { transform:scale(.6); opacity:0; }
+          to   { transform:none; opacity:1; }
+        }
+        @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .tray-slot.filled { animation:none; } }
+        @media (min-width:900px) and (orientation: landscape) {
+          html[data-skin] body .screen.setup .cats-tray {
+            align-self:center; width:max-content; gap:12px;
+            margin-top:20px; padding:10px 14px; bottom:12px;
+          }
+          html[data-skin] body .screen.setup .tray-slot { width:clamp(48px,4.2vw,76px); border-radius:12px; }
         }
       `}</style>
     </div>
