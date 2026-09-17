@@ -1071,6 +1071,9 @@ export function Setup({
            أبيض، والحدّ والظلّ حبرٌ كما هما. */
         html[data-skin] body .screen.setup .setup-title.brand {
           background:var(--n-brand, #E8542F); color:#fff;
+          /* على اليمين لا الوسط (طلب علي): بداية السطر، محاذاةً لألسنة
+             التذاكر تحتها. */
+          align-self:flex-start;
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
