@@ -1065,6 +1065,11 @@ export function Setup({
              للتذاكر الثلاث لا سطرَ عنوانٍ ملاصقاً لها. */
           margin-bottom:clamp(8px, 1.6dvh, 22px);
         }
+        /* الجوال الطوليّ: أضيق قليلاً (علي ١٧ سبتمبر ٢٠٢٦: «صغّر المسافة
+           قليلاً» عن لقطة الآيفون) — الموقع العريض على مقاسه المعتمَد. */
+        @media (orientation: portrait) and (max-width:640px) {
+          html[data-skin] body .screen.setup .setup-title.brand { margin-bottom:clamp(2px, .7dvh, 8px); }
+        }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
           html[data-skin] body .screen.setup .stages { grid-template-columns:1fr; gap:10px; }
