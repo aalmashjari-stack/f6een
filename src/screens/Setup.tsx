@@ -362,20 +362,15 @@ export function Setup({
               الذي كان تحت الشبكة. */}
           {/* سطران في الوسط لا ثلاثة: نداءٌ وعدّاد. سقطت التسمية «فئات الجولة
               الجماعية» (طلب علي ٥ سبتمبر ٢٠٢٦) — النداء يكفي، والشبكةُ تحته
-              تقول ما هي. والعدّاد هنا لأنّ عينَ الحكم على الشبكة لا تحتها. */}
+              تقول ما هي. */}
           <div className="cats-head">
             {/* اللافتة نفسُها التي فوق الفريقين (طلب علي ١٧ سبتمبر ٢٠٢٦):
                 عنوانا الكتلتين بهيئةٍ واحدة. والنصّ نصُّه كما هو — بدّلتُه
                 إلى «اختر فئات اللوح» فردّه في الدقيقة نفسها. */}
             <h2 className="setup-title">قم باختيار الفئات</h2>
-            {catsReady ? (
-              <span className="cats-turn done">اكتمل اللوح</span>
-            ) : (
-              /* المفتاح يتبدّل مع العدد فتُعاد الحركة عند كل اختيار. */
-              <span className="cats-count" key={cats.length}>
-                {cats.length} / {STAGE1_CATEGORIES}
-              </span>
-            )}
+            {/* العدّاد «0 / 6» سقط (علي ١٧ سبتمبر ٢٠٢٦: «شيل 0/6») — صينيّة
+                المختارات تحت الشبكة تعدّ بخاناتها الستّ. بقيت شارة الاكتمال. */}
+            {catsReady && <span className="cats-turn done">اكتمل اللوح</span>}
           </div>
           {/* قسمٌ لكل تصنيف، وعنوانٌ فوقه — وقسمٌ واحد بلا عنوان حين لا تصنيف
               في القاعدة أصلاً، فتبقى الشاشة كما كانت قبل ١٠ سبتمبر ٢٠٢٦.
@@ -841,11 +836,6 @@ export function Setup({
           text-align:center;
         }
         .cats-lead { margin:0; font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--gold); }
-        .cats-count {
-          font-size:clamp(13px,1.6vw,18px); font-weight:900; color:var(--cream);
-          font-variant-numeric:tabular-nums;
-          animation:count-pop .32s var(--ease-spring) both;
-        }
         @keyframes count-pop {
           from { transform:scale(.72); opacity:.4; }
           to   { transform:scale(1);   opacity:1; }
@@ -872,7 +862,7 @@ export function Setup({
 
         /* من أوقف الحركة في نظامه لا تُفرض عليه: تبقى الحالة النهائية بلا انتقال. */
         @media (prefers-reduced-motion: reduce) {
-          .catchip, .cats-count, .cats-turn.done, .catchip.taken .cc-tick { animation:none; }
+          .catchip, .cats-turn.done, .catchip.taken .cc-tick { animation:none; }
         }
         /* شارةُ الدور تلبس لون صاحبه — الفريقان بلونين ثابتين لا بترتيب الظهور */
         .cats-turn {
@@ -1155,6 +1145,8 @@ export function Setup({
           /* فسحة أوسع بين التذكرة و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
              تغلب clamp(18px,4.5dvh,56px) التي في blocks.css. */
           html[data-skin] body .screen.setup .setup-body { margin-top:clamp(56px, 12dvh, 150px); }
+          /* وبين الأقسام كذلك (علي: «زد» عن المسافة بين التذاكر ولافتة الفريقين). */
+          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(40px, 8dvh, 120px); }
         }
         /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): حشوةٌ أخفّ فلا تأكل
            التذكرةُ ثلث الشاشة — الإعداد يُمرَّر لكنّ الزينة لا تشتري تمريراً. */
