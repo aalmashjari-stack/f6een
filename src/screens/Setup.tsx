@@ -989,6 +989,10 @@ export function Setup({
         html[data-skin] body .screen.setup .stages {
           display:grid; grid-template-columns:repeat(3, 1fr);
           gap:clamp(10px, 1.4vw, 20px); width:100%; margin:0;
+          /* كلّ تذكرة بارتفاع محتواها: الافتراضيّ stretch يمدّ المغلقتين إلى
+             ارتفاع المفتوحة فتنتفخان فراغاً أبيض ولسانهما يقف عند السطر
+             (علي ١٧ سبتمبر ٢٠٢٦: «عند فتح واحدة لماذا يظهر هكذا»). */
+          align-items:start;
         }
         html[data-skin] body .screen.setup .stage-card {
           position:relative; overflow:hidden; display:flex; flex-direction:column;
@@ -1148,6 +1152,9 @@ export function Setup({
             padding:clamp(10px,1.3dvh,15px) clamp(20px,1.6vw,34px);
           }
           html[data-skin] body .screen.setup .hnav-mute { padding-inline:clamp(12px,1vw,18px); }
+          /* فسحة أوسع بين التذكرة و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
+             تغلب clamp(18px,4.5dvh,56px) التي في blocks.css. */
+          html[data-skin] body .screen.setup .setup-body { margin-top:clamp(56px, 12dvh, 150px); }
         }
         /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): حشوةٌ أخفّ فلا تأكل
            التذكرةُ ثلث الشاشة — الإعداد يُمرَّر لكنّ الزينة لا تشتري تمريراً. */
