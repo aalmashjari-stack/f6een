@@ -84,7 +84,6 @@ export function Intro({ onDone }: { onDone?: () => void }) {
                 <h2 className="intro-name">{s.name}</h2>
                 <p className="intro-desc">{s.desc}</p>
               </div>
-              <span className="intro-points">{s.points}</span>
             </li>
           ))}
         </ol>
@@ -175,10 +174,12 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           display:flex; flex-direction:column; gap:clamp(6px,1.4dvh,14px);
           max-width:820px; width:100%; margin-inline:auto;
         }
-        /* صفٌّ واحد لكل مرحلة: الرقم، ثم الاسم والشرح، ثم التنقيط في الطرف.
-           رأسيّاً لا شبكةً أفقيّة — القراءة هنا تعليمية تُقرأ بالترتيب. */
+        /* صفٌّ واحد لكل مرحلة: الرقم، ثم الاسم والشرح. رأسيّاً لا شبكةً
+           أفقيّة — القراءة هنا تعليمية تُقرأ بالترتيب. عمود التنقيط في الطرف
+           سقط في ١٧ سبتمبر ٢٠٢٦ (علي: «شيل سطر النقاط») بعد أن صارت الأرقام
+           داخل شرح المرحلة نفسه. */
         .intro-stage {
-          display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+          display:grid; grid-template-columns:auto 1fr; align-items:center;
           gap:clamp(8px,1.6vw,18px);
           background:var(--n-surface); border-radius:var(--n-r2);
           box-shadow:var(--n-e1);
@@ -193,10 +194,6 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         .intro-desc {
           margin:2px 0 0; color:var(--n-ink-2); font-weight:600;
           font-size:clamp(11px,1.5vw,16px); line-height:1.5;
-        }
-        .intro-points {
-          font-weight:800; color:var(--n-a); white-space:nowrap;
-          font-size:clamp(12px,1.7vw,18px);
         }
 
         .intro-go {

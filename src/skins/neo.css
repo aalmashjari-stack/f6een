@@ -1037,7 +1037,6 @@ html[data-skin] .screen.setup .stage-no { color: var(--n-ink-3); font-weight: 80
 html[data-skin] .screen.setup .stage-tag { color: var(--n-ink-3); letter-spacing: .05em; }
 html[data-skin] .screen.setup .stage-name { color: var(--n-ink); font-weight: 800; letter-spacing: -.01em; }
 html[data-skin] .screen.setup .stage-desc { color: var(--n-ink-2); }
-html[data-skin] .screen.setup .stage-points,
 html[data-skin] .screen.setup .team-badge {
   border: 0;
   border-radius: 999px;

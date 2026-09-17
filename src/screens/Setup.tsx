@@ -297,8 +297,9 @@ export function Setup({
                   </button>
                   {open && (
                     <div className="stage-more" id={'stage-more-' + i}>
+                      {/* الشرح وحده: كبسولة النقاط سقطت في ١٧ سبتمبر ٢٠٢٦ (علي:
+                          «شيل سطر النقاط») بعد أن صارت الأرقام داخل الجملة نفسها. */}
                       <p className="stage-desc">{s.desc}</p>
-                      <span className="stage-points">{s.points}</span>
                     </div>
                   )}
                 </article>
@@ -1048,11 +1049,6 @@ export function Setup({
         html[data-skin] body .screen.setup .stage-desc {
           display:block; margin:0; text-align:center;
           color:var(--n-ink, #22201C); font-weight:600; font-size:clamp(13px,1.45vw,16px); line-height:1.6;
-        }
-        html[data-skin] body .screen.setup .stage-points {
-          margin:0; padding:4px 14px; border-radius:999px; border:0;
-          background:var(--n-ink, #22201C); color:#fff;
-          font-size:clamp(12px,1.2vw,14px); font-weight:800; white-space:nowrap;
         }
         @media (prefers-reduced-motion: reduce) { html[data-skin] body .screen.setup .stage-more { animation:none; } }
         /* عنوان كتلة الفريقين: لافتةٌ بيضاء بحدّ حبرٍ وظلٍّ صلب في الوسط —
