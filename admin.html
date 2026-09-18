@@ -1,12 +1,17 @@
 <!doctype html>
 <!-- لوحة الإدارة — صفحة مستقلّة عن اللعبة (`admin.html`).
      لا `data-skin` ولا بوّابة اتّجاه: هذه تُقرأ على كمبيوتر بأي اتّجاه،
-     وشاشات اللعب وحدها هي المقفولة أفقياً. -->
+     وشاشات اللعب وحدها هي المقفولة أفقياً.
+
+     و`viewport-fit=cover` كما في `index.html`: في التطبيق المثبَّت يمتدّ
+     الويب‑ڤيو تحت ساعة النظام على أيّ حال، وبلا هذه السمة تعود دوالّ
+     `env(safe-area-inset-*)` أصفاراً فلا يملك `admin.css` أن يزيح الرأس
+     عنها — كان عنوان اللوحة يمرّ تحت الجزيرة على الآيفون الطوليّ. -->
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" sizes="512x512" href="./assets/f6een-icon-taa-512.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
     <title>لوحة فطين</title>
   </head>

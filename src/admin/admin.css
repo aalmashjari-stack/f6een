@@ -34,6 +34,15 @@ body {
   font-family: 'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 14px;
   -webkit-text-size-adjust: 100%;
+  /* حدود الشاشة الآمنة — كما يفعل `#root` في showtime.css للعبة. في التطبيق
+     المثبَّت يمتدّ الويب‑ڤيو تحت ساعة النظام وشريط المنزل (`viewport-fit=cover`
+     في admin.html)، فكان عنوان اللوحة يمرّ تحت الجزيرة على الآيفون الطوليّ.
+     على الويب الدوالّ أصفار فلا يتغيّر بكسل. والطبقات الثابتة (`.q-veil`
+     و`.pv-back`) لا ترث هذه الحشوة — لها حشوتها أدناه. */
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
 }
 
 .a-wrap { max-width: 1180px; margin: 0 auto; padding: 18px clamp(10px, 2vw, 24px) 60px; }
@@ -162,7 +171,7 @@ a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
 
 /* ── بوّابة الدخول ── */
 .a-gate {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+  min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .a-gate-card {
   width: min(360px, 100%); display: flex; flex-direction: column; gap: 10px;
@@ -177,12 +186,14 @@ a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
    ثابتة، فتبدو كأنّ الزرّ لا يعمل. وقع فعلاً. */
 .q-veil {
   position: fixed; inset: 0; z-index: 70;
-  display: flex; align-items: center; justify-content: center; padding: 16px;
+  display: flex; align-items: center; justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   background: rgba(10, 8, 20, .5);
 }
 .q-box {
   display: flex; flex-direction: column; gap: 10px;
-  width: min(680px, 100%); max-height: min(88vh, 760px); overflow: auto;
+  width: min(680px, 100%); max-height: min(88dvh, 760px); overflow: auto;
   padding: 16px; border-radius: 16px;
   background: var(--n-surface); color: var(--n-ink);
   box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
@@ -212,7 +223,13 @@ label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
    يخطر ببال أحد: تبقى «المصدر» و«السؤال» ظاهرتين وكأنّ الجدول عمودان.
    و`table-layout: fixed` يجعل الأعمدةَ تُقاس من `colgroup` لا من محتواها،
    فيلتزم النصُّ الطويل عمودَه ويلتفّ فيه. */
-.a-tbl-q { table-layout: fixed; min-width: 860px; }
+/* والعرضُ `max(100%, 860px)` لا `min-width: 860px`: WebKit (سفاري والتطبيق
+   المثبَّت) يتجاهل `min-width` على جدولٍ تخطيطُه `fixed` وعرضُه نسبيّ —
+   قِيس في المحاكي: الجدول يخرج 722px (مجموع الأعمدة الثابتة) فيبقى لعمود
+   السؤال صفر، ويُرسَم حرفاً في كلّ سطر على الآيفون الطوليّ. Chromium
+   يحترمها فلم يظهر العطب على الحاسب. */
+/* بوسم `table` كما في `table.a-tbl` أعلاه، وإلّا غلبها عرضُها 100%. */
+table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .a-tbl-q th, .a-tbl-q td {
   white-space: normal;
   /* كلمةٌ أطول من عمودها تفيض ولا تكسر التخطيط — الروابط والمعرّفات. */
@@ -255,10 +272,10 @@ label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
   padding: 28px; background: rgba(12, 12, 16, .93); cursor: zoom-out;
 }
-.pv-back img { max-width: 92vw; max-height: 80vh; object-fit: contain; border-radius: 10px; cursor: default; }
+.pv-back img { max-width: 92vw; max-height: 80dvh; object-fit: contain; border-radius: 10px; cursor: default; }
 .pv-label { color: #fff; font-size: 20px; font-weight: 700; }
 .pv-x {
-  position: absolute; top: 16px; inset-inline-end: 16px;
+  position: absolute; top: max(16px, env(safe-area-inset-top)); inset-inline-end: 16px;
   width: 46px; height: 46px; display: grid; place-items: center;
   font-size: 22px; line-height: 1; color: #fff; padding: 0;
   background: rgba(255, 255, 255, .16); border: 2px solid rgba(255, 255, 255, .55);
@@ -266,3 +283,28 @@ label.a-btn { cursor: pointer; display: inline-flex; align-items: center; }
 }
 .pv-x:hover { background: rgba(255, 255, 255, .3); }
 .pv-x:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* ── الجوال الطوليّ ──
+   اللوحة تُقرأ على الحاسب بالتصميم، لكنّ علي يفتحها من التطبيق على الآيفون
+   (زرّ «لوحة الإدارة» في حسابي) فتلزم صلاحيتها هناك لا جمالها. ما يتغيّر:
+   الرأس يتعمّد سطرين، والبطاقات أربعٌ في الصفّ بدل ثلاثٍ منتفخة، والأزرار
+   لا تُكسر كلماتها («العودة للرئيسية» كان ينزل سطرين). والجداول تبقى على
+   تمريرها الأفقيّ — عمودُ الأزرار مثبَّتٌ فلا يضيع. */
+@media (max-width: 640px) {
+  .a-wrap { padding-block-start: 12px; }
+  .a-wrap > .a-top { flex-direction: column; align-items: stretch; gap: 8px; }
+  /* البريد والشارة في سطر، والزرّان تحتهما — شبكةٌ لا التفافٌ يوزّعها
+     على هوى عرض البريد. */
+  .a-wrap > .a-top .a-who {
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px;
+  }
+  .a-wrap > .a-top .a-mail { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .a-wrap > .a-top .a-btn { justify-content: center; }
+  .a-btn { white-space: nowrap; }
+  .a-tiles { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .a-tile { padding: 8px 9px; line-height: 1.35; }
+  .a-tile b { font-size: 18px; }
+  .a-tile span { font-size: 11px; }
+  .a-tabs { gap: 5px; }
+  .a-tab { padding: 7px 12px; }
+}
