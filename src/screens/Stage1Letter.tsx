@@ -102,7 +102,10 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
 
       <style>{`
         /* الغلاف حاويةٌ تُقاس: الشبكة تأخذ من ارتفاعه أو عرضه أيّهما أضيق
-           (cqh/cqw) بنسبة 7:4 — لا ثابتَ بكسليّ يُخمَّن للشريط فوقها. */
+           (cqh/cqw) بنسبة 7:4 — لا ثابتَ بكسليّ يُخمَّن للشريط فوقها.
+           و82٪ لا 100٪: كانت البلاطات تملأ الغلاف إلى حافّته (118px على
+           1280×720) فطلب علي تصغيرها قليلاً (١٨ سبتمبر ٢٠٢٦) — والهواء
+           حولها يُبرز الضوء الجاري بدل أن يزاحمه. */
         .letters-wrap {
           flex:1; min-height:0; display:flex; align-items:center; justify-content:center;
           container-type:size;
@@ -113,7 +116,7 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
           grid-template-columns:repeat(7, minmax(0,1fr));
           grid-auto-rows:1fr;
           gap:clamp(6px,1.2vw,16px);
-          width:min(100cqw, calc(100cqh * 7 / 4.15));
+          width:min(82cqw, calc(82cqh * 7 / 4.15));
           aspect-ratio:7 / 4.15;
         }
         .ltile {
