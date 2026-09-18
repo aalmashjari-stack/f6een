@@ -280,6 +280,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AChevrolet_Corvette_C8_IAA_2021_1X7A0156.jpg"
   },
   {
+    "key": "car-cybertruck",
+    "licence": "رفعها علي من اللوحة (١٨ سبتمبر ٢٠٢٦) — كانت في تخزين Supabase؛ نُقلت إلى الحزمة بعد طمس اسم تيسلا على الواجهة والباب الخلفيّ",
+    "artist": "",
+    "page": "",
+    "source": "https://ajtexbwnrzwidoncbodi.supabase.co/storage/v1/object/public/art/questions/1789216436646-ngsyao.jpg"
+  },
+  {
     "key": "car-defender",
     "licence": "CC BY-SA 4.0",
     "artist": "Damian B Oh",
@@ -439,13 +446,6 @@
     "artist": "nagi usano from Tokyo, Japan",
     "page": "File:Bob Iger 2019 Disney Legends Awards Ceremony D23 EXPO 2019 (51441457900) (cropped).jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3ABob_Iger_2019_Disney_Legends_Awards_Ceremony_D23_EXPO_2019_(51441457900)_(cropped).jpg"
-  },
-  {
-    "key": "disney-pixar-hq",
-    "licence": "CC BY-SA 3.0",
-    "artist": "Coolcaesar",
-    "page": "File:Pixaranimationstudios.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File%3APixaranimationstudios.jpg"
   },
   {
     "key": "disney-shanghai",
