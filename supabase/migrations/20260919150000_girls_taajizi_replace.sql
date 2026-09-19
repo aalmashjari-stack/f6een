@@ -11,3 +11,12 @@ delete from public.question_drafts
  where status = 'pending'
    and level = 'تعجيزي'
    and batch in ('6b512884-865b-4aaa-b6d1-a7ca700d9c5d', '3dd65f1f-ff52-43c7-b105-cf04c7b23c1f');
+
+-- وإلحاقُ البدائل بالدفعتين الأصليّتين: صفٌّ واحد لكلّ فئة في اللوحة.
+update public.question_drafts
+   set batch = '6b512884-865b-4aaa-b6d1-a7ca700d9c5d'
+ where batch = '2075d038-5321-4fab-93f1-db57d438f21e';
+
+update public.question_drafts
+   set batch = '3dd65f1f-ff52-43c7-b105-cf04c7b23c1f'
+ where batch = 'a3e77287-f709-46f4-8d4c-a2e0472b803c';
