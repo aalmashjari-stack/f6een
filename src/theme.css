@@ -421,9 +421,14 @@ body::after {
   display: flex; align-items: center; justify-content: center;
   gap: clamp(10px, 2vw, 28px); min-width: 0; max-width: 100%;
 }
+/* قطر الوجه لا يتجاوز سطر الاسم على الشاشة القصيرة: الاسم نحو 9dvh
+   (سطره ~11dvh)، فوجهٌ بـ16dvh كان يرفع الصفّ فوق الاسم بثلث، والبطاقة
+   تنكمش (flex 0 1 auto) وتقصّ من طرفيها المتوسَّطين — فيختفي أعلى السؤال
+   وأسفل الوجه (بلاغ علي ١٩ سبتمبر ٢٠٢٦، قيس على 844×390). وعلى الشاشة
+   الطويلة يحكم 11vw والسقف كما كانا. */
 .rv-face {
   flex: 0 0 auto;
-  width: clamp(56px, min(11vw, 16dvh), 132px); aspect-ratio: 1;
+  width: clamp(40px, min(11vw, 10dvh), 132px); aspect-ratio: 1;
   object-fit: cover; border-radius: 50%;
   border: 2px solid var(--gold); box-shadow: var(--lift);
 }
