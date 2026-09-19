@@ -17,8 +17,6 @@ import {
   cellKey,
   createSession,
   stageOfPhase,
-  decodeState,
-  encodeState,
 } from './session'
 import { firstLetter, isLettersCategory } from './letters'
 
@@ -38,7 +36,6 @@ export type Action =
   | { t: 'S1_LETTER_DONE'; at?: number }
   | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
   | { t: 'S1_SCORE'; team: TeamId | null }
-  | { t: 'S1_BACK' } // من السؤال التالي إلى شاشة كشف السؤال السابق — يُلغى الاختيار الجاري
   | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
   | { t: 'INTERVAL_CONTINUE' }
   | { t: 'S2_SELECT'; sel: [number, number]; at?: number } // اختيار اللاعبَين (بعد التشويق)
@@ -190,10 +187,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (state.phase !== 'stage1-reveal' && state.phase !== 'stage1-question') return state
       /* النقاط لمن أجاب لا لصاحب الدور (قرار علي ٥ سبتمبر ٢٠٢٦): الحكم يختار
          الفريق من اسمه، و`null` تعني أنّ أحداً لم يُصب. */
-      /* لقطةُ شاشة الكشف قبل التنقيط — إليها يعود `S1_BACK` من السؤال
-         التالي، فيُلغى اختيارُه ونقاطُ هذا وتُفتح خليّته. بلا لقطةٍ داخلها. */
-      const s1Undo = encodeState({ ...state, s1Undo: null, phase: 'stage1-reveal', timerEndsAt: null })
-      let s: GameState = { ...state, s1Undo }
+      let s = state
       if (action.team !== null)
         s = addScore(s, action.team, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
 
@@ -213,16 +207,6 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         intervalNext: 'stage2-selection',
         phase: 'interval',
       }
-    }
-
-    /* ---------------- الرجوع إلى السؤال السابق ---------------- */
-    case 'S1_BACK': {
-      if (!state || !state.s1Undo) return state
-      if (state.phase !== 'stage1-question' && state.phase !== 'stage1-letter') return state
-      /* اللقطة هي الحقيقةُ كما كانت: السؤالُ الجاري لم يُحرق (يعود إلى
-         المخزون) وخليّتُه مفتوحة ونقاطُ السابق غير مسجَّلة — كأنّ التنقيط
-         والاختيار لم يقعا. */
-      return decodeState(state.s1Undo)
     }
 
     /* ---------------- الفاصل ---------------- */
