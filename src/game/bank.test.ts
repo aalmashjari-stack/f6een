@@ -14,6 +14,8 @@ import {
   setBlockedQuestionIds,
   setExtraCategories,
   setHiddenCategories,
+  poolDerby,
+  setDerbyCategories,
   setQuestionOverlay,
   subscribeBank,
 } from './bank'
@@ -266,6 +268,19 @@ describe('الفئات المضافة', () => {
     expect(allCategories()).toContain(NEW)
     setHiddenCategories([])
     expect(playableCategories()).toContain(NEW)
+  })
+
+  it('المستبعَدة تخرج من مخزون الديربي والحق ما تلحق أيضاً', () => {
+    setExtraCategories([NEW])
+    setQuestionOverlay([
+      { id: 'ADM9300', category: NEW, level: 'متوسط', topic: '', question: 'سؤال ديربي مستبعد', answer: 'إجابة' },
+    ])
+    setDerbyCategories([NEW])
+    expect(poolDerby().some((q) => q.category === NEW)).toBe(true)
+    setHiddenCategories([NEW])
+    expect(poolDerby().some((q) => q.category === NEW)).toBe(false)
+    setHiddenCategories([])
+    setDerbyCategories([])
   })
 
   it('تكتمل المستويات الثلاثة فتدخل', () => {
