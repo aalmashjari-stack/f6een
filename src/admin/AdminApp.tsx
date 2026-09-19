@@ -54,6 +54,8 @@ import {
   reorderGroups,
   saveCategoryArt,
   setCategoryGroup,
+  setCategoryHidden,
+  renameCategory,
   saveQuestion,
   seedBank,
   setBalance,
@@ -1755,6 +1757,8 @@ function Categories() {
         shipped: art?.[cat] ?? null,
         missing: LEVELS.filter((_, i) => counts[i] === 0),
         group: row?.group_name ?? null,
+        /* مستبعَدة من اللوح مؤقّتاً — علمٌ يُرفع من الزرّ نفسه. */
+        hidden: row?.hidden === true,
         /* ما دون الحدّ يُرى من هنا لا من محاولةٍ تُردّ: الخليّة تحت عشرين
            تمنع الحذف والنقل (`assert_cell_floor`)، وهي أيضاً ما ينقص الفئة
            الجديدة لتصير كاملة. */
@@ -1834,6 +1838,40 @@ function Categories() {
       reload()
     } catch (e) {
       setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الفعل' })
+    }
+  }
+
+  /* ── الاستبعاد المؤقّت من اللوح (طلب علي ١٩ سبتمبر ٢٠٢٦) ── */
+  async function hide(cat: string, hidden: boolean) {
+    setMsg(null)
+    try {
+      await setCategoryHidden(cat, hidden)
+      setMsg({
+        ok: true,
+        text: hidden
+          ? `«${cat}» مستبعَدة من اللوح حتى تُعاد — أسئلتها باقية`
+          : `«${cat}» عادت إلى اللوح`,
+      })
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر التغيير' })
+    }
+  }
+
+  /* ── إعادة التسمية (طلب علي ١٩ سبتمبر ٢٠٢٦) — للمضافة؛ والمشحونة تُردّ
+     بسببها من القاعدة لا بزرٍّ مطفأ. */
+  async function rename(cat: string) {
+    const v = window.prompt(`اسمٌ جديد لـ«${cat}»`, cat)
+    if (v === null) return
+    const clean = v.trim()
+    if (clean.length < 2 || clean === cat) return
+    setMsg(null)
+    try {
+      const made = await renameCategory(cat, clean)
+      setMsg({ ok: true, text: `صارت «${cat}» تُسمّى «${made}» — وأسئلتها معها` })
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّرت التسمية' })
     }
   }
 
@@ -1943,6 +1981,16 @@ function Categories() {
                 </td>
                 <td>
                   <b>{r.cat}</b>
+                  {/* قلمُ التسمية بجانب الاسم لا في عمود الأفعال: يُضغط دائماً،
+                      والمشحونة تقول سببها. */}
+                  <button
+                    className="a-btn slim rename"
+                    title="إعادة تسمية"
+                    aria-label={`إعادة تسمية ${r.cat}`}
+                    onClick={() => rename(r.cat)}
+                  >
+                    ✎
+                  </button>
                 </td>
                 <td>
                   {/* قائمةٌ لا حقلٌ يُكتب: تصنيفٌ بخطأ مطبعيّ يصير مظلّةً
@@ -1977,7 +2025,11 @@ function Categories() {
                   </td>
                 ))}
                 <td>
-                  {r.missing.length === 0 ? (
+                  {r.hidden ? (
+                    /* المستبعَدة تُقال قبل الاكتمال: هي التي تمنعها من اللوح
+                       الآن مهما اكتملت. */
+                    <span className="tag abandoned">مستبعَدة مؤقّتاً</span>
+                  ) : r.missing.length === 0 ? (
                     r.thin.length === 0 ? (
                       <span className="tag finished">نعم</span>
                     ) : (
@@ -1989,7 +2041,13 @@ function Categories() {
                     <span className="tag abandoned">ينقصها {r.missing.join(' و')}</span>
                   )}
                 </td>
-                <td>
+                <td className="a-actions">
+                  {/* استبعادٌ لا حذف: علمٌ على الفئة يُرفع بالزرّ نفسه،
+                      وأسئلتُها لا تُمسّ — طلب علي ١٩ سبتمبر ٢٠٢٦. لكلّ
+                      فئةٍ، مشحونةً كانت أو مضافة. */}
+                  <button className="a-btn" onClick={() => hide(r.cat, !r.hidden)}>
+                    {r.hidden ? 'إعادة إلى اللوح' : 'استبعاد من اللوح'}
+                  </button>
                   {r.added && (
                     /* **يُضغط دائماً، ويقول سببَه عند الرفض.** كان معطَّلاً
                        والسببُ في تلميحٍ لا يظهر إلّا بالتحويم — فقرأه علي

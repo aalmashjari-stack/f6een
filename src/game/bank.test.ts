@@ -13,6 +13,7 @@ import {
   poolByCatLevel,
   setBlockedQuestionIds,
   setExtraCategories,
+  setHiddenCategories,
   setQuestionOverlay,
   subscribeBank,
 } from './bank'
@@ -244,6 +245,27 @@ describe('الفئات المضافة', () => {
       })),
     )
     expect(playableCategories()).not.toContain(NEW)
+  })
+
+  it('المستبعَدة مؤقّتاً تخرج من اللوح وإن اكتملت، وتعود برفع العلم', () => {
+    setExtraCategories([NEW])
+    setQuestionOverlay(
+      LEVELS.map((level, i) => ({
+        id: `ADM920${i}`,
+        category: NEW,
+        level,
+        topic: '',
+        question: `سؤال مستبعد ${i}`,
+        answer: 'إجابة',
+      })),
+    )
+    expect(playableCategories()).toContain(NEW)
+    setHiddenCategories([NEW])
+    expect(playableCategories()).not.toContain(NEW)
+    /* الأسئلة نفسها لا تُمسّ: الاستبعاد علمٌ على الفئة لا حجبٌ للأسئلة. */
+    expect(allCategories()).toContain(NEW)
+    setHiddenCategories([])
+    expect(playableCategories()).toContain(NEW)
   })
 
   it('تكتمل المستويات الثلاثة فتدخل', () => {

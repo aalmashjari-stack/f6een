@@ -207,6 +207,7 @@ const ERRORS: Record<string, string> = {
   category_exists: 'هذه الفئة موجودة',
   category_in_use: 'الفئة تحمل أسئلة — انقلها أو احذفها أوّلاً',
   no_such_category: 'لا فئة بهذا الاسم',
+  shipped_category: 'فئة مشحونة مع التطبيق — اسمها في الحزمة، فتسميتها بإصدارٍ لا من هنا',
   group_exists: 'هذا التصنيف موجود',
   no_such_group: 'لا تصنيف بهذا الاسم',
   bad_payload: 'صيغة الدفعة غير صالحة',
@@ -302,6 +303,8 @@ export interface CategoryRow {
   /** التصنيف الذي تنتمي إليه — `null` = بلا مظلّة. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
   group_name?: string | null
   group_sort?: number | null
+  /** مستبعَدة من اللوح مؤقّتاً — أسئلتها باقية. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
+  hidden?: boolean
 }
 
 /* ============================= التصنيفات ============================= */
@@ -372,6 +375,31 @@ export async function setCategoryGroup(cat: string, group: string | null): Promi
     p_group: group,
   })
   if (error) throw new Error(translate(error.message))
+}
+
+/**
+ * استبعادُ فئةٍ من اللوح مؤقّتاً أو إعادتُها — علمٌ لا حذف: أسئلتُها في
+ * مكانها، وتغيب عن اختيار الإعداد وحده حتى يُرفع العلم.
+ */
+export async function setCategoryHidden(cat: string, hidden: boolean): Promise<void> {
+  const { error } = await supabase.rpc('admin_set_category_hidden', {
+    p_name: cat,
+    p_hidden: hidden,
+  })
+  if (error) throw new Error(translate(error.message))
+}
+
+/**
+ * إعادة تسمية فئةٍ مضافة — تمسّ أسئلتها ومسوّداتها معاً في القاعدة. الفئة
+ * المشحونة تُردّ بسببها (`shipped_category`): اسمها في الحزمة.
+ */
+export async function renameCategory(oldName: string, newName: string): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_rename_category', {
+    p_old: oldName,
+    p_new: newName,
+  })
+  if (error) throw new Error(translate(error.message))
+  return data as string
 }
 
 /** صفوف جدول الفئات: المضافة، وصفوف الصور البديلة لفئات البنك. */

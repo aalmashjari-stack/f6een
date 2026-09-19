@@ -189,6 +189,24 @@ export function derbyCategories(): Set<string> {
   return derby_
 }
 
+/* ===================== الفئات المستبعَدة من اللوح ===================== */
+/**
+ * فئاتٌ استبعدها المدير من اللوح **مؤقّتاً** (`categories.hidden`، طلب علي
+ * ١٩ سبتمبر ٢٠٢٦: «استبعاد مؤقّت وليس حذف»). أسئلتُها باقية ولا تُحجب،
+ * لكنّ الفئة لا تدخل قائمة الاختيار في الإعداد ولا فاصل التعادل. تصل مع
+ * الفئات في `syncCategories` وتُخزَّن معها، ورفعُ العلم من اللوحة يعيدها.
+ */
+let hidden_: Set<string> = new Set()
+
+export function setHiddenCategories(names: Iterable<string>) {
+  hidden_ = new Set(names)
+  notifyBank()
+}
+
+export function hiddenCategories(): Set<string> {
+  return hidden_
+}
+
 /* صفوف اللوح من موضعها الواحد — انظر `levels.ts`. */
 const LEVELS = BOARD_LEVELS
 
@@ -202,9 +220,13 @@ const LEVELS = BOARD_LEVELS
  *
  * وهذا يحرس فئةً أُضيفت من اللوحة قبل أن تُملأ، ويحرس أيضاً فئةً مشحونة
  * حُجز آخرُ أسئلتها في مستوى ببلاغات — الخطر نفسه من بابين.
+ *
+ * **والمستبعَدة مؤقّتاً تخرج من هنا أيضاً** — الشرط الثالث بعد الاكتمال.
  */
 export function playableCategories(): string[] {
-  return allCategories().filter((c) => LEVELS.every((l) => poolByCatLevel(c, l).length > 0))
+  return allCategories().filter(
+    (c) => !hidden_.has(c) && LEVELS.every((l) => poolByCatLevel(c, l).length > 0),
+  )
 }
 
 /* ===================== الأسئلة المحجوزة — بلاغات اللاعبين ===================== */
