@@ -17,6 +17,8 @@ import whoAmI from '../../assets/categories/who-am-i.jpg'
 import celebrities from '../../assets/categories/celebrities.jpg'
 import proverbsRiddles from '../../assets/categories/proverbs-riddles.jpg'
 import letters from '../../assets/categories/letters.jpg'
+import beauty from '../../assets/categories/beauty.jpg'
+import fashion from '../../assets/categories/fashion.jpg'
 import { LETTERS_CATEGORY } from '../game/letters'
 
 /**
@@ -42,6 +44,10 @@ export const CATEGORY_ART: Record<string, string> = {
   'أمثال وألغاز': proverbsRiddles,
   // «حروف» (١٣ سبتمبر ٢٠٢٦) — بلاطاتٌ بألوان الهويّة، مرسومة لا مصوَّرة؛ ٣:٢
   [LETTERS_CATEGORY]: letters,
+  // فئتا «بنات» (١٩ سبتمبر ٢٠٢٦) — ثلاث لوحاتٍ من صور المنتجات نفسها التي
+  // تحملها الأسئلة، ٣:٢؛ بطاقةٌ مؤقّتة حتى يرفع علي صورته من اللوحة فتعلو عليها.
+  'مكياج وعناية وعطور': beauty,
+  'موضة وأزياء وماركات': fashion,
 }
 
 /* ===================== الصور المرفوعة من اللوحة ===================== */
