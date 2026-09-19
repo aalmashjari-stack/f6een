@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { setDerbyCategories, setExtraCategories, setQuestionOverlay } from '../game/bank'
+import { setDerbyCategories, setExtraCategories, setQuestionOverlay, setHiddenCategories } from '../game/bank'
 import { setCategoryArt } from '../components/categoryArt'
 import { setCategoryGroups } from '../components/categoryGroups'
 import { BOARD_LEVELS } from '../game/levels'
@@ -166,6 +166,8 @@ interface CatRow {
   group_sort?: number | null
   /** تدخل مخزون الديربي (SPEC ٥) — من `categories.derby`. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
   derby?: boolean
+  /** مستبعَدة من اللوح مؤقّتاً — من `categories.hidden`. قد يغيب كذلك. */
+  hidden?: boolean
 }
 
 function loadCats(): CatRow[] {
@@ -195,6 +197,8 @@ function applyCats(rows: CatRow[]) {
   )
   /* فئات الديربي قبل الفئات كذلك — للسبب نفسه. */
   setDerbyCategories(rows.filter((r) => r.derby).map((r) => r.name))
+  /* والمستبعَدة قبل الفئات كذلك. */
+  setHiddenCategories(rows.filter((r) => r.hidden).map((r) => r.name))
   /* الصفّ الذي لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة لا يدخل قائمة الفئات —
      وإلّا ظهرت الفئة مرّتين. */
   setExtraCategories(rows.filter((r) => r.is_extra !== false).map((r) => r.name))

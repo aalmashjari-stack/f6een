@@ -308,3 +308,8 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
   .a-tabs { gap: 5px; }
   .a-tab { padding: 7px 12px; }
 }
+
+/* خليّة الأفعال في جدول الفئات: زرّان جنباً إلى جنب لا فوق بعض. */
+.a-actions { white-space: nowrap; }
+.a-actions .a-btn + .a-btn { margin-inline-start: 6px; }
+.a-btn.rename { padding: 2px 8px; margin-inline-start: 6px; font-size: 14px; line-height: 1.4; }
