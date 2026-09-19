@@ -379,7 +379,7 @@ export async function setCategoryGroup(cat: string, group: string | null): Promi
 
 /**
  * استبعادُ فئةٍ من اللوح مؤقّتاً أو إعادتُها — علمٌ لا حذف: أسئلتُها في
- * مكانها، وتغيب عن اختيار الإعداد وحده حتى يُرفع العلم.
+ * مكانها، وتغيب عن اختيار الإعداد وعن الديربي والحق ما تلحق حتى يُرفع العلم.
  */
 export async function setCategoryHidden(cat: string, hidden: boolean): Promise<void> {
   const { error } = await supabase.rpc('admin_set_category_hidden', {

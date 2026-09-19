@@ -193,7 +193,8 @@ export function derbyCategories(): Set<string> {
 /**
  * فئاتٌ استبعدها المدير من اللوح **مؤقّتاً** (`categories.hidden`، طلب علي
  * ١٩ سبتمبر ٢٠٢٦: «استبعاد مؤقّت وليس حذف»). أسئلتُها باقية ولا تُحجب،
- * لكنّ الفئة لا تدخل قائمة الاختيار في الإعداد ولا فاصل التعادل. تصل مع
+ * لكنّ الفئة لا تدخل قائمة الاختيار في الإعداد ولا فاصل التعادل، **ولا
+ * مخزونَ الديربي والحق ما تلحق** (`poolDerby`، قرار ٢٠ سبتمبر). تصل مع
  * الفئات في `syncCategories` وتُخزَّن معها، ورفعُ العلم من اللوحة يعيدها.
  */
 let hidden_: Set<string> = new Set()
@@ -293,8 +294,17 @@ export const DERBY_LEVELS: Level[] = ['سهل', 'متوسط']
  * الديربي متوسط، والحق ما تلحق سهل ومتوسط — `fallbackLevels` يقولها المنادي.
  */
 export function poolDerby(fallbackLevels: Level[] = ['متوسط']): Question[] {
-  if (derby_.size === 0) return poolShippedByLevels(fallbackLevels)
-  return allowed(DERBY_LEVELS.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => derby_.has(q.category))))
+  /* المستبعَدة مؤقّتاً تخرج من الديربي والحق ما تلحق أيضاً (قرار علي ٢٠
+     سبتمبر ٢٠٢٦: «الفئات اللي أستبعدها ما راح تكون من فئات الديربي والحق
+     ما تلحق» — يستبعد فئةً حتى تكتمل). الملاذ الأخير في `drawDerby` يبقى
+     على البنك كلّه: سؤالٌ من فئةٍ مستبعَدة أهون من شاشةٍ بيضاء. */
+  if (derby_.size === 0)
+    return poolShippedByLevels(fallbackLevels).filter((q) => !hidden_.has(q.category))
+  return allowed(
+    DERBY_LEVELS.flatMap((l) =>
+      (byLevel.get(l) ?? []).filter((q) => derby_.has(q.category) && !hidden_.has(q.category)),
+    ),
+  )
 }
 
 /* ========================= عائلات القوالب ========================= */
