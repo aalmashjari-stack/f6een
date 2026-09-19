@@ -53,13 +53,12 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           الشاشة التالية، فتسميةُ صاحب الدور هنا تُجيب عنه قبل أن يُطرح. */}
       <div className="stack gap-s">
         {/* زرّان في صفّ (طلب علي ٢٠ سبتمبر ٢٠٢٦): الكشفُ أصغر ممّا كان،
-            وبجانبه «السؤال السابق» يعيد إلى شاشة كشف السؤال الذي سبق
-            (`S1_BACK`) — الاختيار الجاري يُلغى وخليّته تُفتح. */}
+            وبجانبه «السؤال السابق» يستحضر ما مرّ للتوّ بلا مسٍّ للجلسة. */}
         <div className="s1-actions">
           <button className="action compact s1-reveal" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
             اكشف الإجابة
           </button>
-          <PrevQuestion state={state} dispatch={dispatch} />
+          <PrevQuestion state={state} />
         </div>
         <div className="action-note">اضغط بعد أن يجيب أحد الفريقين</div>
       </div>
@@ -73,7 +72,6 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         }
         .s1-actions .action.compact { padding-inline:clamp(26px, 4.5vw, 56px); }
         .s1-actions .pq-btn { font-size:clamp(14px, 1.8vw, 19px); }
-        .s1-actions .pq-btn.armed { color:var(--festival-orange, #E4674A); }
 
         /* بطاقة السؤال هنا وحدها لا تنمو مع المؤقّت (المؤقّت هو النامي في هذه
            الشاشة)، فبلا سقفٍ يزحمه السؤالُ الطويل حين يلتفّ سطرين. السقف يمنح
