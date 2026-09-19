@@ -1106,11 +1106,25 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AAsmahan_photo.jpg"
   },
   {
+    "key": "face-bader-al-mutawa",
+    "licence": "CC BY 2.0",
+    "artist": "Abdullah Al-Qadeeri",
+    "page": "File:Bader Al-Mutwa.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABader_Al-Mutwa.jpg"
+  },
+  {
     "key": "face-badr-shakir-al-sayyab",
     "licence": "Public domain",
     "artist": "Unknown authorUnknown author",
     "page": "File:Sayab0.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3ASayab0.jpg"
+  },
+  {
+    "key": "face-bassem-youssef",
+    "licence": "CC BY 3.0",
+    "artist": "Saha Notlari",
+    "page": "File:Bassem Youssef white background.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABassem_Youssef_white_background.png"
   },
   {
     "key": "face-benjamin-franklin",
@@ -1363,6 +1377,13 @@
     "artist": "Anders Beer Wilse",
     "page": "File:Edvard Munch 1921.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3AEdvard_Munch_1921.jpg"
+  },
+  {
+    "key": "face-edward-said",
+    "licence": "CC0",
+    "artist": "Barenboim-Said Akademie gGmbH",
+    "page": "File:Edward Said and Daniel Barenboim in Sevilla, 2002 Crop.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AEdward_Said_and_Daniel_Barenboim_in_Sevilla%2C_2002_Crop.jpg"
   },
   {
     "key": "face-el-sayed-nosseir",
@@ -1792,6 +1813,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AHalim_el_Roumi.jpg"
   },
   {
+    "key": "face-hamad-al-montashari",
+    "licence": "CC BY 2.0",
+    "artist": "Hussain Isa Alderazi",
+    "page": "File:Hamad Al-Montashari 2009.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHamad_Al-Montashari_2009.jpg"
+  },
+  {
     "key": "face-hannibal",
     "licence": "Public domain",
     "artist": "Fratelli Alinari",
@@ -2072,6 +2100,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AJane_birkin_1970.jpg"
   },
   {
+    "key": "face-jasem-yaqoub",
+    "licence": "Public domain",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Jasem Yaqoub in his playing days.png",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJasem_Yaqoub_in_his_playing_days.png"
+  },
+  {
     "key": "face-jean-francois-champollion",
     "licence": "Public domain",
     "artist": "Léon Cogniet",
@@ -2268,6 +2303,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AKenzo_Tange_1981_(3x4_cropped).jpg"
   },
   {
+    "key": "face-khabib",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Airotcivss",
+    "page": "File:Khabib nurmagomedov.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKhabib_nurmagomedov.jpg"
+  },
+  {
     "key": "face-khalil-mutran",
     "licence": "Public domain",
     "artist": "Unknown authorUnknown author",
@@ -2413,6 +2455,13 @@
     "artist": "Essam Azouz",
     "page": "File:Mahmoud Abdel Aziz الساحر محمود عبد العزيز.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3AMahmoud_Abdel_Aziz_%D8%A7%D9%84%D8%B3%D8%A7%D8%AD%D8%B1_%D9%85%D8%AD%D9%85%D9%88%D8%AF_%D8%B9%D8%A8%D8%AF_%D8%A7%D9%84%D8%B9%D8%B2%D9%8A%D8%B2.jpg"
+  },
+  {
+    "key": "face-majed-abdullah",
+    "licence": "Public domain",
+    "artist": "Unknown authorUnknown author",
+    "page": "File:Majed Abdullah during his playing days.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMajed_Abdullah_during_his_playing_days.jpg"
   },
   {
     "key": "face-makoto-shinkai",
@@ -2576,6 +2625,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AMiuccia_Prada_(cropped).jpg"
   },
   {
+    "key": "face-mohamed-aboutrika",
+    "licence": "CC BY 2.0",
+    "artist": "mustapha_ennaimi",
+    "page": "File:Aboutrika2011.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAboutrika2011.jpg"
+  },
+  {
     "key": "face-mohamed-naguib",
     "licence": "Public domain",
     "artist": "Ashkroft Bombai",
@@ -2595,6 +2651,13 @@
     "artist": "yahaycouture.com",
     "page": "File:Mohammed Abdu.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3AMohammed_Abdu.jpg"
+  },
+  {
+    "key": "face-mona-zaki",
+    "licence": "CC BY 3.0",
+    "artist": "Akhbar El yom TV",
+    "page": "File:Mona Zaki 2015.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMona_Zaki_2015.jpg"
   },
   {
     "key": "face-mother-teresa",
@@ -2658,6 +2721,13 @@
     "artist": "Michel Bakni",
     "page": "File:Nasir al-Din al-Tusi portrait.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3ANasir_al-Din_al-Tusi_portrait.jpg"
+  },
+  {
+    "key": "face-nasser-al-attiyah",
+    "licence": "CC BY 2.0",
+    "artist": "Mohan",
+    "page": "File:Nasser saleh al attiyah2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANasser_saleh_al_attiyah2.jpg"
   },
   {
     "key": "face-nefertiti",
@@ -3101,6 +3171,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ASalem_Al-Dawsari_(Saudi_Arabia_v_Uruguay%2C_June_2026)_(cropped).jpg"
   },
   {
+    "key": "face-sami-al-jaber",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Al riyadah",
+    "page": "File:Sami09.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASami09.JPG"
+  },
+  {
     "key": "face-samuel-beckett",
     "licence": "Public domain",
     "artist": "Roger Pic",
@@ -3477,6 +3554,13 @@
     "artist": "Johann Nepomuk della Croce",
     "page": "File:The Mozart Family - Wolfgang Amadeus Mozart headshot.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3AThe_Mozart_Family_-_Wolfgang_Amadeus_Mozart_headshot.jpg"
+  },
+  {
+    "key": "face-yasser-al-qahtani",
+    "licence": "CC BY 2.0",
+    "artist": "Rami Al-Khowaiter",
+    "page": "File:Yasser Al-Qahtani 2010.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AYasser_Al-Qahtani_2010.jpg"
   },
   {
     "key": "face-youssef-chahine",
