@@ -5,6 +5,7 @@ import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
+import { PrevQuestion } from '../components/PrevQuestion'
 
 /**
  * سؤال الجولة الجماعية.
@@ -51,13 +52,27 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           ولا يسمّي الزرُّ فريقاً بعد اليوم (٥ سبتمبر ٢٠٢٦): «من أجاب؟» سؤالُ
           الشاشة التالية، فتسميةُ صاحب الدور هنا تُجيب عنه قبل أن يُطرح. */}
       <div className="stack gap-s">
-        <button className="action compact" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
-          اكشف الإجابة
-        </button>
+        {/* زرّان في صفّ (طلب علي ٢٠ سبتمبر ٢٠٢٦): الكشفُ أصغر ممّا كان،
+            وبجانبه «السؤال السابق» يستحضر ما مرّ للتوّ بلا مسٍّ للجلسة. */}
+        <div className="s1-actions">
+          <button className="action compact s1-reveal" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
+            اكشف الإجابة
+          </button>
+          <PrevQuestion state={state} />
+        </div>
         <div className="action-note">اضغط بعد أن يجيب أحد الفريقين</div>
       </div>
 
       <style>{`
+        /* صفّ الزرّين: الكشف أوّلاً (يمين في RTL) بحشوٍ أضيق من «compact»
+           الأصليّ، والسابق أخفّ لوناً بجانبه. */
+        .s1-actions {
+          display:flex; justify-content:center; align-items:center;
+          gap:clamp(10px, 1.6vw, 18px);
+        }
+        .s1-actions .action.compact { padding-inline:clamp(26px, 4.5vw, 56px); }
+        .s1-actions .pq-btn { font-size:clamp(14px, 1.8vw, 19px); }
+
         /* بطاقة السؤال هنا وحدها لا تنمو مع المؤقّت (المؤقّت هو النامي في هذه
            الشاشة)، فبلا سقفٍ يزحمه السؤالُ الطويل حين يلتفّ سطرين. السقف يمنح
            QuestionText هدفاً رأسياً يهبط إليه، ويضمن للمؤقّت نصيبه ثابتاً مهما
