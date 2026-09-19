@@ -103,6 +103,14 @@ export interface GameState {
    */
   askedQuestionIds: string[]
 
+  /**
+   * لقطةُ شاشة كشف السؤال السابق في الجولة الجماعية — قبل تنقيطه — ليعود
+   * إليها الحكم من السؤال التالي (طلب علي ٢٠ سبتمبر ٢٠٢٦: «الزرّ يجعلني أعود
+   * لصفحة السؤال السابق»). تُؤخذ عند `S1_SCORE` وتُستهلك بـ`S1_BACK`؛ خطوةٌ
+   * واحدة لا سلسلة، فاللقطة داخلها بلا لقطة.
+   */
+  s1Undo: StoredState | null
+
   /** تصنيف السؤال الجاري — لوحُ الجولة الجماعية وحده يملؤه (الديربي بلا تصنيفات). */
   currentCategory: string | null
   currentQuestion: Question | null
@@ -266,6 +274,7 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
     startingTeam: input.startingTeam,
     usedQuestionIds: used,
     askedQuestionIds: [],
+    s1Undo: null,
     spentFamilies: [],
     currentCategory: null,
     currentQuestion: null,
@@ -315,7 +324,13 @@ export function encodeState(s: GameState): StoredState {
 
 export function decodeState(s: StoredState): GameState {
   /* لقطةٌ من إصدارٍ سبق المؤقّت المحفوظ تُستأنف بلا موعد — كما كانت. */
-  return { ...s, usedQuestionIds: new Set(s.usedQuestionIds), timerEndsAt: s.timerEndsAt ?? null }
+  return {
+    ...s,
+    usedQuestionIds: new Set(s.usedQuestionIds),
+    timerEndsAt: s.timerEndsAt ?? null,
+    /* لقطةٌ من إصدارٍ سبق زرّ الرجوع تُستأنف بلا سابق. */
+    s1Undo: s.s1Undo ?? null,
+  }
 }
 
 const PHASE_SET = new Set<string>(PHASES)
