@@ -2622,6 +2622,8 @@ function Drafts() {
   /* المستبعَد في هذه الجلسة — يُرسَم مشطوباً فوراً بلا انتظار قراءةٍ ثانية
      من القاعدة. والقراءةُ تصحّحه على أيّ حال عند إعادة الفتح. */
   const [dropped, setDropped] = useState<Set<number>>(new Set())
+  /* تكبيرُ صورةٍ في الدفعة — الحوارُ نفسُه الذي في لسان الأسئلة. */
+  const [zoom, setZoom] = useState<{ src: string; label: string } | null>(null)
 
   const pending = useMemo(() => (all ?? []).filter((b) => b.status === 'pending'), [all])
   const decided = useMemo(() => (all ?? []).filter((b) => b.status !== 'pending'), [all])
@@ -2897,9 +2899,27 @@ function Drafts() {
                             return (
                             <tr key={r.id} className={out ? 'out' : ''}>
                               <td className="a-muted">{r.level}</td>
-                              <td>{r.question}</td>
+                              {/* الصورتان كما في لسان الأسئلة: صورةُ السؤال بجانبه
+                                  وصورةُ الإجابة بجانبها — القرارُ يُتّخذ عليهما. */}
                               <td>
-                                <b>{r.answer}</b>
+                                {r.image ? (
+                                  <span className="q-thumb-wrap">
+                                    <QThumb image={r.image} label={r.answer} onZoom={setZoom} />
+                                    <span>{r.question}</span>
+                                  </span>
+                                ) : (
+                                  r.question
+                                )}
+                              </td>
+                              <td>
+                                {r.answer_image ? (
+                                  <span className="q-thumb-wrap">
+                                    <QThumb image={r.answer_image} label={r.answer} onZoom={setZoom} />
+                                    <b>{r.answer}</b>
+                                  </span>
+                                ) : (
+                                  <b>{r.answer}</b>
+                                )}
                               </td>
                               <td className="drop-cell">
                                 {out ? (
@@ -2942,6 +2962,23 @@ function Drafts() {
         .a-table.sub td { padding: 4px 8px; font-size: 13px; }
         .tag.warn { margin-inline-start: 8px; background: #ffe6e0; color: #8a2c14; }
       `}</style>
+      {zoom && (
+        <div className="pv-back" role="dialog" aria-modal="true" onClick={() => setZoom(null)}>
+          <button
+            type="button"
+            className="pv-x"
+            aria-label="إغلاق"
+            onClick={(e) => {
+              e.stopPropagation()
+              setZoom(null)
+            }}
+          >
+            ✕
+          </button>
+          <img src={zoom.src} alt="" onClick={(e) => e.stopPropagation()} />
+          <span className="pv-label">{zoom.label}</span>
+        </div>
+      )}
     </div>
   )
 }
