@@ -21,6 +21,16 @@ export function useFitText(ref: RefObject<HTMLElement | null>, dep: string) {
 
     const fit = () => {
       el.style.fontSize = '' // العودة لمقاس CSS ثم الهبوط منه
+      /**
+       * الحركة تكذب على القياس: `pop-in` تبدأ بـ`translateY(10px)` وتبقى
+       * عليها مهلةَ التأخير، والقياسُ الأوّل يقع في تلك اللحظة — والإزاحةُ
+       * تُحسب في scrollHeight الأب فيبدو النصّ فائضاً بعشرة بكسلات فوق
+       * فيض الحروف، فيهبط إلى الأرضيّة (٤٠ ← ٢٢ في كشف «ولا كلمة»، ٢٠
+       * سبتمبر ٢٠٢٦) ولا يعود إلّا بإعادة قياسٍ لا تقع. فيُلغى التحويل
+       * مدّةَ القياس وحدها: `!important` يعلو الحركة في التتالي، وإزالته
+       * تعيدها من حيث كانت بلا رسمةٍ بينهما.
+       */
+      el.style.setProperty('transform', 'none', 'important')
       const start = parseFloat(getComputedStyle(el).fontSize)
       /**
        * الهامش: المدّات والتشكيل تفيض عن صندوق السطر بكسرٍ من ارتفاعه — سؤالٌ
@@ -42,6 +52,7 @@ export function useFitText(ref: RefObject<HTMLElement | null>, dep: string) {
         size -= 1
         el.style.fontSize = size + 'px'
       }
+      el.style.removeProperty('transform')
     }
 
     fit()
