@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- صفحة هاتف الممثّل في فئة «ولا كلمة» (SPEC §٤): يمسح الرمز على الشاشة
+     الكبيرة فتفتح هنا وتعرض ما عليه تمثيله. ثابتةٌ بلا تسجيلٍ ولا قاعدة —
+     الكلمة في الرابط نفسه بعد ‎#‎ (لا تُرسَل إلى الخادم)، وفكُّها في
+     `src/game/charades.ts`. لا شيء يُضغط فيها: كلُّ ضغطةٍ للحكم على الشاشة الكبيرة. -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex" />
+<title>ولا كلمة — فطين</title>
+<style>
+  @font-face { font-family:'Cairo'; font-style:normal; font-weight:400; font-display:swap;
+               src:url('./fonts/cairo-400.woff2') format('woff2'); }
+  @font-face { font-family:'Cairo'; font-style:normal; font-weight:800; font-display:swap;
+               src:url('./fonts/cairo-800.woff2') format('woff2'); }
+  /* ألوان هويّة «البلوكات» نفسها (blocks.css) */
+  :root { --bg:#FFF8EE; --ink:#22201C; --ink-2:#57524A; --brand:#E8542F; --a:#FFCE3C; --b:#7BD3D0; }
+  * { box-sizing:border-box; }
+  html, body { height:100%; }
+  body {
+    margin:0; font-family:'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background:var(--bg); color:var(--ink);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+    text-align:center; gap:18px;
+    -webkit-text-size-adjust:100%;
+  }
+  .eyebrow { font-weight:800; color:var(--brand); font-size:clamp(16px,4.5vw,22px); letter-spacing:.02em; margin:0; }
+  .rule { font-weight:400; color:var(--ink-2); font-size:clamp(14px,4vw,18px); line-height:1.7; margin:0; }
+  .card {
+    width:min(92vw, 560px);
+    background:#fff; border:3px solid var(--ink); border-radius:22px;
+    box-shadow:0 0 0 2.5px var(--ink), 6px 7px 0 var(--ink);
+    padding:clamp(22px,7vw,40px) clamp(16px,5vw,32px);
+  }
+  .word {
+    font-weight:800; line-height:1.25; margin:0;
+    font-size:clamp(30px, 10vw, 64px); overflow-wrap:anywhere;
+  }
+  .level {
+    display:inline-block; margin-top:14px; padding:4px 16px; border-radius:999px;
+    background:var(--a); border:2px solid var(--ink); font-weight:800; font-size:clamp(13px,3.6vw,16px);
+  }
+  .bad { color:var(--ink-2); }
+  .brand { font-weight:800; color:var(--ink); opacity:.55; font-size:15px; margin:0; }
+</style>
+</head>
+<body>
+  <p class="eyebrow">ولا كلمة!</p>
+  <div class="card">
+    <p class="word" id="word">…</p>
+    <span class="level" id="level" hidden></span>
+  </div>
+  <p class="rule" id="rule">مثّلها لفريقك بلا كلمة ولا صوت — ولا تُرِ الشاشة أحداً.</p>
+  <p class="brand">فطين</p>
+  <script type="module" src="./src/charade-page.ts"></script>
+</body>
+</html>

@@ -3,6 +3,7 @@ import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { displayName, playableCategories } from '../game/bank'
+import { isCharadesCategory } from '../game/charades'
 import { ScoreBar } from '../components/ScoreBar'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
@@ -15,7 +16,8 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
   useEffect(() => {
     if (!state.currentQuestion && !drawnRef.current) {
       drawnRef.current = true
-      const cats = playableCategories()
+      /* «ولا كلمة» لا تصل الحسم (SPEC §٤): تمثيلٌ لا سؤالٌ يُجاب عنه. */
+      const cats = playableCategories().filter((c) => !isCharadesCategory(c))
       /* بلا فئةٍ مكتملة المستويات (حجزت البلاغات آخر «صعب» فيها) يُسحب
          الصعب من البنك كلّه — الشاشة الحاسمة لا تسقط على فئةٍ لا وجود لها. */
       const cat = cats.length > 0 ? cats[Math.floor(Math.random() * cats.length)] : ''

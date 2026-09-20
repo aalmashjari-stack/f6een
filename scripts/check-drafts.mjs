@@ -23,6 +23,8 @@
  *  7. **فئة «حروف»**: جوابٌ بلا حرفٍ عربيّ أوّل يُردّ (لا بلاطة له)، ويُطبع
  *     توزيعُ الحروف في كلّ مستوى — الحرفُ المكرّر ثلاثاً في مستوىً إنذار،
  *     فالبلاطة تعيد الوقوف على الحرف نفسه في الجلسات المتتابعة.
+ *  8. **فئة «ولا كلمة»**: السؤال هو الجواب (عنوانٌ يُمثَّل)، فيُشترط تطابقُهما
+ *     ويُستثنى الصفّ من فحص «الإجابة داخل السؤال» وحده.
  *
  * والمخرجات صنفان: **مانعٌ** يوقف الإرسال، و**إنذارٌ** يُقرأ بالعين. ونسبةُ
  * الإنذارات الكاذبة في الصنف الأوّل معروفة سلفاً (٣٥ حقيقيّاً من ٧٤ إشارة
@@ -33,6 +35,7 @@ import { resolve } from 'node:path'
 import { loadBank } from './lib/bank.mjs'
 /* قاعدة الحرف من المحرّك نفسه لا نسخةٌ منها — Node يقرأ TS بلا ترجمة. */
 import { LETTERS_CATEGORY, firstLetter } from '../src/game/letters.ts'
+import { CHARADES_CATEGORY } from '../src/game/charades.ts'
 
 const CELL_FLOOR = 20
 const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
@@ -164,10 +167,16 @@ for (const r of rows) {
   if (!r.question || !r.answer) block(r, 'سؤالٌ أو إجابةٌ فارغة')
   if (!r.question || !r.answer) continue
 
+  /* ٨ — «ولا كلمة»: ما يُمثَّل ليس سؤالاً، فالسؤالُ هو الجواب بالتعريف
+        (SPEC §٤) — يُستثنى من فحص «الإجابة داخل السؤال»، ويُشترط تطابقُهما. */
+  const charade = r.category === CHARADES_CATEGORY
+  if (charade && norm(r.question) !== norm(r.answer))
+    block(r, 'ولا كلمة: السؤال والإجابة يجب أن يتطابقا — كلاهما العنوان')
+
   /* ١ — الإجابة داخل السؤال، بعد طرح صيغ الأدب من الطرفين */
   const aw = words(stripHonorifics(r.answer))
   const qBare = norm(stripHonorifics(r.question))
-  if (aw.length && aw.every((w) => qBare.includes(w))) {
+  if (!charade && aw.length && aw.every((w) => qBare.includes(w))) {
     block(r, 'الإجابة مذكورة في نصّ السؤال')
   }
 

@@ -19,6 +19,7 @@ import {
   stageOfPhase,
 } from './session'
 import { firstLetter, isLettersCategory } from './letters'
+import { STAGE1_CHARADE_MS, isCharadesCategory } from './charades'
 
 export type Action =
   | { t: 'START'; input: SetupInput }
@@ -34,6 +35,10 @@ export type Action =
      تعطي `at` لأنّ المؤقّت لا يبدأ قبل أن تقف البلاطة — وإلّا أكلت الحركةُ
      من وقت الفريق. */
   | { t: 'S1_LETTER_DONE'; at?: number }
+  /* «ابدأ» في شاشة الرمز: الممثّل مسح وقرأ وقال مستعدّ ← التمثيل، ومنه يبدأ
+     المؤقّت. ضغطةُ الحكم لا مؤقّت: اختيارُ الممثّل والمسحُ لا يُحاسَب عليهما
+     الفريق (SPEC §٤ «ولا كلمة»). */
+  | { t: 'S1_CHARADE_START'; at?: number }
   | { t: 'S1_TO_REVEAL' } // انتهى التشاور وأجاب صاحب الدور ← كشف
   | { t: 'S1_SCORE'; team: TeamId | null }
   | { t: 'S2_TO_REVEAL' } // انتهى مؤقت الديربي ← كشف
@@ -155,6 +160,10 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
          حرفٍ عربيّ (لا يقع، و`check-drafts` يردّه) يمرّ إلى السؤال مباشرة. */
       if (isLettersCategory(action.category) && firstLetter(q.answer) !== null)
         return { ...next, timerEndsAt: null, phase: 'stage1-letter' }
+      /* فئة «ولا كلمة»: رمزٌ يمسحه الممثّل قبل أن يبدأ شيء، والكلمة لا تظهر
+         على الشاشة الكبيرة حتى الكشف — انظر `charades.ts`. */
+      if (isCharadesCategory(action.category))
+        return { ...next, timerEndsAt: null, phase: 'stage1-charade' }
       return {
         ...next,
         timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CONSULT_MS,
@@ -167,6 +176,15 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       return {
         ...state,
         timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CONSULT_MS,
+        phase: 'stage1-question',
+      }
+    }
+
+    case 'S1_CHARADE_START': {
+      if (!state || state.phase !== 'stage1-charade') return state
+      return {
+        ...state,
+        timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CHARADE_MS,
         phase: 'stage1-question',
       }
     }

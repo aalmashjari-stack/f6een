@@ -5,6 +5,7 @@ import { ScoreBar } from '../components/ScoreBar'
 import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
+import { STAGE1_CHARADE_MS, isCharadesCategory } from '../game/charades'
 
 /**
  * سؤال الجولة الجماعية.
@@ -17,10 +18,63 @@ import { QuestionView } from '../components/QuestionView'
 export function Stage1Question({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
   const q = state.currentQuestion!
+  /* فئة «ولا كلمة»: الكلمة في هاتف الممثّل لا على هذه الشاشة — يبقى
+     المؤقّتُ وحده كبيراً، ومدّتُه ستّون لا خمسٌ وأربعون (انظر `charades.ts`). */
+  const charade = isCharadesCategory(q.category)
+  const total = charade ? STAGE1_CHARADE_MS : STAGE1_CONSULT_MS
 
   // ينتهي الوقت فينتظر التطبيق بلا مؤقّت (الخطوة ٤ في القسم ٤): المتحدّث يجيب
   // شفهياً، والحكم يكشف حين يفرغ.
-  const consultLeft = useCountdown(STAGE1_CONSULT_MS, true, undefined, state.timerEndsAt)
+  const consultLeft = useCountdown(total, true, undefined, state.timerEndsAt)
+
+  if (charade) {
+    return (
+      <div className="screen">
+        <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
+
+        <div className="charade-acting">
+          <span className="charade-acting-team">{state.teams[owner].name}</span>
+          <span className="charade-acting-note">يمثّل — ولا كلمة!</span>
+        </div>
+
+        <div className="timer-stage grow">
+          <Timer remainingMs={consultLeft} totalMs={total} size="lg" />
+        </div>
+
+        <div className="stack gap-s">
+          <button className="action compact" onClick={() => dispatch({ t: 'S1_TO_REVEAL' })}>
+            اكشف الكلمة
+          </button>
+          <div className="action-note">اضغط حين يقولها فريقه — أو حين ينتهي الوقت</div>
+        </div>
+
+        <style>{`
+          .charade-acting {
+            flex:none; display:flex; flex-direction:column; align-items:center; gap:clamp(2px,.6dvh,6px);
+            text-align:center; margin-top:clamp(6px, 3dvh, 34px);
+          }
+          .charade-acting-team {
+            color:var(--gold); font-weight:800;
+            font-size:clamp(22px, min(3.6vw, 5.4dvh), 44px); line-height:1.2;
+          }
+          .charade-acting-note {
+            color:var(--text-2); font-weight:700;
+            font-size:clamp(14px, min(2vw, 3.2dvh), 26px); line-height:1.3;
+          }
+          .timer-stage {
+            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+            min-height:0;
+          }
+          @media (max-height:480px) {
+            .charade-acting { margin-top:0; gap:0; }
+            .charade-acting-note { display:none; }
+            .timer-stage { min-height:clamp(46px, 17dvh, 120px); gap:6px; }
+            body .screen .timer-stage .ring-timer { flex:none; }
+          }
+        `}</style>
+      </div>
+    )
+  }
 
   return (
     <div className="screen">
@@ -42,7 +96,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         </div>
 
         <div className={'timer-stage' + (q.image ? '' : ' grow')}>
-          <Timer remainingMs={consultLeft} totalMs={STAGE1_CONSULT_MS} size={q.image ? 'md' : 'lg'} />
+          <Timer remainingMs={consultLeft} totalMs={total} size={q.image ? 'md' : 'lg'} />
         </div>
       </div>
 
