@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { BOARD_LEVELS } from './levels'
-import { CHARADE_PAGE_PATH, charadePageOrigin, charadeUrl, decodeCharade, encodeCharade } from './charades'
+import { CHARADE_KINDS, CHARADE_PAGE_PATH, charadePageOrigin, charadeUrl, decodeCharade, encodeCharade } from './charades'
 
 /**
  * ترميز كلمة «ولا كلمة» في الرابط — يُفكّ كما رُمّز، وقصيرٌ بما يكفي ليُمسح
@@ -32,24 +32,40 @@ describe('ترميز ولا كلمة', () => {
       }
   })
 
-  it('الحرف الواحد بايتٌ واحد: عشرون حرفاً عربيّاً ≤ 30 رمزاً في الرابط', () => {
+  it('الحرف الواحد بايتٌ واحد: عشرون حرفاً عربيّاً ≤ 31 رمزاً في الرابط (الصيغة والمستوى والنوع والكلمة)', () => {
     const frag = encodeCharade('سهل', 'ابتثجحخدذرزسشصضطظعغف')
-    expect(frag.length).toBeLessThanOrEqual(30)
+    expect(frag.length).toBeLessThanOrEqual(31)
   })
 
   it('الكلمة لا تُقرأ بالعين من الرابط', () => {
     const url = charadeUrl('سهل', 'باب الحارة')
     expect(url).not.toContain('باب')
-    expect(url).toMatch(/^https:\/\/f6een\.com\/k#a[A-Za-z0-9_-]+$/)
+    expect(url).toMatch(/^https:\/\/f6een\.com\/k#b[A-Za-z0-9_-]+$/)
+  })
+
+  it('النوع والملصق يصلان مع الكلمة — والرابطُ المرفوع لا يُحمل، والمفتاحُ من غير البادئة يُردّ كما هو', () => {
+    for (const kind of CHARADE_KINDS) {
+      const got = decodeCharade('#' + encodeCharade('صعب', 'على هامان يا فرعون', { kind, image: 'pic-kilma-ala-haman' }))
+      expect(got).toEqual({ level: 'صعب', text: 'على هامان يا فرعون', kind, image: 'pic-kilma-ala-haman' })
+    }
+    expect(decodeCharade('#' + encodeCharade('سهل', 'طاح الفاس بالراس', { kind: 'مثل' }))).toEqual({ level: 'سهل', text: 'طاح الفاس بالراس', kind: 'مثل' })
+    expect(decodeCharade('#' + encodeCharade('سهل', 'باب الحارة', { kind: 'موضوع آخر', image: 'https://x.test/p.jpg' }))).toEqual({ level: 'سهل', text: 'باب الحارة' })
+    expect(decodeCharade('#' + encodeCharade('سهل', 'باب الحارة', { image: 'zaman-bab' }))).toEqual({ level: 'سهل', text: 'باب الحارة', image: 'zaman-bab' })
+  })
+
+  it('روابط الصيغة الأولى (a) ما زالت تُفكّ — صفحةٌ قد تبقى مفتوحةً في هاتف', () => {
+    /* جزءٌ رمّزه المحرّك قبل الصيغة `b` — ثابتٌ هنا لا يُعاد توليده */
+    expect(decodeCharade('#aZ05FQU4G2Q4iIw')).toEqual({ level: 'متوسط', text: 'درب الزلق' })
   })
 
   it('جزءٌ فاسد أو فارغ أو بصيغةٍ أخرى يعود null لا نصّاً مشوّهاً', () => {
     expect(decodeCharade('')).toBeNull()
     expect(decodeCharade('#')).toBeNull()
     expect(decodeCharade('#a')).toBeNull()
-    expect(decodeCharade('#b' + encodeCharade('سهل', 'باب الحارة').slice(1))).toBeNull()
+    expect(decodeCharade('#c' + encodeCharade('سهل', 'باب الحارة').slice(1))).toBeNull()
     expect(decodeCharade('#a!!!')).toBeNull()
     expect(decodeCharade('#aAA')).toBeNull() // مستوىً بلا نصّ
+    expect(decodeCharade('#bAAA')).toBeNull() // مستوىً ونوعٌ بلا نصّ
   })
 
   it('الأصل الموقعُ دائماً إلّا في المعاينة المحلّية', () => {

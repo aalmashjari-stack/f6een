@@ -29,6 +29,30 @@ import { BOARD_LEVELS } from './levels.ts'
  */
 export const CHARADES_CATEGORY = 'ولا كلمة'
 
+/**
+ * أنواع ما يُمثَّل — **تُكتب للممثّل دائماً** (قرار علي ٢٠ سبتمبر ٢٠٢٦):
+ * «على هامان يا فرعون» وحدها لا تقول إن كانت مسرحيّةً أم فيلماً أم مثلاً،
+ * والممثّل يبدأ بإشارة النوع قبل الكلمة. النوع في حقل `topic` في القاعدة
+ * بهذه الألفاظ نفسها، ويُحمَل في الرمز رقماً واحداً لا اسماً.
+ *
+ * **ترتيبُها جزءٌ من الصيغة**: الرقم في رابطٍ مفتوحٍ في هاتفٍ يُفكّ بهذه
+ * القائمة، فالإضافةُ في آخرها لا في وسطها.
+ */
+export const CHARADE_KINDS = ['مسلسل', 'فيلم', 'مسرحية', 'أغنية', 'مثل'] as const
+export type CharadeKind = (typeof CHARADE_KINDS)[number]
+
+export const isCharadeKind = (topic: string): topic is CharadeKind => (CHARADE_KINDS as readonly string[]).includes(topic)
+
+/** ما يحمله الرمز إلى هاتف الممثّل. */
+export interface Charade {
+  level: Level
+  text: string
+  /** نوع العمل — يغيب عن روابط الصيغة الأولى فقط. */
+  kind?: CharadeKind
+  /** مفتاح ملصقه المشحون (`pic-kilma-…`) — لا رابطاً مرفوعاً: الرابط يطوّل الرمز فيصغّر وحداته. */
+  image?: string
+}
+
 export function isCharadesCategory(category: string): boolean {
   return category === CHARADES_CATEGORY
 }
@@ -64,12 +88,14 @@ export function charadePageOrigin(origin: string = typeof location === 'undefine
  *   الفكّ — الواجهة لاتينيّة دائماً.
  * - وما سوى ذلك بايتُ هروبٍ ‎0x1F‎ (خانة ‎U+061F‎) يتلوه البايتُ كما هو
  *   إن كان ≤ ‎0xFF‎، أو ‎0x1E‎ (خانة ‎U+061E‎) تتلوه وحدةُ UTF-16 في بايتين
- *   — الشرطة الطويلة والأقواس المزدوجة تقع في العناوين. والخانتان
- *   نفسُهما (؟ و؞) تُهرَّبان كأيّ حرفٍ خارج المدى.
+ *   — الشرطة الطويلة والأقواس المزدوجة تقع في العناوين. والخاناتُ
+ *   نفسُها (؝ و؞ و؟) تُهرَّب كأيّ حرفٍ خارج المدى.
  */
 const ESC1 = 0x1f
 const ESC2 = 0x1e
 const SPACE = 0x20
+/** فاصلٌ بين الكلمة ومفتاح الملصق (خانة ‎U+061D‎، علامةٌ لا تقع في عنوان). */
+const SEP = 0x1d
 
 function toBytes(text: string): number[] {
   const out: number[] = []
@@ -77,7 +103,7 @@ function toBytes(text: string): number[] {
     const c = text.charCodeAt(i)
     if (c === 0x20) out.push(SPACE)
     else if (c >= 0x30 && c <= 0x39) out.push(0x60 + (c - 0x30))
-    else if (c >= 0x600 && c <= 0x6ff && c !== 0x620 && c !== 0x61e && c !== 0x61f) out.push(c - 0x600)
+    else if (c >= 0x600 && c <= 0x6ff && c !== 0x620 && c !== 0x61d && c !== 0x61e && c !== 0x61f) out.push(c - 0x600)
     else if (c <= 0xff) out.push(ESC1, c)
     else out.push(ESC2, c >> 8, c & 0xff)
   }
@@ -142,28 +168,59 @@ function b64decode(s: string): number[] | null {
 const levelIndex = (level: Level) => BOARD_LEVELS.indexOf(level)
 
 /**
- * الجزءُ الذي يُوضع بعد ‎#‎ في الرابط: صيغةٌ (حرفٌ واحد) ثمّ المستوى ثمّ
- * الكلمة محجوبةً. الصيغةُ أوّلاً كي تُفكّ روابطُ اليوم لو تغيّر الترميز غداً
- * — الرمزُ على شاشةٍ لحظتَه، لكنّ الصفحةَ قد تبقى مفتوحةً في هاتفٍ.
+ * مفتاحُ الملصق في الرمز: أحرفٌ لاتينيّة وأرقامٌ وشرطات، بايتٌ للحرف كما
+ * هو — لا يمرّ بترميز الكلمة (يجعل اللاتينيّ بايتين). والبادئة `pic-kilma-`
+ * على كلّ ملصقات الفئة فتُحذف وتُردّ؛ ومفتاحٌ من غيرها يُسبق بشرطةٍ مائلة
+ * (لا تقع في اسم ملفّ) فيُحمل كاملاً.
  */
-export function encodeCharade(level: Level, text: string): string {
-  const idx = Math.max(0, levelIndex(level))
-  return 'a' + b64encode(veil([idx, ...toBytes(text.trim())]))
+const KILMA = 'pic-kilma-'
+const keyToBytes = (key: string) => [...(key.startsWith(KILMA) ? key.slice(KILMA.length) : '/' + key)].map((ch) => ch.charCodeAt(0) & 0xff)
+const keyFromBytes = (bytes: number[]) => {
+  const s = String.fromCharCode(...bytes)
+  return s.startsWith('/') ? s.slice(1) : KILMA + s
 }
 
-export function decodeCharade(fragment: string): { level: Level; text: string } | null {
+/**
+ * الجزءُ الذي يُوضع بعد ‎#‎ في الرابط: صيغةٌ (حرفٌ واحد) ثمّ المستوى ثمّ
+ * النوع ثمّ الكلمة محجوبةً، ثمّ فاصلٌ ومفتاحُ الملصق إن وُجد. الصيغةُ أوّلاً
+ * كي تُفكّ روابطُ اليوم لو تغيّر الترميز غداً — الرمزُ على شاشةٍ لحظتَه،
+ * لكنّ الصفحةَ قد تبقى مفتوحةً في هاتفٍ. والصيغة `a` (المستوى والكلمة
+ * وحدهما) ما زالت تُفكّ.
+ *
+ * والنوع بايتٌ واحد: صفرٌ لا نوع، وإلّا ترتيبُه في `CHARADE_KINDS` زائد واحد.
+ */
+export function encodeCharade(level: Level, text: string, extra: { kind?: string; image?: string } = {}): string {
+  const idx = Math.max(0, levelIndex(level))
+  const kind = extra.kind && isCharadeKind(extra.kind) ? CHARADE_KINDS.indexOf(extra.kind) + 1 : 0
+  const bytes = [idx, kind, ...toBytes(text.trim())]
+  if (extra.image && !/^https?:\/\//.test(extra.image)) bytes.push(SEP, ...keyToBytes(extra.image))
+  return 'b' + b64encode(veil(bytes))
+}
+
+export function decodeCharade(fragment: string): Charade | null {
   const f = fragment.replace(/^#/, '')
-  if (f[0] !== 'a') return null
+  const fmt = f[0]
+  if (fmt !== 'a' && fmt !== 'b') return null
   const raw = b64decode(f.slice(1))
   if (!raw || raw.length < 2) return null
-  const [idx, ...rest] = veil(raw)
-  const level = BOARD_LEVELS[idx]
+  const bytes = veil(raw)
+  const level = BOARD_LEVELS[bytes[0]]
   if (!level) return null
-  const text = fromBytes(rest)
-  return text ? { level, text } : null
+  if (fmt === 'a') {
+    const text = fromBytes(bytes.slice(1))
+    return text ? { level, text } : null
+  }
+  const kind = bytes[1] ? CHARADE_KINDS[bytes[1] - 1] : undefined
+  const sep = bytes.indexOf(SEP, 2)
+  const text = fromBytes(sep < 0 ? bytes.slice(2) : bytes.slice(2, sep))
+  if (!text) return null
+  const out: Charade = { level, text }
+  if (kind) out.kind = kind
+  if (sep >= 0 && sep + 1 < bytes.length) out.image = keyFromBytes(bytes.slice(sep + 1))
+  return out
 }
 
 /** الرابط الكامل الذي يُرسم في الرمز. */
-export function charadeUrl(level: Level, text: string, origin?: string): string {
-  return charadePageOrigin(origin) + CHARADE_PAGE_PATH + '#' + encodeCharade(level, text)
+export function charadeUrl(level: Level, text: string, extra: { kind?: string; image?: string } = {}, origin?: string): string {
+  return charadePageOrigin(origin) + CHARADE_PAGE_PATH + '#' + encodeCharade(level, text, extra)
 }

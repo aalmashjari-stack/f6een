@@ -20,7 +20,8 @@ import { QrCode } from '../components/QrCode'
 export function Stage1Charade({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
   const q = state.currentQuestion!
-  const url = charadeUrl(q.level, q.answer)
+  /* النوعُ من `topic` والملصقُ من `answerImage` — يصلان الهاتفَ مع الكلمة (قرار علي ٢٠ سبتمبر ٢٠٢٦) */
+  const url = charadeUrl(q.level, q.answer, { kind: q.topic, image: q.answerImage })
 
   return (
     <div className="screen charade-screen">
