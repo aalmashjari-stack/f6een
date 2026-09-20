@@ -603,6 +603,10 @@ export interface DraftRow {
   topic: string | null
   question: string
   answer: string
+  /* صورةُ السؤال وصورةُ الإجابة — تُعرضان في اللسان كي يُقرَّر بهما لا بالنصّ
+     وحده (بوسترات «ولا كلمة»، ٢٠ سبتمبر ٢٠٢٦). */
+  image?: string | null
+  answer_image?: string | null
   status: string
   question_id: string | null
 }

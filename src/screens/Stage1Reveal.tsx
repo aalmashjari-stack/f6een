@@ -8,6 +8,8 @@ import { FitAnswer } from '../components/FitAnswer'
 import { AnswerFace } from '../components/AnswerFace'
 import { celebSrc } from '../game/celebs'
 import { isCharadesCategory } from '../game/charades'
+import { shippedImage } from '../game/shippedImage'
+import { isImageUrl } from '../game/celebs'
 
 /**
  * كشف وتنقيط الجولة الجماعية — الشاشة ٣.
@@ -46,6 +48,13 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
      لا شيء لأحد. والفعلُ نفسه (`S1_SCORE`) بفريق صاحب الدور أو بلا فريق. */
   const charade = isCharadesCategory(q.category)
   const ownerPick = picks[owner]
+  /* بوستر العمل مع الكشف (طلب علي ٢٠ سبتمبر ٢٠٢٦: «مع الجواب أظهر بوستر
+     العمل»). ليس وجهاً في دائرة — `AnswerFace` تقصّ مربّعاً من الوسط ولا
+     يصلح لملصقٍ طوليّ — بل صورةٌ كاملة بمقاس `.rv-photo` نفسه الذي تعرض به
+     البطاقة صورةَ السؤال، والعنوان تحتها. والمفتاح المجهول يُتجاهَل كما في
+     `AnswerFace`: لا ملصقَ خيرٌ من إطارٍ فارغ. */
+  const posterKey = charade ? q.answerImage : undefined
+  const poster = posterKey ? (isImageUrl(posterKey) ? posterKey : shippedImage(posterKey)) : null
 
   return (
     <div className="screen">
@@ -55,16 +64,29 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         {q.image ? (
           <img className="rv-photo" src={celebSrc(q.image)} alt="" />
         ) : charade ? (
-          <div className="rv-q">الكلمة كانت</div>
+          poster ? (
+            <img className="rv-photo rv-poster" src={poster} alt="" />
+          ) : (
+            <div className="rv-q">الكلمة كانت</div>
+          )
         ) : (
           <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
         )}
         <span className="rv-rule" aria-hidden="true" />
         {/* صورةُ الإجابة تجاور الاسمَ ولا تحلّ محلّ السؤال: السؤال هنا نصٌّ
             قائم بنفسه، والوجهُ ثمرةُ الكشف. */}
-        <AnswerFace q={q}>
-          <FitAnswer className="rv-a">{q.answer}</FitAnswer>
-        </AnswerFace>
+        {charade ? (
+          /* الغلافُ صندوقُ قياس `FitAnswer`: بلا غلافٍ يقيس نفسَه على البطاقة
+             كلِّها، فيهبط إلى أرضيّته كلّما ضاقت البطاقة بالملصق — والملصقُ هو
+             الذي ينكمش (flex 0 1 auto) لا العنوان. */
+          <div className="rv-poster-title">
+            <FitAnswer className="rv-a">{q.answer}</FitAnswer>
+          </div>
+        ) : (
+          <AnswerFace q={q}>
+            <FitAnswer className="rv-a">{q.answer}</FitAnswer>
+          </AnswerFace>
+        )}
       </div>
 
       {/* حُذف شريط «قرار الحكم» في ٢٥ أغسطس ٢٠٢٦ بقرار علي: «مسوية زحمة
@@ -150,6 +172,15 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .rv-q.long  { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); }
         .rv-q.xlong { font-size:clamp(11px, min(1.5vw, 2.1dvh), 15px); line-height:1.35; }
         .rv-rule { width:clamp(40px,6vw,72px); height:1px; background:rgba(255,189,89,.32); }
+        /* البوستر يأخذ ما كان للسؤال والصورة معاً: لا نصَّ فوقه، فسقفه أعلى
+           من سقف صورة السؤال، ويبقى تحته العنوان و«هل أصاب؟» والزرّان. */
+        .rv-photo.rv-poster { max-height:min(34dvh, 300px); }
+        .rv-poster-title { flex:none; max-width:100%; min-width:0; }
+        /* showtime.css يُخفي صورة الكشف تحت 620px لأنّ المجلس رآها كبيرةً في
+           شاشة السؤال قبل ثوانٍ — والملصقُ لم يُرَ قطّ، فيبقى مصغَّراً حتى
+           480px؛ وتحتها (جوالٌ أفقيّ) لا مكانَ له فيسقط كالصور. */
+        @media (max-height:620px) { body .screen .rv-photo.rv-poster { display:block; max-height:22dvh; } }
+        @media (max-height:480px) { body .screen .rv-photo.rv-poster { display:none; } }
         .rv-a {
           color:var(--gold); font-weight:800; text-align:center;
           font-size:clamp(28px, min(5.6vw, 9dvh), 60px); line-height:1.2;
