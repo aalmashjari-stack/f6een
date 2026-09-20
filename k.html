@@ -21,9 +21,9 @@
   body {
     margin:0; font-family:'Cairo', system-ui, -apple-system, 'Segoe UI', sans-serif;
     background:var(--bg); color:var(--ink);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    display:flex; flex-direction:column; align-items:center;
     padding:max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-    text-align:center; gap:18px;
+    text-align:center;
     -webkit-text-size-adjust:100%;
   }
   .eyebrow { font-weight:800; color:var(--brand); font-size:clamp(16px,4.5vw,22px); letter-spacing:.02em; margin:0; }
@@ -43,17 +43,25 @@
     background:var(--a); border:2px solid var(--ink); font-weight:800; font-size:clamp(13px,3.6vw,16px);
   }
   .bad { color:var(--ink-2); }
-  .brand { font-weight:800; color:var(--ink); opacity:.55; font-size:15px; margin:0; }
+  /* الشعار المعتمد (assets/f6een-logo.png) أعلى الصفحة — طلب علي ٢٠ سبتمبر
+     ٢٠٢٦؛ وكلمة «فطين» المكتوبة أسفلها حُذفت بطلبه في اليوم نفسه. Vite يضمّ
+     الصورة من مسارها ويبصم اسمها. */
+  .logo { width:min(46vw, 220px); height:auto; display:block; margin:8px auto 0; flex:none; }
+  /* الشعار يلزم أعلى الصفحة، والبقيّة تتوسّط ما تحته */
+  main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; width:100%; }
 </style>
 </head>
 <body>
-  <p class="eyebrow">ولا كلمة!</p>
-  <div class="card">
-    <p class="word" id="word">…</p>
-    <span class="level" id="level" hidden></span>
-  </div>
-  <p class="rule" id="rule">مثّلها لفريقك بلا كلمة ولا صوت — ولا تُرِ الشاشة أحداً.</p>
-  <p class="brand">فطين</p>
+  <img class="logo" src="./assets/f6een-logo.png" alt="فطين" />
+  <main>
+    <p class="eyebrow">ولا كلمة!</p>
+    <div class="card">
+      <p class="word" id="word">…</p>
+      <span class="level" id="level" hidden></span>
+    </div>
+    <!-- صياغة علي ٢٠ سبتمبر ٢٠٢٦ — لا تُحرَّر -->
+    <p class="rule" id="rule">مثّلها لفريقك بلا كلمة ولا صوت ولا تخلي أحد يشوف الشاشة</p>
+  </main>
   <script type="module" src="./src/charade-page.ts"></script>
 </body>
 </html>

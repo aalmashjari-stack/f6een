@@ -24,7 +24,7 @@ function render() {
   wordEl.classList.remove('bad')
   levelEl.textContent = got.level
   levelEl.hidden = false
-  ruleEl.textContent = 'مثّلها لفريقك بلا كلمة ولا صوت — ولا تُرِ الشاشة أحداً.'
+  ruleEl.textContent = 'مثّلها لفريقك بلا كلمة ولا صوت ولا تخلي أحد يشوف الشاشة'
 }
 
 render()
