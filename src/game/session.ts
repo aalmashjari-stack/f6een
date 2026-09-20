@@ -368,6 +368,7 @@ export function isStoredState(x: unknown): x is StoredState {
   const phaseOk = (() => {
     switch (s.phase) {
       case 'stage1-letter':
+      case 'stage1-charade':
       case 'stage1-question':
       case 'stage1-reveal':
         return question(s.currentQuestion) && obj('s1Cell')

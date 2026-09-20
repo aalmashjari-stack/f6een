@@ -7,6 +7,7 @@ import { questionSizeSuffix } from '../components/QuestionText'
 import { FitAnswer } from '../components/FitAnswer'
 import { AnswerFace } from '../components/AnswerFace'
 import { celebSrc } from '../game/celebs'
+import { isCharadesCategory } from '../game/charades'
 
 /**
  * كشف وتنقيط الجولة الجماعية — الشاشة ٣.
@@ -40,6 +41,12 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
     to: t.score + points,
   }))
 
+  /* فئة «ولا كلمة» (SPEC §٤): الفريق الآخر لا يخمّن أصلاً، فلا معنى لـ«من
+     أجاب؟» — الحكمُ على فريق الممثّل وحده: «أصاب» يمنحه نقاط الخليّة و«أخطأ»
+     لا شيء لأحد. والفعلُ نفسه (`S1_SCORE`) بفريق صاحب الدور أو بلا فريق. */
+  const charade = isCharadesCategory(q.category)
+  const ownerPick = picks[owner]
+
   return (
     <div className="screen">
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
@@ -47,6 +54,8 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <div className="rv-card">
         {q.image ? (
           <img className="rv-photo" src={celebSrc(q.image)} alt="" />
+        ) : charade ? (
+          <div className="rv-q">الكلمة كانت</div>
         ) : (
           <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
         )}
@@ -64,32 +73,56 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
       {/* «نقطة» لا «نقاط» مع العشرين والثلاثين (تصحيح علي)، و«نقاط» مع العشر:
           العربية تجمع من ثلاثة إلى عشرة وتُفرد بعدها. */}
       <div className="eyebrow center rv-ask">
-        من أجاب؟ — {points} {points > 10 ? 'نقطة' : 'نقاط'}
+        {charade ? `هل أصاب ${ownerPick.label}؟` : 'من أجاب؟'} — {points} {points > 10 ? 'نقطة' : 'نقاط'}
       </div>
 
-      <div className="pick-cards grow">
-        {picks.map(({ team, label, from, to }) => (
-          <button
-            key={team}
-            className={'pick pick-team team-' + team}
-            onClick={() => dispatch({ t: 'S1_SCORE', team })}
-          >
-            <span className="pk-name">{label}</span>
+      {charade ? (
+        <div className="pick-cards grow">
+          <button className="pick pick-yes" onClick={() => dispatch({ t: 'S1_SCORE', team: owner })}>
+            <span className="pk-name">أصاب</span>
             <span className="pk-delta">
-              <span className="pk-from tabular">{from}</span>
+              <span className="pk-from tabular">{ownerPick.from}</span>
               <span className="pk-arrow" aria-hidden="true">←</span>
-              <span className="pk-to tabular">{to}</span>
+              <span className="pk-to tabular">{ownerPick.to}</span>
             </span>
           </button>
-        ))}
-      </div>
+          <button className="pick pick-no" onClick={() => dispatch({ t: 'S1_SCORE', team: null })}>
+            <span className="pk-name">أخطأ</span>
+            <span className="pk-delta">
+              <span className="pk-from tabular">{ownerPick.from}</span>
+              <span className="pk-arrow" aria-hidden="true">←</span>
+              <span className="pk-to tabular">{ownerPick.from}</span>
+            </span>
+          </button>
+        </div>
+      ) : (
+        <div className="pick-cards grow">
+          {picks.map(({ team, label, from, to }) => (
+            <button
+              key={team}
+              className={'pick pick-team team-' + team}
+              onClick={() => dispatch({ t: 'S1_SCORE', team })}
+            >
+              <span className="pk-name">{label}</span>
+              <span className="pk-delta">
+                <span className="pk-from tabular">{from}</span>
+                <span className="pk-arrow" aria-hidden="true">←</span>
+                <span className="pk-to tabular">{to}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* «لم يجب أحد» (صياغة علي، بعد «لا أحد أصاب» ثمّ «لا أحد أجاب»): بابُ
           الخروج من جنسه. عاد بعد أن ذهب في ٣ سبتمبر: بالخيارين السابقين كان «أخطأ» يكفي، وبثلاثة
-          نتائج لا بدّ من بابٍ لِمن لم يُصب أحدٌ عنده. وهو أصغر لأنّه الأندر. */}
-      <button className="pick-none" onClick={() => dispatch({ t: 'S1_SCORE', team: null })}>
-        لم يجب أحد
-      </button>
+          نتائج لا بدّ من بابٍ لِمن لم يُصب أحدٌ عنده. وهو أصغر لأنّه الأندر.
+          وفي «ولا كلمة» يغني عنه «أخطأ». */}
+      {!charade && (
+        <button className="pick-none" onClick={() => dispatch({ t: 'S1_SCORE', team: null })}>
+          لم يجب أحد
+        </button>
+      )}
 
       <style>{`
         /* ===== بطاقة الكشف: السؤال والإجابة معاً ===== */
@@ -218,6 +251,13 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
         /* البطاقتان فريقان لا حكمان، فتتساويان في البروز (SPEC ١٠) وتأخذ كلٌّ
            لونَ فريقها كما في شريط النتيجة — فيربط الحكمُ الاسمَ بصاحبه بلمحة. */
+        /* «أصاب / أخطأ» في «ولا كلمة»: لغة تنقيط الديربي — الصحّ ذهبيّ
+           والغلط مرجانيّ؛ وهيئة «البلوكات» تعيد تلوينهما في blocks.css. */
+        .pick.pick-yes { border-color:var(--gold); }
+        .pick.pick-yes .pk-to { color:var(--gold); }
+        .pick.pick-no  { border-color:var(--coral); }
+        .pick.pick-no  .pk-to { color:var(--text-3); }
+
         .pick-team.team-0 { border-color:var(--gold); }
         .pick-team.team-0 .pk-to { color:var(--gold); }
         .pick-team.team-1 { border-color:var(--cream); }

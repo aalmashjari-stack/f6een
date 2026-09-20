@@ -24,6 +24,7 @@ import type { GameState } from './session'
 import type { Level, Question } from './types'
 import { shuffle } from './draw'
 import { ALPHABET, LETTERS_CATEGORY, firstLetter } from './letters'
+import { CHARADES_CATEGORY, STAGE1_CHARADE_MS } from './charades'
 
 /** كم سؤالاً يُعرض فعلاً في دور الحق ما تلحق الواحد (٤٥ ثانية ≈ ١٥–٢١). */
 const S3_PER_TURN = 18
@@ -655,6 +656,78 @@ describe('فئة حروف', () => {
   it('لقطة طور البلاطة تُستأنف كما تُستأنف لقطة السؤال', () => {
     withLetters((s0) => {
       const s = step(s0, { t: 'S1_PICK', category: LETTERS_CATEGORY, level: 'متوسط' })
+      expect(isStoredState(encodeState(s))).toBe(true)
+      expect(isStoredState({ ...encodeState(s), currentQuestion: null })).toBe(false)
+    })
+  })
+})
+
+/**
+ * فئة «ولا كلمة» — رمزٌ يمسحه الممثّل قبل أن يبدأ شيء (قرار علي ٢٠ سبتمبر
+ * ٢٠٢٦، تجريبيّة). المؤقّت ينتظر ضغطة الحكم، ومدّته ستّون لا خمسٌ وأربعون،
+ * والتنقيط بالفعل نفسه: فريقُ صاحب الدور أو لا أحد.
+ */
+describe('فئة ولا كلمة', () => {
+  const rows: Question[] = Array.from({ length: 80 }, (_, i) => ({
+    id: `ADM${8100 + i}`,
+    category: CHARADES_CATEGORY,
+    level: STAGE1_LEVELS[i % STAGE1_LEVELS.length],
+    topic: 'مسلسل',
+    question: `عنوان رقم ${i}`,
+    answer: `عنوان رقم ${i}`,
+  }))
+
+  const withCharades = (fn: (s: GameState) => void) => {
+    setQuestionOverlay(rows)
+    try {
+      const board = [CHARADES_CATEGORY, ...BOARD.slice(0, STAGE1_CATEGORIES - 1)]
+      fn(createSession({ ...INPUT, categories: board }))
+    } finally {
+      setQuestionOverlay([])
+    }
+  }
+
+  it('خليّة ولا كلمة تقف على الرمز بلا مؤقّت، ولا يبدأ إلّا بضغطة «ابدأ»', () => {
+    withCharades((s0) => {
+      let s = step(s0, { t: 'S1_PICK', category: CHARADES_CATEGORY, level: 'سهل', at: 1_000 })
+      expect(s.phase).toBe('stage1-charade')
+      expect(s.timerEndsAt).toBeNull()
+      expect(s.currentQuestion!.category).toBe(CHARADES_CATEGORY)
+      expect(s.s1Played).toContain(cellKey(CHARADES_CATEGORY, 'سهل'))
+
+      /* لا كشف ولا تنقيط قبل التمثيل */
+      expect(reducer(s, { t: 'S1_TO_REVEAL' })).toBe(s)
+      expect(reducer(s, { t: 'S1_SCORE', team: 0 })).toBe(s)
+
+      s = step(s, { t: 'S1_CHARADE_START', at: 9_000 })
+      expect(s.phase).toBe('stage1-question')
+      expect(s.timerEndsAt).toBe(9_000 + STAGE1_CHARADE_MS)
+      expect(STAGE1_CHARADE_MS).toBeGreaterThan(STAGE1_CONSULT_MS)
+
+      s = step(s, { t: 'S1_TO_REVEAL' })
+      expect(s.phase).toBe('stage1-reveal')
+      /* «أصاب» = نقاط الخليّة لصاحب الدور */
+      const owner = stage1Owner(s.s1Index, s.startingTeam)
+      const before = s.teams[owner].score
+      s = step(s, { t: 'S1_SCORE', team: owner })
+      expect(s.teams[owner].score).toBe(before + STAGE1_LEVEL_POINTS['سهل'])
+      expect(s.phase).toBe('stage1-board')
+    })
+  })
+
+  it('S1_CHARADE_START خارج طور الرمز لا يفعل شيئاً، والفئة العاديّة لا تمرّ به', () => {
+    withCharades((s0) => {
+      expect(reducer(s0, { t: 'S1_CHARADE_START', at: 1 })).toBe(s0)
+      const s = step(s0, { t: 'S1_PICK', category: BOARD[0], level: 'سهل', at: 1_000 })
+      expect(s.phase).toBe('stage1-question')
+      expect(s.timerEndsAt).toBe(1_000 + STAGE1_CONSULT_MS)
+      expect(reducer(s, { t: 'S1_CHARADE_START', at: 2 })).toBe(s)
+    })
+  })
+
+  it('لقطة طور الرمز تُستأنف كما تُستأنف لقطة السؤال', () => {
+    withCharades((s0) => {
+      const s = step(s0, { t: 'S1_PICK', category: CHARADES_CATEGORY, level: 'متوسط' })
       expect(isStoredState(encodeState(s))).toBe(true)
       expect(isStoredState({ ...encodeState(s), currentQuestion: null })).toBe(false)
     })

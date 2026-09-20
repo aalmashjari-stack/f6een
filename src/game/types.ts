@@ -74,6 +74,8 @@ export const PHASES = [
   'stage1-board',
   /* بلاطة الحروف بين اللوح والسؤال — لفئة «حروف» وحدها (انظر `letters.ts`) */
   'stage1-letter',
+  /* رمز QR بين اللوح والتمثيل — لفئة «ولا كلمة» وحدها (انظر `charades.ts`) */
+  'stage1-charade',
   'stage1-question',
   'stage1-reveal',
   'interval',

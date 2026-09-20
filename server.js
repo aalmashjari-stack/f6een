@@ -86,6 +86,14 @@ async function handle(req, res) {
   let path = target
   let body = await readIfFile(path)
 
+  /* المسارُ النظيف قبل الارتداد: `/k` يفتح `k.html` — رابطُ رمز «ولا
+     كلمة» يُرسَم على تلفزيونٍ ويُمسح من بعيد، وكلُّ حرفٍ فيه يصغّر وحدات
+     الرمز؛ فاللاحقةُ تسقط منه. وينطبق على `/privacy` وأمثاله بلا قائمة. */
+  if (!body && !extname(urlPath)) {
+    const page = join(ROOT, `${urlPath.replace(/\/$/, '')}.html`)
+    if (safeJoin(`${urlPath}.html`)) body = await readIfFile((path = page))
+  }
+
   /* ارتدادُ الـSPA للمسارات وحدها: الأصلُ المفقود يبقى 404 صريحاً، فلا
      يُخدَع طلبُ ملفٍّ ناقص بصفحةٍ ترجع له بنوع HTML. */
   if (!body && !extname(urlPath)) {
