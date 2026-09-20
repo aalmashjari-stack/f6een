@@ -7,7 +7,7 @@ import { questionSizeSuffix } from '../components/QuestionText'
 import { FitAnswer } from '../components/FitAnswer'
 import { AnswerFace } from '../components/AnswerFace'
 import { celebSrc } from '../game/celebs'
-import { isCharadesCategory } from '../game/charades'
+import { isCharadeKind, isCharadesCategory } from '../game/charades'
 import { shippedImage } from '../game/shippedImage'
 import { isImageUrl } from '../game/celebs'
 
@@ -79,9 +79,15 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           /* الغلافُ صندوقُ قياس `FitAnswer`: بلا غلافٍ يقيس نفسَه على البطاقة
              كلِّها، فيهبط إلى أرضيّته كلّما ضاقت البطاقة بالملصق — والملصقُ هو
              الذي ينكمش (flex 0 1 auto) لا العنوان. */
-          <div className="rv-poster-title">
-            <FitAnswer className="rv-a">{q.answer}</FitAnswer>
-          </div>
+          <>
+            {/* النوع فوق العنوان — كما يقرؤه الممثّل في هاتفه (طلب علي ٢٠
+                سبتمبر ٢٠٢٦): المجلس يعرف ما كان يُمثَّل لا اسمَه وحده. وخارجَ
+                صندوق `FitAnswer`: داخله يُحسب على العنوان فيهبط مقاسُه إلى النصف. */}
+            {isCharadeKind(q.topic) && <span className="rv-kind">{q.topic}</span>}
+            <div className="rv-poster-title">
+              <FitAnswer className="rv-a">{q.answer}</FitAnswer>
+            </div>
+          </>
         ) : (
           <AnswerFace q={q}>
             <FitAnswer className="rv-a">{q.answer}</FitAnswer>
@@ -176,6 +182,12 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
            من سقف صورة السؤال، ويبقى تحته العنوان و«هل أصاب؟» والزرّان. */
         .rv-photo.rv-poster { max-height:min(34dvh, 300px); }
         .rv-poster-title { flex:none; max-width:100%; min-width:0; }
+        .rv-kind {
+          flex:none; padding:2px clamp(10px,1.4vw,16px); border-radius:999px;
+          border:2px solid var(--festival-ink); background:var(--festival-mint); color:var(--festival-ink);
+          font-weight:800; font-size:clamp(12px, min(1.6vw, 2.4dvh), 18px); line-height:1.5;
+          animation:pop-in .45s var(--ease-spring) both;
+        }
         /* showtime.css يُخفي صورة الكشف تحت 620px لأنّ المجلس رآها كبيرةً في
            شاشة السؤال قبل ثوانٍ — والملصقُ لم يُرَ قطّ، فيبقى مصغَّراً حتى
            480px؛ وتحتها (جوالٌ أفقيّ) لا مكانَ له فيسقط كالصور. */
