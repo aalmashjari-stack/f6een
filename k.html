@@ -42,6 +42,17 @@
     display:inline-block; margin-top:14px; padding:4px 16px; border-radius:999px;
     background:var(--a); border:2px solid var(--ink); font-weight:800; font-size:clamp(13px,3.6vw,16px);
   }
+  /* النوع فوق الكلمة والملصق فوقهما (قرار علي ٢٠ سبتمبر ٢٠٢٦): الممثّل يبدأ
+     بإشارة «مسلسل» أو «مثل» قبل الكلمة، والملصق يذكّره بالعمل. */
+  .kind {
+    display:inline-block; margin:0 0 10px; padding:3px 14px; border-radius:999px;
+    background:var(--b); border:2px solid var(--ink); font-weight:800; font-size:clamp(14px,4vw,18px);
+  }
+  .poster {
+    display:block; width:auto; max-width:100%; max-height:min(38dvh, 320px);
+    margin:0 auto 14px; border:2.5px solid var(--ink); border-radius:12px; object-fit:contain; background:#fff;
+  }
+  [hidden] { display:none !important; }
   .bad { color:var(--ink-2); }
   /* الشعار المعتمد (assets/f6een-logo.png) أعلى الصفحة — طلب علي ٢٠ سبتمبر
      ٢٠٢٦؛ وكلمة «فطين» المكتوبة أسفلها حُذفت بطلبه في اليوم نفسه. Vite يضمّ
@@ -56,6 +67,8 @@
   <main>
     <p class="eyebrow">ولا كلمة!</p>
     <div class="card">
+      <img class="poster" id="poster" alt="" hidden />
+      <span class="kind" id="kind" hidden></span>
       <p class="word" id="word">…</p>
       <span class="level" id="level" hidden></span>
     </div>
