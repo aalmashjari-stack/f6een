@@ -5096,6 +5096,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ABluetooth.svg"
   },
   {
+    "key": "logo-chromium",
+    "licence": "Public domain",
+    "artist": "The Chromium Development Documentation Project [1] / \"The Chromium Authors\" as per the open source development agreement",
+    "page": "File:Chromium Logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AChromium_Logo.svg"
+  },
+  {
     "key": "logo-citroen",
     "licence": "Public domain",
     "artist": "Unknown",
@@ -5467,6 +5474,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_Office_Teams_(2018%E2%80%93present).svg"
   },
   {
+    "key": "logo-tensorflow",
+    "licence": "Public domain",
+    "artist": "Tensorflow authors",
+    "page": "File:Tensorflow logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATensorflow_logo.svg"
+  },
+  {
     "key": "logo-tesla",
     "licence": "Public domain",
     "artist": "Tesla (logo), Fry1989 eh? (vectorization)",
@@ -5479,6 +5493,20 @@
     "artist": "Meta Platforms, Inc.",
     "page": "File:Threads (app) logo.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AThreads_(app)_logo.svg"
+  },
+  {
+    "key": "logo-thunderbird",
+    "licence": "MPL 2",
+    "artist": "Jon Hicks, MZLA Technologies Corporation",
+    "page": "File:Thunderbird 2023 icon.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AThunderbird_2023_icon.svg"
+  },
+  {
+    "key": "logo-tor",
+    "licence": "CC0",
+    "artist": "Usertoop",
+    "page": "File:Tor-browser-icon.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATor-browser-icon.svg"
   },
   {
     "key": "logo-twitch",

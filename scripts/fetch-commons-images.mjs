@@ -39,7 +39,7 @@ const WIDTH = 1100
    بالنسبة — علمُ عُمان في كومنز بها وحدها. ورخصُ البرمجيّات المتساهلة
    (Apache وMIT وMPL) تحمل بعضَ أيقونات الشعارات (طائر تويتر، فايرفوكس،
    غيت هب) وتُجيز التوزيع التجاريّ بالنسبة — أمّا GPL فتبقى مردودة. */
-const OK_LICENCE = /^(public domain|pd|cc0|no restrictions|cc by(-sa)? ?\d(\.\d)?|cc-by(-sa)?-\d(\.\d)?|attribution|ogl|apache|mit\b|mpl)/i
+const OK_LICENCE = /^(public domain|pd|cc0|no restrictions|cc by(-sa)? ?\d(\.\d)?|cc-by(-sa)?-\d(\.\d)?|attribution|ogl|apache|mit\b|mpl|bsd)/i
 const BAD_LICENCE = /(-nc|-nd|\bnc\b|\bnd\b|fair use|non-free|gfdl 1\.2 only)/i
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
