@@ -6984,5 +6984,712 @@
     "artist": "غير مذكور",
     "page": "استُبدلت ٢٠ سبتمبر ٢٠٢٦ (وضوح/مقاس): بحث صور Bing: أم كلثوم أراك عصي الدمع غلاف",
     "source": "https://i.ytimg.com/vi/hOdbwID4Xh8/maxresdefault.jpg"
+  },
+  {
+    "key": "club-real-madrid",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Real Madrid CF",
+    "source": "https://en.wikipedia.org/wiki/Real_Madrid_CF"
+  },
+  {
+    "key": "club-barcelona",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Barcelona",
+    "source": "https://en.wikipedia.org/wiki/FC_Barcelona"
+  },
+  {
+    "key": "club-man-utd",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Manchester United F.C.",
+    "source": "https://en.wikipedia.org/wiki/Manchester_United_F.C."
+  },
+  {
+    "key": "club-liverpool",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Liverpool F.C.",
+    "source": "https://en.wikipedia.org/wiki/Liverpool_F.C."
+  },
+  {
+    "key": "club-chelsea",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Chelsea F.C.",
+    "source": "https://en.wikipedia.org/wiki/Chelsea_F.C."
+  },
+  {
+    "key": "club-arsenal",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Arsenal F.C.",
+    "source": "https://en.wikipedia.org/wiki/Arsenal_F.C."
+  },
+  {
+    "key": "club-man-city",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Manchester City F.C.",
+    "source": "https://en.wikipedia.org/wiki/Manchester_City_F.C."
+  },
+  {
+    "key": "club-bayern",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Bayern Munich",
+    "source": "https://en.wikipedia.org/wiki/FC_Bayern_Munich"
+  },
+  {
+    "key": "club-juventus",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Juventus FC",
+    "source": "https://en.wikipedia.org/wiki/Juventus_FC"
+  },
+  {
+    "key": "club-psg",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Paris Saint-Germain F.C.",
+    "source": "https://en.wikipedia.org/wiki/Paris_Saint-Germain_F.C."
+  },
+  {
+    "key": "club-milan",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "AC Milan",
+    "source": "https://en.wikipedia.org/wiki/AC_Milan"
+  },
+  {
+    "key": "club-inter",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Inter Milan",
+    "source": "https://en.wikipedia.org/wiki/Inter_Milan"
+  },
+  {
+    "key": "club-tottenham",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Tottenham Hotspur F.C.",
+    "source": "https://en.wikipedia.org/wiki/Tottenham_Hotspur_F.C."
+  },
+  {
+    "key": "club-atletico",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Atlético Madrid",
+    "source": "https://en.wikipedia.org/wiki/Atlético_Madrid"
+  },
+  {
+    "key": "club-dortmund",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Borussia Dortmund",
+    "source": "https://en.wikipedia.org/wiki/Borussia_Dortmund"
+  },
+  {
+    "key": "club-ajax",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "AFC Ajax",
+    "source": "https://en.wikipedia.org/wiki/AFC_Ajax"
+  },
+  {
+    "key": "club-benfica",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "S.L. Benfica",
+    "source": "https://en.wikipedia.org/wiki/S.L._Benfica"
+  },
+  {
+    "key": "club-porto",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Porto",
+    "source": "https://en.wikipedia.org/wiki/FC_Porto"
+  },
+  {
+    "key": "club-roma",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "AS Roma",
+    "source": "https://en.wikipedia.org/wiki/AS_Roma"
+  },
+  {
+    "key": "club-napoli",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "SSC Napoli",
+    "source": "https://en.wikipedia.org/wiki/SSC_Napoli"
+  },
+  {
+    "key": "club-galatasaray",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Galatasaray S.K. (football)",
+    "source": "https://en.wikipedia.org/wiki/Galatasaray_S.K._(football)"
+  },
+  {
+    "key": "club-sevilla",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Sevilla FC",
+    "source": "https://en.wikipedia.org/wiki/Sevilla_FC"
+  },
+  {
+    "key": "club-valencia",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Valencia CF",
+    "source": "https://en.wikipedia.org/wiki/Valencia_CF"
+  },
+  {
+    "key": "club-villarreal",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Villarreal CF",
+    "source": "https://en.wikipedia.org/wiki/Villarreal_CF"
+  },
+  {
+    "key": "club-real-sociedad",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Real Sociedad",
+    "source": "https://en.wikipedia.org/wiki/Real_Sociedad"
+  },
+  {
+    "key": "club-athletic",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Athletic Bilbao",
+    "source": "https://en.wikipedia.org/wiki/Athletic_Bilbao"
+  },
+  {
+    "key": "club-lazio",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "S.S. Lazio",
+    "source": "https://en.wikipedia.org/wiki/S.S._Lazio"
+  },
+  {
+    "key": "club-fiorentina",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "ACF Fiorentina",
+    "source": "https://en.wikipedia.org/wiki/ACF_Fiorentina"
+  },
+  {
+    "key": "club-atalanta",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Atalanta BC",
+    "source": "https://en.wikipedia.org/wiki/Atalanta_BC"
+  },
+  {
+    "key": "club-leverkusen",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Bayer 04 Leverkusen",
+    "source": "https://en.wikipedia.org/wiki/Bayer_04_Leverkusen"
+  },
+  {
+    "key": "club-leipzig",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "RB Leipzig",
+    "source": "https://en.wikipedia.org/wiki/RB_Leipzig"
+  },
+  {
+    "key": "club-schalke",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Schalke 04",
+    "source": "https://en.wikipedia.org/wiki/FC_Schalke_04"
+  },
+  {
+    "key": "club-marseille",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Olympique de Marseille",
+    "source": "https://en.wikipedia.org/wiki/Olympique_de_Marseille"
+  },
+  {
+    "key": "club-lyon",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Olympique Lyonnais",
+    "source": "https://en.wikipedia.org/wiki/Olympique_Lyonnais"
+  },
+  {
+    "key": "club-monaco",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "AS Monaco FC",
+    "source": "https://en.wikipedia.org/wiki/AS_Monaco_FC"
+  },
+  {
+    "key": "club-sporting",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Sporting CP",
+    "source": "https://en.wikipedia.org/wiki/Sporting_CP"
+  },
+  {
+    "key": "club-psv",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "PSV Eindhoven",
+    "source": "https://en.wikipedia.org/wiki/PSV_Eindhoven"
+  },
+  {
+    "key": "club-feyenoord",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Feyenoord",
+    "source": "https://en.wikipedia.org/wiki/Feyenoord"
+  },
+  {
+    "key": "club-celtic",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Celtic F.C.",
+    "source": "https://en.wikipedia.org/wiki/Celtic_F.C."
+  },
+  {
+    "key": "club-rangers",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Rangers F.C.",
+    "source": "https://en.wikipedia.org/wiki/Rangers_F.C."
+  },
+  {
+    "key": "club-newcastle",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Newcastle United F.C.",
+    "source": "https://en.wikipedia.org/wiki/Newcastle_United_F.C."
+  },
+  {
+    "key": "club-aston-villa",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Aston Villa F.C.",
+    "source": "https://en.wikipedia.org/wiki/Aston_Villa_F.C."
+  },
+  {
+    "key": "club-everton",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Everton F.C.",
+    "source": "https://en.wikipedia.org/wiki/Everton_F.C."
+  },
+  {
+    "key": "club-leicester",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Leicester City F.C.",
+    "source": "https://en.wikipedia.org/wiki/Leicester_City_F.C."
+  },
+  {
+    "key": "club-west-ham",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "West Ham United F.C.",
+    "source": "https://en.wikipedia.org/wiki/West_Ham_United_F.C."
+  },
+  {
+    "key": "club-fenerbahce",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Fenerbahçe S.K. (football)",
+    "source": "https://en.wikipedia.org/wiki/Fenerbahçe_S.K._(football)"
+  },
+  {
+    "key": "club-betis",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Real Betis",
+    "source": "https://en.wikipedia.org/wiki/Real_Betis"
+  },
+  {
+    "key": "club-espanyol",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "RCD Espanyol",
+    "source": "https://en.wikipedia.org/wiki/RCD_Espanyol"
+  },
+  {
+    "key": "club-celta",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "RC Celta de Vigo",
+    "source": "https://en.wikipedia.org/wiki/RC_Celta_de_Vigo"
+  },
+  {
+    "key": "club-bologna",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Bologna FC 1909",
+    "source": "https://en.wikipedia.org/wiki/Bologna_FC_1909"
+  },
+  {
+    "key": "club-sampdoria",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "U.C. Sampdoria",
+    "source": "https://en.wikipedia.org/wiki/U.C._Sampdoria"
+  },
+  {
+    "key": "club-parma",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Parma Calcio 1913",
+    "source": "https://en.wikipedia.org/wiki/Parma_Calcio_1913"
+  },
+  {
+    "key": "club-bremen",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "SV Werder Bremen",
+    "source": "https://en.wikipedia.org/wiki/SV_Werder_Bremen"
+  },
+  {
+    "key": "club-frankfurt",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Eintracht Frankfurt",
+    "source": "https://en.wikipedia.org/wiki/Eintracht_Frankfurt"
+  },
+  {
+    "key": "club-stuttgart",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "VfB Stuttgart",
+    "source": "https://en.wikipedia.org/wiki/VfB_Stuttgart"
+  },
+  {
+    "key": "club-wolfsburg",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "VfL Wolfsburg",
+    "source": "https://en.wikipedia.org/wiki/VfL_Wolfsburg"
+  },
+  {
+    "key": "club-gladbach",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Borussia Mönchengladbach",
+    "source": "https://en.wikipedia.org/wiki/Borussia_Mönchengladbach"
+  },
+  {
+    "key": "club-hamburg",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Hamburger SV",
+    "source": "https://en.wikipedia.org/wiki/Hamburger_SV"
+  },
+  {
+    "key": "club-lille",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Lille OSC",
+    "source": "https://en.wikipedia.org/wiki/Lille_OSC"
+  },
+  {
+    "key": "club-nice",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "OGC Nice",
+    "source": "https://en.wikipedia.org/wiki/OGC_Nice"
+  },
+  {
+    "key": "club-saint-etienne",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "AS Saint-Étienne",
+    "source": "https://en.wikipedia.org/wiki/AS_Saint-Étienne"
+  },
+  {
+    "key": "club-braga",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "S.C. Braga",
+    "source": "https://en.wikipedia.org/wiki/S.C._Braga"
+  },
+  {
+    "key": "club-anderlecht",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "R.S.C. Anderlecht",
+    "source": "https://en.wikipedia.org/wiki/R.S.C._Anderlecht"
+  },
+  {
+    "key": "club-brugge",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Club Brugge KV",
+    "source": "https://en.wikipedia.org/wiki/Club_Brugge_KV"
+  },
+  {
+    "key": "club-red-star",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Red Star Belgrade",
+    "source": "https://en.wikipedia.org/wiki/Red_Star_Belgrade"
+  },
+  {
+    "key": "club-olympiacos",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Olympiacos F.C.",
+    "source": "https://en.wikipedia.org/wiki/Olympiacos_F.C."
+  },
+  {
+    "key": "club-leeds",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Leeds United F.C.",
+    "source": "https://en.wikipedia.org/wiki/Leeds_United_F.C."
+  },
+  {
+    "key": "club-southampton",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Southampton F.C.",
+    "source": "https://en.wikipedia.org/wiki/Southampton_F.C."
+  },
+  {
+    "key": "club-crystal-palace",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Crystal Palace F.C.",
+    "source": "https://en.wikipedia.org/wiki/Crystal_Palace_F.C."
+  },
+  {
+    "key": "club-besiktas",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Beşiktaş J.K.",
+    "source": "https://en.wikipedia.org/wiki/Beşiktaş_J.K."
+  },
+  {
+    "key": "club-shakhtar",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Shakhtar Donetsk",
+    "source": "https://en.wikipedia.org/wiki/FC_Shakhtar_Donetsk"
+  },
+  {
+    "key": "club-cagliari",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Cagliari Calcio",
+    "source": "https://en.wikipedia.org/wiki/Cagliari_Calcio"
+  },
+  {
+    "key": "club-sassuolo",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "U.S. Sassuolo Calcio",
+    "source": "https://en.wikipedia.org/wiki/U.S._Sassuolo_Calcio"
+  },
+  {
+    "key": "club-verona",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Hellas Verona FC",
+    "source": "https://en.wikipedia.org/wiki/Hellas_Verona_FC"
+  },
+  {
+    "key": "club-udinese",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Udinese Calcio",
+    "source": "https://en.wikipedia.org/wiki/Udinese_Calcio"
+  },
+  {
+    "key": "club-genoa",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Genoa CFC",
+    "source": "https://en.wikipedia.org/wiki/Genoa_CFC"
+  },
+  {
+    "key": "club-mallorca",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "RCD Mallorca",
+    "source": "https://en.wikipedia.org/wiki/RCD_Mallorca"
+  },
+  {
+    "key": "club-rayo",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Rayo Vallecano",
+    "source": "https://en.wikipedia.org/wiki/Rayo_Vallecano"
+  },
+  {
+    "key": "club-girona",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Girona FC",
+    "source": "https://en.wikipedia.org/wiki/Girona_FC"
+  },
+  {
+    "key": "club-osasuna",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "CA Osasuna",
+    "source": "https://en.wikipedia.org/wiki/CA_Osasuna"
+  },
+  {
+    "key": "club-getafe",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Getafe CF",
+    "source": "https://en.wikipedia.org/wiki/Getafe_CF"
+  },
+  {
+    "key": "club-freiburg",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "SC Freiburg",
+    "source": "https://en.wikipedia.org/wiki/SC_Freiburg"
+  },
+  {
+    "key": "club-mainz",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "1. FSV Mainz 05",
+    "source": "https://en.wikipedia.org/wiki/1._FSV_Mainz_05"
+  },
+  {
+    "key": "club-hoffenheim",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "TSG 1899 Hoffenheim",
+    "source": "https://en.wikipedia.org/wiki/TSG_1899_Hoffenheim"
+  },
+  {
+    "key": "club-union-berlin",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "1. FC Union Berlin",
+    "source": "https://en.wikipedia.org/wiki/1._FC_Union_Berlin"
+  },
+  {
+    "key": "club-koln",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "1. FC Köln",
+    "source": "https://en.wikipedia.org/wiki/1._FC_Köln"
+  },
+  {
+    "key": "club-rennes",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Stade Rennais F.C.",
+    "source": "https://en.wikipedia.org/wiki/Stade_Rennais_F.C."
+  },
+  {
+    "key": "club-strasbourg",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "RC Strasbourg Alsace",
+    "source": "https://en.wikipedia.org/wiki/RC_Strasbourg_Alsace"
+  },
+  {
+    "key": "club-lens",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "RC Lens",
+    "source": "https://en.wikipedia.org/wiki/RC_Lens"
+  },
+  {
+    "key": "club-nantes",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Nantes",
+    "source": "https://en.wikipedia.org/wiki/FC_Nantes"
+  },
+  {
+    "key": "club-twente",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Twente",
+    "source": "https://en.wikipedia.org/wiki/FC_Twente"
+  },
+  {
+    "key": "club-az",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "AZ Alkmaar",
+    "source": "https://en.wikipedia.org/wiki/AZ_Alkmaar"
+  },
+  {
+    "key": "club-guimaraes",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Vitória S.C.",
+    "source": "https://en.wikipedia.org/wiki/Vitória_S.C."
+  },
+  {
+    "key": "club-rapid-wien",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "SK Rapid Wien",
+    "source": "https://en.wikipedia.org/wiki/SK_Rapid_Wien"
+  },
+  {
+    "key": "club-basel",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "FC Basel",
+    "source": "https://en.wikipedia.org/wiki/FC_Basel"
+  },
+  {
+    "key": "club-young-boys",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "BSC Young Boys",
+    "source": "https://en.wikipedia.org/wiki/BSC_Young_Boys"
+  },
+  {
+    "key": "club-copenhagen",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "F.C. Copenhagen",
+    "source": "https://en.wikipedia.org/wiki/F.C._Copenhagen"
+  },
+  {
+    "key": "club-malmo",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Malmö FF",
+    "source": "https://en.wikipedia.org/wiki/Malmö_FF"
+  },
+  {
+    "key": "club-legia",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Legia Warsaw",
+    "source": "https://en.wikipedia.org/wiki/Legia_Warsaw"
+  },
+  {
+    "key": "club-ferencvaros",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "Ferencvárosi TC",
+    "source": "https://en.wikipedia.org/wiki/Ferencvárosi_TC"
+  },
+  {
+    "key": "club-dinamo-zagreb",
+    "licence": "غير مرخّصة — شعار نادٍ من ويكيبيديا بقرار علي ٢١ سبتمبر ٢٠٢٦ (الحقوق على مسؤوليته)؛ الاسم المطبوع مطموس",
+    "artist": "النادي",
+    "page": "GNK Dinamo Zagreb",
+    "source": "https://en.wikipedia.org/wiki/GNK_Dinamo_Zagreb"
   }
 ]
