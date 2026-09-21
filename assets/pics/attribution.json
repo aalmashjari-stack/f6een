@@ -5026,13 +5026,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AAngular_full_color_logo.svg"
   },
   {
-    "key": "logo-apache",
-    "licence": "Apache License 2.0",
-    "artist": "The Apache Software Foundation",
-    "page": "File:Apache Feather Logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AApache_Feather_Logo.svg"
-  },
-  {
     "key": "logo-applemusic",
     "licence": "Public domain",
     "artist": "Apple Inc.",
@@ -5124,13 +5117,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ABluetooth.svg"
   },
   {
-    "key": "logo-chromium",
-    "licence": "Public domain",
-    "artist": "The Chromium Development Documentation Project [1] / \"The Chromium Authors\" as per the open source development agreement",
-    "page": "File:Chromium Logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AChromium_Logo.svg"
-  },
-  {
     "key": "logo-citroen",
     "licence": "Public domain",
     "artist": "Unknown",
@@ -5143,20 +5129,6 @@
     "artist": "Reidab, Grunt, 3247, Pumbaa",
     "page": "File:Commons-logo.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ACommons-logo.svg"
-  },
-  {
-    "key": "logo-deno",
-    "licence": "MIT",
-    "artist": "Jayden Seric – https://github.com/jaydenseric",
-    "page": "File:Deno 2021.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ADeno_2021.svg"
-  },
-  {
-    "key": "logo-docker",
-    "licence": "Apache License 2.0",
-    "artist": "dotCloud, Inc.",
-    "page": "File:Docker (container engine) logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ADocker_(container_engine)_logo.svg"
   },
   {
     "key": "logo-dropbox",
@@ -5236,46 +5208,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AGoogle_Maps_icon_(2020).svg"
   },
   {
-    "key": "logo-godot",
-    "licence": "CC BY 4.0",
-    "artist": "Andrea Calabró",
-    "page": "File:Godot icon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AGodot_icon.svg"
-  },
-  {
-    "key": "logo-gopher",
-    "licence": "CC BY 3.0",
-    "artist": "Renee French",
-    "page": "File:Go gopher favicon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AGo_gopher_favicon.svg"
-  },
-  {
     "key": "logo-gplay",
     "licence": "Public domain",
     "artist": "Google",
     "page": "File:Google Play 2022 icon.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AGoogle_Play_2022_icon.svg"
-  },
-  {
-    "key": "logo-graphql",
-    "licence": "BSD",
-    "artist": "Facebook",
-    "page": "File:GraphQL Logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AGraphQL_Logo.svg"
-  },
-  {
-    "key": "logo-homebrew",
-    "licence": "BSD",
-    "artist": "Vítor Galvão (creator); MikeMcQuaid, Synoli (committers)",
-    "page": "File:Homebrew logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AHomebrew_logo.svg"
-  },
-  {
-    "key": "logo-iaea",
-    "licence": "Public domain",
-    "artist": "File:International Atomic Energy Agency Logo.svg: * International Atomic Energy Agency: IAEA emblem Derivative Work: Jesuiseduardo derivative work: MikeRun",
-    "page": "File:International Atomic Energy Agency Logo Without Text.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AInternational_Atomic_Energy_Agency_Logo_Without_Text.svg"
   },
   {
     "key": "logo-ie",
@@ -5292,25 +5229,11 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AIMessage_logo.svg"
   },
   {
-    "key": "logo-jenkins",
-    "licence": "CC BY-SA 3.0",
-    "artist": "The Jenkins project (http://jenkins-ci.org/)",
-    "page": "File:Jenkins logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AJenkins_logo.svg"
-  },
-  {
     "key": "logo-juventus",
     "licence": "Public domain",
     "artist": "Interbrand – Global Brand Consultancy / Juventus Football Club SpA",
     "page": "File:Juventus FC - logo black (Italy, 2020).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AJuventus_FC_-_logo_black_(Italy%2C_2020).svg"
-  },
-  {
-    "key": "logo-koreanair",
-    "licence": "Public domain",
-    "artist": "Great Brightstar",
-    "page": "File:Korean Air Taegeuk.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AKorean_Air_Taegeuk.svg"
   },
   {
     "key": "logo-kubernetes",
@@ -5339,13 +5262,6 @@
     "artist": "Lufthansa Group",
     "page": "File:Lufthansa Logo 2018 crane.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ALufthansa_Logo_2018_crane.svg"
-  },
-  {
-    "key": "logo-masonic",
-    "licence": "CC0",
-    "artist": "SgtShyGuy",
-    "page": "File:Square and Compasses no G.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ASquare_and_Compasses_no_G.svg"
   },
   {
     "key": "logo-mastercard",
@@ -5416,13 +5332,6 @@
     "artist": "Microsoft Corporation",
     "page": "File:Microsoft Office Outlook (2018–present).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_Office_Outlook_(2018%E2%80%93present).svg"
-  },
-  {
-    "key": "logo-paralympic",
-    "licence": "Public domain",
-    "artist": "International Paralympic Committee",
-    "page": "File:Paralympic flag (2019).svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AParalympic_flag_(2019).svg"
   },
   {
     "key": "logo-paypal",
@@ -5607,13 +5516,6 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_Office_Teams_(2018%E2%80%93present).svg"
   },
   {
-    "key": "logo-tensorflow",
-    "licence": "Public domain",
-    "artist": "Tensorflow authors",
-    "page": "File:Tensorflow logo.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ATensorflow_logo.svg"
-  },
-  {
     "key": "logo-tesla",
     "licence": "Public domain",
     "artist": "Tesla (logo), Fry1989 eh? (vectorization)",
@@ -5626,20 +5528,6 @@
     "artist": "Meta Platforms, Inc.",
     "page": "File:Threads (app) logo.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AThreads_(app)_logo.svg"
-  },
-  {
-    "key": "logo-thunderbird",
-    "licence": "MPL 2",
-    "artist": "Jon Hicks, MZLA Technologies Corporation",
-    "page": "File:Thunderbird 2023 icon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AThunderbird_2023_icon.svg"
-  },
-  {
-    "key": "logo-tor",
-    "licence": "CC0",
-    "artist": "Usertoop",
-    "page": "File:Tor-browser-icon.svg",
-    "source": "https://commons.wikimedia.org/wiki/File%3ATor-browser-icon.svg"
   },
   {
     "key": "logo-twitch",
