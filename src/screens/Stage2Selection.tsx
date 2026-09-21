@@ -1,24 +1,21 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { GameState } from '../game/session'
+import { pickDerbyPair, type GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
 
 /**
  * اختيار لاعبَي الديربي — الشاشة ٤. بلا زر، تنتقل تلقائياً.
- * اختيار عشوائي بحركة تشويق، ضمن الدورة الكاملة (s2Rem).
+ * اختيار عشوائي بحركة تشويق، ضمن الدورة الكاملة (s2Rem) ومن المواجهات التي لم
+ * تقع بعد (s2Pairs) — القاعدة في `pickDerbyPair` لا هنا.
  *
  * **حُذف لوحُ «لم يُختر بعد» في ٤ سبتمبر ٢٠٢٦** بقرار علي. كان يعرض من بقي
  * دورُه في كلّ فريق خدمةً لشفافية الدورة — والدورةُ يحرسها المحرّك لا
  * الشاشة (s2Rem)، والاسمان هما موضوع الشاشة.
  */
 export function Stage2Selection({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
-  const pick = (team: TeamId) => {
-    const rem = state.s2Rem[team]
-    return rem[Math.floor(Math.random() * rem.length)]
-  }
   const timers = useRef<number[]>([])
-  const targetRef = useRef<[number, number]>([pick(0), pick(1)])
+  const targetRef = useRef<[number, number]>(pickDerbyPair(state))
   const [display, setDisplay] = useState<[number, number]>([0, 0])
   const [spin, setSpin] = useState(0)
   const [settled, setSettled] = useState(false)

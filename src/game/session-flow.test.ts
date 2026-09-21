@@ -18,6 +18,7 @@ import {
   decodeState,
   encodeState,
   isStoredState,
+  pickDerbyPair,
   stage1Owner,
 } from './session'
 import type { GameState } from './session'
@@ -416,6 +417,85 @@ describe('الديربي والحق ما تلحق — مصدر الأسئلة', 
     } finally {
       setQuestionOverlay([])
     }
+  })
+})
+
+/**
+ * ثنائيّات الديربي — لا مواجهة تتكرّر ما بقيت مواجهةٌ لم تقع (قرار علي ٢١
+ * سبتمبر ٢٠٢٦). الشاشة تختار بـ`pickDerbyPair` والمحرّك يسجّل في `s2Pairs`،
+ * فالاختبار يمشي بهما معاً كما تمشي الشاشة.
+ */
+describe('ثنائيّات الديربي', () => {
+  const toDerby = (players: [string[], string[]]) => {
+    let s = createSession({ ...INPUT, players })
+    for (const cell of boardCells(s)) {
+      s = step(s, { t: 'S1_PICK', ...cell })
+      s = step(s, { t: 'S1_SCORE', team: null })
+    }
+    return step(s, { t: 'INTERVAL_CONTINUE' })
+  }
+  const playDerby = (players: [string[], string[]]) => {
+    let s = toDerby(players)
+    const pairs: string[] = []
+    while (s.phase === 'stage2-selection') {
+      const sel = pickDerbyPair(s)
+      s = step(s, { t: 'S2_SELECT', sel })
+      pairs.push(sel.join(':'))
+      s = step(s, { t: 'S2_TO_REVEAL' })
+      s = step(s, { t: 'S2_NEXT_ROUND' })
+    }
+    return pairs
+  }
+
+  it('٢×٢: الجولات الأربع أربعُ مواجهاتٍ مختلفة — A/D وB/C بعد A/C وB/D', () => {
+    for (let n = 0; n < 200; n++) {
+      const pairs = playDerby([
+        ['A', 'B'],
+        ['C', 'D'],
+      ])
+      expect(pairs).toHaveLength(4)
+      expect(new Set(pairs).size, `الجلسة ${n}: ${pairs.join(' ')}`).toBe(4)
+    }
+  })
+
+  it('٣×٣ و٢×٣: لا مواجهة تتكرّر، والدورة الكاملة محفوظة معها', () => {
+    const cases: [string[], string[]][] = [
+      [
+        ['A', 'B', 'C'],
+        ['D', 'E', 'F'],
+      ],
+      [
+        ['A', 'B'],
+        ['C', 'D', 'E'],
+      ],
+    ]
+    for (const players of cases)
+      for (let n = 0; n < 200; n++) {
+        let s = toDerby(players)
+        const pairs: string[] = []
+        while (s.phase === 'stage2-selection') {
+          const before = s.s2Rem
+          const sel = pickDerbyPair(s)
+          expect(before[0]).toContain(sel[0])
+          expect(before[1]).toContain(sel[1])
+          s = step(s, { t: 'S2_SELECT', sel })
+          pairs.push(sel.join(':'))
+          s = step(s, { t: 'S2_TO_REVEAL' })
+          s = step(s, { t: 'S2_NEXT_ROUND' })
+        }
+        expect(new Set(pairs).size, `${players.flat().join('')} — ${pairs.join(' ')}`).toBe(pairs.length)
+      }
+  })
+
+  it('١×١: لا مواجهة غيرُ الواحدة — يعود الاختيار على الدورة بلا سقوط', () => {
+    const pairs = playDerby([['A'], ['B']])
+    expect(pairs).toEqual(['0:0', '0:0', '0:0', '0:0'])
+  })
+
+  it('لقطةٌ محفوظة قبل ذاكرة المواجهات تُستأنف بلا مواجهات', () => {
+    const { s2Pairs: _drop, ...old } = encodeState(createSession(INPUT))
+    expect(isStoredState(old)).toBe(true)
+    expect(decodeState(old as Parameters<typeof decodeState>[0]).s2Pairs).toEqual([])
   })
 })
 
