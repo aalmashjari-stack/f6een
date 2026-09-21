@@ -5005,6 +5005,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AAdidas_2022_logo.svg"
   },
   {
+    "key": "logo-aeroflot",
+    "licence": "CC0",
+    "artist": "Oleg Shiryaev",
+    "page": "File:Logo of Aeroflot Russian Airlines.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALogo_of_Aeroflot_Russian_Airlines.svg"
+  },
+  {
     "key": "logo-amazon",
     "licence": "Public domain",
     "artist": "Amazon.com, Inc.",
@@ -5038,6 +5045,20 @@
     "artist": "Apple",
     "page": "File:App Store (iOS).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AApp_Store_(iOS).svg"
+  },
+  {
+    "key": "logo-asclepius",
+    "licence": "CC0",
+    "artist": "Thomas Shafee",
+    "page": "File:Rod of Asclepius vector.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARod_of_Asclepius_vector.svg"
+  },
+  {
+    "key": "logo-asiangames",
+    "licence": "Public domain",
+    "artist": "Olympic Council of Asia",
+    "page": "File:Asian Games logo.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAsian_Games_logo.svg"
   },
   {
     "key": "logo-au",
@@ -5285,6 +5306,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AJuventus_FC_-_logo_black_(Italy%2C_2020).svg"
   },
   {
+    "key": "logo-koreanair",
+    "licence": "Public domain",
+    "artist": "Great Brightstar",
+    "page": "File:Korean Air Taegeuk.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKorean_Air_Taegeuk.svg"
+  },
+  {
     "key": "logo-kubernetes",
     "licence": "Public domain",
     "artist": "Google, Inc.",
@@ -5304,6 +5332,13 @@
     "artist": "Albert dro Charlie Lee Bushido",
     "page": "File:Litecoin.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ALitecoin.svg"
+  },
+  {
+    "key": "logo-lufthansa",
+    "licence": "Public domain",
+    "artist": "Lufthansa Group",
+    "page": "File:Lufthansa Logo 2018 crane.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALufthansa_Logo_2018_crane.svg"
   },
   {
     "key": "logo-masonic",
@@ -5353,6 +5388,13 @@
     "artist": "CMetalCore",
     "page": "File:Netflix icon.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3ANetflix_icon.svg"
+  },
+  {
+    "key": "logo-oic",
+    "licence": "Public domain",
+    "artist": "Abyssmanx",
+    "page": "File:OIC Logo since 2011.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AOIC_Logo_since_2011.svg"
   },
   {
     "key": "logo-opec",
@@ -5409,6 +5451,13 @@
     "artist": "Alexo88",
     "page": "File:Pinterest.svg",
     "source": "https://commons.wikimedia.org/wiki/File%3APinterest.svg"
+  },
+  {
+    "key": "logo-polestar",
+    "licence": "Public domain",
+    "artist": "Unknown artistUnknown artist",
+    "page": "File:Polestar logo 2020.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APolestar_logo_2020.svg"
   },
   {
     "key": "logo-powerpoint",
@@ -5523,6 +5572,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3ASpotify_icon.svg"
   },
   {
+    "key": "logo-staroflife",
+    "licence": "Public domain",
+    "artist": "Gustavb",
+    "page": "File:Star of life.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AStar_of_life.svg"
+  },
+  {
     "key": "logo-steam",
     "licence": "Public domain",
     "artist": "Steam",
@@ -5607,6 +5663,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AEmblem_of_the_United_Nations.svg"
   },
   {
+    "key": "logo-unicef",
+    "licence": "Public domain",
+    "artist": "United Nations",
+    "page": "File:Logo of UNICEF (cropped).svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALogo_of_UNICEF_(cropped).svg"
+  },
+  {
     "key": "logo-usb",
     "licence": "Public domain",
     "artist": "Mobius at en.wikipedia",
@@ -5628,6 +5691,13 @@
     "source": "https://commons.wikimedia.org/wiki/File%3AVolkswagen_logo_2019.svg"
   },
   {
+    "key": "logo-wechat",
+    "licence": "CC BY 4.0",
+    "artist": "CoreUI",
+    "page": "File:Cib-wechat (CoreUI Icons v1.0.0).svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACib-wechat_(CoreUI_Icons_v1.0.0).svg"
+  },
+  {
     "key": "logo-who",
     "licence": "Public domain",
     "artist": "Font: Adrian Frutiger Logotype: The World Health Organization",
@@ -5647,6 +5717,20 @@
     "artist": "Microsoft Corporation",
     "page": "File:Microsoft Office Word (2019–present).svg",
     "source": "https://commons.wikimedia.org/wiki/File%3AMicrosoft_Office_Word_(2019%E2%80%93present).svg"
+  },
+  {
+    "key": "logo-wosm",
+    "licence": "CC BY-SA 4.0",
+    "artist": "World Organization of the Scout Movement",
+    "page": "File:WOSM 2024.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWOSM_2024.svg"
+  },
+  {
+    "key": "logo-wto",
+    "licence": "Public domain",
+    "artist": "World Trade Organization",
+    "page": "File:World Trade Organization (logo globe only).svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWorld_Trade_Organization_(logo_globe_only).svg"
   },
   {
     "key": "logo-x",
