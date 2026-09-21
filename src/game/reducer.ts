@@ -253,6 +253,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         ...burn(state, q),
         s2Sel: action.sel,
         s2Rem: rem,
+        s2Pairs: [...state.s2Pairs, action.sel],
         s2Marks: ['صمت', 'صمت'],
         currentCategory: null,
         currentQuestion: q,

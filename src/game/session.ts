@@ -121,6 +121,13 @@ export interface GameState {
   s2Index: number
   s2Rem: [number[], number[]] // مؤشرات اللاعبين المتبقّين في الدورة الحالية لكل فريق
   s2Sel: [number, number] | null // اللاعب المختار من كل فريق (مؤشر)
+  /**
+   * المواجهات التي وقعت في هذه الجلسة `[مؤشر في الفريق ٠, مؤشر في الفريق ١]`.
+   * الدورةُ (`s2Rem`) تمنع تكرار اللاعب، وهذه تمنع تكرار الثنائيّ: في ٢×٢
+   * كانت الجولة الثالثة تعيد A ضدّ C بنصف الاحتمال بدل A ضدّ D
+   * (قرار علي ٢١ سبتمبر ٢٠٢٦ — انظر `pickDerbyPair`).
+   */
+  s2Pairs: [number, number][]
   s2Marks: [Mark, Mark]
 
   /* المرحلة ٣ */
@@ -277,6 +284,7 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
     s2Index: 0,
     s2Rem: [teams[0].players.map((_, i) => i), teams[1].players.map((_, i) => i)],
     s2Sel: null,
+    s2Pairs: [],
     s2Marks: ['صمت', 'صمت'],
     s3Team: input.startingTeam,
     s3Queue,
@@ -307,7 +315,11 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
  * المستأنَفة على الجهاز عن المستأنَفة عليه من حساب آخر — والفرق لا يظهر إلا
  * بعد الاستئناف.
  */
-export type StoredState = Omit<GameState, 'usedQuestionIds'> & { usedQuestionIds: string[] }
+export type StoredState = Omit<GameState, 'usedQuestionIds' | 's2Pairs'> & {
+  usedQuestionIds: string[]
+  /** لقطةٌ سبقت ذاكرة المواجهات (٢١ سبتمبر ٢٠٢٦) تُستأنف بلا مواجهاتٍ سابقة. */
+  s2Pairs?: [number, number][]
+}
 
 export function encodeState(s: GameState): StoredState {
   return { ...s, usedQuestionIds: [...s.usedQuestionIds] }
@@ -315,7 +327,12 @@ export function encodeState(s: GameState): StoredState {
 
 export function decodeState(s: StoredState): GameState {
   /* لقطةٌ من إصدارٍ سبق المؤقّت المحفوظ تُستأنف بلا موعد — كما كانت. */
-  return { ...s, usedQuestionIds: new Set(s.usedQuestionIds), timerEndsAt: s.timerEndsAt ?? null }
+  return {
+    ...s,
+    usedQuestionIds: new Set(s.usedQuestionIds),
+    timerEndsAt: s.timerEndsAt ?? null,
+    s2Pairs: s.s2Pairs ?? [],
+  }
 }
 
 const PHASE_SET = new Set<string>(PHASES)
@@ -393,6 +410,7 @@ export function isStoredState(x: unknown): x is StoredState {
     num('s2Rounds') &&
     num('s2Index') &&
     arr('s2Rem') &&
+    (s.s2Pairs === undefined || ((s.s2Pairs as unknown[]).every(pair))) &&
     arr('s2Marks') &&
     teamId(s.s3Team) &&
     arr('s3Queue') &&
@@ -488,6 +506,30 @@ export function persistUsedIds(used: Set<string>) {
 }
 
 /* ============================ مساعدات مشتقّة ============================ */
+
+/**
+ * ثنائيّ الديربي القادم — عشوائيّ ضمن الدورة الكاملة (`s2Rem`)، **ومن
+ * المواجهات التي لم تقع بعد ما وُجدت** (قرار علي ٢١ سبتمبر ٢٠٢٦).
+ *
+ * الدورة وحدها لا تكفي: في ٢×٢ بعد A/C ثمّ B/D تمتلئ الدورتان من جديد
+ * فيعود A/C بنصف الاحتمال، والمطلوب A/D ثمّ B/C. فتُستبعد الثنائيّات
+ * المسجَّلة في `s2Pairs` ما بقي غيرُها؛ فإن نفدت — فرقٌ صغيرة وجولاتٌ
+ * أكثر من الثنائيّات — عاد الاختيار على الدورة كما كان.
+ *
+ * والدالّة هنا لا في الشاشة: الشاشة تُخرج الاسمين بحركة التشويق، والقاعدة
+ * يحرسها المحرّك ويختبرها `session-flow.test.ts`.
+ */
+export function pickDerbyPair(
+  state: Pick<GameState, 's2Rem' | 's2Pairs'>,
+  rng: () => number = Math.random,
+): [number, number] {
+  const all: [number, number][] = state.s2Rem[0].flatMap((a) => state.s2Rem[1].map((b): [number, number] => [a, b]))
+  const seen = new Set(state.s2Pairs.map(([a, b]) => `${a}:${b}`))
+  const fresh = all.filter(([a, b]) => !seen.has(`${a}:${b}`))
+  const from = fresh.length > 0 ? fresh : all
+  return from[Math.floor(rng() * from.length)]
+}
+
 export function leader(teams: [Team, Team]): TeamId | null {
   if (teams[0].score === teams[1].score) return null
   return teams[0].score > teams[1].score ? 0 : 1
