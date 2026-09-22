@@ -2,6 +2,8 @@ import raw from '../../data/questions-bank-v5.json'
 import extraRaw from '../../data/questions-extra.json'
 import type { Level, Question } from './types'
 import { BOARD_LEVELS } from './levels'
+import { shippedImage } from './shippedImage'
+import { isImageUrl } from './celebs'
 
 interface Bank {
   categories: string[]
@@ -107,6 +109,7 @@ function rebuild() {
   byCatLevel.clear()
   byLevel.clear()
   for (const q of effective) {
+    if (!imageInThisBuild(q)) continue
     const k = key(q.category, q.level)
     if (!byCatLevel.has(k)) byCatLevel.set(k, [])
     byCatLevel.get(k)!.push(q)
@@ -114,6 +117,22 @@ function rebuild() {
     byLevel.get(q.level)!.push(q)
   }
   rebuildFamilies()
+}
+
+/**
+ * **سؤالٌ صورتُه ليست في هذا الإصدار لا يُسحب** (قرار علي ٢٢ سبتمبر ٢٠٢٦).
+ *
+ * الصور مشحونةٌ في الحزمة والأسئلة تأتي من القاعدة الحيّة — فتطبيقٌ مثبَّتٌ
+ * قبل فئةٍ مصوّرة يستلم أسئلتها بلا ملفّاتها. وقع ذلك في «شعارات أندية»:
+ * بناءُ الآيفون من ٢٠ سبتمبر والفئة من ٢١، فظهر كلُّ شعارٍ صورةً مؤقّتة.
+ *
+ * فالسؤال يخرج من فهارس السحب وحدها لا من `allQuestions` (اللوحة والختام
+ * تريانه كما هو). وفئةٌ فرغ مستوىً منها بهذا تخرج من `playableCategories`
+ * بالشرط القائم — فيرى التطبيق القديم فئةً أقلّ لا فئةً معطوبة. والرابطُ
+ * المرفوع من اللوحة يمرّ: يُجلب من الشبكة لا من الحزمة.
+ */
+function imageInThisBuild(q: Question): boolean {
+  return !q.image || isImageUrl(q.image) || shippedImage(q.image) !== null
 }
 
 /** الأسئلة كما يراها اللعب الآن: البنك بعد تركيب الطبقة عليه. */
