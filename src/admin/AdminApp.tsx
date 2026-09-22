@@ -52,6 +52,7 @@ import {
   rejectDrafts,
   renameGroup,
   reorderGroups,
+  reorderCategories,
   saveCategoryArt,
   setCategoryGroup,
   setCategoryHidden,
@@ -1759,6 +1760,10 @@ function Categories() {
         group: row?.group_name ?? null,
         /* مستبعَدة من اللوح مؤقّتاً — علمٌ يُرفع من الزرّ نفسه. */
         hidden: row?.hidden === true,
+        /* موضعها داخل تصنيفها؛ وما لم يُرتَّب يتبع ترتيب القائمة (`at`) —
+           ترتيبَ شاشة الإعداد نفسه: المشحونة ثمّ المضافة بتاريخ إضافتها. */
+        sort: typeof row?.sort === 'number' ? row.sort : null,
+        at: names.indexOf(cat),
         /* ما دون الحدّ يُرى من هنا لا من محاولةٍ تُردّ: الخليّة تحت عشرين
            تمنع الحذف والنقل (`assert_cell_floor`)، وهي أيضاً ما ينقص الفئة
            الجديدة لتصير كاملة. */
@@ -1767,16 +1772,43 @@ function Categories() {
     })
   }, [bank, edits, cats, art])
 
-  /** ترتيب العرض: التصنيفات بترتيبها ثمّ ما لا تصنيف له — كشاشة الإعداد. */
+  /**
+   * ترتيب العرض **هو ترتيب شاشة الإعداد**: التصنيفات بترتيبها ثمّ ما لا
+   * تصنيف له، وداخل كلّ تصنيف الفئاتُ بما رُتّبت ثمّ ما لم يُرتَّب بموضعه في
+   * القائمة (`groupCategories`). كان أبجديّاً هنا وبترتيب القائمة هناك،
+   * فالسهم يحرّك ما يراه المدير لا ما يراه الحكم لو اختلفا.
+   */
   const ordered = useMemo(() => {
     if (!rows) return null
     const at = new Map((groups ?? []).map((g, i) => [g.name, i]))
+    const big = Number.MAX_SAFE_INTEGER
     return [...rows].sort((a, b) => {
-      const ga = a.group === null ? Number.MAX_SAFE_INTEGER : (at.get(a.group) ?? 1e6)
-      const gb = b.group === null ? Number.MAX_SAFE_INTEGER : (at.get(b.group) ?? 1e6)
-      return ga - gb || a.cat.localeCompare(b.cat, 'ar')
+      const ga = a.group === null ? big : (at.get(a.group) ?? 1e6)
+      const gb = b.group === null ? big : (at.get(b.group) ?? 1e6)
+      return ga - gb || (a.sort ?? big) - (b.sort ?? big) || a.at - b.at
     })
   }, [rows, groups])
+
+  /* ── ترتيب الفئات داخل تصنيفها (طلب علي ٢٣ سبتمبر ٢٠٢٦) ──
+     يُرسَل ترتيب القسم كلّه لا خطوةً واحدة — كما في `GroupsBar`. */
+  async function moveCat(cat: string, dir: -1 | 1) {
+    if (!ordered) return
+    const row = ordered.find((x) => x.cat === cat)
+    if (!row) return
+    const names = ordered.filter((x) => x.group === row.group).map((x) => x.cat)
+    const i = names.indexOf(cat)
+    const j = i + dir
+    if (j < 0 || j >= names.length) return
+    ;[names[i], names[j]] = [names[j], names[i]]
+    setMsg(null)
+    try {
+      await reorderCategories(names)
+      setMsg({ ok: true, text: `رُتّبت فئات «${row.group ?? 'بلا مظلّة'}»` })
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الترتيب' })
+    }
+  }
 
   async function add(e: React.FormEvent) {
     e.preventDefault()
@@ -1935,6 +1967,7 @@ function Categories() {
         <table className="a-tbl">
           <thead>
             <tr>
+              <th>الترتيب</th>
               <th>الصورة</th>
               <th>الفئة</th>
               <th>التصنيف</th>
@@ -1971,6 +2004,26 @@ function Categories() {
                   </tr>
                 )}
               <tr>
+                <td className="ord-cell">
+                  {/* السهمان داخل التصنيف وحده: عنوانُ القسم حدٌّ لا يُعبَر —
+                      النقلُ بين التصنيفات من عمود «التصنيف». */}
+                  <button
+                    className="a-btn slim"
+                    aria-label={`رفع ${r.cat}`}
+                    onClick={() => moveCat(r.cat, -1)}
+                    disabled={i === 0 || ordered[i - 1].group !== r.group}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    className="a-btn slim"
+                    aria-label={`خفض ${r.cat}`}
+                    onClick={() => moveCat(r.cat, 1)}
+                    disabled={i === ordered.length - 1 || ordered[i + 1].group !== r.group}
+                  >
+                    ↓
+                  </button>
+                </td>
                 <td>
                   <ArtCell
                     src={r.uploaded ?? r.shipped}

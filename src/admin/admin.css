@@ -313,3 +313,7 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .a-actions { white-space: nowrap; }
 .a-actions .a-btn + .a-btn { margin-inline-start: 6px; }
 .a-btn.rename { padding: 2px 8px; margin-inline-start: 6px; font-size: 14px; line-height: 1.4; }
+/* سهما الترتيب داخل التصنيف (٢٣ سبتمبر ٢٠٢٦) — متجاوران لا يلتفّان. */
+.ord-cell { white-space: nowrap; }
+.ord-cell .a-btn { padding: 2px 9px; font-size: 14px; line-height: 1.4; }
+.ord-cell .a-btn + .a-btn { margin-inline-start: 4px; }

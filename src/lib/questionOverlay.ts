@@ -1,7 +1,7 @@
 import { supabase } from './supabase'
 import { setDerbyCategories, setExtraCategories, setQuestionOverlay, setHiddenCategories } from '../game/bank'
 import { setCategoryArt } from '../components/categoryArt'
-import { setCategoryGroups } from '../components/categoryGroups'
+import { setCategoryGroups, setCategoryOrder } from '../components/categoryGroups'
 import { BOARD_LEVELS } from '../game/levels'
 import type { Level, Question } from '../game/types'
 
@@ -168,6 +168,8 @@ interface CatRow {
   derby?: boolean
   /** مستبعَدة من اللوح مؤقّتاً — من `categories.hidden`. قد يغيب كذلك. */
   hidden?: boolean
+  /** موضعها داخل تصنيفها — من `categories.sort`. null = لم تُرتَّب. قد يغيب كذلك. */
+  sort?: number | null
 }
 
 function loadCats(): CatRow[] {
@@ -193,6 +195,12 @@ function applyCats(rows: CatRow[]) {
       rows
         .filter((r) => r.group_name)
         .map((r) => [r.name, { name: r.group_name as string, sort: r.group_sort ?? 0 }]),
+    ),
+  )
+  /* والترتيب داخل التصنيف قبل الفئات كذلك — للسبب نفسه. */
+  setCategoryOrder(
+    Object.fromEntries(
+      rows.filter((r) => typeof r.sort === 'number').map((r) => [r.name, r.sort as number]),
     ),
   )
   /* فئات الديربي قبل الفئات كذلك — للسبب نفسه. */

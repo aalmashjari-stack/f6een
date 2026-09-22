@@ -25,6 +25,16 @@ export function setCategoryGroups(map: Record<string, GroupOfCat>) {
   byCat = map
 }
 
+/**
+ * موضع الفئة داخل تصنيفها — من `categories.sort` (طلب علي ٢٣ سبتمبر ٢٠٢٦).
+ * يرتّبه المدير من اللوحة، والفئة التي لم تُرتَّب تغيب عن الخريطة.
+ */
+let orderOf: Record<string, number> = {}
+
+export function setCategoryOrder(map: Record<string, number>) {
+  orderOf = map
+}
+
 export function groupOf(cat: string): string | null {
   return byCat[cat]?.name ?? null
 }
@@ -37,9 +47,10 @@ export interface CategorySection {
 
 /**
  * يقسّم قائمة الفئات إلى أقسامها بترتيب التصنيفات، **وترتيب الفئات داخل
- * القسم كما جاءت** — وهو ترتيب `allCategories`: المشحونة ثمّ المضافة
- * بترتيب إضافتها. الثبات مقصود كما في `Setup`: قائمةٌ تُعاد ترتيباً بين
- * ضغطتين تنقل إصبع الحكم إلى فئةٍ أخرى.
+ * القسم بما رتّبه المدير** (`setCategoryOrder`)، ثمّ ما لم يُرتَّب كما جاء
+ * — وهو ترتيب `allCategories`: المشحونة ثمّ المضافة بترتيب إضافتها. الثبات
+ * مقصود كما في `Setup`: قائمةٌ تُعاد ترتيباً بين ضغطتين تنقل إصبع الحكم إلى
+ * فئةٍ أخرى — والترتيب يتغيّر من اللوحة وحدها لا من اللعب.
  *
  * وما لا تصنيف له يجتمع في قسمٍ أخيرٍ بلا عنوان — فلا تختفي فئةٌ من
  * الشاشة لأنّ أحداً نسي أن يضعها تحت مظلّة.
@@ -59,12 +70,22 @@ export function groupCategories(cats: string[]): CategorySection[] {
     else sections.set(g.name, { sort: g.sort, cats: [cat] })
   }
 
+  /* المرتّبة أوّلاً برقمها، ثمّ غير المرتّبة بموضعها في القائمة الواردة —
+     فالترتيب ثابت ولا يعتمد على ثبات خوارزميّة الفرز. */
+  const at = new Map(cats.map((c, i) => [c, i]))
+  const byOrder = (list: string[]) =>
+    [...list].sort((a, b) => {
+      const oa = orderOf[a] ?? Number.MAX_SAFE_INTEGER
+      const ob = orderOf[b] ?? Number.MAX_SAFE_INTEGER
+      return oa - ob || at.get(a)! - at.get(b)!
+    })
+
   const out: CategorySection[] = [...sections.entries()]
     /* الترتيب بالرقم ثمّ بالاسم: رقمان متساويان (تصنيفان أُضيفا قبل أوّل
        إعادة ترتيب) لا يتبادلان مواضعهما بين قراءةٍ وأخرى. */
     .sort((a, b) => a[1].sort - b[1].sort || a[0].localeCompare(b[0], 'ar'))
-    .map(([name, sec]) => ({ name, cats: sec.cats }))
+    .map(([name, sec]) => ({ name, cats: byOrder(sec.cats) }))
 
-  if (loose.length) out.push({ name: null, cats: loose })
+  if (loose.length) out.push({ name: null, cats: byOrder(loose) })
   return out
 }
