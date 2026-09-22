@@ -305,6 +305,8 @@ export interface CategoryRow {
   group_sort?: number | null
   /** مستبعَدة من اللوح مؤقّتاً — أسئلتها باقية. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
   hidden?: boolean
+  /** موضعها داخل تصنيفها (من 1)؛ `null` = لم تُرتَّب. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
+  sort?: number | null
 }
 
 /* ============================= التصنيفات ============================= */
@@ -365,6 +367,15 @@ export async function deleteGroup(name: string): Promise<void> {
 /** الترتيب يُرسَل كاملاً — انظر `admin_reorder_groups`. */
 export async function reorderGroups(names: string[]): Promise<void> {
   const { error } = await supabase.rpc('admin_reorder_groups', { p_names: names })
+  if (error) throw new Error(translate(error.message))
+}
+
+/**
+ * ترتيب فئات تصنيفٍ واحد — يُرسَل كاملاً كـ`reorderGroups` (انظر
+ * `admin_reorder_categories`). والمشحونة التي لا صفّ لها يُنشأ صفُّها هناك.
+ */
+export async function reorderCategories(names: string[]): Promise<void> {
+  const { error } = await supabase.rpc('admin_reorder_categories', { p_names: names })
   if (error) throw new Error(translate(error.message))
 }
 

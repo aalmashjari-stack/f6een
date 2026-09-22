@@ -1,5 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { groupCategories, groupOf, setCategoryGroups } from '../components/categoryGroups'
+import {
+  groupCategories,
+  groupOf,
+  setCategoryGroups,
+  setCategoryOrder,
+} from '../components/categoryGroups'
 
 /**
  * تقسيم الفئات على تصنيفاتها — طبقةُ عرضٍ في شاشة الإعداد لا طبقةُ لعب.
@@ -8,7 +13,10 @@ import { groupCategories, groupOf, setCategoryGroups } from '../components/categ
  * عنها الحكم أمام المجلس، والشجرةُ ستكبر إلى عشرات الفئات فلا تُحصى بالعين.
  */
 describe('تقسيم الفئات على التصنيفات', () => {
-  beforeEach(() => setCategoryGroups({}))
+  beforeEach(() => {
+    setCategoryGroups({})
+    setCategoryOrder({})
+  })
 
   it('بلا تصنيفات: قسمٌ واحد بكل الفئات — الشاشة كما كانت', () => {
     const out = groupCategories(['أ', 'ب', 'ج'])
@@ -55,6 +63,24 @@ describe('تقسيم الفئات على التصنيفات', () => {
     const out = groupCategories(['جغرافيا', 'فئة جديدة'])
     expect(out[out.length - 1]).toEqual({ name: null, cats: ['فئة جديدة'] })
     expect(out.flatMap((s) => s.cats)).toHaveLength(2)
+  })
+
+  /* ترتيب المدير من اللوحة (٢٣ سبتمبر ٢٠٢٦): المرتّبة برقمها، وغير المرتّبة
+     بعدها بموضعها في القائمة الواردة — فلا تختفي فئةٌ أُضيفت بعد الترتيب. */
+  it('الفئات داخل التصنيف بترتيب المدير، وغير المرتّبة بعدها بترتيبها', () => {
+    setCategoryGroups({
+      أ: { name: 'س', sort: 0 },
+      ب: { name: 'س', sort: 0 },
+      ج: { name: 'س', sort: 0 },
+      د: { name: 'س', sort: 0 },
+    })
+    setCategoryOrder({ ج: 1, أ: 2 })
+    expect(groupCategories(['أ', 'ب', 'ج', 'د'])[0].cats).toEqual(['ج', 'أ', 'ب', 'د'])
+  })
+
+  it('وقسم «بلا تصنيف» يتبع الترتيب كذلك', () => {
+    setCategoryOrder({ ز: 1 })
+    expect(groupCategories(['و', 'ز'])).toEqual([{ name: null, cats: ['ز', 'و'] }])
   })
 
   it('groupOf يقول مظلّة الفئة أو null', () => {
