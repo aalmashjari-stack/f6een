@@ -214,6 +214,43 @@ describe('طبقة التعديل والإضافة', () => {
 })
 
 /**
+ * **صورةٌ ليست في هذا الإصدار لا تُسحب** (٢٢ سبتمبر ٢٠٢٦): تطبيقٌ مثبَّت قبل
+ * «شعارات أندية» استلم أسئلتها من القاعدة بلا ملفّاتها، فظهر كلُّ شعارٍ
+ * صورةً مؤقّتة. السؤال يغيب عن السحب ويبقى في `allQuestions` للّوحة.
+ */
+describe('صورٌ غائبة عن الإصدار', () => {
+  const NEW = 'فئة مصوّرة تجريبيّة'
+  const row = (id: string, level: Level, image: string) => ({
+    id, category: NEW, level, topic: '', question: 'ما هذا؟', answer: `جواب ${id}`, image,
+  })
+
+  afterEach(() => {
+    setExtraCategories([])
+    setQuestionOverlay([])
+  })
+
+  it('مفتاحٌ بلا ملفّ يغيب عن السحب ويبقى في البنك', () => {
+    setQuestionOverlay([row('ADM9901', 'سهل', 'pic-club-لا-يوجد')])
+    expect(poolByCatLevel(NEW, 'سهل')).toHaveLength(0)
+    expect(allQuestions().some((q) => q.id === 'ADM9901')).toBe(true)
+  })
+
+  it('المفتاح المشحون والرابط المرفوع يُسحبان', () => {
+    setQuestionOverlay([
+      row('ADM9902', 'سهل', 'pic-club-arsenal'),
+      row('ADM9903', 'سهل', 'https://example.com/a.jpg'),
+    ])
+    expect(poolByCatLevel(NEW, 'سهل').map((q) => q.id).sort()).toEqual(['ADM9902', 'ADM9903'])
+  })
+
+  it('فئةٌ كلُّ صورها غائبة لا تدخل الإعداد', () => {
+    setExtraCategories([NEW])
+    setQuestionOverlay(ALL_LEVELS.map((l, i) => row(`ADM99${10 + i}`, l, `pic-club-غائب-${i}`)))
+    expect(playableCategories()).not.toContain(NEW)
+  })
+})
+
+/**
  * فئة جديدة لا تدخل العجلة ولا لوحَ الجولة الجماعية حتى تكتمل مستوياتها الثلاثة.
  *
  * الخطر الذي تحرسه: السحب يقع على (فئة، مستوى)، واللوح يأخذ من كل فئةٍ
