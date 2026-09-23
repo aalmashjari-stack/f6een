@@ -3,6 +3,7 @@ import { familiesOf } from './bank'
 import { drawByLevel, drawDerby, drawOne, drawStage3Queue } from './draw'
 import {
   GameState,
+  QuestionResult,
   SetupInput,
   StageKey,
   STAGE1_CONSULT_MS,
@@ -118,6 +119,10 @@ const burn = (s: GameState, q: Question): GameState => {
   return { ...s, usedQuestionIds, askedQuestionIds, spentFamilies }
 }
 
+/** نتيجةُ السؤال كما حكم الحكم — انظر `QuestionResult`. */
+const record = (s: GameState, q: Question | null | undefined, st: QuestionResult['st'], r: QuestionResult['r']): GameState =>
+  q ? { ...s, results: { ...s.results, [q.id]: { st, r } } } : s
+
 /** كل نقطة تُسجَّل مرّتين: في مجموع الفريق، وفي عمود مرحلتها لشاشة الختام. */
 const addScore = (s: GameState, team: TeamId, delta: number, stage: StageKey): GameState => {
   const teams = [...s.teams] as GameState['teams']
@@ -209,7 +214,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (state.phase !== 'stage1-reveal' && state.phase !== 'stage1-question') return state
       /* النقاط لمن أجاب لا لصاحب الدور (قرار علي ٥ سبتمبر ٢٠٢٦): الحكم يختار
          الفريق من اسمه، و`null` تعني أنّ أحداً لم يُصب. */
-      let s = state
+      let s = record(state, state.currentQuestion, 1, action.team !== null ? 'c' : 'n')
       if (action.team !== null)
         s = addScore(s, action.team, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
 
@@ -291,7 +296,8 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (state.phase !== 'stage2-question' && state.phase !== 'stage2-reveal') return state
       const sel = state.s2Sel
       // تطبيق النقاط والإحصاء
-      let s = state
+      const marks = state.s2Marks
+      let s = record(state, state.currentQuestion, 2, marks.includes('صح') ? 'c' : marks.includes('غلط') ? 'w' : 'n')
       const correctByPlayer = { ...s.correctByPlayer }
       const wrongByPlayer = { ...s.wrongByPlayer }
       for (const who of [0, 1] as const) {
@@ -341,7 +347,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       /* لا حكمَ على ما لم يُكشف: زرّا ✓/✗ لا يظهران إلّا بعد الكشف، والحارس
          هنا يمنع ضغطةً مزدوجة من أن تحكم على السؤال التالي وهو ما زال مطويّاً. */
       if (!state || state.phase !== 'stage3-play' || !state.s3Revealed) return state
-      let s = state
+      let s = record(state, state.s3Queue[state.s3Pos], 3, action.verdict === 'correct' ? 'c' : 'w')
       if (action.verdict === 'correct') s = addScore(s, s.s3Team, STAGE3_POINTS, 's3')
       const counts = [...s.s3Counts[action.verdict]] as [number, number]
       counts[s.s3Team] += 1
@@ -361,7 +367,8 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       // فالوقت هو من أنهى الدور والسؤال الجاري لم يُحكَم بعد.
       let s = state
       const shown = s.s3Queue[s.s3Pos]
-      if (shown) s = { ...burn(s, shown), s3Pos: s.s3Pos + 1 }
+      /* انتهى الوقت والسؤال معروضٌ بلا حكم: لم يُصبه أحد. */
+      if (shown) s = { ...burn(record(s, shown, 3, 'n'), shown), s3Pos: s.s3Pos + 1 }
       if (done.length < 2) {
         const nextTeam = (1 - s.s3Team) as TeamId
         return ensureS3Queue({ ...s, s3Team: nextTeam, s3Done: done, s3Revealed: false, timerEndsAt: null })
@@ -411,7 +418,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
     case 'TIEBREAK_PICK': {
       if (!state || state.phase !== 'tiebreak' || !state.currentQuestion) return state
-      let s = state
+      let s = record(state, state.currentQuestion, 4, action.team !== 'none' ? 'c' : 'n')
       if (action.team !== 'none') s = addScore(s, action.team, TIEBREAK_POINTS, 'tie')
       // إن بقي التعادل (لا أحد أصاب) نعيد سؤالاً صعباً آخر
       if (s.teams[0].score === s.teams[1].score) {

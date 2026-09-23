@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchInsights, type Insights as Data } from '../lib/admin'
+import { fetchInsights, type Insights as Data, type ResultQuestion } from '../lib/admin'
 import { day, stamp } from '../lib/date'
 
 /**
@@ -28,6 +28,8 @@ const PHASES: Record<string, string> = {
   tiebreak: 'سؤال الحسم',
   endgame: 'الختام',
 }
+
+const STAGES: Record<number, string> = { 1: 'الجولة الجماعية', 2: 'الديربي', 3: 'الحق ما تلحق', 4: 'سؤال الحسم' }
 
 const WEEKDAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
 const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
@@ -205,6 +207,8 @@ export function Insights() {
         </div>
       </Section>
 
+      <Results r={data.results} />
+
       <div className="ins-grid">
         <Section title="أين تُترك الجلسة" note="الشاشة التي كانت مفتوحة حين انسحب اللاعبون.">
           <Bars
@@ -233,9 +237,118 @@ export function Insights() {
       </div>
 
       <p className="a-note">
-        المصدر: جلسات الحسابات المسجّلة على الخادم. نتيجةُ كلّ سؤالٍ على حدة لا تُحفظ (المحفوظ مجاميع المراحل)، فلا
-        يُعرف منها أصعبُ سؤال.
+        المصدر: جلسات الحسابات المسجّلة على الخادم. ونتيجةُ كلّ سؤال تُحفظ منذ 2026/09/23 — ما قبله بلا نتائج.
       </p>
+    </div>
+  )
+}
+
+/**
+ * نتائج الأسئلة. «أصاب» = أجاب أحدٌ صحيحاً؛ والجولة الجماعية وسؤال الحسم لا
+ * يفرّقان الخطأ من الصمت (الحكم يختار فريقاً أو «لم يجب أحد»).
+ */
+function Results({ r }: { r: Data['results'] }) {
+  if (!r || r.measured === 0)
+    return (
+      <Section title="نتائج الأسئلة">
+        <p className="a-note">
+          تبدأ من الجلسات التي تُلعب من اليوم: كلُّ سؤالٍ يُحكم عليه تُحفظ نتيجته، وتظهر هنا نسبةُ الإصابة لكلّ مرحلة
+          ومستوى وفئة، والأسئلةُ الأصعب، وما يبدو في غير مستواه.
+        </p>
+      </Section>
+    )
+  const rate = (c: number, n: number) => (n > 0 ? Math.round((c / n) * 100) : 0)
+  return (
+    <>
+      <Section title="نتائج الأسئلة" note={`${r.measured} سؤالاً محكوماً في ${r.sessions} جلسة.`}>
+        <div className="a-tiles">
+          {r.by_stage.map((x) => (
+            <Stat
+              key={x.st}
+              n={rate(x.c, x.n)}
+              label={`% إصابة · ${STAGES[x.st] ?? x.st}`}
+              sub={`${x.c} من ${x.n}${x.w ? ` · ${x.w} خطأ` : ''}`}
+            />
+          ))}
+        </div>
+        <div className="ins-grid">
+          <div>
+            <h4 className="ins-h4">نسبة الإصابة حسب المستوى (الجولة الجماعية)</h4>
+            <Bars
+              keepOrder
+              scale={100}
+              rows={LEVELS.map((l) => {
+                const x = r.by_level.find((y) => y.level === l)
+                return {
+                  label: l,
+                  value: x ? rate(x.c, x.n) : 0,
+                  display: x ? `${rate(x.c, x.n)}%` : '—',
+                  title: x ? `${l}: أُصيب ${x.c} من ${x.n}` : `${l}: لا نتائج بعد`,
+                }
+              })}
+            />
+          </div>
+          <div>
+            <h4 className="ins-h4">أصعب الفئات (أقلّ نسبة إصابة)</h4>
+            {r.by_category.length === 0 ? (
+              <p className="a-note">تظهر الفئة بعد خمسة أسئلةٍ محكومة فيها.</p>
+            ) : (
+              <Bars
+                keepOrder
+                scale={100}
+                rows={r.by_category.slice(0, 10).map((x) => ({
+                  label: x.name,
+                  value: rate(x.c, x.n),
+                  display: `${rate(x.c, x.n)}%`,
+                  title: `${x.name}: أُصيب ${x.c} من ${x.n}`,
+                }))}
+              />
+            )}
+          </div>
+        </div>
+      </Section>
+
+      <Section title="الأسئلة الأصعب" note="عُرض كلٌّ منها مرّتين على الأقلّ وأُصيب في النصف أو أقلّ، الأقلّ إصابةً أوّلاً.">
+        <QuestionList list={r.hardest} empty="لا سؤال عُرض مرّتين بعد." />
+      </Section>
+
+      <div className="ins-grid">
+        <Section title="«سهل» يُخطئه أكثرهم" note="في اللوح، عُرض 3 مرّات على الأقلّ وأُصيب في الثلث أو أقلّ.">
+          <QuestionList list={r.too_hard} first empty="لا شيء بعد." />
+        </Section>
+        <Section title="«صعب» أو «تعجيزي» يُصيبه أكثرهم" note="في اللوح، عُرض 3 مرّات على الأقلّ وأُصيب في 80% أو أكثر.">
+          <QuestionList list={r.too_easy} first empty="لا شيء بعد." />
+        </Section>
+      </div>
+    </>
+  )
+}
+
+/** `first`: العدّ من الجولة الجماعية وحدها (`n1`/`c1`) لا من المراحل كلّها. */
+function QuestionList({ list, empty, first = false }: { list: ResultQuestion[]; empty: string; first?: boolean }) {
+  if (list.length === 0) return <p className="a-note">{empty}</p>
+  return (
+    <div className="ins-qs">
+      {list.map((q) => {
+        const n = (first ? q.n1 : q.n) ?? 0
+        const c = (first ? q.c1 : q.c) ?? 0
+        return (
+          <div key={q.id} className="ins-q">
+            <div className="ins-q-text">
+              {q.question}
+              <span className="ins-q-ans"> ← {q.answer}</span>
+            </div>
+            <div className="ins-q-meta">
+              <span className="num">
+                {c}/{n}
+              </span>
+              <span className="a-muted">
+                {q.category} · {q.level} · {q.id}
+              </span>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -267,12 +380,15 @@ function Stat({ n, label, sub }: { n: number | null | undefined; label: string; 
 function Bars({
   rows,
   keepOrder = false,
+  scale,
 }: {
-  rows: { label: string; hint?: string; value: number; title: string }[]
+  rows: { label: string; hint?: string; value: number; title: string; display?: string }[]
   keepOrder?: boolean
+  /** سقفُ الشريط الكامل — 100 للنِّسب، وإلّا أكبرُ قيمة: نسبةُ 46% لا تبدو ممتلئة لأنّ الأعلى 60%. */
+  scale?: number
 }) {
   const list = keepOrder ? rows : [...rows].sort((a, b) => b.value - a.value)
-  const max = Math.max(1, ...list.map((r) => r.value))
+  const max = scale ?? Math.max(1, ...list.map((r) => r.value))
   return (
     <div className="ins-bars">
       {list.map((r) => (
@@ -284,7 +400,7 @@ function Bars({
           <span className="ins-track">
             <span className="ins-fill" style={{ width: `${(Math.max(0, r.value) / max) * 100}%` }} />
           </span>
-          <span className="ins-val num">{r.value}</span>
+          <span className="ins-val num">{r.display ?? r.value}</span>
         </div>
       ))}
     </div>

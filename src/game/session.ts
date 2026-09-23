@@ -159,9 +159,27 @@ export interface GameState {
   /** الحق ما تلحق: عدد الأسئلة بكل نتيجة لكل فريق (صحيحة · خاطئة). */
   s3Counts: Record<'correct' | 'wrong', [number, number]>
   reportedQuestionIds: string[]
+  /** نتيجةُ كلّ سؤالٍ حُكم عليه في الجلسة، بمعرّفه — انظر `QuestionResult`. */
+  results: Record<string, QuestionResult>
 }
 
 export type StageKey = 's1' | 's2' | 's3' | 'tie'
+
+/**
+ * نتيجةُ سؤالٍ واحد كما حكم الحكم — لإحصاء اللوحة (طلب علي ٢٣ سبتمبر ٢٠٢٦:
+ * «ضيف حفظ نتيجة كل سؤال»). كانت الحالة تحفظ مجاميع المراحل وحدها، فلا يُعرف
+ * منها أصعبُ سؤال ولا سؤالٌ «تعجيزي» يجيبه الجميع.
+ *
+ * `r`: ‏`c` أُصيب · `w` أُجيب خطأً · `n` لم يُصبه أحد — والجولة الجماعية
+ * وسؤال الحسم لا يفرّقان «أخطأ» من «سكت» (الحكم يختار فريقاً أو «لم يجب
+ * أحد»)، فنتيجتهما `c` أو `n` وحدهما.
+ * `st`: المرحلة (1 الجماعية · 2 الديربي · 3 الحق ما تلحق · 4 الحسم) —
+ * سؤالٌ في خمسٍ وأربعين ثانية لا يُقاس بسؤالٍ في دقيقة تشاور.
+ */
+export interface QuestionResult {
+  st: 1 | 2 | 3 | 4
+  r: 'c' | 'w' | 'n'
+}
 
 /**
  * مرحلةُ الطور — لأجل عمود الختام.
@@ -298,6 +316,7 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
     stagePoints: { s1: [0, 0], s2: [0, 0], s3: [0, 0], tie: [0, 0] },
     s3Counts: { correct: [0, 0], wrong: [0, 0] },
     reportedQuestionIds: [],
+    results: {},
   }
 }
 
@@ -315,10 +334,12 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
  * المستأنَفة على الجهاز عن المستأنَفة عليه من حساب آخر — والفرق لا يظهر إلا
  * بعد الاستئناف.
  */
-export type StoredState = Omit<GameState, 'usedQuestionIds' | 's2Pairs'> & {
+export type StoredState = Omit<GameState, 'usedQuestionIds' | 's2Pairs' | 'results'> & {
   usedQuestionIds: string[]
   /** لقطةٌ سبقت ذاكرة المواجهات (٢١ سبتمبر ٢٠٢٦) تُستأنف بلا مواجهاتٍ سابقة. */
   s2Pairs?: [number, number][]
+  /** ولقطةٌ سبقت حفظ النتائج (٢٣ سبتمبر ٢٠٢٦) تُستأنف بلا نتائج سابقة. */
+  results?: Record<string, QuestionResult>
 }
 
 export function encodeState(s: GameState): StoredState {
@@ -332,6 +353,7 @@ export function decodeState(s: StoredState): GameState {
     usedQuestionIds: new Set(s.usedQuestionIds),
     timerEndsAt: s.timerEndsAt ?? null,
     s2Pairs: s.s2Pairs ?? [],
+    results: s.results ?? {},
   }
 }
 
@@ -424,6 +446,7 @@ export function isStoredState(x: unknown): x is StoredState {
     obj('s3Counts') &&
     ['correct', 'wrong'].every((k) => pair(s3Counts?.[k])) &&
     arr('reportedQuestionIds') &&
+    (s.results === undefined || obj('results')) &&
     (s.timerEndsAt === undefined || s.timerEndsAt === null || num('timerEndsAt')) &&
     (s.s3Queue as unknown[]).every(question)
   )
