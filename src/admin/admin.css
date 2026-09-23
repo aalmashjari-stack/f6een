@@ -317,3 +317,52 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .ord-cell { white-space: nowrap; }
 .ord-cell .a-btn { padding: 2px 9px; font-size: 14px; line-height: 1.4; }
 .ord-cell .a-btn + .a-btn { margin-inline-start: 4px; }
+
+/* ── لسان الإحصائيات ──
+   لونٌ واحد للرسوم (‎--n-brand‎) وكلُّ شريطٍ عليه رقمه بحبر النصّ لا بلون
+   السلسلة. الشبكة تنطوي عموداً واحداً في الهاتف (انظر ‎@media‎ أدناه). */
+.ins { display: grid; gap: 12px; }
+.ins.busy { opacity: .6; transition: opacity .15s; }
+.ins-toggle { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; cursor: pointer; }
+.ins-sec { padding: 14px 16px; overflow: visible; }
+.ins-h3 { margin: 0 0 4px; font-size: 16px; font-weight: 900; }
+.ins-h4 { margin: 12px 0 6px; font-size: 13px; font-weight: 800; color: var(--n-ink-2); }
+.ins-sub { margin: 0 0 10px; font-size: 12px; font-weight: 700; color: var(--n-ink-3); }
+.ins-sec .a-tiles { margin-top: 6px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+@media (min-width: 900px) { .ins-sec .a-tiles { grid-template-columns: repeat(4, 1fr); } }
+.ins-tile-sub { display: block; font-size: 11px; color: var(--n-ink-3); font-weight: 600; margin-top: 2px; }
+.ins-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
+.ins-grid > .ins-sec { min-width: 0; }
+
+.ins-bars { display: grid; gap: 6px; }
+.ins-bar { display: grid; grid-template-columns: minmax(90px, 34%) 1fr auto; align-items: center; gap: 8px;
+  padding: 2px 4px; border-radius: 6px; }
+.ins-bar:hover { background: var(--n-surface-2); }
+.ins-label { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ins-label small { color: var(--n-ink-3); font-weight: 600; }
+.ins-track { height: 12px; background: var(--n-surface-2); border-radius: 4px; overflow: hidden; display: block; }
+.ins-fill { display: block; height: 100%; background: var(--n-brand); border-radius: 4px; min-width: 2px; }
+.ins-val { font-size: 13px; font-weight: 800; min-width: 2.5ch; text-align: start; font-variant-numeric: tabular-nums; }
+.ins-more { margin-top: 10px; }
+
+.ins-cols-plot { display: flex; align-items: flex-end; gap: 2px; height: 120px;
+  border-bottom: 1px solid var(--n-line); }
+.ins-col { flex: 1 1 0; height: 100%; display: flex; align-items: flex-end; border-radius: 4px 4px 0 0; }
+.ins-col:hover { background: var(--n-surface-2); }
+.ins-col-fill { display: block; width: 100%; background: var(--n-brand); border-radius: 4px 4px 0 0; }
+.ins-cols-ticks { display: flex; gap: 2px; margin-top: 4px; }
+.ins-cols-ticks span { flex: 1 1 0; font-size: 10px; color: var(--n-ink-3); font-weight: 700;
+  font-variant-numeric: tabular-nums; white-space: nowrap; overflow: visible; }
+.ins-cols-max { font-size: 11px; color: var(--n-ink-3); font-weight: 700; margin-bottom: 4px; }
+
+.ins-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ins-rows { display: grid; gap: 6px; }
+.ins-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; font-size: 13px; }
+.ins-mail { direction: ltr; text-align: end; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ins-row small { color: var(--n-ink-3); }
+
+@media (max-width: 640px) {
+  .ins-grid { grid-template-columns: minmax(0, 1fr); }
+  .ins-bar { grid-template-columns: minmax(80px, 38%) 1fr auto; }
+  .ins-cols-plot { height: 100px; }
+}
