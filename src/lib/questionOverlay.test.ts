@@ -14,12 +14,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
  */
 
 const rows: Record<string, unknown>[] = []
+/** خطأٌ يُحقن في `question_bank` لاختبارٍ واحد، ثمّ يُصفَّر. */
+let bankError: { code: string; message: string } | null = null
+let sigData: unknown = null
 
 vi.mock('./supabase', () => ({
   supabase: {
     rpc: vi.fn(async (name: string) => {
-      if (name === 'bank_signature') return { data: null, error: { message: 'no' } }
-      if (name === 'question_bank') return { data: { mode: 'db', rows }, error: null }
+      if (name === 'bank_signature')
+        return sigData ? { data: sigData, error: null } : { data: null, error: { message: 'no' } }
+      if (name === 'question_bank')
+        return bankError ? { data: null, error: bankError } : { data: { mode: 'db', rows }, error: null }
       return { data: [], error: null }
     }),
   },
@@ -61,6 +66,8 @@ function fullRows() {
 beforeEach(() => {
   store.clear()
   rows.length = 0
+  bankError = null
+  sigData = null
 })
 
 describe('طبقة الأسئلة من القاعدة', () => {
@@ -113,5 +120,21 @@ describe('طبقة الأسئلة من القاعدة', () => {
 
     expect(playableCategories()).toContain(CAT)
     expect(allQuestions().some((q) => q.id === '')).toBe(false)
+  })
+
+  /* مهلةٌ واحدة على `question_bank` كانت تسقط إلى `question_overlay()`
+     المقصوصة عند ألف صفّ وتختمها بتوقيع الخادم — فيتجمّد الجهاز عليها. */
+  it('فشلُ التنزيل العابر لا يستبدل المخزّن ولا يختم توقيعاً', async () => {
+    sigData = { n: 1 }
+    rows.push(...fullRows())
+    await syncOverlay()
+    const saved = [...store.values()].find((v) => v.includes('"mode":"db"'))
+    expect(saved).toBeDefined()
+
+    sigData = { n: 2 }
+    bankError = { code: '57014', message: 'canceling statement due to statement timeout' }
+    await expect(syncOverlay()).rejects.toBeTruthy()
+    expect([...store.values()]).toContain(saved)
+    expect(playableCategories()).toContain(CAT)
   })
 })

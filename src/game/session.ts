@@ -448,6 +448,11 @@ export function setStorageOwner(id: string | null) {
   owner = id ?? 'anon'
 }
 
+/** صاحبُ التخزين الآن — لمن ينتظر شبكةً ثمّ يكتب: هل ما زال الحساب نفسه؟ */
+export function storageOwner(): string {
+  return owner
+}
+
 export function scopedKey(base: string): string {
   return `${base}:${owner}`
 }

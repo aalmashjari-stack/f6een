@@ -7,6 +7,7 @@ import {
   sessionNotReady,
   encodeState,
   isStoredState,
+  loadUsedIds,
   persistUsedIds,
   readScoped,
   removeScoped,
@@ -25,7 +26,7 @@ import {
   startSession,
 } from './lib/games'
 import type { ServerSession } from './lib/games'
-import { pushUsedIds, syncUsedIds } from './lib/usedQuestions'
+import { pushUsedIds, syncUsedIds, touchUsedIds } from './lib/usedQuestions'
 import { applyCachedBlocked, flushPendingReports, reportQuestion, syncBlocked } from './lib/questionFlags'
 import {
   applyCachedCategories,
@@ -38,6 +39,7 @@ import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
 import { CrashScreen } from './components/CrashScreen'
 import { useWakeLock } from './components/useWakeLock'
+import { useTapGuard } from './components/tapGuard'
 import { BootHold, Splash } from './screens/Splash'
 import { isNativeApp } from './lib/platform'
 import { lockOrientation } from './lib/orientation'
@@ -203,11 +205,17 @@ export default function App() {
      نجاحه. */
   const uploaded = useRef<Set<string>>(new Set())
 
+  /* ما خُتم زمنُه على الخادم من أسئلة **هذه الجلسة** — بمفتاح الجلسة، فسؤالٌ
+     عُرض في لعبةٍ ثمّ أُعيد في التالية يُختم مرّتين. */
+  const touched = useRef<Set<string>>(new Set())
+  const asked = state?.askedQuestionIds
+
   /* مزامنة أولى عند توفّر الحساب — قبل أي لعبة، فالإعداد يقرأ من التخزين
      المحلّي بعد أن يكون قد اغتنى بما عند الخادم. */
   useEffect(() => {
     if (!uid) {
       uploaded.current = new Set()
+      touched.current = new Set()
       return
     }
     let alive = true
@@ -233,10 +241,30 @@ export default function App() {
 
   useEffect(() => {
     if (!used) return
-    persistUsedIds(used)
+    /* اتّحادٌ لا استبدال: `used` أُخذت لحظةَ إنشاء اللعبة أو استئنافها، ومزامنةُ
+       الإقلاع قد تكتب بعدها ما عند الخادم — فكان السؤال التالي يمحوه، واللعبةُ
+       التالية في التشغيل نفسه تُبنى من ذاكرةٍ أقصر فتعيد ما سُمع على جهازٍ آخر.
+       وترتيبُ `used` هو الأحدث فيُلحق آخراً. */
+    const stored = loadUsedIds()
+    persistUsedIds(new Set([...[...stored].filter((id) => !used.has(id)), ...used]))
 
     if (!uid) return
-    const fresh = [...used].filter((id) => !uploaded.current.has(id))
+    const key = (id: string) => `${sessionId ?? ''}:${id}`
+    const shown = (asked ?? []).filter((id) => !touched.current.has(key(id)))
+    const shownSet = new Set(shown)
+    const fresh = [...used].filter((id) => !uploaded.current.has(id) && !shownSet.has(id))
+    if (shown.length > 0) {
+      touchUsedIds(uid, shown)
+        .then(() => {
+          for (const id of shown) {
+            touched.current.add(key(id))
+            uploaded.current.add(id)
+          }
+        })
+        .catch(() => {
+          /* يبقى خارج `touched` فيُعاد مع السؤال التالي. */
+        })
+    }
     if (fresh.length === 0) return
     pushUsedIds(uid, fresh)
       .then(() => {
@@ -245,7 +273,7 @@ export default function App() {
       .catch(() => {
         /* يبقى خارج `uploaded` فيُعاد رفعه مع السؤال التالي. */
       })
-  }, [used, uid])
+  }, [used, asked, uid, sessionId])
 
   /* ================== الرصيد والجلسة على الخادم — SPEC ٣ و٩ ================== */
 
@@ -258,6 +286,21 @@ export default function App() {
   /* الشاشة تبقى مستيقظة ما دامت لعبةٌ قائمة — من الإعداد إلى الختام. وستّون
      ثانية تشاورٍ بلا لمسةٍ واحدة هي بالضبط ما يُطفئ الشاشة أمام المجلس. */
   useWakeLock(state !== null)
+
+  /* كلُّ ما يبدّل الزرَّ تحت إصبع الحكم: الطور، والسؤال المعروض، والكشف،
+     وبدء المؤقّت، ودور الفريق في الحق ما تلحق. */
+  useTapGuard(
+    state
+      ? [
+          state.phase,
+          state.currentQuestion?.id ?? '',
+          state.s3Pos,
+          state.s3Team,
+          state.s3Revealed,
+          state.timerEndsAt !== null,
+        ].join('|')
+      : null,
+  )
 
   /**
    * الإقلاع باسم الحساب — قبل كلّ أثرٍ آخر (أثرُ تخطيطٍ فيسبق الآثار كلّها).

@@ -31,7 +31,10 @@ import { isImageUrl } from '../game/celebs'
 export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const owner = stage1Owner(state.s1Index, state.startingTeam)
   const q = state.currentQuestion!
-  const points = STAGE1_LEVEL_POINTS[q.level]
+  /* نقاطُ **الخليّة** لا مستوى السؤال: المخفّض يمنح بمستوى الخليّة، وخليّةٌ
+     فرغ مخزونها بعد الحرّاس تسقط إلى مستوىً آخر (`drawOne`) — فكانت الشاشة
+     تقول «10 نقاط» والفريق يأخذ 30. */
+  const points = STAGE1_LEVEL_POINTS[state.s1Cell?.level ?? q.level]
 
   /* الخياران اسما الفريقين لا «أصاب/أخطأ» (قرار علي ٥ سبتمبر ٢٠٢٦): النقاط
      لمن أجاب أيّاً كان، فالخليّة لم تعد لصاحب الدور وحده. وتحت كل اسم نتيجةُ

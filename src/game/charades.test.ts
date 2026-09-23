@@ -53,6 +53,15 @@ describe('ترميز ولا كلمة', () => {
     expect(decodeCharade('#' + encodeCharade('سهل', 'باب الحارة', { image: 'zaman-bab' }))).toEqual({ level: 'سهل', text: 'باب الحارة', image: 'zaman-bab' })
   })
 
+  /* «”» (U+201D) تُكتب ‎1e 20 1d‎ وآخرُها بايتُ الفاصل — فكان يُقرأ فاصلاً
+     ويُقصّ العنوان عند أوّل علامة تنصيصٍ مطبعيّة. */
+  it('علامات التنصيص المطبعيّة لا تقطع العنوان عن ملصقه', () => {
+    const text = 'فيلم ”الرسالة“'
+    const out = decodeCharade(encodeCharade('سهل', text, { kind: 'فيلم', image: 'pic-kilma-x' }))
+    expect(out?.text).toBe(text)
+    expect(out?.image).toBe('pic-kilma-x')
+  })
+
   it('روابط الصيغة الأولى (a) ما زالت تُفكّ — صفحةٌ قد تبقى مفتوحةً في هاتف', () => {
     /* جزءٌ رمّزه المحرّك قبل الصيغة `b` — ثابتٌ هنا لا يُعاد توليده */
     expect(decodeCharade('#aZ05FQU4G2Q4iIw')).toEqual({ level: 'متوسط', text: 'درب الزلق' })

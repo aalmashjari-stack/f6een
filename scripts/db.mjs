@@ -138,7 +138,11 @@ if (cmd === 'status') {
 
 if (cmd === 'push') {
   console.log('يطبّق ما ينتظر…\n')
-  const { code } = cli(['db', 'push', '--include-all'])
+  /* `--yes`: في طرفيّةٍ تفاعليّة يسأل الـCLI «Do you want to push…? [Y/n]»،
+     وخرجُه مأخوذٌ بأنبوبٍ ليُخفى منه السرّ — فالسؤال لا يظهر، ويتعلّق الأمر
+     عند «يطبّق ما ينتظر…» بلا أثر (وقع لعلي ٢٣ سبتمبر ٢٠٢٦). والتأكيدُ هو
+     كتابةُ الأمر نفسه؛ وما سيُطبَّق يُرى قبله بـ«npm run db:status». */
+  const { code } = cli(['db', 'push', '--include-all', '--yes'])
   if (code !== 0) {
     console.error(`
 فشل التطبيق. والأرجح أحد اثنين:
