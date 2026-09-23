@@ -186,6 +186,67 @@ export async function fetchStats(): Promise<AdminStats | null> {
   return (data ?? null) as AdminStats | null
 }
 
+/* ============================= الإحصائيات ============================= */
+/**
+ * لسانُ «الإحصائيات» (طلب علي ٢٣ سبتمبر ٢٠٢٦). يُحسب كلُّه في القاعدة
+ * (`admin_insights`) ويصل قيمةً واحدة — انظر تعليق الهجرة `20260923200000`.
+ * المصدر الجلسات على الخادم وحدها، والأيّام والساعات بتوقيت الكويت.
+ */
+export interface Insights {
+  generated_at: string
+  exclude_admins: boolean
+  overview: {
+    accounts: number
+    accounts_7d: number
+    accounts_30d: number
+    players: number
+    returning: number
+    sessions: number
+    finished: number
+    abandoned: number
+    open: number
+    sessions_7d: number
+    sessions_30d: number
+    median_minutes: number | null
+    questions_shown: number
+    avg_questions: number | null
+    reports: number
+    redemptions: number
+  }
+  categories: { name: string; group: string | null; picks: number; finished: number }[]
+  groups: { name: string; picks: number }[]
+  never_picked: string[]
+  shown_by_category: { name: string; n: number }[]
+  shown_by_level: Record<string, number>
+  by_day: { day: string; n: number; finished: number }[]
+  /** 24 عدداً، من منتصف الليل. */
+  by_hour: number[]
+  /** 7 أعداد، من الأحد. */
+  by_weekday: number[]
+  games: {
+    measured: number
+    avg_players: number | null
+    team_sizes: { size: string; n: number }[]
+    avg_winner: number | null
+    avg_loser: number | null
+    avg_margin: number | null
+    starter_wins: number
+    decided: number
+    tiebreaks: number
+    stage_avg: { s1: number | null; s2: number | null; s3: number | null } | null
+    s3_correct: number
+    s3_wrong: number
+  }
+  abandoned_at: { phase: string; n: number }[]
+  top_accounts: { email: string | null; sessions: number; finished: number; last: string }[]
+}
+
+export async function fetchInsights(excludeAdmins: boolean): Promise<Insights> {
+  const { data, error } = await supabase.rpc('admin_insights', { p_exclude_admins: excludeAdmins })
+  if (error) throw new Error(translate(error.message))
+  return data as Insights
+}
+
 /* أخطاء القاعدة إنجليزيّة بطبعها، واللوحة عربيّة كبقيّة التطبيق. */
 const ERRORS: Record<string, string> = {
   not_admin: 'هذا الحساب ليس مديراً',

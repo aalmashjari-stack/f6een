@@ -19,6 +19,7 @@ import type {
 import { uploadArt, listArt, deleteArt, type ArtFile } from '../lib/uploads'
 import { isImageUrl } from '../game/celebs'
 import { shippedImage } from '../game/shippedImage'
+import { Insights } from './Insights'
 import type { Plan } from '../lib/importQuestions'
 import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
@@ -177,7 +178,17 @@ function NotAdmin({ email }: { email: string }) {
 
 /* ================================ اللوحة ================================ */
 
-type Tab = 'users' | 'sessions' | 'codes' | 'reports' | 'messages' | 'questions' | 'categories' | 'drafts' | 'uploads'
+type Tab =
+  | 'users'
+  | 'sessions'
+  | 'codes'
+  | 'reports'
+  | 'messages'
+  | 'questions'
+  | 'categories'
+  | 'drafts'
+  | 'uploads'
+  | 'insights'
 
 /**
  * الألسنة مرتّبةٌ بالعمل لا بتاريخ إضافتها: **المحتوى أوّلاً** (الأسئلة
@@ -195,6 +206,8 @@ const TABS: [Tab, string, boolean][] = [
   ['categories', 'الفئات', false],
   ['uploads', 'الصور المرفوعة', false],
   ['reports', 'البلاغات', false],
+  /* للمدير العامّ: فيها حساباتٌ وبريدُ أكثرهم لعباً (`admin_insights` تردّ غيرَه). */
+  ['insights', 'الإحصائيات', true],
   ['users', 'الحسابات', true],
   ['sessions', 'الجلسات', true],
   ['codes', 'أكواد الهدية', true],
@@ -279,6 +292,7 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       {tab === 'categories' && <Categories />}
       {tab === 'drafts' && <Drafts />}
       {tab === 'uploads' && <Uploads />}
+      {tab === 'insights' && <Insights />}
     </div>
   )
 }
