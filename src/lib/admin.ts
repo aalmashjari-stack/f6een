@@ -238,7 +238,32 @@ export interface Insights {
     s3_wrong: number
   }
   abandoned_at: { phase: string; n: number }[]
+  /** نتيجةُ كلّ سؤال — منذ ٢٣ سبتمبر ٢٠٢٦ (`state.results`)؛ الجلسات قبله بلا نتائج. */
+  results?: {
+    measured: number
+    sessions: number
+    /** ‏n = ما حُكم عليه، ‏c أُصيب، ‏w أخطأ؛ والباقي «لم يُصبه أحد». */
+    by_stage: { st: 1 | 2 | 3 | 4; n: number; c: number; w: number }[]
+    by_level: { level: string; n: number; c: number }[]
+    by_category: { name: string; n: number; c: number }[]
+    hardest: ResultQuestion[]
+    too_hard: ResultQuestion[]
+    too_easy: ResultQuestion[]
+  }
   top_accounts: { email: string | null; sessions: number; finished: number; last: string }[]
+}
+
+export interface ResultQuestion {
+  id: string
+  category: string
+  level: string
+  question: string
+  answer: string
+  /** في المراحل كلّها (`hardest`)، أو في الجولة الجماعية وحدها (`n1`/`c1`). */
+  n?: number
+  c?: number
+  n1?: number
+  c1?: number
 }
 
 export async function fetchInsights(excludeAdmins: boolean): Promise<Insights> {

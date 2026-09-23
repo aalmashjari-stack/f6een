@@ -173,4 +173,22 @@ describe('جلسات متتابعة بذاكرة دائمة — حتى ما بع
     }
     expect(new Set(seen).size, `الخليّة نفسها أعادت: ${seen.join('، ')}`).toBe(seen.length)
   })
+
+  /* نتيجةُ كلّ سؤال تُحفظ في الحالة لإحصاء اللوحة (٢٣ سبتمبر ٢٠٢٦): كلُّ ما
+     عُرض وحُكم عليه له نتيجةٌ بمرحلتها — والورقةُ التي انتهى عليها الوقت
+     «لم يُصبه أحد» لا غائبة. */
+  it('كلُّ سؤالٍ عُرض في الجلسة له نتيجةٌ بمرحلته', () => {
+    const { shown, state } = playSession(new Set())
+    const ids = shown.map((q) => q.id)
+    expect(Object.keys(state.results).sort()).toEqual([...ids].sort())
+
+    const byStage = (st: number) => Object.values(state.results).filter((x) => x.st === st)
+    expect(byStage(1)).toHaveLength(STAGE1_CATEGORIES * STAGE1_LEVELS.length)
+    expect(byStage(1).every((x) => x.r === 'c')).toBe(true) // صاحب الدور أصاب في كلّ خليّة
+    expect(byStage(2).every((x) => x.r === 'n')).toBe(true) // لا علامة = صمت
+    expect(byStage(3)).toHaveLength(S3_SHOWN)
+    /* k % 3 === 0 خطأ، والورقة الأخيرة في الدور الأوّل انتهى عليها الوقت. */
+    expect(byStage(3).filter((x) => x.r === 'n')).toHaveLength(1)
+    expect(byStage(3).filter((x) => x.r === 'w')).toHaveLength(2 * Math.ceil(S3_PER_TURN / 3))
+  })
 })

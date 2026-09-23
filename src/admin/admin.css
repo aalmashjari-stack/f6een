@@ -361,6 +361,13 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .ins-mail { direction: ltr; text-align: end; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ins-row small { color: var(--n-ink-3); }
 
+.ins-qs { display: grid; gap: 8px; }
+.ins-q { display: grid; gap: 2px; padding: 8px 10px; border-radius: 8px; background: var(--n-surface-2); }
+.ins-q-text { font-size: 13px; font-weight: 700; line-height: 1.6; }
+.ins-q-ans { color: var(--n-ink-2); font-weight: 800; }
+.ins-q-meta { display: flex; gap: 10px; align-items: baseline; font-size: 12px; }
+.ins-q-meta .num { font-weight: 900; color: var(--n-brand); }
+
 @media (max-width: 640px) {
   .ins-grid { grid-template-columns: minmax(0, 1fr); }
   .ins-bar { grid-template-columns: minmax(80px, 38%) 1fr auto; }
