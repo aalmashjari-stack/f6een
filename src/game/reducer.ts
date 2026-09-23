@@ -104,7 +104,11 @@ const ensureS3Queue = (s: GameState): GameState => {
  * وفي سؤال الحسم — فسجلّ «أسئلة هذه الجلسة» يُبنى هنا لا في كل شاشة.
  */
 const burn = (s: GameState, q: Question): GameState => {
+  /* الحذفُ قبل الإضافة: المجموعة تحفظ ترتيب الإدراج، و`add` لمعرّفٍ قائم لا
+     يحرّكه — فالسؤالُ المعاد بعد نفاد الخليّة كان يبقى «الأقدم» أبداً ويُسحب
+     هو نفسه في كلّ جلسة (SPEC ٨: التكرار يقع على أقدم ما سُمع). */
   const usedQuestionIds = new Set(s.usedQuestionIds)
+  usedQuestionIds.delete(q.id)
   usedQuestionIds.add(q.id)
   const fresh = familiesOf(q).filter((fam) => !s.spentFamilies.includes(fam))
   const spentFamilies = fresh.length === 0 ? s.spentFamilies : [...s.spentFamilies, ...fresh]
@@ -230,6 +234,11 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     /* ---------------- الفاصل ---------------- */
     case 'INTERVAL_CONTINUE': {
       if (!state || state.phase !== 'interval') return state
+      /* فاصلُ التعادل يقرّر وجهته من النتيجة **لحظةَ المتابعة** لا لحظةَ دخوله:
+         تصحيحُ الحكم (`ADJUST`) على شاشة الفاصل يفكّ التعادل، فكان السؤال
+         الحاسم يُلعب بين فريقين غير متعادلين وقد يقلب النتيجة. */
+      if (state.intervalNext === 'tiebreak' && state.teams[0].score !== state.teams[1].score)
+        return { ...state, phase: 'endgame' }
       return { ...state, phase: state.intervalNext }
     }
 
@@ -379,6 +388,8 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
     case 'TIEBREAK_SPIN': {
       /* سؤالٌ واحد في كلّ مرّة: سحبٌ ثانٍ وسؤالٌ معروض يحرق ورقةً لم تُقرأ. */
       if (!state || state.phase !== 'tiebreak' || state.currentQuestion) return state
+      /* والشرط نفسه بين أسئلة الحسم: تصحيحٌ فكّ التعادل يُنهي اللعبة. */
+      if (state.teams[0].score !== state.teams[1].score) return { ...state, phase: 'endgame' }
       /* بلا فئة (لا فئةَ مكتملة المستويات) يُسحب الصعب من البنك كلّه بدل
          أن تسقط الشاشة الحاسمة على فئةٍ لا وجود لها. */
       const q = action.category

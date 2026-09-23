@@ -40,7 +40,15 @@ export function useWakeLock(active: boolean) {
     const acquire = async () => {
       if (!alive || document.visibilityState !== 'visible' || lock) return
       try {
-        lock = await nav.wakeLock!.request('screen')
+        const got = await nav.wakeLock!.request('screen')
+        /* التنظيفُ جرى والطلبُ في الطريق (خروجٌ فوريّ بعد البدء، أو تركيب
+           StrictMode المزدوج): `lock` كان فارغاً لحظتها فلم يُحرَّر شيء، ثمّ
+           وصل القفل ولا أحد يحرّره — فتبقى الشاشة مستيقظةً في الإعداد. */
+        if (!alive) {
+          void got.release().catch(() => {})
+          return
+        }
+        lock = got
         /* القفل قد يُسقط من النظام بلا اختيارنا؛ ننساه ليُعاد طلبه. */
         ;(lock as unknown as EventTarget).addEventListener?.('release', () => {
           lock = null

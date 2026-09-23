@@ -133,15 +133,22 @@ export async function syncOverlay(): Promise<void> {
   let payload: BankPayload
 
   if (bank.error) {
+    /* السقوطُ إلى الدالّة القديمة **لغيابها وحده** (`PGRST202`: لا دالّة بهذا
+       الاسم). أمّا مهلةٌ أو 5xx على حمولة الستّمئة كيلوبايت فتُرمى، ويبقى
+       المخزّن: `question_overlay()` جدولٌ يقصّه PostgREST عند ألف صفّ وتفرض
+       وضع `overlay` — ولو خُتمت بالتوقيع الصحيح لتجمّد الجهاز على ألف سؤالٍ
+       عشوائيّ فوق الملفّ حتى يُعدَّل البنك. */
+    if (bank.error.code !== 'PGRST202') throw bank.error
     const legacy = await supabase.rpc('question_overlay')
     if (legacy.error) throw legacy.error
     payload = { mode: 'overlay', rows: (legacy.data ?? []) as Row[] }
   } else {
     const d = bank.data as BankPayload | null
     payload = { mode: d?.mode === 'db' ? 'db' : 'overlay', rows: d?.rows ?? [] }
+    /* التوقيعُ يُختم على حمولة `question_bank` وحدها — فالقديمة لا تُعفي
+       الإقلاعَ التالي من المحاولة. */
+    payload.sig = sig
   }
-
-  payload.sig = sig
 
   try {
     localStorage.setItem(KEY, JSON.stringify(payload))

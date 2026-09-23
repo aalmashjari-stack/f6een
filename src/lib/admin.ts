@@ -201,7 +201,7 @@ const ERRORS: Record<string, string> = {
   bad_status: 'حالة غير معروفة',
   empty_question: 'السؤال والإجابة لا يكونان فارغين',
   no_category: 'اختر تصنيفاً',
-  bad_level: 'المستوى: سهل أو متوسط أو صعب',
+  bad_level: 'المستوى: سهل أو متوسط أو صعب أو تعجيزي',
   no_such_question: 'لا تعديل محفوظاً لهذا السؤال',
   name_too_short: 'الاسم حرفان فأكثر',
   category_exists: 'هذه الفئة موجودة',

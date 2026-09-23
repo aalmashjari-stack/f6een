@@ -152,4 +152,25 @@ describe('جلسات متتابعة بذاكرة دائمة — حتى ما بع
       expect(picked.id, `${cell.category} · ${cell.level}`).toBe(oldest)
     }
   })
+
+  /* كان `burn` يضيف المعاد بـ`Set.add` فلا يتحرّك من موضعه: يبقى «الأقدم»
+     ويُسحب هو نفسه في كلّ جلسةٍ بعد النفاد — خمس جلساتٍ متتالية أعطت الخليّة
+     نفسها السؤالَ نفسه في مراجعة ٢٣ سبتمبر ٢٠٢٦. */
+  it('المعاد بعد النفاد يصير الأحدث، فلا يُعاد هو نفسه في الجلسة التالية', () => {
+    const full = new Set(poolShippedByLevels([...STAGE1_LEVELS]).map((q) => q.id))
+    const cats = shuffle(playableCategories()).slice(0, STAGE1_CATEGORIES)
+    let history = new Set(shuffle([...full]))
+    const seen: string[] = []
+    for (let n = 0; n < 3; n++) {
+      const s = createSession(INPUT(cats), history)
+      const cell = { category: cats[0], level: STAGE1_LEVELS[0] }
+      const after = step(s, { t: 'S1_PICK', ...cell })
+      const id = after.currentQuestion!.id
+      const order = [...after.usedQuestionIds]
+      expect(order[order.length - 1], 'المعاد لم ينتقل إلى آخر الذاكرة').toBe(id)
+      seen.push(id)
+      history = after.usedQuestionIds
+    }
+    expect(new Set(seen).size, `الخليّة نفسها أعادت: ${seen.join('، ')}`).toBe(seen.length)
+  })
 })

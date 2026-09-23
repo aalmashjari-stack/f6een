@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 import { currentUserId } from './auth'
-import { loadUsedIds, persistUsedIds } from '../game/session'
+import { loadUsedIds, persistUsedIds, storageOwner } from '../game/session'
 
 /**
  * ذاكرة الأسئلة على الخادم — SPEC القسم ٨.
@@ -59,6 +59,23 @@ export async function pushUsedIds(userId: string, ids: string[]): Promise<void> 
 }
 
 /**
+ * ما عُرض **الآن** يُختم بزمنه — جديداً كان أم معاداً.
+ *
+ * `used_at` زمنُ آخر ظهور (هجرة ٢٣ سبتمبر ٢٠٢٦)، وعليه يُرتَّب ما يرجع من
+ * الخادم. لو بقي زمنَ الظهور الأوّل لأعادت مزامنةُ كلّ إقلاعٍ السؤالَ المعاد إلى
+ * رأس الذاكرة، فيُسحب هو نفسه ثانيةً — وإصلاحُ الترتيب في المحرّك يُمحى.
+ */
+export async function touchUsedIds(userId: string, ids: string[]): Promise<void> {
+  if (ids.length === 0) return
+  const used_at = new Date().toISOString()
+  const rows = ids.map((question_id) => ({ user_id: userId, question_id, used_at }))
+  const { error } = await supabase
+    .from('used_questions')
+    .upsert(rows, { onConflict: 'user_id,question_id' })
+  if (error) throw error
+}
+
+/**
  * مزامنة أولى عند توفّر الجلسة — **قبل أي لعبة**.
  *
  * الاتّجاهان معاً عمداً:
@@ -73,7 +90,11 @@ export async function pushUsedIds(userId: string, ids: string[]): Promise<void> 
  * والحفظ المحلّي يسبق الرفع، فلو انقطعت الشبكة بينهما بقي المكسب النازل.
  */
 export async function syncUsedIds(userId: string): Promise<{ merged: Set<string>; pushed: number }> {
+  /* الحساب لحظةَ الانطلاق: تبديلُ حسابٍ والطلبُ في الطريق كان يكتب ذاكرةَ
+     الأوّل في تخزين الثاني ثمّ يرفعها إلى خادمه. */
+  const owner = storageOwner()
   const server = await fetchServerUsedIds()
+  if (storageOwner() !== owner) throw new Error('owner_changed')
   const known = new Set(server)
   const local = loadUsedIds()
 

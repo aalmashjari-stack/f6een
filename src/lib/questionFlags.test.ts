@@ -9,11 +9,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
  */
 
 let mode: 'ok' | 'down' | 'final' = 'ok'
+/** قاعدةٌ لم تُرقَّ: لا `blocked_question_ids` فيها، والقديمة وحدها. */
+let legacyOnly = false
 const calls: { id: string; session: string | null }[] = []
+/* أكثر من ألف عمداً: الدالّة القديمة صفوفٌ يقصّها PostgREST عند الألف. */
+const SERVER_BLOCKED = ['SRV1', ...Array.from({ length: 1200 }, (_, i) => `SRVX${i}`)]
 
 vi.mock('./supabase', () => ({
   supabase: {
     rpc: vi.fn(async (name: string, args: Record<string, unknown>) => {
+      if (name === 'blocked_question_ids')
+        return legacyOnly
+          ? { data: null, error: { code: 'PGRST202', message: 'Could not find the function' } }
+          : { data: SERVER_BLOCKED, error: null }
       if (name === 'blocked_questions') return { data: [{ question_id: 'SRV1' }], error: null }
       if (mode === 'down') return { data: null, error: { message: 'FetchError: network' } }
       if (mode === 'final') return { data: null, error: { message: 'not_shown' } }
@@ -41,6 +49,7 @@ beforeEach(() => {
   store.clear()
   calls.length = 0
   mode = 'ok'
+  legacyOnly = false
   setStorageOwner('user-a')
 })
 
@@ -84,5 +93,26 @@ describe('البلاغ والصندوق الصادر', () => {
     await reportQuestion('E005', 's1').catch(() => {})
     setStorageOwner('user-b')
     expect(pendingReports()).toEqual([])
+  })
+
+  it('المحجوز من الخادم يصل كاملاً ولو تجاوز الألف', async () => {
+    await syncBlocked()
+    expect(blockedQuestionIds().size).toBeGreaterThanOrEqual(SERVER_BLOCKED.length)
+    expect(blockedQuestionIds().has('SRVX1199')).toBe(true)
+  })
+
+  it('قاعدةٌ لم تُرقَّ: يسقط إلى الدالّة القديمة', async () => {
+    legacyOnly = true
+    await syncBlocked()
+    expect(blockedQuestionIds().has('SRV1')).toBe(true)
+  })
+
+  /* كان الحجز المحلّي لسؤالٍ ردّ الخادمُ بلاغه يعيش في القائمة المشتركة،
+     فتمحوه المزامنة التالية ويعود السؤال. */
+  it('بلاغٌ ردّه الخادم يبقى محجوزاً بعد المزامنة', async () => {
+    mode = 'final'
+    await reportQuestion('E006', 's1')
+    await syncBlocked()
+    expect(blockedQuestionIds().has('E006')).toBe(true)
   })
 })

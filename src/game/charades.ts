@@ -197,6 +197,21 @@ export function encodeCharade(level: Level, text: string, extra: { kind?: string
   return 'b' + b64encode(veil(bytes))
 }
 
+/**
+ * موضعُ الفاصل **خارج** تسلسلات الهروب. `indexOf` كان يقع على بايتٍ داخل
+ * حمولة `ESC2`: «”» (U+201D) تُكتب ‎1e 20 1d‎ فيُقرأ ‎1d‎ فاصلاً، فتُقصّ
+ * الكلمة ويصير باقيها مفتاحَ ملصقٍ من هراء.
+ */
+function findSep(bytes: number[], from: number): number {
+  for (let i = from; i < bytes.length; i++) {
+    const b = bytes[i]
+    if (b === ESC1) i += 1
+    else if (b === ESC2) i += 2
+    else if (b === SEP) return i
+  }
+  return -1
+}
+
 export function decodeCharade(fragment: string): Charade | null {
   const f = fragment.replace(/^#/, '')
   const fmt = f[0]
@@ -211,7 +226,7 @@ export function decodeCharade(fragment: string): Charade | null {
     return text ? { level, text } : null
   }
   const kind = bytes[1] ? CHARADE_KINDS[bytes[1] - 1] : undefined
-  const sep = bytes.indexOf(SEP, 2)
+  const sep = findSep(bytes, 2)
   const text = fromBytes(sep < 0 ? bytes.slice(2) : bytes.slice(2, sep))
   if (!text) return null
   const out: Charade = { level, text }

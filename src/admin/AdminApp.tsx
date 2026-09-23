@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { signInWithEmail, signInWithGoogle, signOut, useSession } from '../lib/auth'
 import { day, stamp } from '../lib/date'
@@ -382,6 +382,21 @@ function Users({ onChanged, me }: { onChanged: () => void; me: string }) {
   )
 }
 
+/**
+ * عددٌ صحيح من خانةٍ يكتبها المدير — **والأرقام الهنديّة تُقبل**: لوحة مفاتيح
+ * عربيّة تكتب «٥»، و`Number('٥')` هو NaN، وNaN في JSON يصير null، وnull في
+ * سقف الكود يعني «بلا سقف». فكان «٥» يُنشئ كوداً بلا حدّ ويقول «أُنشئ».
+ * يعيد null لما ليس عدداً صحيحاً، فيُردّ لا يُخمَّن.
+ */
+function wholeNumber(raw: string): number | null {
+  const t = raw
+    .trim()
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x660))
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x6f0))
+  if (!/^\d+$/.test(t)) return null
+  return Number(t)
+}
+
 function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; me: string }) {
   const [val, setVal] = useState(String(user.balance ?? 0))
   const [busy, setBusy] = useState(false)
@@ -414,8 +429,8 @@ function UserRow({ user, onSaved, me }: { user: AdminUser; onSaved: () => void; 
   const dirty = val !== String(user.balance ?? 0)
 
   async function save() {
-    const n = Number(val)
-    if (!Number.isInteger(n) || n < 0) {
+    const n = wholeNumber(val)
+    if (n === null) {
       setErr('رقم صحيح لا يقلّ عن صفر')
       return
     }
@@ -551,13 +566,23 @@ function Codes({ onChanged }: { onChanged: () => void }) {
 
   async function create(e: React.FormEvent) {
     e.preventDefault()
+    const g = wholeNumber(games)
+    const m = max.trim() ? wholeNumber(max) : null
+    if (g === null || g < 1) {
+      setMsg({ ok: false, text: 'عدد الألعاب: رقم صحيح من 1 فأكثر' })
+      return
+    }
+    if (max.trim() && (m === null || m < 1)) {
+      setMsg({ ok: false, text: 'السقف: رقم صحيح من 1 فأكثر، أو اتركه فارغاً' })
+      return
+    }
     setBusy(true)
     setMsg(null)
     try {
       const made = await createCode({
         code,
-        games: Number(games) || 1,
-        max: max.trim() ? Number(max) : null,
+        games: g,
+        max: m,
         expires: expires || null,
         owner: owner.trim() || null,
       })
@@ -780,14 +805,23 @@ function Reports() {
     if (!window.confirm(`${what} وإغلاقُ بلاغه. متأكّد؟`)) return
     setBusy(f.question_id)
     setMsg(null)
+    let deleted = false
     try {
       await deleteQuestionEdit(row.q.id)
+      deleted = true
       await setFlag(f.question_id, 'disabled', 'حُذف السؤال من اللوحة')
       setMsg('حُذف السؤال وأُغلق بلاغه')
       reloadEdits()
       reload()
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : 'تعذّر الحذف')
+      /* نجح الحذف وفشل إغلاق البلاغ: كان يقول «تعذّر الحذف» ويُبقي الصفّ،
+         فتردّ الضغطةُ الثانية خطأً على سؤالٍ لم يعد موجوداً. */
+      const why = e instanceof Error ? e.message : ''
+      setMsg(deleted ? `حُذف السؤال، لكن تعذّر إغلاق بلاغه${why ? ` — ${why}` : ''}` : why || 'تعذّر الحذف')
+      if (deleted) {
+        reloadEdits()
+        reload()
+      }
     } finally {
       setBusy(null)
     }
@@ -1134,6 +1168,10 @@ function Questions() {
   }
 
   async function remove(row: Row) {
+    /* كلُّ حذفٍ آخر في اللوحة يسأل قبله؛ وهذا بجوار «تعديل» في كلّ صفّ، ولا
+       رجعة فيه حين يكون البنك في القاعدة. */
+    const what = live || row.deletable ? 'حذفُ هذا السؤال نهائياً' : 'إعادةُ السؤال إلى أصله المشحون'
+    if (!window.confirm(`${what}:\n«${row.q.question}»\nمتأكّد؟`)) return
     setMsg(null)
     try {
       const kind = await deleteQuestionEdit(row.q.id)
@@ -1959,7 +1997,7 @@ function Categories() {
       {/* الصورة المرفوعة تُجلب من الشبكة بخلاف المشحونة — أوّل عرضٍ لها
           يحتاج اتّصالاً، ثمّ يخزّنها المتصفّح. */}
       <p className="a-note">
-        الصورة المفضّلة بنسبة ٣:٢ وعرض ١٠٢٤ بكسلاً. والمرفوعة تحتاج اتّصالاً في أوّل عرض، بخلاف
+        الصورة المفضّلة بنسبة 3:2 وعرض 1024 بكسلاً. والمرفوعة تحتاج اتّصالاً في أوّل عرض، بخلاف
         الصور المشحونة مع التطبيق.
       </p>
 
@@ -2216,7 +2254,14 @@ function GroupsBar({
               <button className="a-btn" onClick={() => rename(g)}>
                 تسمية
               </button>
-              <button className="a-btn danger" onClick={() => onDelete(g.name)}>
+              <button
+                className="a-btn danger"
+                onClick={() => {
+                  /* يُخرج فئاته كلَّها من التصنيف في ضغطة، وإعادتُها فئةً فئة. */
+                  const n = counts[g.name] ?? 0
+                  if (window.confirm(`حذفُ تصنيف «${g.name}»؟ ${n} فئة ستبقى بلا تصنيف.`)) onDelete(g.name)
+                }}
+              >
                 حذف
               </button>
             </li>
@@ -2279,7 +2324,9 @@ function ArtCell({
         <input type="file" accept="image/jpeg,image/png,image/webp" onChange={pick} hidden />
       </label>
       {uploaded && (
-        <button className="a-btn danger" onClick={onClear}>
+        /* `type="button"`: الخانة داخل نموذج التعديل، وزرٌّ بلا نوع يُرسله —
+           فكانت «إزالة» تحفظ التعديل نصفَ المكتوب وتغلق النموذج. */
+        <button type="button" className="a-btn danger" onClick={onClear}>
           إزالة
         </button>
       )}
@@ -2313,6 +2360,13 @@ function Uploads() {
   ])
   const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
   const { data: cats } = useLoad<CategoryRow[]>(listCategoryRows)
+  /* المسوّدات المعلَّقة تستعمل الدلو نفسه (حارسُ `agent_submit_drafts` لا
+     يقبل غيره) — فصورةُ مسوّدةٍ لم تُعتمد كانت تظهر «بلا استعمال» وتُحذف، ثمّ
+     يدخل سؤالُها البنكَ بصورةٍ مكسورة. */
+  const { data: drafts } = useLoad<DraftRow[]>(async () => {
+    const pending = (await listDraftBatches()).filter((b) => b.status === 'pending')
+    return (await Promise.all(pending.map((b) => listDraftRows(b.batch)))).flat()
+  })
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
 
@@ -2329,8 +2383,13 @@ function Uploads() {
       add(e.answer_image, `${e.question_id} (صورة الإجابة) — ${e.question.slice(0, 40)}`)
     }
     for (const c of cats ?? []) add(c.art_url, `فئة «${c.name}»`)
+    for (const d of drafts ?? []) {
+      if (d.status !== 'pending') continue
+      add(d.image ?? null, `مسوّدة «${d.category}» — ${d.question.slice(0, 40)}`)
+      add(d.answer_image ?? null, `مسوّدة «${d.category}» (صورة الإجابة) — ${d.question.slice(0, 40)}`)
+    }
     return m
-  }, [edits, cats])
+  }, [edits, cats, drafts])
 
   async function remove(f: ArtFile) {
     const by = users.get(f.url) ?? []
@@ -2664,6 +2723,9 @@ function Messages() {
 function Drafts() {
   const { data: all, err, reload } = useLoad<DraftBatch[]>(listDraftBatches)
   const [open, setOpen] = useState<string | null>(null)
+  /* الدفعةُ المفتوحة لحظةَ وصول الردّ — «اعرض» على دفعتين متتاليتين كان
+     يعرض صفوف الأولى تحت الثانية إن تأخّر ردُّها، و«استبعد» يقع على غيرها. */
+  const openRef = useRef<string | null>(null)
   const [rows, setRows] = useState<DraftRow[] | null>(null)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
@@ -2691,6 +2753,10 @@ function Drafts() {
     })
 
   const rejectPicked = async () => {
+    /* لا شيء في اللوحة يعيد دفعةً مرفوضة، و«حدّد الكل» ثمّ هذا الزرّ يرفض
+       كلَّ ما ينتظر في ضغطة. */
+    const drafts = pending.filter((b) => picked.has(b.batch)).reduce((n, b) => n + (b.pending ?? b.n), 0)
+    if (!window.confirm(`رفضُ ${picked.size} دفعة (${drafts} مسوّدة)؟ لا رجعة فيه من اللوحة.`)) return
     setBusy(true)
     setMsg(null)
     let n = 0
@@ -2790,13 +2856,18 @@ function Drafts() {
       return
     }
     setOpen(batch)
+    openRef.current = batch
     setRows(null)
     listDraftRows(batch)
-      .then(setRows)
+      .then((r) => {
+        if (openRef.current === batch) setRows(r)
+      })
       .catch((e) => setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّرت القراءة' }))
   }
 
   const decide = async (b: DraftBatch, approve: boolean) => {
+    if (!approve && !window.confirm(`رفضُ دفعة «${b.categories}» (${b.pending ?? b.n} مسوّدة)؟ لا رجعة فيه من اللوحة.`))
+      return
     setBusy(true)
     setMsg(null)
     try {

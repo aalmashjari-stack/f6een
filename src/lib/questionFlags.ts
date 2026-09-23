@@ -36,19 +36,50 @@ export function applyCachedBlocked() {
   setBlockedQuestionIds(loadLocal())
 }
 
+/**
+ * ما حجبه **هذا الجهاز** ببلاغه — منفصلٌ عن نسخة الخادم. كان يعيش في القائمة
+ * نفسها فتمحوه أوّلُ مزامنة، والبلاغُ الذي ردّه الخادم ردّاً نهائيّاً (`FINAL`)
+ * يعود سؤالُه في الجلسة التالية خلافاً لما يعد به التعليق هناك.
+ */
+const OWN_KEY = 'f6een.ownBlockedIds'
+
+function loadOwn(): string[] {
+  try {
+    const raw = readScoped(OWN_KEY)
+    const list = raw ? (JSON.parse(raw) as unknown) : []
+    return Array.isArray(list) ? list.filter((x): x is string => typeof x === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+/**
+ * قائمة المحجوز من الخادم. `blocked_question_ids()` قيمةٌ jsonb واحدة؛
+ * و`blocked_questions()` القديمة صفوفٌ يقصّها PostgREST عند ألف بصمت — وفي
+ * ٢٣ سبتمبر ٢٠٢٦ كان المحجوز 1184، فنحو مئتي سؤالٍ معطَّل يُسحب في كلّ جهاز.
+ * فالقديمة للقاعدة التي لم تُرقَّ وحدها (`PGRST202`: لا دالّة بهذا الاسم).
+ */
+async function fetchBlocked(): Promise<string[]> {
+  const res = await supabase.rpc('blocked_question_ids')
+  if (!res.error) return Array.isArray(res.data) ? (res.data as string[]) : []
+  if (res.error.code !== 'PGRST202') throw res.error
+  const legacy = await supabase.rpc('blocked_questions')
+  if (legacy.error) throw legacy.error
+  return (legacy.data ?? []).map((r: { question_id: string }) => r.question_id)
+}
+
 /** تُنادى بعد توفّر الجلسة: تُحدّث القائمة من الخادم وتخزّنها. */
 export async function syncBlocked(): Promise<void> {
-  const { data, error } = await supabase.rpc('blocked_questions')
-  if (error) throw error
-  const ids = (data ?? []).map((r: { question_id: string }) => r.question_id)
-  /* ما بلّغ عنه هذا الجهاز ولم يبلغ الخادم بعد يبقى محجوزاً هنا. */
+  const ids = await fetchBlocked()
+  /* ما بلّغ عنه هذا الجهاز — بلغ الخادمَ أم لم يبلغ أم ردّه — يبقى محجوزاً هنا. */
   const pending = pendingReports().map((p) => p.id)
-  const merged = [...new Set([...ids, ...pending])]
+  const merged = [...new Set([...ids, ...pending, ...loadOwn()])]
   saveLocal(merged)
   setBlockedQuestionIds(merged)
 }
 
 function blockLocally(questionId: string) {
+  writeScoped(OWN_KEY, JSON.stringify([...new Set([...loadOwn(), questionId])]))
   const ids = [...new Set([...loadLocal(), questionId])]
   saveLocal(ids)
   setBlockedQuestionIds(ids)

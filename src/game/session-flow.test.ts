@@ -246,15 +246,23 @@ describe('حرّاس المرحلة', () => {
     expect(reducer(s, { t: 'S3_JUDGE', verdict: 'correct' })).toBe(s)
   })
 
+  /* الحسمُ لا يُبلَغ إلّا بتعادل — والسحبُ يرفض ما سواه منذ ٢٣ سبتمبر ٢٠٢٦
+     (تصحيحٌ يفكّ التعادل يُنهي اللعبة)، فالحالة المصنوعة هنا متعادلة. */
+  const tiedAtTiebreak = () => {
+    const s = driveToStage3()
+    const teams = [{ ...s.teams[0], score: 40 }, { ...s.teams[1], score: 40 }] as typeof s.teams
+    return { ...s, teams, phase: 'tiebreak' as const }
+  }
+
   it('سؤال الحسم لا يُسحب مرّتين وسؤالٌ معروض', () => {
-    const s = { ...driveToStage3(), phase: 'tiebreak' as const }
+    const s = tiedAtTiebreak()
     const once = step(s, { t: 'TIEBREAK_SPIN', category: BOARD[0] })
     expect(once.currentQuestion).not.toBeNull()
     expect(reducer(once, { t: 'TIEBREAK_SPIN', category: BOARD[1] })).toBe(once)
   })
 
   it('سؤال الحسم بلا فئة يُسحب صعباً من البنك كلّه', () => {
-    const s = { ...driveToStage3(), phase: 'tiebreak' as const }
+    const s = tiedAtTiebreak()
     const spun = step(s, { t: 'TIEBREAK_SPIN', category: '' })
     expect(spun.currentQuestion?.level).toBe('صعب')
     expect(spun.currentCategory).toBeNull()
@@ -606,6 +614,19 @@ describe('تصحيح الحكم', () => {
       { t: 'ADJUST', team: 1, delta: -SCORE_FIX_STEP },
     )
     expect(beforeTie.stagePoints.s3[1]).toBe(-SCORE_FIX_STEP)
+  })
+
+  /* فاصلُ التعادل كان يقرّر وجهته لحظةَ دخوله: تصحيحٌ على شاشته يفكّ
+     التعادل ثمّ «تابع» يفتح السؤال الحاسم بين فريقين غير متعادلين. */
+  it('تصحيحٌ يفكّ التعادل في فاصله يذهب إلى الختام لا إلى الحسم', () => {
+    let s = step({ ...fresh(), phase: 'interval', intervalNext: 'tiebreak' }, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    s = step(s, { t: 'INTERVAL_CONTINUE' })
+    expect(s.phase).toBe('endgame')
+
+    let t = step({ ...fresh(), phase: 'tiebreak' }, { t: 'ADJUST', team: 1, delta: SCORE_FIX_STEP })
+    t = step(t, { t: 'TIEBREAK_SPIN', category: '' })
+    expect(t.phase).toBe('endgame')
+    expect(t.currentQuestion).toBeNull()
   })
 })
 
