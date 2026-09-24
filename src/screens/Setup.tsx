@@ -5,6 +5,8 @@ import type { TeamId } from '../game/types'
 import { STAGES } from '../game/stages'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
 import { categoryArt } from '../components/categoryArt'
+import { categoryInfo } from '../components/categoryInfo'
+import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
@@ -51,6 +53,8 @@ export function Setup({
   /* قائمة الرأس على الجوال الطوليّ (طلب علي ١٦ سبتمبر ٢٠٢٦): الكبسولات
      الأربع تختفي خلف زرّ ☰ فيصير الشريط صفّاً واحداً. تُغلق مع أيّ اختيار. */
   const [menuOpen, setMenuOpen] = useState(false)
+  /* الفئة المفتوحة نبذتُها من علامة (i) على بطاقتها — `null` = لا لوح. */
+  const [infoCat, setInfoCat] = useState<string | null>(null)
   /* أيّ مرحلة شرحُها مفتوح (طلب علي ١٧ سبتمبر ٢٠٢٦): البطاقة سطرٌ واحد
      «1 الجولة الجماعية» وعلامةُ i تفتح الشرح المختصر والنقاط تحته. واحدة
      في كلّ مرّة — الشرح يُقرأ مرّةً لا يُقارَن. */
@@ -388,9 +392,13 @@ export function Setup({
                 {sec.cats.map((cat) => {
                   const i = allCats.indexOf(cat)
                   const picked = isPicked(cat)
+                  const info = categoryInfo(cat)
                   return (
+                    /* خليّةٌ تحمل البطاقة وعلامتها: العلامة زرٌّ مستقلّ فوق
+                       البطاقة لا داخلها — زرٌّ في زرّ لا يصحّ، وضغطتُها لا
+                       تختار الفئة. */
+                    <div className="cc-cell" key={cat} style={{ '--i': i } as React.CSSProperties}>
                     <button
-                      key={cat}
                   className={
                     'catchip' +
                     (picked ? ' taken' : '') +
@@ -419,11 +427,31 @@ export function Setup({
                     <span className="cc-name">{displayName(cat)}</span>
                   </span>
                     </button>
+                    {/* علامة (i) في الزاوية اليسرى العليا — والصحّ في اليمنى
+                        (طلب علي ٢٤ سبتمبر ٢٠٢٦). لا تظهر لفئةٍ بلا نبذة. */}
+                    {info && (
+                      <button
+                        className="cc-info"
+                        onClick={() => setInfoCat(cat)}
+                        aria-label={`عن فئة ${displayName(cat)}`}
+                      >
+                        i
+                      </button>
+                    )}
+                    </div>
                   )
                 })}
               </div>
             </div>
           ))}
+
+          {infoCat && categoryInfo(infoCat) && (
+            <CategoryInfoPanel
+              name={displayName(infoCat)}
+              info={categoryInfo(infoCat)!}
+              onClose={() => setInfoCat(null)}
+            />
+          )}
 
           {/* صينيّة المختارات (طلب علي ١٧ سبتمبر ٢٠٢٦): الفئاتُ المختارة
               مصغّرةً في أسفل الشاشة ما دام الحكمُ يتصفّح الشبكة — فلا يصعد
@@ -968,6 +996,31 @@ export function Setup({
           box-shadow:0 2px 6px rgba(0,0,0,.35);
         }
         .catchip.taken .cc-tick { display:grid; }
+        /* الخليّة تحمل البطاقة وعلامة (i) فوقها — البطاقة تملأها كما كانت
+           تملأ خانة الشبكة. */
+        .cc-cell { position:relative; min-width:0; }
+        .cc-cell > .catchip { width:100%; }
+        /* علامة (i): الزاوية المقابلة لعلامة الصحّ، حلقةُ حبرٍ على أبيض كعلامة
+           شرح المراحل — تُقرأ فوق أيّ رسمة. ولا تُرمَّد مع الشبكة المكتملة:
+           معرفةُ الفئة لا تُقفل باكتمال اللوح. */
+        .cc-info {
+          position:absolute; z-index:3; top:6px; inset-inline-end:6px;
+          display:grid; place-items:center;
+          width:clamp(26px,3.2vw,34px); aspect-ratio:1; padding:0;
+          border:0; border-radius:999px; cursor:pointer;
+          background:#fff; color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C), 0 2px 6px rgba(0,0,0,.3);
+          font-family:'Cairo', serif; font-style:italic; font-weight:800;
+          font-size:clamp(14px,1.8vw,18px); line-height:1;
+          animation:chip-in .34s var(--ease-spring) both;
+          animation-delay:calc(min(var(--i, 0), 10) * 40ms);
+        }
+        /* الدائرة صغيرةٌ على الجوّال (24px)، فمساحةُ الضغط أوسع منها بغلافٍ
+           شفّاف — لا تكبر العلامة فتغطّي الرسمة. */
+        .cc-info::after { content:''; position:absolute; inset:-8px; }
+        .cc-info:active { transform:scale(.9); }
+        .cc-info:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
+        @media (prefers-reduced-motion: reduce) { .cc-info { animation:none; } }
 
         /* ─── بطاقات المراحل (١٧ سبتمبر ٢٠٢٦، طلب علي) ────────────────────
            تذكرةٌ لكلّ مرحلة: لسانٌ ملوّن في طرف البداية يحمل الرقم، فالاسم،
