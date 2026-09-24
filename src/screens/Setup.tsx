@@ -1006,18 +1006,18 @@ export function Setup({
         .cc-info {
           position:absolute; z-index:3; top:6px; inset-inline-end:6px;
           display:grid; place-items:center;
-          width:clamp(26px,3.2vw,34px); aspect-ratio:1; padding:0;
+          width:clamp(20px,2.4vw,27px); aspect-ratio:1; padding:0;
           border:0; border-radius:999px; cursor:pointer;
           background:#fff; color:var(--n-ink, #22201C);
           box-shadow:0 0 0 2px var(--n-ink, #22201C), 0 2px 6px rgba(0,0,0,.3);
           font-family:'Cairo', serif; font-style:italic; font-weight:800;
-          font-size:clamp(14px,1.8vw,18px); line-height:1;
+          font-size:clamp(11px,1.35vw,14px); line-height:1;
           animation:chip-in .34s var(--ease-spring) both;
           animation-delay:calc(min(var(--i, 0), 10) * 40ms);
         }
-        /* الدائرة صغيرةٌ على الجوّال (24px)، فمساحةُ الضغط أوسع منها بغلافٍ
+        /* الدائرة صغيرةٌ على الجوّال (20px)، فمساحةُ الضغط أوسع منها بغلافٍ
            شفّاف — لا تكبر العلامة فتغطّي الرسمة. */
-        .cc-info::after { content:''; position:absolute; inset:-8px; }
+        .cc-info::after { content:''; position:absolute; inset:-10px; }
         .cc-info:active { transform:scale(.9); }
         .cc-info:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
         @media (prefers-reduced-motion: reduce) { .cc-info { animation:none; } }
