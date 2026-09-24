@@ -1,0 +1,2046 @@
+[
+{
+"key": "towers",
+"level": "سهل",
+"answer": "أبراج الكويت",
+"lat": 29.3896363,
+"lon": 48.0026706,
+"z": 16,
+"terms": [
+"أبراج الكويت",
+"ابراج",
+"Kuwait Towers",
+"Towers"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "liberation",
+"level": "سهل",
+"answer": "برج التحرير",
+"lat": 29.3681875,
+"lon": 47.9749219,
+"z": 17,
+"terms": [
+"برج التحرير",
+"التحرير",
+"Liberation"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "hamra",
+"level": "سهل",
+"answer": "برج الحمراء",
+"lat": 29.3790539,
+"lon": 47.9932879,
+"z": 17,
+"terms": [
+"الحمراء",
+"Hamra"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "avenues",
+"level": "سهل",
+"answer": "مجمّع الأفنيوز",
+"lat": 29.3026797,
+"lon": 47.9361649,
+"z": 16,
+"terms": [
+"الأفنيوز",
+"الافنيوز",
+"أفنيوز",
+"Avenues",
+"Avenue"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "marina",
+"level": "سهل",
+"answer": "مارينا مول",
+"lat": 29.3375551,
+"lon": 48.0657183,
+"z": 16,
+"terms": [
+"مارينا",
+"Marina"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mall360",
+"level": "سهل",
+"answer": "مجمّع 360",
+"lat": 29.2675528,
+"lon": 47.9928624,
+"z": 16,
+"terms": [
+"360"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "grandmosque",
+"level": "سهل",
+"answer": "المسجد الكبير (مسجد الدولة الكبير)",
+"lat": 29.3791402,
+"lon": 47.9752219,
+"z": 17,
+"terms": [
+"مسجد الدولة",
+"المسجد الكبير",
+"الدولة الكبير",
+"Grand Mosque",
+"Masjid Al Kabeer",
+"Al Kabeer",
+"Kabeer"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mubarakiya",
+"level": "سهل",
+"answer": "سوق المباركية",
+"lat": 29.3749167,
+"lon": 47.973221,
+"z": 17,
+"terms": [
+"المباركية",
+"مباركية",
+"Mubarakiya",
+"Mubarakiyah"
+],
+"manual": [
+[
+715,
+755,
+1040,
+805
+]
+],
+"spare": false
+},
+{
+"key": "sharq",
+"level": "سهل",
+"answer": "سوق شرق",
+"lat": 29.389592,
+"lon": 47.9812271,
+"z": 17,
+"terms": [
+"سوق شرق",
+"Souk Sharq",
+"Souq Sharq",
+"Sharq",
+"Sharg"
+],
+"manual": [
+[
+735,
+800,
+1012,
+852
+]
+],
+"spare": false
+},
+{
+"key": "scicentre",
+"level": "سهل",
+"answer": "المركز العلمي",
+"lat": 29.3497893,
+"lon": 48.08983,
+"z": 16,
+"terms": [
+"المركز العلمي",
+"العلمي",
+"Scientific"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jacc",
+"level": "سهل",
+"answer": "مركز الشيخ جابر الأحمد الثقافي",
+"lat": 29.3613419,
+"lon": 47.9596306,
+"z": 16,
+"terms": [
+"جابر الأحمد الثقافي",
+"الثقافي",
+"Cultural",
+"JACC",
+"الأوبرا",
+"Opera"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "assembly",
+"level": "سهل",
+"answer": "مجلس الأمة",
+"lat": 29.3706707,
+"lon": 47.9635077,
+"z": 17,
+"terms": [
+"مجلس الأمة",
+"مجلس الامة",
+"National Assembly"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "airport",
+"level": "سهل",
+"answer": "مطار الكويت الدولي",
+"lat": 29.2404414,
+"lon": 47.9710458,
+"z": 15,
+"terms": [
+"مطار الكويت",
+"مطار",
+"Airport"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jaberstadium",
+"level": "سهل",
+"answer": "استاد جابر الأحمد الدولي",
+"lat": 29.2713728,
+"lon": 47.9187014,
+"z": 16,
+"terms": [
+"استاد جابر",
+"ستاد جابر",
+"جابر الأحمد الدولي",
+"Jaber Al-Ahmad",
+"Stadium"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "greenisland",
+"level": "سهل",
+"answer": "الجزيرة الخضراء",
+"lat": 29.365,
+"lon": 48.0267,
+"z": 16,
+"terms": [
+"الجزيرة الخضراء",
+"الخضراء",
+"Green Island"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "shaheedpark",
+"level": "سهل",
+"answer": "حديقة الشهيد",
+"lat": 29.3693379,
+"lon": 47.9937309,
+"z": 16,
+"terms": [
+"حديقة الشهيد",
+"الشهيد",
+"Shaheed",
+"Al Shaheed"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kuwaitclub",
+"level": "سهل",
+"answer": "نادي الكويت الرياضي",
+"lat": 29.3428753,
+"lon": 47.9525495,
+"z": 16,
+"terms": [
+"نادي الكويت",
+"Kuwait SC",
+"Kuwait Sporting",
+"Kuwait Club"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "qadsiaclub",
+"level": "سهل",
+"answer": "نادي القادسية الرياضي",
+"lat": 29.3410357,
+"lon": 48.0313809,
+"z": 16,
+"terms": [
+"القادسية",
+"Qadsia",
+"Qadsiya",
+"محمد الحمد"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "arabiclub",
+"level": "سهل",
+"answer": "النادي العربي الرياضي",
+"lat": 29.3576495,
+"lon": 47.9992146,
+"z": 16,
+"terms": [
+"النادي العربي",
+"العربي",
+"Al Arabi",
+"Arabi",
+"صباح السالم"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kout",
+"level": "سهل",
+"answer": "الكوت مول",
+"lat": 29.0782327,
+"lon": 48.1389486,
+"z": 16,
+"terms": [
+"الكوت",
+"Kout"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "zoo",
+"level": "سهل",
+"answer": "حديقة الحيوان",
+"lat": 29.3005047,
+"lon": 47.9614766,
+"z": 16,
+"terms": [
+"حديقة الحيوان",
+"الحيوان",
+"الحيوانية",
+"Zoo"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "shadadiya",
+"level": "سهل",
+"answer": "جامعة الكويت (الشدادية)",
+"lat": 29.256139,
+"lon": 47.9000271,
+"z": 15,
+"terms": [
+"جامعة الكويت",
+"الشدادية",
+"Kuwait University",
+"Shadadiya",
+"صباح السالم الجامعية",
+"Sabah Al Salem University",
+"University City",
+"Al Salem Univ"
+],
+"manual": [
+[
+95,
+295,
+318,
+372
+]
+],
+"spare": false
+},
+{
+"key": "kuwaitmagic",
+"level": "سهل",
+"answer": "كويت ماجيك",
+"lat": 29.1335843,
+"lon": 48.1322911,
+"z": 16,
+"terms": [
+"ماجيك",
+"Magic"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "exhibitions",
+"level": "سهل",
+"answer": "أرض المعارض في مشرف",
+"lat": 29.2702167,
+"lon": 48.0460765,
+"z": 16,
+"terms": [
+"أرض المعارض",
+"المعارض",
+"معرض الكويت الدولي",
+"Fairground",
+"International Fair"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "amirihospital",
+"level": "سهل",
+"answer": "المستشفى الأميري",
+"lat": 29.3877529,
+"lon": 47.987548,
+"z": 17,
+"terms": [
+"الأميري",
+"الاميري",
+"Amiri"
+],
+"manual": [
+[
+295,
+348,
+610,
+392
+]
+],
+"spare": false
+},
+{
+"key": "sheraton",
+"level": "سهل",
+"answer": "فندق الشيراتون",
+"lat": 29.3618265,
+"lon": 47.9624954,
+"z": 17,
+"terms": [
+"شيراتون",
+"Sheraton"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "salmiyaclub",
+"level": "سهل",
+"answer": "نادي السالمية الرياضي",
+"lat": 29.3411737,
+"lon": 48.0879776,
+"z": 16,
+"terms": [
+"نادي السالمية",
+"Salmiya SC",
+"Salmiya Club",
+"ثامر"
+],
+"manual": [
+[
+870,
+405,
+1180,
+448
+]
+],
+"spare": false
+},
+{
+"key": "kazmaclub",
+"level": "سهل",
+"answer": "نادي كاظمة الرياضي",
+"lat": 29.328329,
+"lon": 47.9886356,
+"z": 16,
+"terms": [
+"كاظمة",
+"Kazma",
+"Kazmah",
+"الصداقة والسلام"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "abdullahsalemcc",
+"level": "سهل",
+"answer": "مركز الشيخ عبدالله السالم الثقافي",
+"lat": 29.3423752,
+"lon": 48.0400724,
+"z": 16,
+"terms": [
+"عبدالله السالم الثقافي",
+"الثقافي",
+"Abdullah Al Salem Cultural",
+"Cultural"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mubarakhospital",
+"level": "سهل",
+"answer": "مستشفى مبارك الكبير",
+"lat": 29.3268192,
+"lon": 48.0359424,
+"z": 16,
+"terms": [
+"مستشفى مبارك",
+"مبارك الكبير",
+"Mubarak Al-Kabeer",
+"Mubarak Al Kabeer Hospital"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "centralbank",
+"level": "متوسط",
+"answer": "بنك الكويت المركزي",
+"lat": 29.3807865,
+"lon": 47.9774193,
+"z": 17,
+"terms": [
+"البنك المركزي",
+"بنك الكويت المركزي",
+"المركزي",
+"Central Bank"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "boursa",
+"level": "متوسط",
+"answer": "بورصة الكويت",
+"lat": 29.3778322,
+"lon": 47.9759964,
+"z": 17,
+"terms": [
+"بورصة",
+"البورصة",
+"Boursa",
+"Stock Exchange"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "auk",
+"level": "متوسط",
+"answer": "الجامعة الأمريكية في الكويت",
+"lat": 29.343992,
+"lon": 48.0834128,
+"z": 17,
+"terms": [
+"الجامعة الأمريكية",
+"الأمريكية",
+"American University",
+"AUK"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mahalab",
+"level": "متوسط",
+"answer": "مجمّع المهلّب",
+"lat": 29.340861,
+"lon": 48.0257638,
+"z": 17,
+"terms": [
+"المهلب",
+"Muhallab",
+"Al Muhallab"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "fanar",
+"level": "متوسط",
+"answer": "مجمّع الفنار",
+"lat": 29.3411702,
+"lon": 48.0743084,
+"z": 17,
+"terms": [
+"الفنار",
+"Fanar",
+"Al Fanar"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "salhiya",
+"level": "متوسط",
+"answer": "مجمّع الصالحية",
+"lat": 29.3632205,
+"lon": 47.9665315,
+"z": 17,
+"terms": [
+"الصالحية",
+"Salhiya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "promenade",
+"level": "متوسط",
+"answer": "مجمّع البروميناد",
+"lat": 29.3470426,
+"lon": 48.0120463,
+"z": 17,
+"terms": [
+"بروميناد",
+"البروميناد",
+"Promenade"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jaberhospital",
+"level": "متوسط",
+"answer": "مستشفى الشيخ جابر الأحمد",
+"lat": 29.2753982,
+"lon": 48.013729,
+"z": 16,
+"terms": [
+"مستشفى الشيخ جابر",
+"مستشفى جابر",
+"جابر الأحمد",
+"Jaber Al-Ahmad Hospital",
+"Jaber Hospital"
+],
+"manual": [
+[
+1075,
+475,
+1405,
+525
+]
+],
+"spare": false
+},
+{
+"key": "fourseasons",
+"level": "متوسط",
+"answer": "فندق فورسيزونز",
+"lat": 29.3624137,
+"lon": 47.9810027,
+"z": 17,
+"terms": [
+"فور سيزونز",
+"فورسيزونز",
+"Four Seasons"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "crowneplaza",
+"level": "متوسط",
+"answer": "فندق كراون بلازا",
+"lat": 29.270402,
+"lon": 47.9678376,
+"z": 17,
+"terms": [
+"كراون بلازا",
+"كراون",
+"Crowne Plaza"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "regency",
+"level": "متوسط",
+"answer": "فندق الريجنسي",
+"lat": 29.3164494,
+"lon": 48.0883223,
+"z": 17,
+"terms": [
+"الريجنسي",
+"ريجنسي",
+"Regency"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "hawallypark",
+"level": "متوسط",
+"answer": "حولي بارك",
+"lat": 29.340541,
+"lon": 48.0218793,
+"z": 17,
+"terms": [
+"حولي بارك",
+"Hawally Park",
+"Hawalli Park"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "tijaria",
+"level": "متوسط",
+"answer": "برج التجارية",
+"lat": 29.3703445,
+"lon": 47.9924145,
+"z": 17,
+"terms": [
+"التجارية",
+"Al Tijaria",
+"Tijaria"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "arrayatower",
+"level": "متوسط",
+"answer": "برج الراية",
+"lat": 29.3764565,
+"lon": 47.9903082,
+"z": 17,
+"terms": [
+"الراية",
+"Arraya",
+"Al Raya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kaifancoop",
+"level": "متوسط",
+"answer": "جمعية كيفان التعاونية",
+"lat": 29.3395748,
+"lon": 47.9627953,
+"z": 16,
+"terms": [
+"جمعية كيفان",
+"كيفان",
+"Kaifan",
+"Kifan"
+],
+"manual": [
+[
+1000,
+1068,
+1240,
+1112
+],
+[
+685,
+0,
+735,
+66
+]
+],
+"spare": false
+},
+{
+"key": "shamiyacoop",
+"level": "متوسط",
+"answer": "جمعية الشامية والشويخ التعاونية",
+"lat": 29.3554992,
+"lon": 47.9665412,
+"z": 16,
+"terms": [
+"جمعية الشامية",
+"الشامية",
+"شامية",
+"الشويخ",
+"Shamiya",
+"Shuwaikh"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "salmiyacoop",
+"level": "متوسط",
+"answer": "جمعية السالمية التعاونية",
+"lat": 29.3385722,
+"lon": 48.0799156,
+"z": 16,
+"terms": [
+"جمعية السالمية",
+"السالمية",
+"سالمية",
+"Salmiya"
+],
+"manual": [
+[
+435,
+475,
+632,
+518
+]
+],
+"spare": false
+},
+{
+"key": "rumaithiyacoop",
+"level": "متوسط",
+"answer": "جمعية الرميثية التعاونية",
+"lat": 29.3171773,
+"lon": 48.0785651,
+"z": 16,
+"terms": [
+"جمعية الرميثية",
+"الرميثية",
+"رميثية",
+"Rumaithiya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jabriyacoop",
+"level": "متوسط",
+"answer": "جمعية الجابرية التعاونية",
+"lat": 29.3176079,
+"lon": 48.0343241,
+"z": 16,
+"terms": [
+"جمعية الجابرية",
+"الجابرية",
+"جابرية",
+"Jabriya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "rawdacoop",
+"level": "متوسط",
+"answer": "جمعية الروضة وحولي التعاونية",
+"lat": 29.3295646,
+"lon": 47.9996381,
+"z": 16,
+"terms": [
+"جمعية الروضة",
+"الروضة",
+"روضة",
+"الروضه",
+"Rawda"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "yarmoukclub",
+"level": "متوسط",
+"answer": "نادي اليرموك الرياضي",
+"lat": 29.2905174,
+"lon": 48.0673307,
+"z": 16,
+"terms": [
+"نادي اليرموك",
+"Yarmouk",
+"عبدالله الخليفة"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "tadamonclub",
+"level": "متوسط",
+"answer": "نادي التضامن الرياضي",
+"lat": 29.288739,
+"lon": 47.9627326,
+"z": 16,
+"terms": [
+"التضامن",
+"Tadamon",
+"العصيمي"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jahraclub",
+"level": "متوسط",
+"answer": "نادي الجهراء الرياضي",
+"lat": 29.3454182,
+"lon": 47.6965441,
+"z": 16,
+"terms": [
+"نادي الجهراء",
+"Jahra SC",
+"Jahra Club",
+"مبارك العيار"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "fridaymarket",
+"level": "متوسط",
+"answer": "سوق الجمعة",
+"lat": 29.313248,
+"lon": 47.9543828,
+"z": 16,
+"terms": [
+"سوق الجمعة",
+"الحراج",
+"Friday Market"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "nationalmuseum",
+"level": "متوسط",
+"answer": "متحف الكويت الوطني",
+"lat": 29.3732209,
+"lon": 47.9669197,
+"z": 17,
+"terms": [
+"المتحف الوطني",
+"متحف الكويت",
+"National Museum"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "khaldiyauni",
+"level": "متوسط",
+"answer": "جامعة الكويت (الخالدية)",
+"lat": 29.3217476,
+"lon": 47.9719305,
+"z": 16,
+"terms": [
+"جامعة عبدالله السالم",
+"جامعة الكويت",
+"Kuwait University",
+"Abdullah Al Salem University"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "sabahhospital",
+"level": "متوسط",
+"answer": "مستشفى الصباح",
+"lat": 29.3256206,
+"lon": 47.9011986,
+"z": 16,
+"terms": [
+"مستشفى الصباح",
+"Sabah Hospital"
+],
+"manual": [
+[
+0,
+195,
+200,
+250
+]
+],
+"spare": false
+},
+{
+"key": "movenpick",
+"level": "متوسط",
+"answer": "فندق موفنبيك البدع",
+"lat": 29.3194371,
+"lon": 48.0898506,
+"z": 17,
+"terms": [
+"موفنبيك",
+"موڤنبيك",
+"Movenpick",
+"Mövenpick"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "radisson",
+"level": "متوسط",
+"answer": "فندق راديسون بلو",
+"lat": 29.3011778,
+"lon": 48.08718,
+"z": 17,
+"terms": [
+"راديسون",
+"Radisson"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "heritagevillage",
+"level": "متوسط",
+"answer": "قرية يوم البحّار التراثية",
+"lat": 29.3690726,
+"lon": 47.9609607,
+"z": 16,
+"terms": [
+"يوم البحار",
+"Heritage village",
+"Historical Heritage",
+"Heritage"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kipco",
+"level": "صعب",
+"answer": "برج كيبكو",
+"lat": 29.3759709,
+"lon": 47.9870191,
+"z": 17,
+"terms": [
+"كيبكو",
+"KIPCO"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kfhtower",
+"level": "صعب",
+"answer": "برج بيتك",
+"lat": 29.3712177,
+"lon": 47.9748705,
+"z": 17,
+"terms": [
+"بيتك",
+"KFH",
+"Baitak"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "modernart",
+"level": "صعب",
+"answer": "متحف الفن الحديث",
+"lat": 29.3844894,
+"lon": 47.9834352,
+"z": 17,
+"terms": [
+"الفن الحديث",
+"Modern Art"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "library",
+"level": "صعب",
+"answer": "مكتبة الكويت الوطنية",
+"lat": 29.3744343,
+"lon": 47.9679604,
+"z": 17,
+"terms": [
+"مكتبة الكويت",
+"المكتبة الوطنية",
+"National Library"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "amricani",
+"level": "صعب",
+"answer": "المركز الأمريكاني الثقافي",
+"lat": 29.36771,
+"lon": 47.962004,
+"z": 17,
+"terms": [
+"الأمريكاني",
+"الامريكي",
+"دار الآثار",
+"Amricani",
+"Dar al-Athar"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "fatimamosque",
+"level": "صعب",
+"answer": "مسجد فاطمة",
+"lat": 29.3532479,
+"lon": 47.984429,
+"z": 17,
+"terms": [
+"مسجد فاطمة",
+"فاطمة",
+"Fatima"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "farwaniyahospital",
+"level": "صعب",
+"answer": "مستشفى الفروانية",
+"lat": 29.2713456,
+"lon": 47.9052786,
+"z": 16,
+"terms": [
+"مستشفى الفروانية",
+"Farwaniya Hospital"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "adanhospital",
+"level": "صعب",
+"answer": "مستشفى العدان",
+"lat": 29.1357772,
+"lon": 48.0977556,
+"z": 16,
+"terms": [
+"مستشفى العدان",
+"Adan Hospital",
+"Adan"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jahrahospital",
+"level": "صعب",
+"answer": "مستشفى الجهراء",
+"lat": 29.3381522,
+"lon": 47.6825081,
+"z": 16,
+"terms": [
+"مستشفى الجهراء",
+"Jahra Hospital"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "razihospital",
+"level": "صعب",
+"answer": "مستشفى الرازي",
+"lat": 29.3238616,
+"lon": 47.892982,
+"z": 17,
+"terms": [
+"الرازي",
+"Razi"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "gust",
+"level": "صعب",
+"answer": "جامعة الخليج للعلوم والتكنولوجيا",
+"lat": 29.2755366,
+"lon": 48.0537768,
+"z": 17,
+"terms": [
+"جامعة الخليج",
+"الخليج للعلوم",
+"GUST",
+"Gulf University"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "paaet",
+"level": "صعب",
+"answer": "الهيئة العامة للتعليم التطبيقي",
+"lat": 29.3323299,
+"lon": 47.9820003,
+"z": 16,
+"terms": [
+"التعليم التطبيقي",
+"التطبيقي",
+"PAAET"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jumeirah",
+"level": "صعب",
+"answer": "فندق جميرا شاطئ المسيلة",
+"lat": 29.268889,
+"lon": 48.088881,
+"z": 16,
+"terms": [
+"جميرا",
+"Jumeirah"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "chamber",
+"level": "صعب",
+"answer": "غرفة تجارة وصناعة الكويت",
+"lat": 29.3717028,
+"lon": 47.9813722,
+"z": 17,
+"terms": [
+"غرفة تجارة",
+"غرفة التجارة",
+"Chamber of Commerce"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kpc",
+"level": "صعب",
+"answer": "مؤسسة البترول الكويتية",
+"lat": 29.3551068,
+"lon": 47.9417883,
+"z": 17,
+"terms": [
+"مؤسسة البترول",
+"البترول الكويتية",
+"KPC",
+"Kuwait Petroleum"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "yachtclub",
+"level": "صعب",
+"answer": "نادي اليخوت",
+"lat": 29.3410532,
+"lon": 48.0522583,
+"z": 17,
+"terms": [
+"اليخوت",
+"Yacht"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "equestrian",
+"level": "صعب",
+"answer": "نادي الصيد والفروسية",
+"lat": 29.2600634,
+"lon": 48.0296946,
+"z": 16,
+"terms": [
+"الفروسية",
+"الصيد والفروسية",
+"Equestrian",
+"Hunting"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "khaitanclub",
+"level": "صعب",
+"answer": "نادي خيطان الرياضي",
+"lat": 29.2824131,
+"lon": 47.9822349,
+"z": 16,
+"terms": [
+"نادي خيطان",
+"Khaitan SC",
+"Khaitan Club"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "qadsiyacoop",
+"level": "صعب",
+"answer": "جمعية القادسية التعاونية",
+"lat": 29.3493539,
+"lon": 48.0039986,
+"z": 16,
+"terms": [
+"جمعية القادسية",
+"القادسية",
+"قادسية",
+"Qadsiya",
+"Qadisiya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "faihacoop",
+"level": "صعب",
+"answer": "جمعية الفيحاء التعاونية",
+"lat": 29.3380924,
+"lon": 47.9799878,
+"z": 16,
+"terms": [
+"جمعية الفيحاء",
+"الفيحاء",
+"فيحاء",
+"Faiha"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "adailiyacoop",
+"level": "صعب",
+"answer": "جمعية العديلية التعاونية",
+"lat": 29.3292955,
+"lon": 47.9814695,
+"z": 16,
+"terms": [
+"جمعية العديلية",
+"العديلية",
+"عديلية",
+"Adailiya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "khaldiyacoop",
+"level": "صعب",
+"answer": "جمعية الخالدية التعاونية",
+"lat": 29.3286432,
+"lon": 47.9630655,
+"z": 16,
+"terms": [
+"جمعية الخالدية",
+"الخالدية",
+"خالدية",
+"Khaldiya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "surracoop",
+"level": "صعب",
+"answer": "جمعية السرّة التعاونية",
+"lat": 29.3132959,
+"lon": 48.0031823,
+"z": 16,
+"terms": [
+"جمعية السرة",
+"السرة",
+"Surra"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "bayancoop",
+"level": "صعب",
+"answer": "جمعية بيان التعاونية",
+"lat": 29.3050424,
+"lon": 48.0448413,
+"z": 16,
+"terms": [
+"جمعية بيان",
+"بيان",
+"Bayan"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mishrefcoop",
+"level": "صعب",
+"answer": "جمعية مشرف التعاونية",
+"lat": 29.2808226,
+"lon": 48.068608,
+"z": 16,
+"terms": [
+"جمعية مشرف",
+"مشرف",
+"Mishref"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "salwacoop",
+"level": "صعب",
+"answer": "جمعية سلوى التعاونية",
+"lat": 29.2968253,
+"lon": 48.0770573,
+"z": 16,
+"terms": [
+"جمعية سلوى",
+"سلوى",
+"Salwa"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "dasmacoop",
+"level": "صعب",
+"answer": "جمعية الدسمة وبنيد القار التعاونية",
+"lat": 29.3714004,
+"lon": 48.00606,
+"z": 16,
+"terms": [
+"جمعية الدسمة",
+"الدسمة",
+"دسمة",
+"بنيد القار",
+"Dasma",
+"Bneid Al Gar",
+"Bneid"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "daiyacoop",
+"level": "صعب",
+"answer": "جمعية الدعية التعاونية",
+"lat": 29.3574914,
+"lon": 48.0133693,
+"z": 16,
+"terms": [
+"جمعية الدعية",
+"الدعية",
+"دعية",
+"Daiya",
+"Daiyah"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "maternity",
+"level": "صعب",
+"answer": "مستشفى الولادة",
+"lat": 29.3285689,
+"lon": 47.8944184,
+"z": 16,
+"terms": [
+"مستشفى الولادة",
+"الولادة",
+"Maternity"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "shababclub",
+"level": "صعب",
+"answer": "نادي الشباب الرياضي",
+"lat": 29.089977,
+"lon": 48.0780752,
+"z": 16,
+"terms": [
+"نادي الشباب",
+"Al Shabab"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "sadu",
+"level": "تعجيزي",
+"answer": "بيت السدو",
+"lat": 29.3747103,
+"lon": 47.9672605,
+"z": 17,
+"terms": [
+"السدو",
+"Sadu"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "dickson",
+"level": "تعجيزي",
+"answer": "بيت ديكسون",
+"lat": 29.334808,
+"lon": 48.0685692,
+"z": 17,
+"terms": [
+"ديكسون",
+"Dickson"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "badrhouse",
+"level": "تعجيزي",
+"answer": "بيت البدر",
+"lat": 29.3744168,
+"lon": 47.9668782,
+"z": 17,
+"terms": [
+"بيت البدر",
+"البدر",
+"Bader House",
+"Al Bader"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "kfas",
+"level": "تعجيزي",
+"answer": "مؤسسة الكويت للتقدم العلمي",
+"lat": 29.37754,
+"lon": 47.97892,
+"z": 17,
+"terms": [
+"التقدم العلمي",
+"KFAS"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "redcrescent",
+"level": "تعجيزي",
+"answer": "جمعية الهلال الأحمر الكويتي",
+"lat": 29.3431035,
+"lon": 47.9471063,
+"z": 17,
+"terms": [
+"الهلال الأحمر",
+"الهلال الاحمر",
+"Red Crescent"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "saharagolf",
+"level": "تعجيزي",
+"answer": "منتجع صحارى للغولف",
+"lat": 29.260054,
+"lon": 48.024159,
+"z": 16,
+"terms": [
+"صحارى",
+"Sahara",
+"Golf",
+"جولف",
+"غولف"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "motorsport",
+"level": "تعجيزي",
+"answer": "مدينة الكويت لرياضة المحرّكات",
+"lat": 28.923949,
+"lon": 48.1397824,
+"z": 15,
+"terms": [
+"رياضة المحركات",
+"المحركات",
+"Motorsport",
+"Motor"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "sahelclub",
+"level": "تعجيزي",
+"answer": "نادي الساحل الرياضي",
+"lat": 29.1213646,
+"lon": 48.1189514,
+"z": 16,
+"terms": [
+"الساحل",
+"Sahel"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "burganclub",
+"level": "تعجيزي",
+"answer": "نادي برقان الرياضي",
+"lat": 29.0725896,
+"lon": 48.0905869,
+"z": 16,
+"terms": [
+"برقان",
+"Burgan"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "nasrclub",
+"level": "تعجيزي",
+"answer": "نادي النصر الرياضي",
+"lat": 29.2703582,
+"lon": 47.9252225,
+"z": 16,
+"terms": [
+"نادي النصر",
+"Al Nasr",
+"Nasr SC"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "yarmoukcoop",
+"level": "تعجيزي",
+"answer": "جمعية اليرموك التعاونية",
+"lat": 29.3100991,
+"lon": 47.9687829,
+"z": 16,
+"terms": [
+"جمعية اليرموك",
+"اليرموك",
+"يرموك",
+"Yarmouk"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "qurtobacoop",
+"level": "تعجيزي",
+"answer": "جمعية قرطبة التعاونية",
+"lat": 29.3131179,
+"lon": 47.9860423,
+"z": 16,
+"terms": [
+"جمعية قرطبة",
+"قرطبة",
+"Qortuba",
+"Qurtuba"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mansouriyacoop",
+"level": "تعجيزي",
+"answer": "جمعية المنصورية التعاونية",
+"lat": 29.3603776,
+"lon": 47.9972157,
+"z": 16,
+"terms": [
+"جمعية المنصورية",
+"المنصورية",
+"منصورية",
+"Mansouriya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "fintascoop",
+"level": "تعجيزي",
+"answer": "جمعية الفنطاس التعاونية",
+"lat": 29.1713834,
+"lon": 48.1196434,
+"z": 16,
+"terms": [
+"جمعية الفنطاس",
+"الفنطاس",
+"فنطاس",
+"Fintas"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "fahaheelcoop",
+"level": "تعجيزي",
+"answer": "جمعية الفحيحيل التعاونية",
+"lat": 29.0861152,
+"lon": 48.1212732,
+"z": 16,
+"terms": [
+"جمعية الفحيحيل",
+"الفحيحيل",
+"فحيحيل",
+"Fahaheel"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "mangafcoop",
+"level": "تعجيزي",
+"answer": "جمعية المنقف التعاونية",
+"lat": 29.1043847,
+"lon": 48.1252783,
+"z": 16,
+"terms": [
+"جمعية المنقف",
+"المنقف",
+"منقف",
+"Mangaf"
+],
+"manual": [
+[
+1495,
+488,
+1600,
+540
+],
+[
+495,
+720,
+590,
+770
+],
+[
+240,
+1050,
+495,
+1095
+],
+[
+0,
+828,
+195,
+885
+]
+],
+"spare": false
+},
+{
+"key": "abuhalifacoop",
+"level": "تعجيزي",
+"answer": "جمعية أبو حليفة التعاونية",
+"lat": 29.132186,
+"lon": 48.1267441,
+"z": 16,
+"terms": [
+"جمعية ابو حليفة",
+"ابو حليفة",
+"أبو حليفة",
+"Abu Halifa"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "ahmadicoop",
+"level": "تعجيزي",
+"answer": "جمعية الأحمدي التعاونية",
+"lat": 29.0777327,
+"lon": 48.0826259,
+"z": 16,
+"terms": [
+"جمعية الأحمدي",
+"الأحمدي",
+"أحمدي",
+"الاحمدي",
+"Ahmadi"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "jahracoop",
+"level": "تعجيزي",
+"answer": "جمعية الجهراء التعاونية",
+"lat": 29.3485368,
+"lon": 47.670996,
+"z": 16,
+"terms": [
+"جمعية الجهراء",
+"الجهراء",
+"جهراء",
+"Jahra"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "firdouscoop",
+"level": "تعجيزي",
+"answer": "جمعية الفردوس التعاونية",
+"lat": 29.2837934,
+"lon": 47.8723699,
+"z": 16,
+"terms": [
+"جمعية الفردوس",
+"الفردوس",
+"فردوس",
+"Firdous"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "ardiyacoop",
+"level": "تعجيزي",
+"answer": "جمعية العارضية التعاونية",
+"lat": 29.2821033,
+"lon": 47.895368,
+"z": 16,
+"terms": [
+"جمعية العارضية",
+"العارضية",
+"عارضية",
+"Ardiya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "sabahnasercoop",
+"level": "تعجيزي",
+"answer": "جمعية صباح الناصر التعاونية",
+"lat": 29.2698186,
+"lon": 47.8751802,
+"z": 16,
+"terms": [
+"جمعية صباح الناصر",
+"صباح الناصر",
+"Sabah Al Nasser"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "sulaibikhatcoop",
+"level": "تعجيزي",
+"answer": "جمعية الصليبخات التعاونية",
+"lat": 29.3150216,
+"lon": 47.8472054,
+"z": 16,
+"terms": [
+"جمعية الصليبخات",
+"الصليبخات",
+"صليبخات",
+"الصليبيخات",
+"Sulaibikhat"
+],
+"manual": [
+[
+0,
+170,
+75,
+275
+]
+],
+"spare": false
+},
+{
+"key": "dohacoop",
+"level": "تعجيزي",
+"answer": "جمعية الدوحة التعاونية",
+"lat": 29.3187518,
+"lon": 47.8185591,
+"z": 16,
+"terms": [
+"جمعية الدوحة",
+"الدوحة",
+"دوحة",
+"Doha"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "nahdhacoop",
+"level": "تعجيزي",
+"answer": "جمعية النهضة التعاونية",
+"lat": 29.3050193,
+"lon": 47.8581921,
+"z": 16,
+"terms": [
+"جمعية النهضة",
+"النهضة",
+"نهضة",
+"Nahdha",
+"Nahda"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "farwaniyacoop",
+"level": "تعجيزي",
+"answer": "جمعية الفروانية التعاونية",
+"lat": 29.2793372,
+"lon": 47.9601529,
+"z": 16,
+"terms": [
+"جمعية الفروانية",
+"الفروانية",
+"فروانية",
+"Farwaniya"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "khaitancoop",
+"level": "تعجيزي",
+"answer": "جمعية خيطان التعاونية",
+"lat": 29.2936963,
+"lon": 47.9710474,
+"z": 16,
+"terms": [
+"جمعية خيطان",
+"خيطان",
+"Khaitan"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "omariyacoop",
+"level": "تعجيزي",
+"answer": "جمعية العمرية التعاونية",
+"lat": 29.294749,
+"lon": 47.954401,
+"z": 16,
+"terms": [
+"جمعية العمرية",
+"العمرية",
+"عمرية",
+"Omariya"
+],
+"manual": [
+[
+1090,
+190,
+1245,
+238
+],
+[
+715,
+262,
+885,
+312
+],
+[
+315,
+322,
+470,
+370
+],
+[
+1435,
+148,
+1590,
+198
+]
+],
+"spare": false
+},
+{
+"key": "rabiyacoop",
+"level": "تعجيزي",
+"answer": "جمعية الرابية التعاونية",
+"lat": 29.2944215,
+"lon": 47.9339249,
+"z": 16,
+"terms": [
+"جمعية الرابية",
+"الرابية",
+"رابية",
+"Rabiya",
+"Rabieh",
+"Rabiah"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "hattincoop",
+"level": "تعجيزي",
+"answer": "جمعية حطّين التعاونية",
+"lat": 29.2808781,
+"lon": 48.020074,
+"z": 16,
+"terms": [
+"جمعية حطين",
+"حطين",
+"Hateen",
+"Hitteen"
+],
+"manual": [],
+"spare": false
+},
+{
+"key": "zahracoop",
+"level": "تعجيزي",
+"answer": "جمعية الزهراء التعاونية",
+"lat": 29.2783194,
+"lon": 48.0033362,
+"z": 16,
+"terms": [
+"جمعية الزهراء",
+"الزهراء",
+"زهراء",
+"Zahra"
+],
+"manual": [],
+"spare": true
+},
+{
+"key": "siddiqcoop",
+"level": "تعجيزي",
+"answer": "جمعية الصديق التعاونية",
+"lat": 29.2922682,
+"lon": 47.9913785,
+"z": 16,
+"terms": [
+"جمعية الصديق",
+"الصديق",
+"صديق",
+"Siddiq"
+],
+"manual": [],
+"spare": true
+},
+{
+"key": "salamcoop",
+"level": "تعجيزي",
+"answer": "جمعية السلام التعاونية",
+"lat": 29.2970677,
+"lon": 48.0097547,
+"z": 16,
+"terms": [
+"جمعية السلام",
+"السلام",
+"سلام",
+"Salam"
+],
+"manual": [],
+"spare": true
+}
+]
