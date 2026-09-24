@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { setDerbyCategories, setExtraCategories, setQuestionOverlay, setHiddenCategories } from '../game/bank'
 import { setCategoryArt } from '../components/categoryArt'
+import { setCategoryInfo } from '../components/categoryInfo'
 import { setCategoryGroups, setCategoryOrder } from '../components/categoryGroups'
 import { BOARD_LEVELS } from '../game/levels'
 import type { Level, Question } from '../game/types'
@@ -177,6 +178,10 @@ interface CatRow {
   hidden?: boolean
   /** موضعها داخل تصنيفها — من `categories.sort`. null = لم تُرتَّب. قد يغيب كذلك. */
   sort?: number | null
+  /** نبذة الفئة وسؤالها المثال — من `categories.info_*`. قد تغيب كذلك. */
+  info_brief?: string | null
+  info_q?: string | null
+  info_a?: string | null
 }
 
 function loadCats(): CatRow[] {
@@ -214,6 +219,17 @@ function applyCats(rows: CatRow[]) {
   setDerbyCategories(rows.filter((r) => r.derby).map((r) => r.name))
   /* والمستبعَدة قبل الفئات كذلك. */
   setHiddenCategories(rows.filter((r) => r.hidden).map((r) => r.name))
+  /* والنبذة قبل الفئات كذلك: علامة (i) تظهر بإخطار `setExtraCategories`. */
+  setCategoryInfo(
+    Object.fromEntries(
+      rows
+        .filter((r) => r.info_brief)
+        .map((r) => [
+          r.name,
+          { brief: r.info_brief as string, question: r.info_q ?? null, answer: r.info_a ?? null },
+        ]),
+    ),
+  )
   /* الصفّ الذي لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة لا يدخل قائمة الفئات —
      وإلّا ظهرت الفئة مرّتين. */
   setExtraCategories(rows.filter((r) => r.is_extra !== false).map((r) => r.name))

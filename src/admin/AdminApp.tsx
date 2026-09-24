@@ -57,6 +57,7 @@ import {
   saveCategoryArt,
   setCategoryGroup,
   setCategoryHidden,
+  saveCategoryInfo,
   renameCategory,
   saveQuestion,
   seedBank,
@@ -1812,6 +1813,8 @@ function Categories() {
         group: row?.group_name ?? null,
         /* مستبعَدة من اللوح مؤقّتاً — علمٌ يُرفع من الزرّ نفسه. */
         hidden: row?.hidden === true,
+        /* نبذة (i) وسؤالها المثال — تُحرَّر من زرّ «النبذة». */
+        info: { brief: row?.info_brief ?? '', q: row?.info_q ?? '', a: row?.info_a ?? '' },
         /* موضعها داخل تصنيفها؛ وما لم يُرتَّب يتبع ترتيب القائمة (`at`) —
            ترتيبَ شاشة الإعداد نفسه: المشحونة ثمّ المضافة بتاريخ إضافتها. */
         sort: typeof row?.sort === 'number' ? row.sort : null,
@@ -1939,6 +1942,32 @@ function Categories() {
       reload()
     } catch (e) {
       setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر التغيير' })
+    }
+  }
+
+  /* ── نبذة (i) وسؤالها المثال (طلب علي ٢٤ سبتمبر ٢٠٢٦) — لوحٌ تحت صفّ
+     الفئة يُفتح من زرّ «النبذة»، مسوّدته محلّيّة حتى «حفظ». */
+  const [infoOpen, setInfoOpen] = useState<string | null>(null)
+  const [infoDraft, setInfoDraft] = useState({ brief: '', q: '', a: '' })
+  function openInfo(cat: string, cur: { brief: string; q: string; a: string }) {
+    if (infoOpen === cat) return setInfoOpen(null)
+    setInfoDraft(cur)
+    setInfoOpen(cat)
+  }
+  async function saveInfo(cat: string) {
+    setMsg(null)
+    try {
+      await saveCategoryInfo(cat, infoDraft.brief, infoDraft.q, infoDraft.a)
+      setMsg({
+        ok: true,
+        text: infoDraft.brief.trim()
+          ? `حُفظت نبذة «${cat}» — تظهر للّاعبين عند تحديث الإعداد`
+          : `أُزيلت نبذة «${cat}» فسقطت علامتها`,
+      })
+      setInfoOpen(null)
+      reload()
+    } catch (e) {
+      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الحفظ' })
     }
   }
 
@@ -2150,6 +2179,13 @@ function Categories() {
                   {/* استبعادٌ لا حذف: علمٌ على الفئة يُرفع بالزرّ نفسه،
                       وأسئلتُها لا تُمسّ — طلب علي ١٩ سبتمبر ٢٠٢٦. لكلّ
                       فئةٍ، مشحونةً كانت أو مضافة. */}
+                  <button
+                    className={'a-btn' + (infoOpen === r.cat ? ' on' : '')}
+                    onClick={() => openInfo(r.cat, r.info)}
+                    title={r.info.brief ? 'تحرير النبذة' : 'لا نبذة — لا علامة (i) على البطاقة'}
+                  >
+                    {r.info.brief ? 'النبذة' : 'النبذة ＋'}
+                  </button>
                   <button className="a-btn" onClick={() => hide(r.cat, !r.hidden)}>
                     {r.hidden ? 'إعادة إلى اللوح' : 'استبعاد من اللوح'}
                   </button>
@@ -2165,6 +2201,48 @@ function Categories() {
                   )}
                 </td>
               </tr>
+              {infoOpen === r.cat && (
+                <tr className="info-row">
+                  <td colSpan={99}>
+                    <div className="info-ed">
+                      <label>
+                        <span>النبذة</span>
+                        <textarea
+                          className="a-in"
+                          rows={2}
+                          value={infoDraft.brief}
+                          onChange={(e) => setInfoDraft({ ...infoDraft, brief: e.target.value })}
+                          placeholder="فارغة = لا علامة (i) على البطاقة"
+                        />
+                      </label>
+                      <label>
+                        <span>السؤال المثال — لا يُلعب</span>
+                        <input
+                          className="a-in"
+                          value={infoDraft.q}
+                          onChange={(e) => setInfoDraft({ ...infoDraft, q: e.target.value })}
+                        />
+                      </label>
+                      <label>
+                        <span>جوابه — فارغ في فئات الصور</span>
+                        <input
+                          className="a-in"
+                          value={infoDraft.a}
+                          onChange={(e) => setInfoDraft({ ...infoDraft, a: e.target.value })}
+                        />
+                      </label>
+                      <div className="info-ed-actions">
+                        <button className="a-btn go" onClick={() => saveInfo(r.cat)}>
+                          حفظ
+                        </button>
+                        <button className="a-btn" onClick={() => setInfoOpen(null)}>
+                          إلغاء
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
               </Fragment>
             ))}
           </tbody>

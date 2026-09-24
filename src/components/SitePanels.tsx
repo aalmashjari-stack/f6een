@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { sendMessage } from '../lib/messages'
 import { STAGES } from '../game/stages'
+import type { CategoryInfo } from './categoryInfo'
 
 /**
  * صفحات القائمة خارج اللعب: «شراء الألعاب» و«شرح اللعبة» و«تواصل معنا».
@@ -124,6 +125,77 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         }
       `}</style>
     </div>
+  )
+}
+
+/**
+ * نبذة الفئة وسؤالها المثال — من علامة (i) على بطاقتها في الإعداد (طلب علي
+ * ٢٤ سبتمبر ٢٠٢٦). والجواب مخفيٌّ حتى يُطلب: المثال يُقرأ على المجلس، فيحزر
+ * من يحزر قبل أن يُكشف. وفئات الصور لا جواب لها هنا — سؤالُها بلا صورته
+ * وصفٌ للشكل لا سؤال.
+ */
+export function CategoryInfoPanel({
+  name,
+  info,
+  onClose,
+}: {
+  name: string
+  info: CategoryInfo
+  onClose: () => void
+}) {
+  const [shown, setShown] = useState(false)
+  return (
+    <Veil onClose={onClose} label={name}>
+      <p className="cip-brief">{info.brief}</p>
+      {info.question && (
+        <div className="cip-sample">
+          <span className="cip-tag">مثال</span>
+          <p className="cip-q">{info.question}</p>
+          {info.answer &&
+            (shown ? (
+              <p className="cip-a">{info.answer}</p>
+            ) : (
+              <button className="cip-reveal" onClick={() => setShown(true)}>
+                اكشف الإجابة
+              </button>
+            ))}
+        </div>
+      )}
+      <style>{`
+        .cip-brief {
+          margin:0; text-align:center;
+          font-size:clamp(15px,1.9vw,19px); font-weight:700; line-height:1.8;
+          color:var(--n-ink, #22201C);
+        }
+        .cip-sample {
+          display:flex; flex-direction:column; align-items:center; gap:clamp(8px,1.4dvh,12px);
+          padding:clamp(12px,2dvh,18px) clamp(14px,2.4vw,22px);
+          border-radius:16px;
+          background:var(--n-bg, #FFF8EE);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
+          text-align:center;
+        }
+        .cip-tag {
+          padding:2px 14px; border-radius:999px;
+          background:var(--n-ink, #22201C); color:#fff;
+          font-weight:800; font-size:clamp(12px,1.4vw,14px);
+        }
+        .cip-q { margin:0; font-weight:800; font-size:clamp(16px,2.1vw,21px); line-height:1.7; color:var(--n-ink, #22201C); }
+        .cip-a {
+          margin:0; padding:4px 18px; border-radius:12px;
+          background:var(--n-a-tint, #FFCE3C); color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
+          font-weight:800; font-size:clamp(16px,2vw,20px);
+        }
+        .cip-reveal {
+          font:inherit; font-weight:800; font-size:clamp(14px,1.7vw,16px); cursor:pointer;
+          padding:8px 22px; border:0; border-radius:999px;
+          background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+        }
+        .cip-reveal:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C); }
+      `}</style>
+    </Veil>
   )
 }
 

@@ -393,6 +393,10 @@ export interface CategoryRow {
   hidden?: boolean
   /** موضعها داخل تصنيفها (من 1)؛ `null` = لم تُرتَّب. قد يغيب: قاعدةٌ لم تُرقَّ بعد. */
   sort?: number | null
+  /** نبذة (i) وسؤالها المثال وجوابه — `null` = لا علامة. قد تغيب: قاعدةٌ لم تُرقَّ بعد. */
+  info_brief?: string | null
+  info_q?: string | null
+  info_a?: string | null
 }
 
 /* ============================= التصنيفات ============================= */
@@ -509,6 +513,22 @@ export async function listCategoryRows(): Promise<CategoryRow[]> {
 /** أسماء الفئات المضافة وحدها — لقائمة التصنيف في نموذج السؤال. */
 export async function listExtraCategories(): Promise<string[]> {
   return (await listCategoryRows()).filter((r) => r.is_extra !== false).map((r) => r.name)
+}
+
+/** نبذة الفئة وسؤالها المثال — النصّ الفارغ يُحفظ `null` فتسقط علامة (i). */
+export async function saveCategoryInfo(
+  name: string,
+  brief: string,
+  q: string,
+  a: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('admin_set_category_info', {
+    p_name: name,
+    p_brief: brief,
+    p_q: q,
+    p_a: a,
+  })
+  if (error) throw new Error(translate(error.message))
 }
 
 /** تعيين صورة فئة — `null` يعيدها إلى صورتها المشحونة. */
