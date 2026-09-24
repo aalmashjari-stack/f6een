@@ -1015,6 +1015,9 @@ export function Setup({
           animation:chip-in .34s var(--ease-spring) both;
           animation-delay:calc(min(var(--i, 0), 10) * 40ms);
         }
+        /* الدائرة صغيرةٌ على الجوّال (24px)، فمساحةُ الضغط أوسع منها بغلافٍ
+           شفّاف — لا تكبر العلامة فتغطّي الرسمة. */
+        .cc-info::after { content:''; position:absolute; inset:-8px; }
         .cc-info:active { transform:scale(.9); }
         .cc-info:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
         @media (prefers-reduced-motion: reduce) { .cc-info { animation:none; } }
