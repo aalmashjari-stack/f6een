@@ -1,6 +1,6 @@
 import type { Level, Question } from './types'
 import { BOARD_LEVELS } from './levels'
-import { familiesOf, poolByCatLevel, poolByLevels, poolDerby, poolShippedByLevels } from './bank'
+import { familiesOf, poolByCatLevel, poolByLevels, poolDerby } from './bank'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -143,7 +143,7 @@ export function drawOne(
  *
  * الفئات من القاعدة (`derbyCategories`)، والمخزون كلُّه دفعةً واحدة لا
  * خليّةً — فلا يجفّ أضعفُ تصنيفٍ ويسحب الجلسة معه. والقيود نفسها التي في
- * `drawOne`؛ وآخر الملاذ إن نفد المخزون: متوسط بأيّ فئة ثمّ البنك كلّه —
+ * `drawOne`؛ وسؤالُ الحسم يُسحب منه أيضاً (قرار علي ٢٥ سبتمبر ٢٠٢٦). وآخر الملاذ إن نفد المخزون: متوسط بأيّ فئة ثمّ البنك كلّه —
  * سؤالٌ من خارج القائمة أهون من شاشةٍ بيضاء.
  */
 export function drawDerby(
@@ -153,24 +153,6 @@ export function drawDerby(
 ): Question {
   const g = guards(used, excluded, spentFamilies)
   return pickFrom(poolDerby(), g) ?? fallback(null, 'متوسط', g)
-}
-
-/**
- * سحبٌ بمستوىً واحد بلا تصنيف، **من البنك المشحون وحده** — فاصل التعادل
- * (صعب). كان مسارَ الديربي أيضاً حتى ١٥ سبتمبر ٢٠٢٦ (انظر `drawDerby`).
- *
- * والمضافُ من اللوحة (`ADM####`) خارجَه، والتعديلُ يبقى مركَّباً — سؤالُ
- * بنكٍ صُحّح يبقى سؤالَ بنك. والقيود نفسها التي في `drawOne`، وآخر الملاذ
- * نفسه إن حُجز المستوى كلّه.
- */
-export function drawByLevel(
-  level: Level,
-  used: Set<string>,
-  excluded: Set<string> = EMPTY,
-  spentFamilies: Set<string> = EMPTY,
-): Question {
-  const g = guards(used, excluded, spentFamilies)
-  return pickFrom(poolShippedByLevels([level]), g) ?? fallback(null, level, g)
 }
 
 /**

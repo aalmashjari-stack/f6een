@@ -256,16 +256,17 @@ describe('حرّاس المرحلة', () => {
 
   it('سؤال الحسم لا يُسحب مرّتين وسؤالٌ معروض', () => {
     const s = tiedAtTiebreak()
-    const once = step(s, { t: 'TIEBREAK_SPIN', category: BOARD[0] })
+    const once = step(s, { t: 'TIEBREAK_SPIN' })
     expect(once.currentQuestion).not.toBeNull()
-    expect(reducer(once, { t: 'TIEBREAK_SPIN', category: BOARD[1] })).toBe(once)
+    expect(reducer(once, { t: 'TIEBREAK_SPIN' })).toBe(once)
   })
 
-  it('سؤال الحسم بلا فئة يُسحب صعباً من البنك كلّه', () => {
-    const s = tiedAtTiebreak()
-    const spun = step(s, { t: 'TIEBREAK_SPIN', category: '' })
-    expect(spun.currentQuestion?.level).toBe('صعب')
-    expect(spun.currentCategory).toBeNull()
+  it('سؤال الحسم مثل الديربي: سهل أو متوسط، وفئتُه فئةُ السؤال', () => {
+    for (let i = 0; i < 30; i++) {
+      const spun = step(tiedAtTiebreak(), { t: 'TIEBREAK_SPIN' })
+      expect(DERBY_LEVELS).toContain(spun.currentQuestion?.level)
+      expect(spun.currentCategory).toBe(spun.currentQuestion?.category)
+    }
   })
 })
 
@@ -624,7 +625,7 @@ describe('تصحيح الحكم', () => {
     expect(s.phase).toBe('endgame')
 
     let t = step({ ...fresh(), phase: 'tiebreak' }, { t: 'ADJUST', team: 1, delta: SCORE_FIX_STEP })
-    t = step(t, { t: 'TIEBREAK_SPIN', category: '' })
+    t = step(t, { t: 'TIEBREAK_SPIN' })
     expect(t.phase).toBe('endgame')
     expect(t.currentQuestion).toBeNull()
   })
@@ -660,7 +661,7 @@ describe('حرّاس الطور — أفعال متأخّرة ومكرَّرة',
     const end = { ...driveToStage3(), phase: 'endgame' as const }
     expect(reducer(end, { t: 'S1_TO_REVEAL' })).toBe(end)
     expect(reducer(end, { t: 'S3_JUDGE', verdict: 'correct' })).toBe(end)
-    expect(reducer(end, { t: 'TIEBREAK_SPIN', category: BOARD[0] })).toBe(end)
+    expect(reducer(end, { t: 'TIEBREAK_SPIN' })).toBe(end)
   })
 
   it('تنقيط الحسم يحتاج سؤالاً معروضاً', () => {
