@@ -64,7 +64,9 @@ function audio(): { ctx: AudioContext; master: GainNode } | null {
   }
   // المتصفح يعلّق السياق حتى أول لمسة. أول صوت في اللعبة يقع بعد ضغطة الحكم
   // على «ابدأ» دائماً، فالاستئناف الكسول هنا يكفي بلا مستمع إضافي.
-  if (ctx.state === 'suspended') void ctx.resume()
+  // وسفاري بعد مكالمةٍ أو قفلٍ يضعه في «interrupted» لا «suspended» — فالشرط
+  // «ليس عاملاً» لا «معلّق»، وإلّا صمتت اللعبة إلى آخرها (مراجعة ٢٥ سبتمبر).
+  if (ctx.state !== 'running' && ctx.state !== 'closed') void ctx.resume().catch(() => {})
   return { ctx, master: master! }
 }
 

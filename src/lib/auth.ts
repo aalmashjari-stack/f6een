@@ -237,6 +237,38 @@ export async function signInWithEmail(email: string, password: string) {
   if (error) throw error
 }
 
+/* أخطاء الخادم بالعربيّة — بالرمز أوّلاً ثمّ بنصّ الرسالة لما لا رمز له.
+   كانت الشاشات تعرض `e.message` خاماً: «Invalid login credentials» أمام
+   لاعبٍ أخطأ كلمة السرّ (مراجعة ٢٥ سبتمبر ٢٠٢٦). */
+const AUTH_ERRORS: [RegExp, string][] = [
+  [/invalid_credentials|invalid login credentials/i, 'البريد أو كلمة السرّ غير صحيحة'],
+  [/email_not_confirmed|email not confirmed/i, 'أكّد بريدك أوّلاً من الرسالة التي وصلتك'],
+  [/user_already_exists|already registered|already been registered/i, 'هذا البريد مسجَّل من قبل — ادخل به'],
+  [/weak_password|password should be/i, 'كلمة السرّ ضعيفة — ستّة أحرف على الأقلّ'],
+  [/same_password/i, 'كلمة السرّ الجديدة هي نفسها القديمة'],
+  [/email_address_invalid|invalid email|unable to validate email/i, 'البريد غير صالح'],
+  [/rate_limit|rate limit|too many requests|for security purposes/i, 'محاولات كثيرة — انتظر دقيقة ثمّ أعد المحاولة'],
+  [/otp_expired|token has expired|expired/i, 'انتهت صلاحيّة الرابط — اطلب رابطاً جديداً'],
+  [/failed to fetch|network|timed out|load failed|aborted/i, 'تعذّر الاتّصال — تحقّق من اتصالك'],
+]
+
+/**
+ * نصٌّ عربيّ لخطأٍ من الخادم أو الشبكة. العربيّ يمرّ كما هو (رسائلنا نحن)،
+ * والمعروف يُترجَم، وما سواه يعود بالاحتياطيّ الذي تسمّيه الشاشة.
+ */
+export function authErrorText(e: unknown, fallback: string): string {
+  const code = e && typeof e === 'object' && 'code' in e ? String((e as { code?: unknown }).code ?? '') : ''
+  const message =
+    e instanceof Error
+      ? e.message
+      : e && typeof e === 'object' && 'message' in e
+        ? String((e as { message?: unknown }).message ?? '')
+        : ''
+  if (/[؀-ۿ]/.test(message)) return message
+  for (const [re, text] of AUTH_ERRORS) if (re.test(code) || re.test(message)) return text
+  return fallback
+}
+
 /**
  * طلب استعادة كلمة السرّ.
  *

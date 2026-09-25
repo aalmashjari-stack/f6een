@@ -103,7 +103,8 @@ function rebuild() {
        لكنّه يجعل اللوحة تعرض قائمة ثابتة بين تحديث وآخر. */
     effective = ALL_QUESTIONS.map((q) => byId.get(q.id) ?? q)
     const seen = new Set(ALL_QUESTIONS.map((q) => q.id))
-    for (const q of overlay) if (!seen.has(q.id)) effective.push(q)
+    /* والمستبعدون لا يدخلون من هذا الباب أيضاً: ليسوا في البذرة فلا يراهم `seen`. */
+    for (const q of overlay) if (!seen.has(q.id) && notExcluded(q)) effective.push(q)
   }
 
   byCatLevel.clear()

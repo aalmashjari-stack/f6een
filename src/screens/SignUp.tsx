@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { requestPasswordReset, resendConfirmation, signInWithEmail, signUpWithEmail } from '../lib/auth'
+import { authErrorText, requestPasswordReset, resendConfirmation, signInWithEmail, signUpWithEmail } from '../lib/auth'
 import { AUTH_CSS } from './authStyles'
 
 /* رموز الاتصال — الخليج أوّلاً ثم الأكثر وروداً. الكويت الافتراضيّة. */
@@ -133,7 +133,7 @@ export function SignUp({ onBack }: { onBack: () => void }) {
         /* الجلسة تُلتقط في App فتتبدّل الشاشة وحدها. */
       }
     } catch (e2) {
-      setErr(e2 instanceof Error ? e2.message : 'تعذّر إتمام الطلب')
+      setErr(authErrorText(e2, 'تعذّر إتمام الطلب'))
     } finally {
       setBusy(false)
     }

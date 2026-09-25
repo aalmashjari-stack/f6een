@@ -46,8 +46,8 @@ export function Endgame({
   const s3Any = state.s3Counts.correct.concat(state.s3Counts.wrong).some((n) => n > 0)
 
   // النتيجة تُبنى أمام الجميع بدل أن تُعرض جاهزة — الرقم النهائي هو خاتمة الجلسة.
-  const s0 = useCountUp(state.teams[0].score, 1400)
-  const s1 = useCountUp(state.teams[1].score, 1400)
+  const s0 = useCountUp(state.teams[0].score, 1400, 0)
+  const s1 = useCountUp(state.teams[1].score, 1400, 0)
 
   // البشارة مع الكونفيتي، والتعادل لا يُبشَّر به كما لا يُحتفل به.
   // الحارس يمنع تكرارها حين يعيد StrictMode تركيب الشاشة في التطوير.

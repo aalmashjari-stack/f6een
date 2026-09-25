@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import { STAGES } from '../game/stages'
-import { signInWithGoogle } from '../lib/auth'
+import { authErrorText, signInWithGoogle } from '../lib/auth'
 import { SignUp } from './SignUp'
 
 /**
@@ -58,9 +58,12 @@ export function Intro({ onDone }: { onDone?: () => void }) {
     try {
       await signInWithGoogle()
       /* لا إفراغ لـbusy عند النجاح: الصفحة تغادر إلى غوغل، وإعادته تُظهر
-         الزرّ نشطاً للحظة قبل أن تختفي الشاشة. */
+         الزرّ نشطاً للحظة قبل أن تختفي الشاشة. لكنّ المغادرة قد لا تقع
+         (الويب: الوعد يُحلّ قبل التحويل، والتحويل يفشل بلا شبكة) — فبعد
+         عشر ثوانٍ وما زلنا هنا يعود الزرّ، وإلّا بقي الوحيدُ في الشاشة مطفأً. */
+      window.setTimeout(() => setBusy(false), 10_000)
     } catch (e) {
-      setErr(e instanceof Error ? e.message : 'تعذّر فتح دخول غوغل')
+      setErr(authErrorText(e, 'تعذّر فتح دخول غوغل'))
       setBusy(false)
     }
   }

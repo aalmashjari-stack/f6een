@@ -1,6 +1,7 @@
 import type { Level, Question } from './types'
 import { BOARD_LEVELS } from './levels'
-import { familiesOf, poolByCatLevel, poolByLevels, poolDerby } from './bank'
+import { familiesOf, hiddenCategories, poolByCatLevel, poolByLevels, poolDerby } from './bank'
+import { isCharadesCategory } from './charades'
 
 export function shuffle<T>(arr: T[]): T[] {
   const a = arr.slice()
@@ -95,10 +96,13 @@ function fallback(category: string | null, level: Level, g: DrawGuards): Questio
         g,
       )
     : null
+  /* الدرجتان الأخيرتان تعبران التصنيفات، فلا تجلبان ما لا يُجاب عنه نطقاً
+     («ولا كلمة» تمثيلٌ بـQR — SPEC §٤) ولا فئةً استُبعدت من اللوح. */
+  const sayable = (q: Question) => !isCharadesCategory(q.category) && !hiddenCategories().has(q.category)
   const q =
     inCategory ??
-    pickFrom(poolByLevels([level]), g) ??
-    pickFrom(poolByLevels(LEVELS), g)
+    pickFrom(poolByLevels([level]).filter(sayable), g) ??
+    pickFrom(poolByLevels(LEVELS).filter(sayable), g)
   if (!q) throw new Error('بنك الأسئلة فارغ')
   return q
 }

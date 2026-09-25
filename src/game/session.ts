@@ -1,5 +1,6 @@
 import type { Level, Mark, Phase, Player, Team, TeamId } from './types'
 import { PHASES } from './types'
+import { BOARD_LEVELS } from './levels'
 import type { Question } from './types'
 import { drawStage3Queue } from './draw'
 import { playableCategories } from './bank'
@@ -20,7 +21,7 @@ export const STAGE1_CATEGORIES = 6
    تصنيفٍ من التسعة عشر عشرين سؤالاً تعجيزيّاً — وقبلها كان إدخالُه يُسقط
    التصنيفات كلَّها من `playableCategories` فيصير اللوح فارغاً. و`bank.test.ts`
    يقرأ هذه القائمة نفسها، فمن زاد صفّاً بلا محتوى سقط عنده الفحص. */
-export const STAGE1_LEVELS: Level[] = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
+export const STAGE1_LEVELS: Level[] = BOARD_LEVELS
 export const STAGE1_QUESTIONS = STAGE1_CATEGORIES * STAGE1_LEVELS.length
 /* خمسٌ وأربعون لا ستّون (قرار علي ٩ سبتمبر ٢٠٢٦): اللوح صار أربعة صفوفٍ
    فزاد ستّة أسئلة، وقياسُ ٥ سبتمبر يقول إنّ ذلك يضيف نحو ثماني دقائق كلُّها
@@ -439,6 +440,7 @@ export function isStoredState(x: unknown): x is StoredState {
     num('s3Pos') &&
     arr('s3Done') &&
     typeof s.intervalNext === 'string' &&
+    PHASE_SET.has(s.intervalNext) &&
     obj('correctByPlayer') &&
     obj('wrongByPlayer') &&
     obj('stagePoints') &&
