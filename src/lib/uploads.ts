@@ -60,12 +60,21 @@ export interface ArtFile {
  * ١٩ سبتمبر ٢٠٢٦ — ولا طريق غير Storage API بجلسة مدير.
  */
 export async function listArt(folder: ArtFolder): Promise<ArtFile[]> {
-  const { data, error } = await supabase.storage.from('art').list(folder, {
-    limit: 1000,
-    sortBy: { column: 'created_at', order: 'desc' },
-  })
-  if (error) throw new Error(error.message)
-  return (data ?? [])
+  /* صفحةً صفحة: `list` تقف عند الحدّ بصمت، فما بعد الألف في `questions/`
+     كان لا يُرى ولا يُنظَّف والعنوان يعدّ ألفاً (مراجعة ٢٥ سبتمبر ٢٠٢٦). */
+  const PAGE = 1000
+  const all: NonNullable<Awaited<ReturnType<ReturnType<typeof supabase.storage.from>['list']>>['data']> = []
+  for (let offset = 0; ; offset += PAGE) {
+    const { data, error } = await supabase.storage.from('art').list(folder, {
+      limit: PAGE,
+      offset,
+      sortBy: { column: 'created_at', order: 'desc' },
+    })
+    if (error) throw new Error(error.message)
+    all.push(...(data ?? []))
+    if (!data || data.length < PAGE) break
+  }
+  return all
     .filter((f) => f.id)
     .map((f) => {
       const path = `${folder}/${f.name}`
