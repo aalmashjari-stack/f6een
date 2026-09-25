@@ -1,6 +1,6 @@
 import type { Level, Mark, Question, TeamId } from './types'
 import { familiesOf } from './bank'
-import { drawByLevel, drawDerby, drawOne, drawStage3Queue } from './draw'
+import { drawDerby, drawOne, drawStage3Queue } from './draw'
 import {
   GameState,
   QuestionResult,
@@ -53,7 +53,7 @@ export type Action =
   /* `team` = الفريق الذي انتهت ساعته. فعلٌ متأخّر من شاشةٍ ذهبت — أو
      مكرَّر — كان يُنهي دور الفريق التالي أيضاً. */
   | { t: 'S3_END_TURN'; team: TeamId } // انتهت الثلاثون ثانية
-  | { t: 'TIEBREAK_SPIN'; category: string }
+  | { t: 'TIEBREAK_SPIN' }
   | { t: 'TIEBREAK_PICK'; team: TeamId | 'none' }
   /* تصحيحُ الحكم: ±5 بجانب نقاط الفريق، في أي طور. لا يحرّك الشاشة ولا
      يمسّ السؤال — يعدّل الرقم وحده. */
@@ -397,20 +397,12 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (!state || state.phase !== 'tiebreak' || state.currentQuestion) return state
       /* والشرط نفسه بين أسئلة الحسم: تصحيحٌ فكّ التعادل يُنهي اللعبة. */
       if (state.teams[0].score !== state.teams[1].score) return { ...state, phase: 'endgame' }
-      /* بلا فئة (لا فئةَ مكتملة المستويات) يُسحب الصعب من البنك كلّه بدل
-         أن تسقط الشاشة الحاسمة على فئةٍ لا وجود لها. */
-      const q = action.category
-        ? drawOne(
-            action.category,
-            'صعب',
-            state.usedQuestionIds,
-            excludedIds(state),
-            guardedFamilies(state),
-          )
-        : drawByLevel('صعب', state.usedQuestionIds, excludedIds(state), guardedFamilies(state))
+      /* مثل الديربي تماماً (قرار علي ٢٥ سبتمبر ٢٠٢٦): سهل ومتوسط من فئات
+         الديربي بلا اختيار تصنيف. كان صعباً من فئةٍ عشوائية بين الفئات كلّها. */
+      const q = drawDerby(state.usedQuestionIds, excludedIds(state), guardedFamilies(state))
       return {
         ...burn(state, q),
-        currentCategory: action.category || null,
+        currentCategory: q.category,
         currentQuestion: q,
         s3Revealed: false,
       }
@@ -420,7 +412,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       if (!state || state.phase !== 'tiebreak' || !state.currentQuestion) return state
       let s = record(state, state.currentQuestion, 4, action.team !== 'none' ? 'c' : 'n')
       if (action.team !== 'none') s = addScore(s, action.team, TIEBREAK_POINTS, 'tie')
-      // إن بقي التعادل (لا أحد أصاب) نعيد سؤالاً صعباً آخر
+      // إن بقي التعادل (لا أحد أصاب) نعيد سؤالاً آخر
       if (s.teams[0].score === s.teams[1].score) {
         return { ...s, currentQuestion: null, currentCategory: null, s3Revealed: false, phase: 'tiebreak' }
       }

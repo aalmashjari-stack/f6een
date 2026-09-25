@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { drawByLevel, drawOne, drawStage3Queue, shuffle } from './draw'
-import { ALL_QUESTIONS, familiesOf, familyOf, poolByCatLevel, poolByLevels, poolShippedByLevels, setBlockedQuestionIds } from './bank'
+import { drawDerby, drawOne, drawStage3Queue, shuffle } from './draw'
+import { ALL_QUESTIONS, familiesOf, familyOf, poolByCatLevel, poolByLevels, poolDerby, poolShippedByLevels, setBlockedQuestionIds } from './bank'
 import type { Level } from './types'
 
 const CAT = 'جغرافيا ومعالم'
@@ -180,11 +180,10 @@ describe('drawOne — الخليّة الفارغة لا تُسقط المحرّ
     }
   })
 
-  it('drawByLevel يسقط إلى البنك كلّه إن حُجز المستوى المشحون كلّه', () => {
-    const level = poolShippedByLevels(['صعب'])
-    setBlockedQuestionIds(level.map((q) => q.id))
+  it('drawDerby يسقط إلى البنك كلّه إن حُجز مخزون الديربي كلّه', () => {
+    setBlockedQuestionIds(poolDerby().map((q) => q.id))
     try {
-      const q = drawByLevel('صعب', new Set())
+      const q = drawDerby(new Set())
       expect(q).toBeDefined()
     } finally {
       setBlockedQuestionIds([])

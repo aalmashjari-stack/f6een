@@ -2,26 +2,21 @@ import { useEffect, useRef } from 'react'
 import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
-import { displayName, playableCategories } from '../game/bank'
-import { isCharadesCategory } from '../game/charades'
+import { displayName } from '../game/bank'
 import { ScoreBar } from '../components/ScoreBar'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
 
 /**
- * فاصل التعادل — سؤال صعب واحد. يُعاد عند بقاء التعادل (لا أحد أصاب).
+ * فاصل التعادل — سؤال واحد يُسحب كسؤال الديربي (سهل أو متوسط من فئاته).
+ * يُعاد عند بقاء التعادل (لا أحد أصاب).
  */
 export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const drawnRef = useRef(false)
   useEffect(() => {
     if (!state.currentQuestion && !drawnRef.current) {
       drawnRef.current = true
-      /* «ولا كلمة» لا تصل الحسم (SPEC §٤): تمثيلٌ لا سؤالٌ يُجاب عنه. */
-      const cats = playableCategories().filter((c) => !isCharadesCategory(c))
-      /* بلا فئةٍ مكتملة المستويات (حجزت البلاغات آخر «صعب» فيها) يُسحب
-         الصعب من البنك كلّه — الشاشة الحاسمة لا تسقط على فئةٍ لا وجود لها. */
-      const cat = cats.length > 0 ? cats[Math.floor(Math.random() * cats.length)] : ''
-      dispatch({ t: 'TIEBREAK_SPIN', category: cat })
+      dispatch({ t: 'TIEBREAK_SPIN' })
     }
     if (state.currentQuestion) drawnRef.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,7 +28,7 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
   return (
     <div className="screen">
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
-      <RoundBar title="سؤال حاسم" chips={[state.currentCategory && displayName(state.currentCategory), 'صعب']} />
+      <RoundBar title="سؤال حاسم" chips={[state.currentCategory && displayName(state.currentCategory), q.level]} />
 
       <div className="q-box grow center-all">
         <div className="s3-inner">
