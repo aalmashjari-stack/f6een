@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { deleteAccount, signOut } from '../lib/auth'
+import { authErrorText, deleteAccount, signOut } from '../lib/auth'
 import { day } from '../lib/date'
 import { isAdmin } from '../lib/admin'
 import { isNativeApp } from '../lib/platform'
@@ -37,12 +37,7 @@ import { fetchMyGames, fetchProfile, gamesLabel, redeemGiftCode } from '../lib/g
  * الاحتياطيّ لما لا نصَّ فيه أصلاً.
  */
 function errText(e: unknown): string {
-  if (e instanceof Error) return e.message
-  if (e && typeof e === 'object' && 'message' in e) {
-    const m = (e as { message?: unknown }).message
-    if (typeof m === 'string' && m) return m
-  }
-  return 'تعذّرت القراءة'
+  return authErrorText(e, 'تعذّرت القراءة')
 }
 
 export function AccountMenu({
@@ -126,7 +121,7 @@ export function AccountMenu({
       await fn()
       /* لا إفراغ لـbusy عند النجاح: الجلسة تختفي فتُبدَّل الشاشة كلّها. */
     } catch (e) {
-      setErr(e instanceof Error ? e.message : 'تعذّر التنفيذ')
+      setErr(authErrorText(e, 'تعذّر التنفيذ'))
       setBusy(false)
     }
   }
@@ -149,7 +144,7 @@ export function AccountMenu({
         })
         .catch(() => {})
     } catch (e2) {
-      setGift({ ok: false, msg: e2 instanceof Error ? e2.message : 'تعذّرت الإضافة' })
+      setGift({ ok: false, msg: authErrorText(e2, 'تعذّرت الإضافة') })
     } finally {
       setRedeeming(false)
     }

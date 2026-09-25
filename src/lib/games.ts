@@ -132,7 +132,14 @@ export async function closeSessionDurably(
   const pending: PendingClose = { id, status, state }
   writeScoped(PENDING_CLOSE_KEY, JSON.stringify(pending))
   await closeSession(id, status, state)
-  removeScoped(PENDING_CLOSE_KEY)
+  clearPendingClose(id)
+}
+
+/* الخانة واحدة: إغلاقٌ بطيء لجلسةٍ سابقة يصل بعد أن كُتب فيها إغلاقُ جلسةٍ
+   أحدث — فلا يمحو إلّا ما كتبه هو، وإلّا ضاع الأحدث وبقيت جلسته مفتوحة
+   على الخادم تُستأنف في البدء التالي (مراجعة ٢٥ سبتمبر ٢٠٢٦). */
+function clearPendingClose(id: string): void {
+  if (pendingClose()?.id === id) removeScoped(PENDING_CLOSE_KEY)
 }
 
 /** الإغلاق الذي لم يبلغ الخادم بعد، إن وُجد. */
@@ -152,7 +159,7 @@ export async function flushPendingClose(): Promise<void> {
   const p = pendingClose()
   if (!p) return
   await closeSession(p.id, p.status, p.state)
-  removeScoped(PENDING_CLOSE_KEY)
+  clearPendingClose(p.id)
 }
 
 /* رسائل أخطاء `redeem_gift_code` — تُترجَم هنا لا تُعرض خاماً: اللاعب لا

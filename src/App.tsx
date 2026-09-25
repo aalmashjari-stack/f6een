@@ -12,6 +12,7 @@ import {
   readScoped,
   removeScoped,
   setStorageOwner,
+  storageOwner,
   writeScoped,
 } from './game/session'
 import { reducer } from './game/reducer'
@@ -248,8 +249,11 @@ export default function App() {
     const stored = loadUsedIds()
     persistUsedIds(new Set([...[...stored].filter((id) => !used.has(id)), ...used]))
 
-    if (!uid) return
-    const key = (id: string) => `${sessionId ?? ''}:${id}`
+    /* وبلا جلسة خادم لا رفع: `sessionId` يُفرَغ عند الختام، فكان كلُّ ما
+       سُئل يُلمَس ثانيةً بزمنٍ واحد — ثلاثون كتابةً بلا معنى تخلط ترتيب
+       «الأقدم استخداماً» على الجهاز التالي. */
+    if (!uid || !sessionId) return
+    const key = (id: string) => `${sessionId}:${id}`
     const shown = (asked ?? []).filter((id) => !touched.current.has(key(id)))
     const shownSet = new Set(shown)
     const fresh = [...used].filter((id) => !uploaded.current.has(id) && !shownSet.has(id))
@@ -330,8 +334,13 @@ export default function App() {
   }, [uid, resolved])
 
   const refreshBalance = useCallback(() => {
+    /* الحساب لحظةَ الانطلاق: ردٌّ بطيء لحسابٍ خرج كان يكتب رصيده فوق رصيد
+       الذي دخل بعده (كما في `syncUsedIds`). */
+    const owner = storageOwner()
     fetchBalance()
-      .then(setBalance)
+      .then((b) => {
+        if (storageOwner() === owner) setBalance(b)
+      })
       .catch(() => {
         /* يبقى `null` — و«غير معروف» لا يمنع البدء، القاعدة هي التي تمنع. */
       })

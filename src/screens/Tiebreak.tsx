@@ -6,6 +6,8 @@ import { displayName } from '../game/bank'
 import { ScoreBar } from '../components/ScoreBar'
 import { QuestionView } from '../components/QuestionView'
 import { RoundBar } from '../components/RoundBar'
+import { AnswerFace } from '../components/AnswerFace'
+import { FitAnswer } from '../components/FitAnswer'
 
 /**
  * فاصل التعادل — سؤال واحد يُسحب كسؤال الديربي (سهل أو متوسط من فئاته).
@@ -33,10 +35,14 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
       <div className="q-box grow center-all">
         <div className="s3-inner">
           <QuestionView q={q} />
+          {/* كبقيّة الكشوف: الوجه إن كان للجواب صورة، والنصّ يُقاس — مخزون
+              الديربي فيه «مشاهير» بصورة الجواب وأمثالٌ طويلة. */}
           {state.s3Revealed && (
-            <p className="s3-answer">
-              <span className="a-label">الإجابة:</span> {q.answer}
-            </p>
+            <AnswerFace q={q}>
+              <FitAnswer as="p" className="s3-answer" fitKey={q.answer}>
+                <span className="a-label">الإجابة:</span> {q.answer}
+              </FitAnswer>
+            </AnswerFace>
           )}
         </div>
       </div>

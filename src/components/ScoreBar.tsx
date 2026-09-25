@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Team, TeamId } from '../game/types'
 import { SCORE_FIX_STEP, leader } from '../game/session'
 import { useCountUp } from './useCountUp'
@@ -61,11 +61,17 @@ function TeamCapsule({
     from !== team.score ? team.score - from : null,
   )
 
+  /* المهلة لحالة إعادة البناء وحدها (ذاكرةٌ من شاشةٍ سابقة قد تكون قديمة).
+     أمّا التغيّر والمكوّن حيّ — تصحيحُ الحكم على شاشة الكشف — فيُرقَّق دائماً:
+     كان يُشترط له قربُ زمن البناء، فتصحيحٌ بعد ثلاث ثوانٍ يعدّ بلا رقاقة،
+     فيُظنّ أنّه لم يقع ويُضغط ثانيةً (مراجعة ٢٥ سبتمبر ٢٠٢٦). */
+  const mounted = useRef(false)
   useEffect(() => {
     const m = memory.get(team.id)
-    if (m && m.score !== team.score && Date.now() - m.t < RECENT_MS) {
+    if (m && m.score !== team.score && (mounted.current || Date.now() - m.t < RECENT_MS)) {
       setDelta(team.score - m.score)
     }
+    mounted.current = true
     memory.set(team.id, { score: team.score, t: Date.now() })
   }, [team.id, team.score])
 
