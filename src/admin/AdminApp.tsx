@@ -777,7 +777,7 @@ const FLAG_LABEL: Record<AdminFlag['status'], string> = {
 function Reports() {
   const { data, err, reload } = useLoad<AdminFlag[]>(listFlags)
   const list = useBank()
-  const { data: edits, reload: reloadEdits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: edits, err: editsErr, reload: reloadEdits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
   const { data: extra } = useLoad<string[]>(listExtraCategories)
   /* البنك بعد تركيب التعديلات عليه — كما يراه اللاعب: بالمشحون وحده كان
      بلاغٌ على سؤالٍ أضافته اللوحة يظهر معرّفاً بلا نصّ، والمعدَّلُ بنصّه القديم.
@@ -842,7 +842,7 @@ function Reports() {
     }
   }
 
-  if (err) return <p className="a-err">{err}</p>
+  if (err ?? editsErr) return <p className="a-err">{err ?? editsErr}</p>
   if (!data) return <p className="a-note">…</p>
   if (data.length === 0) return <p className="a-note">لا بلاغات.</p>
 
@@ -1770,7 +1770,7 @@ function QuestionForm({
  */
 function Categories() {
   const bank = useBank()
-  const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: edits, err: editsErr } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
   const { data: cats, err, reload } = useLoad<CategoryRow[]>(listCategoryRows)
   /* التصنيفات تُقرأ مستقلّةً عن الفئات: التصنيف الفارغ الذي لم تدخله فئةٌ
      بعدُ لا أثر له في صفوف الفئات — انظر `listGroups`. */
@@ -2000,7 +2000,8 @@ function Categories() {
     }
   }
 
-  if (err) return <p className="a-err">{err}</p>
+  /* خطأُ أيٍّ من القراءتين يُقال، وإلّا بقيت الصفحة على «…» بلا سبب (مراجعة ٢٥ سبتمبر). */
+  if (err ?? editsErr) return <p className="a-err">{err ?? editsErr}</p>
   if (!rows || !ordered) return <p className="a-note">…</p>
 
   return (
@@ -2450,12 +2451,12 @@ function Uploads() {
     ...(await listArt('questions')),
     ...(await listArt('categories')),
   ])
-  const { data: edits } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
-  const { data: cats } = useLoad<CategoryRow[]>(listCategoryRows)
+  const { data: edits, err: editsErr } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
+  const { data: cats, err: catsErr } = useLoad<CategoryRow[]>(listCategoryRows)
   /* المسوّدات المعلَّقة تستعمل الدلو نفسه (حارسُ `agent_submit_drafts` لا
      يقبل غيره) — فصورةُ مسوّدةٍ لم تُعتمد كانت تظهر «بلا استعمال» وتُحذف، ثمّ
      يدخل سؤالُها البنكَ بصورةٍ مكسورة. */
-  const { data: drafts } = useLoad<DraftRow[]>(async () => {
+  const { data: drafts, err: draftsErr } = useLoad<DraftRow[]>(async () => {
     const pending = (await listDraftBatches()).filter((b) => b.status === 'pending')
     return (await Promise.all(pending.map((b) => listDraftRows(b.batch)))).flat()
   })
@@ -2502,8 +2503,11 @@ function Uploads() {
     setBusy(null)
   }
 
-  if (err) return <p className="a-err">{err}</p>
-  if (!files || !edits || !cats) return <p className="a-note">…</p>
+  /* لا عرضَ قبل المسوّدات: قبلها تبدو صورُها «بلا استعمال» ويمرّ حذفُها — وهي
+     الحادثة نفسها التي كتب لأجلها التعليق أعلاه. وخطأُ أيّ قراءة يُقال. */
+  const loadErr = err ?? editsErr ?? catsErr ?? draftsErr
+  if (loadErr) return <p className="a-err">{loadErr}</p>
+  if (!files || !edits || !cats || !drafts) return <p className="a-note">…</p>
 
   const orphans = files.filter((f) => !users.has(f.url)).length
 
@@ -2852,14 +2856,25 @@ function Drafts() {
     setBusy(true)
     setMsg(null)
     let n = 0
+    let done = 0
     try {
-      for (const b of picked) n += await rejectDrafts(b)
+      for (const b of picked) {
+        n += await rejectDrafts(b)
+        done++
+      }
       setMsg({ ok: true, text: `رُفضت ${picked.size} دفعة · ${n} مسوّدة` })
       setPicked(new Set())
       setOpen(null)
       reload()
     } catch (e) {
-      setMsg({ ok: false, text: e instanceof Error ? e.message : 'تعذّر الرفض' })
+      /* ما رُفض قبل الفشل رُفض فعلاً — كالاعتماد: يُقال ويُعاد التحميل، وإلّا
+         بقيت الدفعات المرفوضة تعرض «تنتظر» بمربّعاتها. */
+      setMsg({
+        ok: false,
+        text: (e instanceof Error ? e.message : 'تعذّر الرفض') + (done ? ` — بعد رفض ${done} دفعة` : ''),
+      })
+      setPicked(new Set())
+      reload()
     } finally {
       setBusy(false)
     }
