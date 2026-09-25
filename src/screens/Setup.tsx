@@ -207,15 +207,15 @@ export function Setup({
     } catch (e) {
       /* رسائل الجاهزية عربيّةٌ جاهزة من المحرّك (`notReadyMessage`) وتُعرض
          كما هي: هي تسمّي الفئة التي سقطت، و«تعذّر بدء اللعبة» لا يسمّي شيئاً.
-         ويُميَّز نصُّها بأنّه ليس أحد الرمزين المعروفين. */
+         ويُميَّز نصُّها بأنّه عربيّ: ما سواه — رموز الخادم («bad_session»)
+         وأعطال الشبكة («Failed to fetch»، «request timed out») — يُعرض
+         بالرسالة العامّة لا خاماً بالإنجليزيّة أمام المجلس. */
       const msg =
-        e instanceof Error
-          ? e.message === 'no_balance'
-            ? 'انتهى رصيدك — أضف كود هدية من «حسابي»'
-            : /^[a-z_]+$/.test(e.message)
-              ? 'تعذّر بدء اللعبة، تحقّق من اتصالك'
-              : e.message
-          : 'تعذّر بدء اللعبة، تحقّق من اتصالك'
+        e instanceof Error && e.message === 'no_balance'
+          ? 'انتهى رصيدك — أضف كود هدية من «حسابي»'
+          : e instanceof Error && /[؀-ۿ]/.test(e.message)
+            ? e.message
+            : 'تعذّر بدء اللعبة، تحقّق من اتصالك'
       setErr(msg)
       setBusy(false)
     }

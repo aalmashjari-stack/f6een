@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { DEFAULT_REQUEST_TIMEOUT_MS, withTimeout } from './fetchTimeout'
 
 /* عميل Supabase — نسخة واحدة للتطبيق كلّه.
  *
@@ -22,7 +23,19 @@ if (!url || !key) {
   )
 }
 
+/* مهلة كلّ طلب — تُقرأ عند الطلب لا عند الإنشاء (انظر `fetchTimeout.ts`). */
+let requestTimeoutMs = DEFAULT_REQUEST_TIMEOUT_MS
+
+/** اللوحة ترفعها من مدخلها: اعتمادُ دفعةٍ أو رفعُ ملفٍّ قد يطول بحقّ. */
+export function setRequestTimeout(ms: number): void {
+  requestTimeoutMs = ms
+}
+
 export const supabase = createClient(url, key, {
+  /* `global.fetch` يصل إلى العميل كلّه — التجديدُ في auth وPostgREST والدوالّ
+     — فالمهلة تحرس المسار من أوّله؛ وهو ما يعلق على الآيفون بعد تعليق
+     التطبيق: طلبٌ أُسقط بلا ردّ يبقي كلّ ما بعده معلّقاً (`fetchTimeout.ts`). */
+  global: { fetch: withTimeout(globalThis.fetch.bind(globalThis), () => requestTimeoutMs) },
   auth: {
     /* الجلسة تُحفظ وتُجدَّد وحدها: الحكم يفتح اللعبة على جواله مرّة كل أسبوعين،
        ولا يُطالَب بتسجيل دخول جديد كلّما فتحها. */
