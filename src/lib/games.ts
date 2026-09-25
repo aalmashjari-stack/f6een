@@ -169,18 +169,23 @@ const GIFT_ERRORS: Record<string, string> = {
   code_expired: 'انتهت صلاحية هذا الكود',
   code_exhausted: 'اكتمل عدد إضافات هذا الكود',
   code_already_used: 'أضفت هذا الكود من قبل',
+  too_many_attempts: 'محاولات كثيرة اليوم — جرّب غداً',
+  not_authenticated: 'ادخل بحسابك أوّلاً',
 }
 
-/** إضافة كود هدية — يُرجع عدد الألعاب الممنوحة. */
+/**
+ * إضافة كود هدية — يُرجع عدد الألعاب الممنوحة.
+ *
+ * الخادم يعيد `{games}` أو `{error}` لا استثناءً (منذ ٢٥ سبتمبر ٢٠٢٦): الفشل
+ * بـ`raise` كان يردّ معه تسجيلَ المحاولة، والحدّ اليوميّ (خمس) يحتاجه.
+ */
 export async function redeemGiftCode(code: string): Promise<number> {
   const { data, error } = await supabase.rpc('redeem_gift_code', { p_code: code.trim() })
-  if (error) {
-    for (const [key, msg] of Object.entries(GIFT_ERRORS)) {
-      if (error.message.includes(key)) throw new Error(msg)
-    }
-    throw error
-  }
-  return data as number
+  if (error) throw error
+  const r = (data ?? {}) as { games?: number; error?: string }
+  if (r.error) throw new Error(GIFT_ERRORS[r.error] ?? 'تعذّرت الإضافة')
+  if (typeof r.games !== 'number') throw new Error('تعذّرت الإضافة')
+  return r.games
 }
 
 /**
