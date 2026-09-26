@@ -24,6 +24,10 @@
           document.documentElement.setAttribute('data-portrait-ok', '')
         /* والتطبيقُ المثبَّت لا بوّابة فيه أصلاً: اتجاهُه بيده
            (`src/lib/orientation.ts`)، وجسرُ Capacitor حاضرٌ قبل هذا السطر. */
+        /* الآيباد الطوليّ في المتصفّح بلا بوّابة قبل اللعبة (theme.css)؛
+           والسمة من هنا لا من React كي لا تومض البوّابة قبل الإقلاع —
+           App.tsx يرفعها حين تبدأ لعبة. */
+        document.documentElement.setAttribute('data-pregame', '')
         if (window.Capacitor && window.Capacitor.isNativePlatform())
           document.documentElement.setAttribute('data-native', '')
       } catch (e) {}

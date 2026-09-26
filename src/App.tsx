@@ -167,6 +167,11 @@ export default function App() {
   const inGame = state !== null
   useEffect(() => {
     lockOrientation(inGame ? 'landscape' : 'portrait')
+    /* وفي المتصفّح: الآيباد الطوليّ يرى ما قبل اللعبة كما يراه التطبيق،
+       والبوّابة تعود له من «ابدأ» (علي ٢٧ سبتمبر ٢٠٢٦: «الشكل يطلع نفس
+       الموقع»). السمة تُوضع أوّلاً في index.html قبل أوّل رسم؛ والقاعدة
+       في theme.css. */
+    document.documentElement.toggleAttribute('data-pregame', !inGame)
   }, [inGame])
   /* صفّ الجلسة على الخادم. يُقرأ من الحفظ المحلّي كي ينجو من إغلاق المتصفّح:
      بدونه تبقى الجلسة مفتوحة على الخادم بعد أن تنتهي على الجهاز، فيردّها
