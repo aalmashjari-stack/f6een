@@ -1185,6 +1185,13 @@ export function Setup({
             width:clamp(34px,2.6vw,44px); border-radius:50%;
           }
         }
+        /* الآيباد الطوليّ وما يشبهه: القاعدة الأساس (1.4vw) تعطي نحو 12
+           بكسلاً على 834 فتُقرأ الروابط بجهد إلى جانب الشعار (علي ٢٧ سبتمبر
+           ٢٠٢٦: «كبّرها»). الارتفاع شرطٌ كي لا يبلغها الجوال الأفقيّ. */
+        @media (min-width:700px) and (min-height:600px) {
+          html[data-skin] body .screen.setup .hnav { font-size:15px; }
+          html[data-skin] body .screen.setup .hnav-buy { padding:9px 20px; }
+        }
         @media (min-width:900px) and (orientation: landscape) {
           html[data-skin] body .screen.setup .hero { padding-block:clamp(22px,4dvh,40px) clamp(18px,3dvh,32px); }
           html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(64px,5.4vw,104px); }
