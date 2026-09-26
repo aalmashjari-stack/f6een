@@ -424,11 +424,14 @@ html[data-skin='blocks'] .q-letter {
   transform: rotate(-3deg);
 }
 
+/* حدّ الحبر نفسه الذي على بطاقات المراحل والفريقين (علي ٢٦ سبتمبر ٢٠٢٦) —
+   كان رماديّاً شفيفاً فتُقرأ الفئاتُ وحدها خارج نظام الصفحة. والمرور يزيد
+   ظلّاً صلباً بدل أن يغمّق الحدّ. الرماديّ باقٍ للمطفأة حين يكتمل اللوح. */
 html[data-skin='blocks'] body .screen .catchip {
   border-radius: var(--n-r1);
-  box-shadow: 0 0 0 2px rgba(34,32,28,.28);
+  box-shadow: 0 0 0 2px var(--n-ink);
 }
-html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink), 3px 3px 0 var(--n-ink); }
 html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px rgba(34,32,28,.18); }
 html[data-skin='blocks'] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
 html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 4px var(--n-accent), 4px 4px 0 var(--n-ink); }

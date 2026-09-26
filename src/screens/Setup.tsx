@@ -225,6 +225,12 @@ export function Setup({
     <div className="screen setup">
       {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
           يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
+      {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
+          العموديّ (‎overflow-y:auto‎) يجرّ معه قصّاً أفقيّاً بحكم CSS، فكان
+          يبتلع تمدّدَ الشريط تحت أذن الآيفون — يُحسب ولا يُرسم.
+          والرأس داخله (علي ٢٦ سبتمبر ٢٠٢٦): كان ثابتاً فوقه يأكل قرابة ربع
+          الجوال بشعارٍ وحده، فصار يصعد مع الصفحة. لم يعد يعبر الحافّة. */}
+      <div className="setup-scroll">
       <div className="hero">
         <BrandLogo className="hero-logo" />
 
@@ -269,10 +275,6 @@ export function Setup({
         )}
       </div>
 
-      {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
-          العموديّ (‎overflow-y:auto‎) يجرّ معه قصّاً أفقيّاً بحكم CSS، فكان
-          يبتلع تمدّدَ الشريط تحت أذن الآيفون — يُحسب ولا يُرسم. */}
-      <div className="setup-scroll">
       {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
           في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
       <div className="setup-body">
@@ -923,11 +925,20 @@ export function Setup({
         .cats-sec-title::after {
           content:''; flex:1; height:1px; background:var(--border);
         }
+        /* صفوفٌ ملفوفة لا شبكة: الصفّ الأخير الناقص يتوسّط بدل أن يلتصق
+           باليمين وبجانبه خانةٌ فارغة (علي ٢٦ سبتمبر ٢٠٢٦ — «شعارات أندية»
+           و«كأس العالم» وحدهما). عدد الأعمدة بعرض الشاشة، ويقارب ما
+           كان auto-fill يعطيه: 3 في الجوال و6 في الموقع العريض. */
         .cats-grid {
-          display:grid;
-          grid-template-columns:repeat(auto-fill, minmax(clamp(116px,13vw,172px), 1fr));
-          gap:clamp(8px,1.1vw,16px);
+          --cols:2; --cg:clamp(8px,1.1vw,16px);
+          display:flex; flex-wrap:wrap; justify-content:center;
+          gap:var(--cg);
         }
+        .cats-grid > .cc-cell { flex:0 0 calc((100% - (var(--cols) - 1) * var(--cg)) / var(--cols)); }
+        @media (min-width:360px) { .cats-grid { --cols:3; } }
+        @media (min-width:620px) { .cats-grid { --cols:4; } }
+        @media (min-width:820px) { .cats-grid { --cols:5; } }
+        @media (min-width:1020px) { .cats-grid { --cols:6; } }
         /* البطاقة رسمةُ الفئة كاملةً، والاسم على لوحةٍ داكنة أسفلها — نفس بناء
            بطاقة العجلة: الرسمات فاتحة متباينة والاسمُ عليها عارياً يضيع. */
         .catchip {
@@ -1101,27 +1112,21 @@ export function Setup({
         /* عنوان كتلة الفريقين: لافتةٌ بيضاء بحدّ حبرٍ وظلٍّ صلب في الوسط —
            شارةُ «الفريق الأول» نفسُها أكبر، فتُقرأ من عائلة الصفحة لا سطراً
            عارياً (طلب علي ١٧ سبتمبر ٢٠٢٦: «نسّق الجملة»). */
-        html[data-skin] body .screen.setup .setup-title {
-          align-self:center; margin:0;
-          padding:clamp(6px,1dvh,9px) clamp(18px,2.4vw,26px);
-          border-radius:999px; background:var(--n-surface, #fff);
-          box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
-          color:var(--n-ink, #22201C); font-weight:800; font-size:clamp(15px,1.7vw,19px);
-          line-height:1.4; text-align:center;
-        }
-        /* لافتة المراحل بلون الهويّة (طلب علي ١٧ سبتمبر ٢٠٢٦: «أضف لون»):
-           البرتقاليّ الأحمر هو لون العناوين في blocks.css، فالكتلة به ونصّها
-           أبيض، والحدّ والظلّ حبرٌ كما هما. */
+        /* ثمّ «ابسط وارتب» (علي ٢٦ سبتمبر ٢٠٢٦، مع رأسٍ بلا تذكرة): العناوين
+           الثلاثة سطرٌ واحد الهيئة في اليمين لا لافتاتٌ في الوسط — الكتل
+           البيضاء بحدٍّ وظلّ صارت للبطاقات وحدها، والعنوان نصٌّ يقودها. */
+        html[data-skin] body .screen.setup .setup-title,
         html[data-skin] body .screen.setup .setup-title.brand {
-          background:var(--n-brand, #E8542F); color:#fff;
-          /* فسحةٌ أوسع تحتها من فسحة الكتلة (طلب علي): اللافتة تمهيدٌ
-             للتذاكر الثلاث لا سطرَ عنوانٍ ملاصقاً لها. */
-          margin-bottom:clamp(8px, 1.6dvh, 22px);
+          align-self:stretch; margin:0; padding:0;
+          background:none; box-shadow:none; border-radius:0;
+          color:var(--n-ink, #22201C); font-weight:800;
+          font-size:clamp(19px,1.9vw,24px); line-height:1.4;
+          text-align:start; text-wrap:balance;
         }
-        /* الجوال الطوليّ: أضيق قليلاً (علي ١٧ سبتمبر ٢٠٢٦: «صغّر المسافة
-           قليلاً» عن لقطة الآيفون) — الموقع العريض على مقاسه المعتمَد. */
-        @media (orientation: portrait) and (max-width:640px) {
-          html[data-skin] body .screen.setup .setup-title.brand { margin-bottom:clamp(2px, .7dvh, 8px); }
+        /* عنوان الفئات وشارة «اكتمل اللوح» في سطرٍ واحد: العنوان يميناً والشارة يساراً. */
+        html[data-skin] body .screen.setup .cats-head {
+          flex-direction:row; justify-content:space-between; align-items:baseline;
+          text-align:start; margin:0 0 clamp(10px,2dvh,18px);
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
@@ -1135,94 +1140,83 @@ export function Setup({
            قصيرة، وفي الطول يتضخّم dvh (874 بدل 390) فينتفخ رقمُ المرحلة إلى
            38px والشعارُ إلى سقفه. هنا تُقيَّد بالعرض. والموقع لا يبلغ هذه
            الطبقة على اللمس: بوّابتُه تحجب الطوليّ قبلها. */
-        /* ─── الهيرو تذكرةٌ لا شريط (١٧ سبتمبر ٢٠٢٦) ────────────────────
-           كان شريطاً أبيض بعرض الشاشة يعبر شريطَ الحالة، بشعارٍ صغير وكبسولات
-           بجانبه — يُقرأ شريطَ أدوات لا واجهةً. صار تذكرةً كبيرة بلغة الصفحة
-           نفسها: كتلة بيضاء داخل هوامش الصفحة، بحدّ حبرٍ وظلٍّ صلب كبطاقات
-           المراحل والفريقين تحتها، والشعارُ فيها كبيرٌ.
-           بُنيت للجوال الطوليّ أوّلاً، ثمّ عُمّمت على العرض والموقع في اليوم
-           نفسه (علي: «غيّر الهيرو في الموقع نفس التطبيق») — فسقط شريطُ السدو
-           من العرض. وما يفترق: في العرض تبقى الكبسولات صفّاً داخل التذكرة
-           بلا زرّ ☰ («ما تحتاج toggle menu في الموقع»)، وفي الجوال الطوليّ
-           وحده تنطوي خلف ☰ لوحاً ينسدل تحتها. الوزن html[data-skin] body
-           .screen.setup يغلب قواعد الشريط في blocks.css وneo.css وshowtime.css. */
+        /* ─── الرأس بلا تذكرة (٢٦ سبتمبر ٢٠٢٦) ─────────────────────────
+           من ١٧ سبتمبر كان الهيرو تذكرةً: كتلةٌ بيضاء بحدّ حبرٍ وظلٍّ صلب،
+           وخطُّ تثقيبٍ منقّط داخلها وغسلةٌ بلونَي الفريقين. طلب علي «غيّر
+           فكرة التذكرة… وخلّ شكل الصفحة أبسط وأرتب»، واعتمد المعاينة المنفصلة:
+           الشعار على أرضيّة الصفحة نفسها بلا كتلةٍ ولا ظلّ، وتحته خطٌّ فاصلٌ
+           خافت وحده. الكتل البيضاء بحدٍّ وظلّ باقيةٌ للبطاقات تحته، فالرأس
+           لا ينافسها. الوزن html[data-skin] body .screen.setup يغلب قواعد
+           الشريط في blocks.css وneo.css وshowtime.css. */
         html[data-skin] body .screen.setup .hero {
           position:relative; overflow:visible;
           justify-content:space-between; align-items:center;
           height:auto; min-height:0;
-          /* داخل الهوامش لا عابرةً للحافّة: ‎#root‎ يترك شريطَ الحالة فوقها. */
-          margin:10px var(--pad-x) 0;
-          padding:clamp(24px,3.6dvh,32px) clamp(16px,2vw,28px);
-          border:0; border-radius:22px;
-          background:var(--n-surface, #fff);
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+          /* بلا هامش: الغلاف المتمرّر يحمل حشوة الصفحة الأفقيّة. */
+          margin:0;
+          padding:clamp(18px,3dvh,26px) 0 clamp(14px,2.4dvh,22px);
+          border:0; border-radius:0; background:none; box-shadow:none;
+          border-bottom:2px solid rgba(34,32,28,.14);
         }
-        /* بلا نسيج ولا سدو (علي ١٧ سبتمبر ٢٠٢٦: «ما أبي سدو، مو لازم»)، ثمّ
-           «لمسة خفيفة»: تذكرةٌ حقّاً — غسلةٌ ناعمة بلونَي الفريقين تعبر
-           الكتلة قطريّاً (أصفر عند البداية، تركواز عند النهاية) لا تتجاوز
-           العشرين بالمئة، وخطُّ تثقيبٍ منقّط داخل الحدّ كما في التذاكر.
-           لا شكل ولا نقش — لونٌ خافت وخطٌّ واحد. */
-        html[data-skin='blocks'] body .screen.setup .hero::before {
-          content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
-          border-radius:inherit;
-          background:linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18));
-        }
-        html[data-skin] body .screen.setup .hero::after {
-          content:''; position:absolute; inset:7px; z-index:0; pointer-events:none;
-          border:1.5px dashed rgba(34,32,28,.34); border-radius:15px;
-        }
+        html[data-skin] body .screen.setup .hero::before,
+        html[data-skin] body .screen.setup .hero::after { content:none; }
         html[data-skin] body .screen.setup .hero-logo.f6een-mark {
-          font-size:clamp(46px,13.5vw,60px);
+          font-size:clamp(52px,15vw,60px);
           /* بلا هامش: showtime.css يعطيه هامشَ بدايةٍ 20px ليبتعد عن القائمة
-             في العرض — الحشوة هنا تكفي؛ وفي الطوليّ كان يزيح الشعار عشرة
-             بكسلات عن المنتصف (قِيس: مركزه 191 والشريط 201). */
+             في العرض، وفي الطوليّ كان يزيح الشعار عن المنتصف. */
           margin:0;
         }
-        /* العرض: الشعار في اليمين (طلب علي: «ضع الشعار في اليمين») والكبسولات
-           صفٌّ في اليسار — الترتيب الذي كان في الشريط، داخل التذكرة؛ والغسلة
-           القطريّة نفسها التي في هيرو التطبيق («أضف تدرّج لوني خفيف»).
-           وعلى الشاشة العريضة تتّسع المساحات (علي: «وسّع المساحات، لديك
-           المساحة الكافية في الموقع»): حشوةٌ أعرض داخل التذكرة، شعارٌ أكبر،
-           وكبسولاتٌ أكبر بفواصل أوسع — مقاسات الجوال كانت تُترك كما هي على
-           شاشةٍ بعرض ألفَي بكسل فتبدو التذكرةُ فارغةً وأطرافُها مزدحمة. */
+        /* القائمة خارج لوح الجوال: روابط نصّيّة هادئة، و«شراء الألعاب» وحده
+           كبسولةٌ بلون الهويّة، والصوت دائرةٌ صغيرة — كانت أربعَ كبسولاتٍ
+           بحدود حبرٍ تتزاحم بجانب الشعار. */
+        @media (min-width:641px), (orientation: landscape) {
+          html[data-skin] body .screen.setup .hero-nav { gap:clamp(14px,2vw,28px); }
+          html[data-skin] body .screen.setup .hnav:not(.hnav-buy):not(.hnav-mute) {
+            background:none; box-shadow:none; border-radius:0;
+            padding:6px 2px; color:var(--n-ink-2, #57524A); font-weight:700;
+            border-bottom:2px solid transparent;
+          }
+          html[data-skin] body .screen.setup .hnav:not(.hnav-buy):not(.hnav-mute):hover {
+            transform:none; box-shadow:none;
+            color:var(--n-ink, #22201C); border-bottom-color:var(--n-ink, #22201C);
+          }
+          html[data-skin] body .screen.setup .hnav-mute {
+            display:grid; place-items:center; aspect-ratio:1; padding:0;
+            width:clamp(34px,2.6vw,44px); border-radius:50%;
+          }
+        }
         @media (min-width:900px) and (orientation: landscape) {
-          html[data-skin] body .screen.setup .hero {
-            padding:clamp(28px,4.2dvh,48px) clamp(32px,3.2vw,72px);
-            border-radius:28px;
-          }
-          html[data-skin] body .screen.setup .hero::after { inset:9px; border-radius:20px; }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark {
-            font-size:clamp(60px,4.6vw,96px);
-          }
-          html[data-skin] body .screen.setup .hero-nav { gap:clamp(14px,1.4vw,30px); }
-          html[data-skin] body .screen.setup .hnav {
-            font-size:clamp(15px,1.05vw,21px);
-            padding:clamp(10px,1.3dvh,15px) clamp(20px,1.6vw,34px);
-          }
-          html[data-skin] body .screen.setup .hnav-mute { padding-inline:clamp(12px,1vw,18px); }
-          /* فسحة أوسع بين التذكرة و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
+          html[data-skin] body .screen.setup .hero { padding-block:clamp(22px,4dvh,40px) clamp(18px,3dvh,32px); }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(64px,5.4vw,104px); }
+          html[data-skin] body .screen.setup .hnav { font-size:clamp(15px,1.15vw,21px); }
+          html[data-skin] body .screen.setup .hnav-buy { padding:clamp(9px,1.2dvh,14px) clamp(20px,1.7vw,32px); }
+          /* فسحة أوسع بين الرأس و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
              تغلب clamp(18px,4.5dvh,56px) التي في blocks.css. */
           html[data-skin] body .screen.setup .setup-body { margin-top:clamp(56px, 12dvh, 150px); }
-          /* وبين الأقسام كذلك (علي: «زد» عن المسافة بين التذاكر ولافتة الفريقين). */
+          /* وبين الأقسام كذلك (علي: «زد» عن المسافة بين الأقسام). */
           html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(40px, 8dvh, 120px); }
         }
-        /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): حشوةٌ أخفّ فلا تأكل
-           التذكرةُ ثلث الشاشة — الإعداد يُمرَّر لكنّ الزينة لا تشتري تمريراً. */
+        /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): الرأس أقصر فلا يأكل ثلث الشاشة. */
         @media (max-height:480px) {
-          html[data-skin] body .screen.setup .hero { padding-block:12px; }
+          html[data-skin] body .screen.setup .hero { padding-block:8px; }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(34px,10dvh,46px); }
         }
         /* ─── الجوال الطوليّ: الكبسولات خلف ☰ ─── */
         @media (orientation: portrait) and (max-width:640px) {
-          html[data-skin] body .screen.setup .hero { justify-content:center; padding-inline:16px; }
+          html[data-skin] body .screen.setup .hero { justify-content:center; }
+          /* الرأس بلا كتلة أخفّ من التذكرة، ففسحة blocks.css تحته (≈40) كانت
+             تُقرأ فراغاً (علي ٢٦ سبتمبر ٢٠٢٦: «صغّرهم»). */
+          html[data-skin] body .screen.setup .setup-body { margin-top:clamp(10px, 2dvh, 20px); }
           html[data-skin] body .screen.setup .hnav-menu {
             display:grid; place-items:center;
             position:absolute; z-index:2;
-            /* يسار الكتلة (طلب علي): نهاية السطر في RTL. */
-            inset-inline-end:12px; top:12px;
-            width:38px; height:38px; padding:0;
+            /* يسار الرأس (طلب علي): نهاية السطر في RTL، وفي منتصف ارتفاع الشعار. */
+            inset-inline-end:0; top:50%; transform:translateY(-50%);
+            width:40px; height:40px; padding:0;
             font-size:19px; line-height:1;
-            box-shadow:0 0 0 2px var(--n-ink, #22201C), 2px 3px 0 var(--n-ink, #22201C);
+            box-shadow:0 0 0 2px var(--n-ink, #22201C);
           }
+          html[data-skin] body .screen.setup .hnav-menu:hover { transform:translateY(-50%); }
           html[data-skin] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
           /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت التذكرة مباشرةً،
              بالهيئة نفسها فيُقرأ امتداداً لها لا نافذةً غريبة. */
