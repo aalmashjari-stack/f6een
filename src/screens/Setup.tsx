@@ -1119,7 +1119,10 @@ export function Setup({
         html[data-skin] body .screen.setup .setup-title.brand {
           align-self:stretch; margin:0; padding:0;
           background:none; box-shadow:none; border-radius:0;
-          color:var(--n-ink, #22201C); font-weight:800;
+          color:var(--n-ink, #22201C);
+          /* العناوين الثلاثة بخطّ الجهاز نفسه (علي ٢٧ سبتمبر ٢٠٢٦: «خطّ عادي
+             طبيعي») — SF Arabic على أبل، وخطّ النظام في غيرها. */
+          font-family:system-ui, -apple-system, 'Segoe UI', sans-serif; font-weight:600;
           font-size:clamp(19px,1.9vw,24px); line-height:1.4;
           text-align:start; text-wrap:balance;
         }
