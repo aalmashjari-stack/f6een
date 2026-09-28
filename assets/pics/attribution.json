@@ -14334,5 +14334,33 @@
     "artist": "Alexandr frolov",
     "page": "File:Sarlyk Yak2.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3ASarlyk_Yak2.jpg"
+  },
+  {
+    "key": "animal-frilledlizard",
+    "licence": "CC BY 2.0",
+    "artist": "Matt from Melbourne, Australia",
+    "page": "File:Frill-necked Lizard (Chlamydosaurus kingii) (8692622586).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFrill-necked_Lizard_(Chlamydosaurus_kingii)_(8692622586).jpg"
+  },
+  {
+    "key": "animal-hoatzin",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Hoatzin (Opisthocomus hoazin) Rio Napo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHoatzin_(Opisthocomus_hoazin)_Rio_Napo.jpg"
+  },
+  {
+    "key": "animal-markhor",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Rufus46",
+    "page": "File:Markhor Schraubenziege Capra falconeri Zoo Augsburg-02.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMarkhor_Schraubenziege_Capra_falconeri_Zoo_Augsburg-02.jpg"
+  },
+  {
+    "key": "animal-molamola",
+    "licence": "Public domain",
+    "artist": "U.S. National Oceanic and Atmospheric Administration",
+    "page": "File:Mola mola.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMola_mola.jpg"
   }
 ]
