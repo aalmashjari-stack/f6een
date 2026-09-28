@@ -10,6 +10,7 @@ import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
+import { ExplainerVideo } from '../components/ExplainerVideo'
 const MIN = 2
 const MAX = 6
 
@@ -59,6 +60,7 @@ export function Setup({
      «1 الجولة الجماعية» وعلامةُ i تفتح الشرح المختصر والنقاط تحته. واحدة
      في كلّ مرّة — الشرح يُقرأ مرّةً لا يُقارَن. */
   const [openStage, setOpenStage] = useState<number | null>(null)
+  const [video, setVideo] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -283,7 +285,14 @@ export function Setup({
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
         <section className="setup-block">
-          <h2 className="setup-title brand">مراحل اللعبة</h2>
+          {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته. */}
+          <div className="stages-head">
+            <h2 className="setup-title brand">مراحل اللعبة</h2>
+            <button className="xv-open" onClick={() => setVideo(true)}>
+              <span aria-hidden="true">▶</span> شاهد الشرح
+            </button>
+          </div>
+          {video && <ExplainerVideo onClose={() => setVideo(false)} />}
           <div className="stages">
             {STAGES.map((s, i) => {
               const open = openStage === i
@@ -1126,6 +1135,22 @@ export function Setup({
           font-size:clamp(19px,1.9vw,24px); line-height:1.4;
           text-align:start; text-wrap:balance;
         }
+        /* عنوان المراحل وزرّ الفيديو: العنوان يميناً والزرّ يساراً، كعنوان الفئات وشارته.
+           الزرّ بلغة الكتل: أبيض بحدّ حبرٍ وظلٍّ صلب، واللون في المثلّث وحده. */
+        html[data-skin] body .screen.setup .stages-head {
+          display:flex; align-items:center; justify-content:space-between; gap:12px;
+          align-self:stretch;
+        }
+        html[data-skin] body .screen.setup .xv-open {
+          font:inherit; font-weight:800; font-size:clamp(13px,1.5vw,16px); cursor:pointer;
+          display:inline-flex; align-items:center; gap:.45em; white-space:nowrap;
+          padding:.35em 1.05em; border:0; border-radius:999px;
+          background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+          transition:transform .14s var(--ease-spring), box-shadow .14s ease;
+        }
+        html[data-skin] body .screen.setup .xv-open span { color:var(--n-brand, #E8542F); font-size:.85em; }
+        html[data-skin] body .screen.setup .xv-open:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C), 1px 1px 0 var(--n-ink, #22201C); }
         /* عنوان الفئات وشارة «اكتمل اللوح» في سطرٍ واحد: العنوان يميناً والشارة يساراً. */
         html[data-skin] body .screen.setup .cats-head {
           flex-direction:row; justify-content:space-between; align-items:baseline;
