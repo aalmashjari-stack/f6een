@@ -13865,5 +13865,474 @@
     "artist": "Google Maps",
     "page": "خرائط قوقل — جمعية الخالدية التعاونية",
     "source": "https://www.google.com/maps/@29.328643,47.963065,16z"
+  },
+  {
+    "key": "animal-aardwolf",
+    "licence": "CC BY 4.0",
+    "artist": "Stefan Haag",
+    "page": "File:Aardwolf, Buffalo Springs National Park, Kenya 1 (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAardwolf%2C_Buffalo_Springs_National_Park%2C_Kenya_1_(cropped).jpg"
+  },
+  {
+    "key": "animal-anteater",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Malene Thyssen",
+    "page": "File:Myresluger2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMyresluger2.jpg"
+  },
+  {
+    "key": "animal-armadillo",
+    "licence": "CC BY 4.0",
+    "artist": "Aramburu Carlos",
+    "page": "File:Dasypus novemcinctus en Zoológico de Paraguaná.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ADasypus_novemcinctus_en_Zool%C3%B3gico_de_Paraguan%C3%A1.jpg"
+  },
+  {
+    "key": "animal-axolotl",
+    "licence": "CC BY-SA 3.0",
+    "artist": "LoKiLeCh",
+    "page": "File:Axolotl ganz.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAxolotl_ganz.jpg"
+  },
+  {
+    "key": "animal-ayeaye",
+    "licence": "CC BY 2.0",
+    "artist": "nomis-simon",
+    "page": "File:Wild aye aye.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWild_aye_aye.jpg"
+  },
+  {
+    "key": "animal-babirusa",
+    "licence": "CC BY-SA 2.0 de",
+    "artist": "Masteraah at German Wikipedia",
+    "page": "File:Hirscheber1a.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHirscheber1a.jpg"
+  },
+  {
+    "key": "animal-baboon",
+    "licence": "CC BY 3.0",
+    "artist": "Manuel González Olaechea y Franco",
+    "page": "File:Papio hamadryas pair.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APapio_hamadryas_pair.jpg"
+  },
+  {
+    "key": "animal-baldeagle",
+    "licence": "CC BY 2.0",
+    "artist": "Andy Morffew from Itchen Abbas, Hampshire, UK",
+    "page": "File:Bald eagle about to fly in Alaska (2016).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABald_eagle_about_to_fly_in_Alaska_(2016).jpg"
+  },
+  {
+    "key": "animal-beaver",
+    "licence": "CC BY-SA 2.0",
+    "artist": "Steve from Washington, DC, USA",
+    "page": "File:American Beaver.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAmerican_Beaver.jpg"
+  },
+  {
+    "key": "animal-beluga",
+    "licence": "CC BY 2.0",
+    "artist": "Javier Yaya Tur / CIUDAD DE LAS ARTES Y LAS CIENCIAS from Valencia, España",
+    "page": "File:Oceanogràfic 29102004.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AOceanogr%C3%A0fic_29102004.jpg"
+  },
+  {
+    "key": "animal-birdofparadise",
+    "licence": "CC BY-SA 4.0",
+    "artist": "JJ Harrison",
+    "page": "File:Wilson's Bird-of-Paradise 0A2A1913.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWilson's_Bird-of-Paradise_0A2A1913.jpg"
+  },
+  {
+    "key": "animal-bison",
+    "licence": "Public domain",
+    "artist": "Jack Dykinga",
+    "page": "File:American bison k5680-1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AAmerican_bison_k5680-1.jpg"
+  },
+  {
+    "key": "animal-blobfish",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Rachel Caauwe",
+    "page": "File:Two Psychrolutes marcidus.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ATwo_Psychrolutes_marcidus.jpg"
+  },
+  {
+    "key": "animal-capybara",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Giles Laurent",
+    "page": "File:Capybaracropped.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACapybaracropped.jpg"
+  },
+  {
+    "key": "animal-caracal",
+    "licence": "CC BY 2.0",
+    "artist": "Derek Keats",
+    "page": "File:Caracal on the road, early morning in Kgalagadi (36173878220) (cropped).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACaracal_on_the_road%2C_early_morning_in_Kgalagadi_(36173878220)_(cropped).jpg"
+  },
+  {
+    "key": "animal-cassowary",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Summerdrought",
+    "page": "File:Southern Cassowary 7071.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASouthern_Cassowary_7071.jpg"
+  },
+  {
+    "key": "animal-crownedcrane",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Grey crowned crane (Balearica regulorum gibbericeps).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGrey_crowned_crane_(Balearica_regulorum_gibbericeps).jpg"
+  },
+  {
+    "key": "animal-fennec",
+    "licence": "CC BY 2.0",
+    "artist": "Drew Avery",
+    "page": "File:Fennec Fox Vulpes zerda.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFennec_Fox_Vulpes_zerda.jpg"
+  },
+  {
+    "key": "animal-fossa",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Ran Kirlian",
+    "page": "File:Cryptoprocta Ferox.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACryptoprocta_Ferox.JPG"
+  },
+  {
+    "key": "animal-gerenuk",
+    "licence": "CC BY 2.0",
+    "artist": "Laura Wolf",
+    "page": "File:San diego zoo group 3 DSC 0908 (35305473932).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASan_diego_zoo_group_3_DSC_0908_(35305473932).jpg"
+  },
+  {
+    "key": "animal-gharial",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Gharial (Gavialis gangeticus) male.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGharial_(Gavialis_gangeticus)_male.jpg"
+  },
+  {
+    "key": "animal-goldensnub",
+    "licence": "CC BY-SA 2.0",
+    "artist": "Giovanni Mari",
+    "page": "File:Golden Snub-nosed Monkeys, Qinling Mountains - China.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGolden_Snub-nosed_Monkeys%2C_Qinling_Mountains_-_China.jpg"
+  },
+  {
+    "key": "animal-hammerhead",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Albert kok",
+    "page": "File:Great hammerhead2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGreat_hammerhead2.jpg"
+  },
+  {
+    "key": "animal-honeybadger",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Sumeet Moghe",
+    "page": "File:Honey Badger.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHoney_Badger.jpg"
+  },
+  {
+    "key": "animal-hoopoe",
+    "licence": "CC BY 2.0",
+    "artist": "Greg Schechter from San Francisco, USA",
+    "page": "File:Israel. Eurasian Hoopoe (6497645007).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AIsrael._Eurasian_Hoopoe_(6497645007).jpg"
+  },
+  {
+    "key": "animal-houbara",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Kannan AS",
+    "page": "File:MacQueens Bustard in Greater Rann of Kutch, Gujarat, India.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMacQueens_Bustard_in_Greater_Rann_of_Kutch%2C_Gujarat%2C_India.jpg"
+  },
+  {
+    "key": "animal-hyrax",
+    "licence": "CC0",
+    "artist": "Naturedata",
+    "page": "File:Rock hyrax Serengeti National Park.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARock_hyrax_Serengeti_National_Park.jpg"
+  },
+  {
+    "key": "animal-ibex",
+    "licence": "CC BY 2.5",
+    "artist": "netzach farbiash",
+    "page": "File:PikiWiki Israel 38769 Male Ibex.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APikiWiki_Israel_38769_Male_Ibex.jpg"
+  },
+  {
+    "key": "animal-iguana",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Hans Hillewaert",
+    "page": "File:Iguana iguana (male resting).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AIguana_iguana_(male_resting).jpg"
+  },
+  {
+    "key": "animal-jerboa",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Elias Neideck",
+    "page": "File:Jaculus jaculus.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AJaculus_jaculus.jpg"
+  },
+  {
+    "key": "animal-kakapo",
+    "licence": "CC BY 2.0",
+    "artist": "Department of Conservation",
+    "page": "File:Kakapo Sirocco 1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKakapo_Sirocco_1.jpg"
+  },
+  {
+    "key": "animal-koala",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Diliff",
+    "page": "File:Koala climbing tree.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKoala_climbing_tree.jpg"
+  },
+  {
+    "key": "animal-leafyseadragon",
+    "licence": "CC BY-SA 4.0",
+    "artist": "James Rosindell",
+    "page": "File:Leafy Seadragon on Kangaroo Island.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALeafy_Seadragon_on_Kangaroo_Island.jpg"
+  },
+  {
+    "key": "animal-lemur",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Ring-tailed lemur (Lemur catta).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARing-tailed_lemur_(Lemur_catta).jpg"
+  },
+  {
+    "key": "animal-llama",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Andrija12345678",
+    "page": "File:Llamas, Vernagt-Stausee, Italy.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALlamas%2C_Vernagt-Stausee%2C_Italy.jpg"
+  },
+  {
+    "key": "animal-mandrill",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Katma0601",
+    "page": "File:Mandrill Albert September 2015 Zoo Berlin (2).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMandrill_Albert_September_2015_Zoo_Berlin_(2).jpg"
+  },
+  {
+    "key": "animal-manedwolf",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Jonathan Wilkins",
+    "page": "File:Lobo Guará andando.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ALobo_Guar%C3%A1_andando.jpg"
+  },
+  {
+    "key": "animal-meerkat",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Meerkat (Suricata suricatta) Tswalu.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AMeerkat_(Suricata_suricatta)_Tswalu.jpg"
+  },
+  {
+    "key": "animal-okapi",
+    "licence": "CC BY 2.0",
+    "artist": "Daniel Jolivet",
+    "page": "File:Saint-Aignan (Loir-et-Cher). Okapi.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASaint-Aignan_(Loir-et-Cher)._Okapi.jpg"
+  },
+  {
+    "key": "animal-orca",
+    "licence": "Public domain",
+    "artist": "Robert Pittman",
+    "page": "File:Killerwhales jumping.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AKillerwhales_jumping.jpg"
+  },
+  {
+    "key": "animal-pelican",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Great white pelican (Pelecanus onocrotalus).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AGreat_white_pelican_(Pelecanus_onocrotalus).jpg"
+  },
+  {
+    "key": "animal-platypus",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Duck-billed platypus (Ornithorhynchus anatinus) Scottsdale.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ADuck-billed_platypus_(Ornithorhynchus_anatinus)_Scottsdale.jpg"
+  },
+  {
+    "key": "animal-porcupine",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Quartl",
+    "page": "File:Hystrix cristata qtl1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHystrix_cristata_qtl1.jpg"
+  },
+  {
+    "key": "animal-proboscis",
+    "licence": "CC BY-SA 2.0",
+    "artist": "David Dennis",
+    "page": "File:Proboscis Monkey in Borneo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AProboscis_Monkey_in_Borneo.jpg"
+  },
+  {
+    "key": "animal-pygmyhippo",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Bardrock",
+    "page": "File:Hexaprotodon liberiensis in Edinburgh Zoo.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AHexaprotodon_liberiensis_in_Edinburgh_Zoo.JPG"
+  },
+  {
+    "key": "animal-quokka",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Christophe95",
+    "page": "File:Setonix brachyurus on Rottnest Island 1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASetonix_brachyurus_on_Rottnest_Island_1.jpg"
+  },
+  {
+    "key": "animal-raccoon",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Rhododendrites",
+    "page": "File:Raccoon in Central Park (35264).jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARaccoon_in_Central_Park_(35264).jpg"
+  },
+  {
+    "key": "animal-redpanda",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Sunuwargr",
+    "page": "File:Red Panda, Gentle Tree-Dweller of the Himalayas.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ARed_Panda%2C_Gentle_Tree-Dweller_of_the_Himalayas.jpg"
+  },
+  {
+    "key": "animal-saiga",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Andrey Giljov",
+    "page": "File:Saiga antelope at the Stepnoi Sanctuary.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASaiga_antelope_at_the_Stepnoi_Sanctuary.jpg"
+  },
+  {
+    "key": "animal-sandcat",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Payman sazesh",
+    "page": "File:Persian sand CAT.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APersian_sand_CAT.jpg"
+  },
+  {
+    "key": "animal-scarletibis",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Rafa Esteve",
+    "page": "File:Oceanografic Scarlet Ibis 02.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AOceanografic_Scarlet_Ibis_02.jpg"
+  },
+  {
+    "key": "animal-secretarybird",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Sumeet Moghe",
+    "page": "File:Secretary bird Mara for WC.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASecretary_bird_Mara_for_WC.jpg"
+  },
+  {
+    "key": "animal-shoebill",
+    "licence": "CC BY 2.0",
+    "artist": "Bob Owen",
+    "page": "File:Balaeniceps rex -Ueno Zoo, Tokyo, Japan-8a.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABalaeniceps_rex_-Ueno_Zoo%2C_Tokyo%2C_Japan-8a.jpg"
+  },
+  {
+    "key": "animal-sloth",
+    "licence": "Public domain",
+    "artist": "Stefan Laube (Tauchgurke)",
+    "page": "File:Bradypus.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ABradypus.jpg"
+  },
+  {
+    "key": "animal-slowloris",
+    "licence": "CC BY-SA 3.0",
+    "artist": "David Haring / Duke Lemur Center",
+    "page": "File:Nycticebus coucang 004.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ANycticebus_coucang_004.jpg"
+  },
+  {
+    "key": "animal-snowleopard",
+    "licence": "Public domain",
+    "artist": "Irbis1983",
+    "page": "File:Irbis4.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File%3AIrbis4.JPG"
+  },
+  {
+    "key": "animal-starnosedmole",
+    "licence": "Public domain",
+    "artist": "US National Parks Service",
+    "page": "File:Condylura.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ACondylura.jpg"
+  },
+  {
+    "key": "animal-stork",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:White stork (Ciconia ciconia) Białowieza.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWhite_stork_(Ciconia_ciconia)_Bia%C5%82owieza.jpg"
+  },
+  {
+    "key": "animal-sunbear",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Rushenb",
+    "page": "File:Sun-bear.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASun-bear.jpg"
+  },
+  {
+    "key": "animal-tapir",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Rufus46",
+    "page": "File:Schabrackentapir Tapirus indicus Tiergarten-Nuernberg-1.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASchabrackentapir_Tapirus_indicus_Tiergarten-Nuernberg-1.jpg"
+  },
+  {
+    "key": "animal-tarsier",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Philippine tarsier (Carlito syrichta fraterculus) Bohol.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3APhilippine_tarsier_(Carlito_syrichta_fraterculus)_Bohol.jpg"
+  },
+  {
+    "key": "animal-thornydevil",
+    "licence": "CC BY-SA 3.0",
+    "artist": "Bäras (talk · contribs)",
+    "page": "File:Thornydevil.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AThornydevil.jpg"
+  },
+  {
+    "key": "animal-toucan",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Giles Laurent",
+    "page": "File:006 Toco toucan in Encontro das Águas State Park Photo by Giles Laurent.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A006_Toco_toucan_in_Encontro_das_%C3%81guas_State_Park_Photo_by_Giles_Laurent.jpg"
+  },
+  {
+    "key": "animal-walrus",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Nixette",
+    "page": "File:Walrus in the Russian Arctic National Park, Novaya Zemlya 2015-2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AWalrus_in_the_Russian_Arctic_National_Park%2C_Novaya_Zemlya_2015-2.jpg"
+  },
+  {
+    "key": "animal-warthog",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Charles J. Sharp",
+    "page": "File:Southern warthog (Phacochoerus africanus sundevallii) male.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASouthern_warthog_(Phacochoerus_africanus_sundevallii)_male.jpg"
+  },
+  {
+    "key": "animal-wildebeest",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Diego Delso",
+    "page": "File:Ñu común (Connochaetes taurinus), parque nacional de Amboseli, Kenia, 2024-05-23, DD 16.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3A%C3%91u_com%C3%BAn_(Connochaetes_taurinus)%2C_parque_nacional_de_Amboseli%2C_Kenia%2C_2024-05-23%2C_DD_16.jpg"
+  },
+  {
+    "key": "animal-yak",
+    "licence": "CC BY-SA 4.0",
+    "artist": "Alexandr frolov",
+    "page": "File:Sarlyk Yak2.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File%3ASarlyk_Yak2.jpg"
   }
 ]
