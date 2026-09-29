@@ -101,7 +101,8 @@ export function ExplainerInline() {
       </div>
 
       <style>{`
-        .xi-wrap { width:min(100%, 960px); margin-inline:auto; margin-top:clamp(14px,2.4dvh,24px); }
+        /* بعرض صفّ المراحل فوقه تماماً فتنطبق الحوافّ (علي: «ضبط المقاسات») */
+        .xi-wrap { width:100%; margin-top:clamp(14px,2.4dvh,24px); }
         ${FRAME_CSS}
         .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
         .xi-poster img { display:block; width:100%; height:100%; object-fit:cover; }
