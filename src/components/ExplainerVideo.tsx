@@ -14,7 +14,7 @@ import { isNativeApp } from '../lib/platform'
  * فيفتح `f6een.com/video.html` وهي تضمّن يوتيوب من نطاقٍ حقيقيّ — ومعرّف
  * الفيديو هناك أيضاً: من غيّر الفيديو غيّره في الموضعين.
  */
-const VIDEO_ID = 'TGxSRD5WZLA'
+const VIDEO_ID = 'I_kr-jRcCBY'
 const SRC = isNativeApp
   ? 'https://f6een.com/video.html'
   : `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0&playsinline=1&cc_load_policy=0`
