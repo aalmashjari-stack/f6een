@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * فيديو شرح اللعبة، بهيئتين (قرار علي ٢٩ سبتمبر ٢٠٢٦):
@@ -25,7 +25,21 @@ const FRAME_CSS = `
         .xv-frame video { display:block; width:100%; height:100%; background:#000; }
 `
 
+/**
+ * تشغيلٌ من الشيفرة لحظة التركيب: WKWebView في التطبيق يتجاهل `autoPlay`
+ * بالصوت فيبقى زرّ ▶ الأصليّ ينتظر ضغطةً ثانية (مقيس على المحاكي ٣٠ سبتمبر)،
+ * أمّا `play()` بعد الضغطة مباشرةً فيعدّها WebKit من فعل اللاعب.
+ */
+function usePlayNow() {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    ref.current?.play().catch(() => {})
+  }, [])
+  return ref
+}
+
 export function ExplainerVideo({ onClose }: { onClose: () => void }) {
+  const video = usePlayNow()
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -37,7 +51,7 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
       <div className="xv-panel" role="dialog" aria-label="فيديو شرح اللعبة" onClick={(e) => e.stopPropagation()}>
         <button className="xv-x" onClick={onClose} aria-label="إغلاق">✕</button>
         <div className="xv-frame">
-          <video src={SRC} poster={POSTER} autoPlay controls playsInline />
+          <video ref={video} src={SRC} poster={POSTER} autoPlay controls playsInline />
         </div>
       </div>
 
@@ -68,6 +82,11 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
   )
 }
 
+function PlayingVideo() {
+  const video = usePlayNow()
+  return <video ref={video} src={SRC} poster={POSTER} autoPlay controls playsInline />
+}
+
 /** الموقع: الفيديو في الصفحة نفسها، غلافٌ حتى يُضغط. */
 export function ExplainerInline() {
   const [playing, setPlaying] = useState(false)
@@ -75,7 +94,7 @@ export function ExplainerInline() {
     <div className="xi-wrap">
       <div className="xv-frame xi-frame">
         {playing ? (
-          <video src={SRC} poster={POSTER} autoPlay controls playsInline preload="none" />
+          <PlayingVideo />
         ) : (
           <button className="xi-poster" onClick={() => setPlaying(true)} aria-label="شغّل فيديو شرح اللعبة">
             <img src={POSTER} alt="" />
