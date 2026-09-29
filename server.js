@@ -30,6 +30,7 @@ const TYPES = {
   '.woff2': 'font/woff2',
   '.ttf': 'font/ttf',
   '.mp3': 'audio/mpeg',
+  '.mp4': 'video/mp4',
   '.txt': 'text/plain; charset=utf-8',
   '.webmanifest': 'application/manifest+json',
 }
@@ -40,7 +41,35 @@ const HASHED = /\/assets\/.+-[A-Za-z0-9_-]{8,}\.[a-z0-9]+$/
 
 /** `no-cache` لا تعني «لا تخزّن» بل «خزّن وتحقّق قبل الاستعمال». */
 const cacheFor = (path) =>
-  HASHED.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache'
+  HASHED.test(path)
+    ? 'public, max-age=31536000, immutable'
+    : MEDIA.test(path)
+      ? 'public, max-age=86400'
+      : 'no-cache'
+
+/* الفيديو (فيديو الشرح، 12MB) يُخزَّن يوماً: بـ`no-cache` كانت كلّ مشاهدةٍ
+   تسحبه كاملاً من هنا — الخادم لا يرسل ETag فلا يُعاد التحقّق بلا جسم.
+   فمن استبدل الفيديو بدّل اسمه، وإلّا بقي القديم عند Cloudflare يوماً. */
+const MEDIA = /\.mp4$/i
+
+/**
+ * طلبُ مدى (`Range: bytes=a-b`) — سفاري لا يشغّل فيديو إلّا من خادمٍ يجيب
+ * عنه بـ206، ويطلب منه القطعة بعد القطعة. مدىً واحد يكفي (المتصفّحات لا
+ * تطلب غيره للوسائط)، وما لا يُفهم يُتجاهَل فيُرسَل الملفّ كاملاً.
+ */
+function parseRange(header, size) {
+  const m = /^bytes=(\d*)-(\d*)$/.exec(header ?? '')
+  if (!m || (m[1] === '' && m[2] === '')) return null
+  let start, end
+  if (m[1] === '') {
+    start = Math.max(0, size - Number(m[2]))
+    end = size - 1
+  } else {
+    start = Number(m[1])
+    end = m[2] === '' ? size - 1 : Math.min(Number(m[2]), size - 1)
+  }
+  return start <= end && start < size ? { start, end } : 'unsatisfiable'
+}
 
 /**
  * يمنع الخروجَ من `dist` عبر `..` في المسار.
@@ -109,11 +138,23 @@ async function handle(req, res) {
     return
   }
 
-  res.writeHead(200, {
+  const headers = {
     'Content-Type': TYPES[extname(path).toLowerCase()] ?? 'application/octet-stream',
-    'Content-Length': body.length,
     'Cache-Control': cacheFor(urlPath),
+    'Accept-Ranges': 'bytes',
     'X-Content-Type-Options': 'nosniff',
+  }
+  const total = body.length
+  const range = parseRange(req.headers.range, total)
+  if (range === 'unsatisfiable') {
+    res.writeHead(416, { ...headers, 'Content-Range': `bytes */${total}` }).end()
+    return
+  }
+  if (range) body = body.subarray(range.start, range.end + 1)
+  res.writeHead(range ? 206 : 200, {
+    ...headers,
+    'Content-Length': body.length,
+    ...(range && { 'Content-Range': `bytes ${range.start}-${range.end}/${total}` }),
   })
   /* HEAD يأخذ الرؤوس وحدها — بلا هذا يُرسَل الجسم كاملاً لمن لم يطلبه. */
   res.end(req.method === 'HEAD' ? undefined : body)
