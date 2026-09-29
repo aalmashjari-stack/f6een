@@ -10,7 +10,8 @@ import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
-import { ExplainerVideo } from '../components/ExplainerVideo'
+import { ExplainerInline, ExplainerVideo } from '../components/ExplainerVideo'
+import { isNativeApp } from '../lib/platform'
 const MIN = 2
 const MAX = 6
 
@@ -285,12 +286,15 @@ export function Setup({
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
         <section className="setup-block">
-          {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته. */}
+          {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته — في
+              التطبيق وحده؛ الموقع يعرض الفيديو نفسه تحت البطاقات (انظر ExplainerVideo). */}
           <div className="stages-head">
             <h2 className="setup-title brand">مراحل اللعبة</h2>
-            <button className="xv-open" onClick={() => setVideo(true)}>
-              <span aria-hidden="true">▶</span> شاهد الشرح
-            </button>
+            {isNativeApp && (
+              <button className="xv-open" onClick={() => setVideo(true)}>
+                <span aria-hidden="true">▶</span> شاهد الشرح
+              </button>
+            )}
           </div>
           {video && <ExplainerVideo onClose={() => setVideo(false)} />}
           <div className="stages">
@@ -321,6 +325,7 @@ export function Setup({
               )
             })}
           </div>
+          {!isNativeApp && <ExplainerInline />}
         </section>
 
         {/* حقول الفريقين. حُذف عنوان «بيانات الفريقين المتنافسين» في ٢١ أغسطس
