@@ -1,25 +1,20 @@
 import { useEffect, useState } from 'react'
-import { isNativeApp } from '../lib/platform'
 
 /**
  * فيديو شرح اللعبة، بهيئتين (قرار علي ٢٩ سبتمبر ٢٠٢٦):
  * - **الموقع:** ظاهرٌ تحت بطاقات المراحل (`ExplainerInline`) — زائر الموقع
- *   أحوج الناس إلى الشرح. صورةُ غلافٍ من الفيلم وعليها ▶، ويوتيوب لا يُحمَّل
- *   إلّا بالضغط: الإعداد يُفتح كلّ لعبة فلا يثقل، ولا كوكيز قبل الضغط.
+ *   أحوج الناس إلى الشرح. صورةُ غلافٍ وعليها ▶، والفيديو لا يُحمَّل إلّا
+ *   بالضغط (`preload="none"`): الإعداد يُفتح كلّ لعبة فلا يثقل.
  * - **التطبيق:** زرّ «شاهد الشرح» جنب «مراحل اللعبة» يفتح نافذة (`ExplainerVideo`).
  *
- * الفيديو على يوتيوب (رفعه علي). المشغّل من `youtube-nocookie.com` ولا يُركَّب
- * إلّا والنافذة مفتوحة: لا كوكيز ولا طلبَ ليوتيوب لمن لم يضغط.
- *
- * **التطبيق يمرّ بوسيط:** يعمل من `capacitor://localhost` فلا يرسل مُحيلاً،
- * ويوتيوب يرفض المشغّل بلا مُحيل (خطأ 153، مقيس على المحاكي ٢٩ سبتمبر).
- * فيفتح `f6een.com/video.html` وهي تضمّن يوتيوب من نطاقٍ حقيقيّ — ومعرّف
- * الفيديو هناك أيضاً: من غيّر الفيديو غيّره في الموضعين.
+ * **الملفّ منّا لا من يوتيوب** (قرار علي ٣٠ سبتمبر ٢٠٢٦، للجودة): يوتيوب
+ * يعيد الضغط ويبدأ بجودةٍ دنيا، والفيلم خطوطُ حبرٍ ونصوص. `public/explainer.mp4`
+ * بـ1080p (H.264، CRF 24، نحو 12MB، faststart) — الموقع يخدمه من f6een.com
+ * خلف Cloudflare، والتطبيق من حزمته بلا شبكة. ويوتيوب باقٍ للنشر لا للعرض.
+ * المصدر في ~/Documents/f6een-explainer-video (film.html).
  */
-const VIDEO_ID = 'I_kr-jRcCBY'
-const SRC = isNativeApp
-  ? 'https://f6een.com/video.html'
-  : `https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0&playsinline=1&cc_load_policy=0`
+const SRC = '/explainer.mp4'
+const POSTER = '/explainer-poster.jpg'
 
 /** إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً. */
 const FRAME_CSS = `
@@ -27,7 +22,7 @@ const FRAME_CSS = `
           aspect-ratio:16 / 9; border-radius:18px; overflow:hidden; background:#000;
           box-shadow:0 0 0 3px var(--n-ink, #22201C), 7px 8px 0 var(--n-ink, #22201C);
         }
-        .xv-frame iframe { display:block; width:100%; height:100%; border:0; }
+        .xv-frame video { display:block; width:100%; height:100%; background:#000; }
 `
 
 export function ExplainerVideo({ onClose }: { onClose: () => void }) {
@@ -42,13 +37,7 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
       <div className="xv-panel" role="dialog" aria-label="فيديو شرح اللعبة" onClick={(e) => e.stopPropagation()}>
         <button className="xv-x" onClick={onClose} aria-label="إغلاق">✕</button>
         <div className="xv-frame">
-          <iframe
-            src={SRC}
-            referrerPolicy="strict-origin-when-cross-origin"
-            title="فطين — شرح اللعبة"
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-          />
+          <video src={SRC} poster={POSTER} autoPlay controls playsInline />
         </div>
       </div>
 
@@ -79,22 +68,17 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
   )
 }
 
-/** الموقع: الفيديو في الصفحة نفسها، غلافٌ محلّيّ حتى يُضغط. */
+/** الموقع: الفيديو في الصفحة نفسها، غلافٌ حتى يُضغط. */
 export function ExplainerInline() {
   const [playing, setPlaying] = useState(false)
   return (
     <div className="xi-wrap">
       <div className="xv-frame xi-frame">
         {playing ? (
-          <iframe
-            src={SRC}
-            title="فطين — شرح اللعبة"
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-          />
+          <video src={SRC} poster={POSTER} autoPlay controls playsInline preload="none" />
         ) : (
           <button className="xi-poster" onClick={() => setPlaying(true)} aria-label="شغّل فيديو شرح اللعبة">
-            <img src="/explainer-poster.jpg" alt="" />
+            <img src={POSTER} alt="" />
             <span className="xi-play" aria-hidden="true">▶</span>
           </button>
         )}
