@@ -106,8 +106,20 @@ export function ExplainerInline() {
       <style>{`
         /* نحو 55٪ من عرض الشاشة في الوسط، على مثالٍ أرسله علي («خله بنفس الحجم»،
            ٣٠ سبتمبر ٢٠٢٦) — وبعرض الصفحة في الضيّق، حيث 55٪ تصغر عن القراءة. */
-        .xi-wrap { width:100%; margin-inline:auto; margin-top:clamp(14px,2.4dvh,24px); }
+        /* فسحةٌ فوقه وتحته (علي: «نزّل الفيديو، خل المساحة واسعة مو كل شي فوق بعض») */
+        .xi-wrap { width:100%; margin-inline:auto; margin-block:clamp(36px,7dvh,72px) clamp(20px,4dvh,44px); }
         @media (min-width:900px) { .xi-wrap { width:min(100%, 55vw); } }
+        /* هالةٌ خافتة بلونَي الفريقين خلف الإطار (علي: «لمسات على أطراف الفيديو
+           أو ظل») — لونٌ لا شكل، على قاعدة «اللمسة الخفيفة». */
+        .xi-wrap { position:relative; isolation:isolate; }
+        .xi-wrap::before {
+          content:''; position:absolute; z-index:-1; inset:-16% -12%;
+          background:
+            radial-gradient(closest-side at 24% 58%, rgba(255,206,60,.95), rgba(255,206,60,0)),
+            radial-gradient(closest-side at 78% 42%, rgba(123,211,208,.95), rgba(123,211,208,0));
+          filter:blur(22px);
+          pointer-events:none;
+        }
         ${FRAME_CSS}
         .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
         .xi-poster img { display:block; width:100%; height:100%; object-fit:cover; }
