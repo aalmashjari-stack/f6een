@@ -20,11 +20,36 @@ export type SfxName =
   | 'wrong' // إجابة خاطئة في الديربي
   | 'win' // نهاية اللعبة
 
+const MUTE_KEY = 'f6een.muted'
 /** مستوى مضبوط على مجلس: مسموع من آخره، ولا يقطع الحديث فيه. */
 const MASTER_GAIN = 0.32
 
 let ctx: AudioContext | null = null
 let master: GainNode | null = null
+
+function readMuted(): boolean {
+  try {
+    return localStorage.getItem(MUTE_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+let muted = readMuted()
+
+export function isMuted(): boolean {
+  return muted
+}
+
+export function setMuted(value: boolean) {
+  muted = value
+  try {
+    localStorage.setItem(MUTE_KEY, value ? '1' : '0')
+  } catch {
+    /* تجاهل */
+  }
+  if (master) master.gain.value = value ? 0 : MASTER_GAIN
+}
 
 function audio(): { ctx: AudioContext; master: GainNode } | null {
   if (typeof window === 'undefined') return null
@@ -34,7 +59,7 @@ function audio(): { ctx: AudioContext; master: GainNode } | null {
     if (!Ctor) return null // متصفح بلا Web Audio: اللعبة تعمل صامتة، لا تنكسر
     ctx = new Ctor()
     master = ctx.createGain()
-    master.gain.value = MASTER_GAIN
+    master.gain.value = muted ? 0 : MASTER_GAIN
     master.connect(ctx.destination)
   }
   // المتصفح يعلّق السياق حتى أول لمسة. أول صوت في اللعبة يقع بعد ضغطة الحكم
@@ -90,6 +115,7 @@ function tone(o: ToneOpts) {
  * السلّم مبني على دو الكبير حتى تتناغم الأصوات إن تلاحقت في تنقيط سريع.
  */
 export function play(name: SfxName) {
+  if (muted) return
   switch (name) {
     // نقرة خشبية خافتة — تتكرّر خمس مرات فقط فلا تُملّ، وتُسمع بلا نظر
     case 'tick':
