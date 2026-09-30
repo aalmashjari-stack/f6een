@@ -256,9 +256,11 @@ export function Setup({
             {/* الشراء أوّلاً وبلون الهويّة: هو النداء التجاريّ الوحيد في
                 الشاشة. والاثنان الآخران كبسولتان محايدتان. */}
             <button className="hnav hnav-buy" onClick={() => { setMenuOpen(false); onNav('buy') }}>شراء الألعاب</button>
-            <button className="hnav" onClick={() => { setMenuOpen(false); onNav('account') }}>حسابي</button>
-            <button className="hnav" onClick={() => { setMenuOpen(false); onNav('rules') }}>شرح اللعبة</button>
-            <button className="hnav" onClick={() => { setMenuOpen(false); onNav('contact') }}>تواصل معنا</button>
+            <button className="hnav hnav-account" onClick={() => { setMenuOpen(false); onNav('account') }}>حسابي</button>
+            <button className="hnav hnav-rules" onClick={() => { setMenuOpen(false); onNav('rules') }}>شرح اللعبة</button>
+            <button className="hnav hnav-contact" onClick={() => { setMenuOpen(false); onNav('contact') }}>تواصل معنا</button>
+            {/* فاصلٌ رفيع بين الروابط وبين «حسابي» والشراء — في الكبسولة العريضة وحدها. */}
+            <span className="hnav-sep" aria-hidden="true" />
             {/* الصوت آخر الصفّ ورمزاً بلا نصّ (طلب علي، ٣ سبتمبر ٢٠٢٦ — كان
                 في زاوية الهيرو وحده). القائمة صارت أربعة، وكبسولةٌ خامسة
                 بنصٍّ تُقرأ صفحةً خامسة وهي ضبطٌ لا وجهة — فالرمز يفرّقها،
@@ -270,7 +272,10 @@ export function Setup({
               aria-label={mute ? 'الصوت مكتوم — شغّله' : 'الصوت يعمل — اكتمه'}
               title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
             >
-              <span aria-hidden="true">{mute ? '🔇' : '🔊'}</span>
+              <svg className="hnav-mute-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
+                {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
+              </svg>
               {/* نصٌّ يظهر في لوح الطوليّ وحده: رمزٌ وحيد في صفٍّ عريض لا يُقرأ. */}
               <span className="hnav-mute-text">{mute ? 'الصوت مكتوم' : 'الصوت يعمل'}</span>
             </button>
@@ -1240,6 +1245,50 @@ export function Setup({
         @media (max-height:480px) {
           html[data-skin] body .screen.setup .hero { padding-block:8px; }
           html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(34px,10dvh,46px); }
+        }
+        /* ─── الرأس كبسولةٌ عائمة (علي ٣٠ سبتمبر ٢٠٢٦: «خلّ البانر بنفس هالطريقة»
+           على مثالٍ أرسله) ───
+           كتلةٌ بيضاء بطرفين مدوّرين وظلٍّ ناعم بدل الخطّ الفاصل تحت الرأس.
+           الشعار يميناً وحده، ثمّ من اليمين: الصوت، الروابط، فاصلٌ رفيع،
+           «حسابي»، و«شراء الألعاب» في الطرف الأيسر. الترتيب بـorder لا بترتيب
+           العناصر: لوح ☰ في الجوال الطوليّ يبقى على ترتيبه (الشراء أوّلاً). */
+        html[data-skin] body .screen.setup .hnav-sep { display:none; }
+        html[data-skin] body .screen.setup .hnav-mute-icon { width:1.25em; height:1.25em; display:block; }
+        @media (min-width:641px), (orientation: landscape) {
+          html[data-skin] body .screen.setup .hero {
+            margin-top:clamp(10px,2.2dvh,22px);
+            padding:clamp(9px,1.5dvh,15px) clamp(20px,2.4vw,38px);
+            background:var(--n-surface, #fff);
+            border:1px solid rgba(34,32,28,.07); border-radius:999px;
+            box-shadow:0 12px 32px -14px rgba(70,40,10,.26), 0 2px 6px -2px rgba(70,40,10,.08);
+          }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(44px,4.2vw,76px); top:-.08em; }
+          html[data-skin] body .screen.setup .hero-nav { flex-wrap:nowrap; gap:clamp(16px,2.1vw,34px); }
+          html[data-skin] body .screen.setup .hnav-mute {
+            order:1; margin-inline-end:clamp(0px,1vw,14px);
+            width:clamp(36px,2.8vw,46px);
+            background:var(--n-surface, #fff); color:var(--n-ink-2, #57524A);
+            box-shadow:0 0 0 1px rgba(34,32,28,.14);
+          }
+          html[data-skin] body .screen.setup .hnav-mute:hover { transform:none; color:var(--n-ink, #22201C); box-shadow:0 0 0 1px rgba(34,32,28,.32); }
+          html[data-skin] body .screen.setup .hnav-mute.off { background:var(--n-surface, #fff); }
+          html[data-skin] body .screen.setup .hnav-rules { order:2; }
+          html[data-skin] body .screen.setup .hnav-contact { order:3; }
+          html[data-skin] body .screen.setup .hnav-sep {
+            order:4; display:block; flex:none; width:1px; height:1.7em;
+            background:rgba(34,32,28,.14);
+          }
+          html[data-skin] body .screen.setup .hnav-account { order:5; }
+          /* الشراء كبسولةٌ ممتلئة بلون الهويّة بلا حلقة حبر، كزرّ المثال. */
+          html[data-skin] body .screen.setup .hnav-buy {
+            order:6; box-shadow:none;
+            padding:clamp(10px,1.4dvh,15px) clamp(22px,2vw,38px);
+          }
+          html[data-skin] body .screen.setup .hnav-buy:hover { transform:none; box-shadow:none; filter:brightness(.93); }
+        }
+        @media (max-height:480px) {
+          html[data-skin] body .screen.setup .hero { margin-top:8px; padding-block:5px; }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(32px,9dvh,42px); }
         }
         /* ─── الجوال الطوليّ: الكبسولات خلف ☰ ─── */
         @media (orientation: portrait) and (max-width:640px) {
