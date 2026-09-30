@@ -1258,7 +1258,10 @@ export function Setup({
           html[data-skin] body .screen.setup .hero {
             margin-top:clamp(10px,2.2dvh,22px);
             padding:clamp(9px,1.5dvh,15px) clamp(20px,2.4vw,38px);
-            background:var(--n-surface, #fff);
+            /* رمليٌّ دافئ لا أبيض (علي ٣٠ سبتمبر ٢٠٢٦: «غيّر لون الخلفية البيضاء
+               إلى لون مناسب») — درجةٌ أدفأ من الأرضيّة، كشريط الرأس الذي اختاره
+               في ١ سبتمبر. الخوخيّ ينافس زرّ الشراء، والداكن يثقل فوق التلفزيون. */
+            background:#F7E7CF;
             border:1px solid rgba(34,32,28,.07); border-radius:999px;
             box-shadow:0 12px 32px -14px rgba(70,40,10,.26), 0 2px 6px -2px rgba(70,40,10,.08);
           }
@@ -1267,11 +1270,11 @@ export function Setup({
           html[data-skin] body .screen.setup .hnav-mute {
             order:1; margin-inline-end:clamp(0px,1vw,14px);
             width:clamp(36px,2.8vw,46px);
-            background:var(--n-surface, #fff); color:var(--n-ink-2, #57524A);
+            background:transparent; color:var(--n-ink-2, #57524A);
             box-shadow:0 0 0 1px rgba(34,32,28,.14);
           }
           html[data-skin] body .screen.setup .hnav-mute:hover { transform:none; color:var(--n-ink, #22201C); box-shadow:0 0 0 1px rgba(34,32,28,.32); }
-          html[data-skin] body .screen.setup .hnav-mute.off { background:var(--n-surface, #fff); }
+          html[data-skin] body .screen.setup .hnav-mute.off { background:transparent; }
           html[data-skin] body .screen.setup .hnav-rules { order:2; }
           html[data-skin] body .screen.setup .hnav-contact { order:3; }
           html[data-skin] body .screen.setup .hnav-sep {
