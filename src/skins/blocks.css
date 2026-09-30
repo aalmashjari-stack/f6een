@@ -253,10 +253,6 @@ html[data-skin='blocks'] .screen.setup .hero-logo.f6een-mark {
   padding: .14em .1em .06em;
 }
 
-/* الصوت صار كبسولةً في القائمة (٣ سبتمبر ٢٠٢٦) فيرث ثوبَ .hnav — ولا
-   يبقى له إلّا حالةُ الكتم. */
-html[data-skin='blocks'] .screen.setup .hnav-mute.off { background: var(--n-bg); }
-
 /* ─── ٦. السؤال والمؤقّت ─────────────────────────────────────────────── */
 /* بطاقة السؤال أكبر كتلة على الشاشة: حدٌّ سميك وظلٌّ بعيد — البطل. */
 html[data-skin='blocks'] .q-box,
