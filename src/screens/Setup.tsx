@@ -1262,7 +1262,7 @@ export function Setup({
             border:1px solid rgba(34,32,28,.07); border-radius:999px;
             box-shadow:0 12px 32px -14px rgba(70,40,10,.26), 0 2px 6px -2px rgba(70,40,10,.08);
           }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(44px,4.2vw,76px); top:-.08em; }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(36px,3.2vw,56px); top:-.08em; }
           html[data-skin] body .screen.setup .hero-nav { flex-wrap:nowrap; gap:clamp(16px,2.1vw,34px); }
           html[data-skin] body .screen.setup .hnav-mute {
             order:1; margin-inline-end:clamp(0px,1vw,14px);
