@@ -721,7 +721,12 @@ export function Setup({
         }
         html[data-skin] body .screen.setup .video-badge > span { font-size:.8em; }
         html[data-skin] body .screen.setup .stages.title-cap-wrap { margin-top:0; margin-inline:0; }
-        html[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-inline:auto; }
+        /* كبسولة الفرق وحدها أعلى قليلاً والحقول في مكانها (علي ٣٠ سبتمبر ٢٠٢٦:
+           «الكبسولة بس») — ما تنقصه من فوقها يُردّ تحتها. */
+        html[data-skin] body .screen.setup .setup-block > .title-cap-wrap {
+          margin-inline:auto;
+          margin-top:calc(-1 * clamp(10px, 2.4dvh, 30px)); margin-bottom:clamp(10px, 2.4dvh, 30px);
+        }
         html[data-skin] body .screen.setup .video-cap .stage-head:active { transform:none; }
         html[data-skin] body .screen.setup .video-cap .stage-no { font-size:clamp(16px,1.6vw,20px); padding-inline-start:.12em; }
         .setup-intro-name {
@@ -1242,7 +1247,9 @@ export function Setup({
         html[data-skin] body .screen.setup .cats-head {
           /* العنوان كبسولةٌ في الوسط، وشارة «اكتمل اللوح» بجانبها. */
           flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center;
-          gap:clamp(10px,1.4vw,16px); text-align:start; margin:0 0 clamp(10px,2dvh,18px);
+          gap:clamp(10px,1.4vw,16px); text-align:start;
+          /* أنزل قليلاً عن حقول الفرق (علي ٣٠ سبتمبر ٢٠٢٦: «نزّلها شوي»). */
+          margin:clamp(32px,6.5dvh,80px) 0 0; /* تحتها فجوة الكتلة وحدها كعنوان الفرق */
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
