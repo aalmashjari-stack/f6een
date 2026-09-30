@@ -8,7 +8,7 @@ import { categoryArt } from '../components/categoryArt'
 import { categoryInfo } from '../components/categoryInfo'
 import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
-import { play } from '../audio/sfx'
+import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 import { ExplainerInline, ExplainerVideo } from '../components/ExplainerVideo'
 import { isNativeApp } from '../lib/platform'
@@ -64,6 +64,7 @@ export function Setup({
   const [video, setVideo] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
+  const [mute, setMute] = useState(isMuted())
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
@@ -71,6 +72,15 @@ export function Setup({
      والحكم يعرف قبل أن يكتب اثني عشر اسماً لا بعده. */
   const noBalance = balance === 0
   const lastGame = balance === 1
+
+  /** الكتم يُضبط مرّة قبل الجلسة ويبقى محفوظاً — لا يعود الحكم إليه أثناء اللعب. */
+  function toggleMute() {
+    const next = !mute
+    setMute(next)
+    setMuted(next)
+    // عيّنة عند التشغيل: الحكم يسمع المستوى قبل أن يبدأ لا في منتصف سؤال
+    if (!next) play('pickLand')
+  }
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
 
@@ -521,6 +531,20 @@ export function Setup({
               {busy ? 'لحظة…' : 'ابدأ اللعبة'}
             </button>
           </div>
+          {/* الصوت أسفل الإعداد (علي ٣٠ سبتمبر ٢٠٢٦ — كان كبسولةً في الرأس):
+              ضبطٌ لا وجهة، فهو سطرٌ هادئ تحت الفعل لا زرٌّ ينافسه. */}
+          <button
+            className={'setup-mute' + (mute ? ' off' : '')}
+            onClick={toggleMute}
+            aria-pressed={mute}
+            aria-label={mute ? 'الصوت مكتوم — شغّله' : 'الصوت يعمل — اكتمه'}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
+              {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
+            </svg>
+            <span>{mute ? 'الصوت مكتوم' : 'الصوت يعمل'}</span>
+          </button>
         </div>
       </div>
       </div>
@@ -768,6 +792,16 @@ export function Setup({
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
            فيبقى الفعل الأساسي هو الأكبر، والقرعة إلى جانبه لا فوقه. */
         .setup-actions { display:flex; gap:clamp(10px, 1.4vw, 16px); }
+        .setup-mute {
+          display:flex; align-items:center; gap:8px; align-self:center;
+          margin:clamp(10px,1.6dvh,18px) auto 0; padding:6px 12px;
+          border:0; background:none; cursor:pointer;
+          font:inherit; font-size:14px; font-weight:700;
+          color:var(--n-ink-2, #57524A);
+        }
+        .setup-mute svg { width:20px; height:20px; display:block; }
+        .setup-mute.off { opacity:.6; }
+        .setup-mute:hover { color:var(--n-ink, #22201C); }
         .setup-actions .action { flex:1; min-width:0; }
         /* **القرعة بمقاس نصّها لا بثلث الصفّ** (طلب علي ١٠ سبتمبر ٢٠٢٦):
            كانت تأخذ حصّةً من الصفّ فتبلغ ٣٩٣px لكلمتين، وهي فعلٌ ثانويّ إلى
