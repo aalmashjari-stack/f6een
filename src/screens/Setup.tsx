@@ -268,6 +268,12 @@ export function Setup({
       {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
           في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
       <div className="setup-body">
+        {/* تعريفٌ فوق كلّ شيء (علي ٣٠ سبتمبر ٢٠٢٦) — النصّ نصّه حرفاً،
+            و«فطين» كتابةً عاديّة بخطّ الجهاز لا الشعار الملوّن. */}
+        <header className="setup-intro">
+          <h1 className="setup-intro-name">فطين</h1>
+          <p className="setup-intro-line">لعبة ثقافية اجتماعية هدفها تخلي جمعاتكم اونس و تتكون من ثلاث مراحل</p>
+        </header>
         {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين.
             حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
@@ -275,15 +281,19 @@ export function Setup({
         <section className="setup-block">
           {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته — في
               التطبيق وحده؛ الموقع يعرض الفيديو نفسه تحت البطاقات (انظر ExplainerVideo). */}
-          <div className="stages-head">
-            <h2 className="setup-title brand">مراحل اللعبة</h2>
-            {isNativeApp && (
+          {/* «مراحل اللعبة» في التطبيق وحده: الموقع تقوده كبسولة الفيديو
+              (علي ٣٠ سبتمبر ٢٠٢٦: «شيل كلمة مراحل اللعبة»). */}
+          {isNativeApp && (
+            <div className="stages-head">
+              <h2 className="setup-title brand">مراحل اللعبة</h2>
               <button className="xv-open" onClick={() => setVideo(true)}>
                 <span aria-hidden="true">▶</span> شاهد الشرح
               </button>
-            )}
-          </div>
+            </div>
+          )}
           {video && <ExplainerVideo onClose={() => setVideo(false)} />}
+          {/* البطاقات عادت تحت سطر «تتكون من ثلاث مراحل» (علي ٣٠ سبتمبر ٢٠٢٦:
+              «رجّع الكبسولات القديمة»). */}
           <div className="stages">
             {STAGES.map((s, i) => {
               const open = openStage === i
@@ -312,7 +322,16 @@ export function Setup({
               )
             })}
           </div>
-          {!isNativeApp && <ExplainerInline />}
+          {!isNativeApp && (
+            <>
+              {/* نصٌّ عاديّ لا كبسولة مرحلة: تحت بطاقات المراحل كانت تُقرأ مرحلةً
+                  رابعة (علي ٣٠ سبتمبر ٢٠٢٦: جُرّبت شارةٌ بلون الهويّة ثمّ «نصّ عادي»). */}
+              <div className="video-cap-wrap video-badge-wrap">
+                <span className="video-badge"><span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم السالفة</span>
+              </div>
+              <ExplainerInline />
+            </>
+          )}
         </section>
 
         {/* حقول الفريقين. حُذف عنوان «بيانات الفريقين المتنافسين» في ٢١ أغسطس
@@ -321,7 +340,20 @@ export function Setup({
         <section className="setup-block">
           {/* عنوانٌ يسمّي الكتلة (طلب علي ١٧ سبتمبر ٢٠٢٦) — كان قد حُذف في
               أغسطس لضيق الارتفاع، وعاد بصياغته. */}
-          <h2 className="setup-title">أدخل بيانات الفرق واللاعبين</h2>
+          {/* العنوان كبسولةٌ بهيئة بطاقة المرحلة (علي ٣٠ سبتمبر ٢٠٢٦)، ككبسولة الفيديو. */}
+          <div className="stages video-cap-wrap title-cap-wrap">
+            <div className="stage-card tone-1 video-cap">
+              <div className="stage-head">
+                <span className="stage-no" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="9" cy="8" r="3.2" /><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5" />
+                    <circle cx="16.5" cy="9" r="2.6" /><path d="M16 14.2c2.4.1 4 1.7 4.5 4.8" />
+                  </svg>
+                </span>
+                <h2 className="stage-name">أدخل بيانات الفرق واللاعبين</h2>
+              </div>
+            </div>
+          </div>
           <div className="teams-grid">
             {[0, 1].map((ti) => {
               const team = ti as TeamId
@@ -374,7 +406,20 @@ export function Setup({
             {/* اللافتة نفسُها التي فوق الفريقين (طلب علي ١٧ سبتمبر ٢٠٢٦):
                 عنوانا الكتلتين بهيئةٍ واحدة. والنصّ نصُّه كما هو — بدّلتُه
                 إلى «اختر فئات اللوح» فردّه في الدقيقة نفسها. */}
-            <h2 className="setup-title">قم باختيار الفئات</h2>
+            {/* كبسولةٌ بهيئة بطاقة المرحلة كعنوان الفرق (علي ٣٠ سبتمبر ٢٠٢٦). */}
+            <div className="stages video-cap-wrap title-cap-wrap">
+              <div className="stage-card tone-2 video-cap">
+                <div className="stage-head">
+                  <span className="stage-no" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round">
+                      <rect x="4" y="4" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5" />
+                      <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5" /><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5" />
+                    </svg>
+                  </span>
+                  <h2 className="stage-name">قم باختيار الفئات</h2>
+                </div>
+              </div>
+            </div>
             {/* العدّاد «0 / 6» سقط (علي ١٧ سبتمبر ٢٠٢٦: «شيل 0/6») — صينيّة
                 المختارات تحت الشبكة تعدّ بخاناتها الستّ. بقيت شارة الاكتمال. */}
             {catsReady && <span className="cats-turn done">اكتمل اللوح</span>}
@@ -654,6 +699,41 @@ export function Setup({
           gap:var(--gap-block);
         }
         .setup-block { display:flex; flex-direction:column; gap:var(--gap-in); }
+        .setup-intro { text-align:center; }
+        /* الكبسولة فوق الفيديو لصيقةٌ به: فسحتُه العليا الواسعة كانت تفصله عن
+           «مراحل اللعبة»، والكبسولة الآن هي ما يفصل. */
+        .video-cap-wrap + .xi-wrap { margin-top:clamp(12px, 2.4dvh, 28px); }
+        /* عمودٌ واحد بطول نصّها في الوسط (علي: «صغّر الكبسولة»). */
+        html[data-skin] body .screen.setup .stages.video-cap-wrap {
+          grid-template-columns:1fr; margin-top:clamp(36px, 7dvh, 88px);
+          width:fit-content; max-width:100%; margin-inline:auto;
+        }
+        html[data-skin] body .screen.setup .video-cap-wrap .stage-name { padding-inline:clamp(16px,1.8vw,24px); }
+        html[data-skin] body .screen.setup .video-cap .stage-head { cursor:default; }
+        html[data-skin] body .screen.setup .video-badge-wrap {
+          display:flex; justify-content:center; margin-top:clamp(36px, 7dvh, 88px);
+        }
+        /* نصٌّ عاديّ لا شارة (علي: «خلّه نصّ عادي») — بهيئة سطر التعريف تحت «فطين». */
+        html[data-skin] body .screen.setup .video-badge {
+          font-family:system-ui, -apple-system, sans-serif; font-weight:600;
+          font-size:clamp(16px, 1.7vw, 22px); line-height:1.5;
+          color:var(--n-ink, #22201C);
+        }
+        html[data-skin] body .screen.setup .video-badge > span { font-size:.8em; }
+        html[data-skin] body .screen.setup .stages.title-cap-wrap { margin-top:0; margin-inline:0; }
+        html[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-inline:auto; }
+        html[data-skin] body .screen.setup .video-cap .stage-head:active { transform:none; }
+        html[data-skin] body .screen.setup .video-cap .stage-no { font-size:clamp(16px,1.6vw,20px); padding-inline-start:.12em; }
+        .setup-intro-name {
+          margin:0; font-family:system-ui, -apple-system, sans-serif; font-weight:800;
+          font-size:clamp(44px, 6vw, 96px); line-height:1.1;
+          color:var(--n-ink, #22201C);
+        }
+        .setup-intro-line {
+          margin:clamp(4px, 1dvh, 12px) 0 0; font-family:system-ui, -apple-system, sans-serif;
+          font-weight:600; font-size:clamp(16px, 1.7vw, 24px); line-height:1.6;
+          color:var(--n-ink-2, #57524A);
+        }
         /* فصل بصري أوضح بين شرح المراحل وحقول الفرق: العنوان التالي لا
            يلتصق بظلال البطاقات، مع إبقاء الإيقاع الداخلي لكل قسم كما هو. */
         .setup-block + .setup-block {
@@ -1160,8 +1240,9 @@ export function Setup({
         html[data-skin] body .screen.setup .xv-open:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C), 1px 1px 0 var(--n-ink, #22201C); }
         /* عنوان الفئات وشارة «اكتمل اللوح» في سطرٍ واحد: العنوان يميناً والشارة يساراً. */
         html[data-skin] body .screen.setup .cats-head {
-          flex-direction:row; justify-content:space-between; align-items:baseline;
-          text-align:start; margin:0 0 clamp(10px,2dvh,18px);
+          /* العنوان كبسولةٌ في الوسط، وشارة «اكتمل اللوح» بجانبها. */
+          flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center;
+          gap:clamp(10px,1.4vw,16px); text-align:start; margin:0 0 clamp(10px,2dvh,18px);
         }
         /* الجوال: المراحل عموداً، والشرح المفتوح يدفع ما تحته (الإعداد يُمرَّر). */
         @media (max-width:640px) {
