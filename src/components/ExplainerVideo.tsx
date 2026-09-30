@@ -9,12 +9,13 @@ import { useEffect, useRef, useState } from 'react'
  * - **التطبيق:** زرّ «شاهد الشرح» جنب «مراحل اللعبة» يفتح نافذة (`ExplainerVideo`).
  *
  * **الملفّ منّا لا من يوتيوب** (قرار علي ٣٠ سبتمبر ٢٠٢٦، للجودة): يوتيوب
- * يعيد الضغط ويبدأ بجودةٍ دنيا، والفيلم خطوطُ حبرٍ ونصوص. `public/explainer.mp4`
+ * يعيد الضغط ويبدأ بجودةٍ دنيا، والفيلم خطوطُ حبرٍ ونصوص. `public/explainer-v4.mp4`
  * بـ1080p (H.264، CRF 24، نحو 12MB، faststart) — الموقع يخدمه من f6een.com
  * خلف Cloudflare، والتطبيق من حزمته بلا شبكة. ويوتيوب باقٍ للنشر لا للعرض.
- * المصدر في ~/Documents/f6een-explainer-video (film.html).
+ * المصدر في ~/Documents/f6een-explainer-video (film-v4.html: v3 بالخلفيّة الرماديّة).
+ * **من استبدله غيّر اسمه** — Cloudflare يُبقي القديم يوماً باسمه.
  */
-const SRC = '/explainer.mp4'
+const SRC = '/explainer-v4.mp4'
 
 /** إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً. */
 const FRAME_CSS = `
