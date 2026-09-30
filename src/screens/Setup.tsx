@@ -285,12 +285,11 @@ export function Setup({
             حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
-        <section className={'setup-block' + (isNativeApp ? '' : ' web-intro')}>
+        <section className="setup-block">
           {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته — في
               التطبيق وحده؛ الموقع يعرض الفيديو نفسه تحت البطاقات (انظر ExplainerVideo). */}
           <div className="stages-head">
-            {/* في الموقع عنوانُ علي للبطاقات الثلاث؛ والتطبيق يبقى «مراحل اللعبة» فوق المراحل */}
-            <h2 className="setup-title brand">{isNativeApp ? 'مراحل اللعبة' : 'كل الي تحتاجه عشان تلعب لعبتنا'}</h2>
+            <h2 className="setup-title brand">مراحل اللعبة</h2>
             {isNativeApp && (
               <button className="xv-open" onClick={() => setVideo(true)}>
                 <span aria-hidden="true">▶</span> شاهد الشرح
@@ -298,29 +297,7 @@ export function Setup({
             )}
           </div>
           {video && <ExplainerVideo onClose={() => setVideo(false)} />}
-          {/* في الموقع: بطاقات المراحل صارت تكراراً بوجود الفيديو («جودها صار ماله
-              معنى»، علي ٣٠ سبتمبر ٢٠٢٦)، فحلّت محلّها ثلاثٌ بالهيئة نفسها تقول ما
-              اللعبة، وسطرُه تحتها يدعو إلى الفيديو. رُفض قبلها نصٌّ رماديّ («ميت»)
-              وبطاقةٌ ملوّنة الكلمات. والتطبيق يبقى بالمراحل: الفيديو فيه خلف زرّ.
-              النصوص نصوصه حرفاً. */}
-          {!isNativeApp && (
-            <>
-              <div className="stages stages-kit">
-                {['فريقين', 'شاشة واحدة', 'حكم'].map((t, i) => (
-                  <article key={t} className={'stage-card tone-' + i}>
-                    <div className="stage-head">
-                      <span className="stage-no" aria-hidden="true">{i + 1}</span>
-                      <h3 className="stage-name">{t}</h3>
-                    </div>
-                  </article>
-                ))}
-              </div>
-              {/* المسافةُ قبل الفاصلة كما كتبها، لكنّها لا تنكسر: وإلّا نزلت الفاصلةُ
-                  وحدها أوّل السطر في الجوال (مقيس). */}
-              <p className="stages-lede">و هذا الميدان يا حميدان{'\u00A0'}، شوف الفيديو عشان تفهم السالفة</p>
-            </>
-          )}
-          {isNativeApp && <div className="stages">
+          <div className="stages">
             {STAGES.map((s, i) => {
               const open = openStage === i
               return (
@@ -347,7 +324,7 @@ export function Setup({
                 </article>
               )
             })}
-          </div>}
+          </div>
           {!isNativeApp && <ExplainerInline />}
         </section>
 
@@ -1165,33 +1142,6 @@ export function Setup({
         }
         /* عنوان المراحل وزرّ الفيديو: العنوان يميناً والزرّ يساراً، كعنوان الفئات وشارته.
            الزرّ بلغة الكتل: أبيض بحدّ حبرٍ وظلٍّ صلب، واللون في المثلّث وحده. */
-        /* سطر الموقع تحت البطاقات الثلاث: غامقٌ متوسّط بحجمٍ واضح (الرماديّ الصغير
-           كان «ميتاً»، والبطاقة الملوّنة الكلمات رُفضت — ٣٠ سبتمبر ٢٠٢٦). */
-        html[data-skin] body .screen.setup .stages-lede {
-          width:100%; margin:clamp(14px,2.6dvh,28px) auto 0; text-align:center;
-          font-family:system-ui, -apple-system, 'Segoe UI', sans-serif; font-weight:600;
-          font-size:clamp(20px,2.2vw,30px); line-height:1.6; color:var(--n-ink, #22201C);
-          text-wrap:balance;
-        }
-        @media (min-width:900px) { html[data-skin] body .screen.setup .stages-lede { width:min(100%, 60vw); } }
-        /* بطاقات الموقع الثلاث لا تُفتح — فلا مؤشّرَ يدٍ ولا ضغطة */
-        html[data-skin] body .screen.setup .stages-kit .stage-head { cursor:default; }
-        /* الموقع: العنوان والبطاقات والسطر والتلفزيون عمودٌ واحد بعرض التلفزيون
-           متوسّطاً — كانت أربعةُ عروضٍ ومحاذاتٍ مختلفة فلا تُقرأ كتلةً واحدة
-           (علي: «فيه شي غلط ما أدري وش هو»، ٣٠ سبتمبر ٢٠٢٦). */
-        html[data-skin] body .screen.setup .web-intro > .stages-head,
-        html[data-skin] body .screen.setup .web-intro > .stages-kit,
-        html[data-skin] body .screen.setup .web-intro > .stages-lede {
-          width:100%; margin-inline:auto;
-        }
-        @media (min-width:900px) {
-          html[data-skin] body .screen.setup .web-intro > .stages-head,
-          html[data-skin] body .screen.setup .web-intro > .stages-kit,
-          html[data-skin] body .screen.setup .web-intro > .stages-lede { width:min(100%, 55vw); }
-        }
-        html[data-skin] body .screen.setup .web-intro > .stages-head { justify-content:center; }
-        html[data-skin] body .screen.setup .web-intro .setup-title.brand { text-align:center; }
-        html[data-skin] body .screen.setup .stages-kit .stage-head:active { transform:none; }
         html[data-skin] body .screen.setup .stages-head {
           display:flex; align-items:center; justify-content:space-between; gap:12px;
           align-self:stretch;
