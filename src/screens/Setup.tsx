@@ -285,7 +285,7 @@ export function Setup({
             حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
-        <section className={'setup-block' + (isNativeApp ? '' : ' web-intro')}>
+        <section className="setup-block">
           {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته — في
               التطبيق وحده؛ الموقع يعرض الفيديو نفسه تحت البطاقات (انظر ExplainerVideo). */}
           <div className="stages-head">
@@ -305,7 +305,7 @@ export function Setup({
               النصوص نصوصه حرفاً. */}
           {!isNativeApp && (
             <>
-              <div className="stages stages-kit">
+              <div className="stages stages-intro">
                 {['فريقين', 'شاشة واحدة', 'حكم'].map((t, i) => (
                   <article key={t} className={'stage-card tone-' + i}>
                     <div className="stage-head">
@@ -1175,23 +1175,8 @@ export function Setup({
         }
         @media (min-width:900px) { html[data-skin] body .screen.setup .stages-lede { width:min(100%, 60vw); } }
         /* بطاقات الموقع الثلاث لا تُفتح — فلا مؤشّرَ يدٍ ولا ضغطة */
-        html[data-skin] body .screen.setup .stages-kit .stage-head { cursor:default; }
-        /* الموقع: العنوان والبطاقات والسطر والتلفزيون عمودٌ واحد بعرض التلفزيون
-           متوسّطاً — كانت أربعةُ عروضٍ ومحاذاتٍ مختلفة فلا تُقرأ كتلةً واحدة
-           (علي: «فيه شي غلط ما أدري وش هو»، ٣٠ سبتمبر ٢٠٢٦). */
-        html[data-skin] body .screen.setup .web-intro > .stages-head,
-        html[data-skin] body .screen.setup .web-intro > .stages-kit,
-        html[data-skin] body .screen.setup .web-intro > .stages-lede {
-          width:100%; margin-inline:auto;
-        }
-        @media (min-width:900px) {
-          html[data-skin] body .screen.setup .web-intro > .stages-head,
-          html[data-skin] body .screen.setup .web-intro > .stages-kit,
-          html[data-skin] body .screen.setup .web-intro > .stages-lede { width:min(100%, 55vw); }
-        }
-        html[data-skin] body .screen.setup .web-intro > .stages-head { justify-content:center; }
-        html[data-skin] body .screen.setup .web-intro .setup-title.brand { text-align:center; }
-        html[data-skin] body .screen.setup .stages-kit .stage-head:active { transform:none; }
+        html[data-skin] body .screen.setup .stages-intro .stage-head { cursor:default; }
+        html[data-skin] body .screen.setup .stages-intro .stage-head:active { transform:none; }
         html[data-skin] body .screen.setup .stages-head {
           display:flex; align-items:center; justify-content:space-between; gap:12px;
           align-self:stretch;
