@@ -8,7 +8,7 @@ import { categoryArt } from '../components/categoryArt'
 import { categoryInfo } from '../components/categoryInfo'
 import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
-import { isMuted, play, setMuted } from '../audio/sfx'
+import { play } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 import { ExplainerInline, ExplainerVideo } from '../components/ExplainerVideo'
 import { isNativeApp } from '../lib/platform'
@@ -64,7 +64,6 @@ export function Setup({
   const [video, setVideo] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
-  const [mute, setMute] = useState(isMuted())
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
 
@@ -72,15 +71,6 @@ export function Setup({
      والحكم يعرف قبل أن يكتب اثني عشر اسماً لا بعده. */
   const noBalance = balance === 0
   const lastGame = balance === 1
-
-  /** الكتم يُضبط مرّة قبل الجلسة ويبقى محفوظاً — لا يعود الحكم إليه أثناء اللعب. */
-  function toggleMute() {
-    const next = !mute
-    setMute(next)
-    setMuted(next)
-    // عيّنة عند التشغيل: الحكم يسمع المستوى قبل أن يبدأ لا في منتصف سؤال
-    if (!next) play('pickLand')
-  }
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
 
@@ -261,24 +251,6 @@ export function Setup({
             <button className="hnav hnav-contact" onClick={() => { setMenuOpen(false); onNav('contact') }}>تواصل معنا</button>
             {/* فاصلٌ رفيع بين الروابط وبين «حسابي» والشراء — في الكبسولة العريضة وحدها. */}
             <span className="hnav-sep" aria-hidden="true" />
-            {/* الصوت آخر الصفّ ورمزاً بلا نصّ (طلب علي، ٣ سبتمبر ٢٠٢٦ — كان
-                في زاوية الهيرو وحده). القائمة صارت أربعة، وكبسولةٌ خامسة
-                بنصٍّ تُقرأ صفحةً خامسة وهي ضبطٌ لا وجهة — فالرمز يفرّقها،
-                و`aria-label` يحمل ما أسقطه النصّ. */}
-            <button
-              className={'hnav hnav-mute' + (mute ? ' off' : '')}
-              onClick={toggleMute}
-              aria-pressed={mute}
-              aria-label={mute ? 'الصوت مكتوم — شغّله' : 'الصوت يعمل — اكتمه'}
-              title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
-            >
-              <svg className="hnav-mute-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
-                {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
-              </svg>
-              {/* نصٌّ يظهر في لوح الطوليّ وحده: رمزٌ وحيد في صفٍّ عريض لا يُقرأ. */}
-              <span className="hnav-mute-text">{mute ? 'الصوت مكتوم' : 'الصوت يعمل'}</span>
-            </button>
           </nav>
         )}
       </div>
@@ -605,7 +577,7 @@ export function Setup({
         }
 
         /* القائمة: الشراء كتلة الهويّة، والبقيّة كبسولات بيضاء بحدّ حبر */
-        /* القائمة إلى يسار الشريط (طلب علي) — تدفع نفسها وزرَّ الصوت إلى
+        /* القائمة إلى يسار الشريط (طلب علي) — تدفع نفسها إلى
            الطرف المقابل للشعار، ويبقى الشعار وحده في اليمين. */
         /* المسافة بين الكبسولات وُسّعت (طلب علي ١٠ سبتمبر ٢٠٢٦): كانت ١٢px
            سقفاً، فتتلاصق الأربعُ في شريطٍ نصفُه فارغ على الشاشة العريضة. */
@@ -622,17 +594,8 @@ export function Setup({
         body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:0 0 0 2px var(--n-ink,#22201C), 2px 3px 0 var(--n-ink,#22201C); }
         body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:#fff; }
 
-        /* الصوت كبسولةٌ في الصفّ نفسه، مربّعةٌ برمزها وحده — الحشوة الجانبية
-           تُساوى بالرأسية فلا تبدو كبسولةً بنصٍّ ناقص بين أخواتها. */
-        body .screen.setup .hnav-mute {
-          padding-inline:clamp(7px,1vw,11px);
-          line-height:1;
-          transition:transform .15s var(--ease-spring), box-shadow .15s ease, opacity .2s ease;
-        }
-        body .screen.setup .hnav-mute.off { opacity:.55; }
         /* زرّ القائمة ولوحُها في طبقة التذكرة آخر الملفّ. */
         body .screen.setup .hnav-menu { display:none; }
-        body .screen.setup .hnav-mute-text { display:none; }
         body .screen.setup .hero-nav-veil { display:none; }
 
         body .screen.setup .hero-logo {
@@ -1205,23 +1168,20 @@ export function Setup({
           margin:0;
         }
         /* القائمة خارج لوح الجوال: روابط نصّيّة هادئة، و«شراء الألعاب» وحده
-           كبسولةٌ بلون الهويّة، والصوت دائرةٌ صغيرة — كانت أربعَ كبسولاتٍ
+           كبسولةٌ بلون الهويّة — كانت أربعَ كبسولاتٍ
            بحدود حبرٍ تتزاحم بجانب الشعار. */
         @media (min-width:641px), (orientation: landscape) {
           html[data-skin] body .screen.setup .hero-nav { gap:clamp(14px,2vw,28px); }
-          html[data-skin] body .screen.setup .hnav:not(.hnav-buy):not(.hnav-mute) {
+          html[data-skin] body .screen.setup .hnav:not(.hnav-buy) {
             background:none; box-shadow:none; border-radius:0;
             padding:6px 2px; color:var(--n-ink-2, #57524A); font-weight:700;
             border-bottom:2px solid transparent;
           }
-          html[data-skin] body .screen.setup .hnav:not(.hnav-buy):not(.hnav-mute):hover {
+          html[data-skin] body .screen.setup .hnav:not(.hnav-buy):hover {
             transform:none; box-shadow:none;
             color:var(--n-ink, #22201C); border-bottom-color:var(--n-ink, #22201C);
           }
-          html[data-skin] body .screen.setup .hnav-mute {
-            display:grid; place-items:center; aspect-ratio:1; padding:0;
-            width:clamp(34px,2.6vw,44px); border-radius:50%;
-          }
+        }
         }
         /* الآيباد الطوليّ وما يشبهه: القاعدة الأساس (1.4vw) تعطي نحو 12
            بكسلاً على 834 فتُقرأ الروابط بجهد إلى جانب الشعار (علي ٢٧ سبتمبر
@@ -1249,11 +1209,10 @@ export function Setup({
         /* ─── الرأس كبسولةٌ عائمة (علي ٣٠ سبتمبر ٢٠٢٦: «خلّ البانر بنفس هالطريقة»
            على مثالٍ أرسله) ───
            كتلةٌ بيضاء بطرفين مدوّرين وظلٍّ ناعم بدل الخطّ الفاصل تحت الرأس.
-           الشعار يميناً وحده، ثمّ من اليمين: الصوت، الروابط، فاصلٌ رفيع،
+           الشعار يميناً وحده، ثمّ من اليمين: الروابط، فاصلٌ رفيع،
            «حسابي»، و«شراء الألعاب» في الطرف الأيسر. الترتيب بـorder لا بترتيب
            العناصر: لوح ☰ في الجوال الطوليّ يبقى على ترتيبه (الشراء أوّلاً). */
         html[data-skin] body .screen.setup .hnav-sep { display:none; }
-        html[data-skin] body .screen.setup .hnav-mute-icon { width:1.25em; height:1.25em; display:block; }
         @media (min-width:641px), (orientation: landscape) {
           html[data-skin] body .screen.setup .hero {
             margin-top:clamp(10px,2.2dvh,22px);
@@ -1264,14 +1223,6 @@ export function Setup({
           }
           html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(40px,3.9vw,70px); top:0; }
           html[data-skin] body .screen.setup .hero-nav { flex-wrap:nowrap; gap:clamp(16px,2.1vw,34px); }
-          html[data-skin] body .screen.setup .hnav-mute {
-            order:1; margin-inline-end:clamp(0px,1vw,14px);
-            width:clamp(36px,2.8vw,46px);
-            background:var(--n-surface, #fff); color:var(--n-ink-2, #57524A);
-            box-shadow:0 0 0 1px rgba(34,32,28,.14);
-          }
-          html[data-skin] body .screen.setup .hnav-mute:hover { transform:none; color:var(--n-ink, #22201C); box-shadow:0 0 0 1px rgba(34,32,28,.32); }
-          html[data-skin] body .screen.setup .hnav-mute.off { background:var(--n-surface, #fff); }
           html[data-skin] body .screen.setup .hnav-rules { order:2; }
           html[data-skin] body .screen.setup .hnav-contact { order:3; }
           html[data-skin] body .screen.setup .hnav-sep {
@@ -1322,9 +1273,6 @@ export function Setup({
           html[data-skin] body .screen.setup .hero-nav .hnav {
             font-size:16px; padding:12px 18px; text-align:center;
           }
-          /* الصوت في اللوح صفٌّ كأخواته لا مربّعاً صغيراً. */
-          html[data-skin] body .screen.setup .hero-nav .hnav-mute { padding-inline:18px; display:flex; justify-content:center; gap:10px; }
-          html[data-skin] body .screen.setup .hero-nav .hnav-mute-text { display:inline; }
         }
         /* ─── صينيّة المختارات ─── كانت للجوال الطوليّ وحده بحجّة أنّ الشبكة
            في العرض تُرى في نظرة؛ فطلبها علي في الموقع والآيباد أيضاً (١٧
