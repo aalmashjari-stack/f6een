@@ -1257,12 +1257,12 @@ export function Setup({
         @media (min-width:641px), (orientation: landscape) {
           html[data-skin] body .screen.setup .hero {
             margin-top:clamp(10px,2.2dvh,22px);
-            padding:clamp(9px,1.5dvh,15px) clamp(20px,2.4vw,38px);
+            padding:clamp(14px,2.4dvh,24px) clamp(22px,2.6vw,42px);
             background:var(--n-surface, #fff);
             border:1px solid rgba(34,32,28,.07); border-radius:999px;
             box-shadow:0 12px 32px -14px rgba(70,40,10,.26), 0 2px 6px -2px rgba(70,40,10,.08);
           }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(30px,2.6vw,46px); top:-.08em; }
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(40px,3.9vw,70px); top:-.08em; }
           html[data-skin] body .screen.setup .hero-nav { flex-wrap:nowrap; gap:clamp(16px,2.1vw,34px); }
           html[data-skin] body .screen.setup .hnav-mute {
             order:1; margin-inline-end:clamp(0px,1vw,14px);
