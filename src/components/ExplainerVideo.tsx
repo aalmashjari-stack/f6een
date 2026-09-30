@@ -104,8 +104,10 @@ export function ExplainerInline() {
       </div>
 
       <style>{`
-        /* بعرض صفّ المراحل فوقه تماماً فتنطبق الحوافّ (علي: «ضبط المقاسات») */
-        .xi-wrap { width:100%; margin-top:clamp(14px,2.4dvh,24px); }
+        /* نحو 55٪ من عرض الشاشة في الوسط، على مثالٍ أرسله علي («خله بنفس الحجم»،
+           ٣٠ سبتمبر ٢٠٢٦) — وبعرض الصفحة في الضيّق، حيث 55٪ تصغر عن القراءة. */
+        .xi-wrap { width:100%; margin-inline:auto; margin-top:clamp(14px,2.4dvh,24px); }
+        @media (min-width:900px) { .xi-wrap { width:min(100%, 55vw); } }
         ${FRAME_CSS}
         .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
         .xi-poster img { display:block; width:100%; height:100%; object-fit:cover; }
