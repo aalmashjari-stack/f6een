@@ -92,6 +92,7 @@ export function ExplainerInline() {
   const [playing, setPlaying] = useState(false)
   return (
     <div className="xi-wrap">
+      <div className="xi-tv">
       <div className="xv-frame xi-frame">
         {playing ? (
           <PlayingVideo />
@@ -102,6 +103,8 @@ export function ExplainerInline() {
           </button>
         )}
       </div>
+      </div>
+      <div className="xi-stand" aria-hidden="true" />
 
       <style>{`
         /* نحو 55٪ من عرض الشاشة في الوسط، على مثالٍ أرسله علي («خله بنفس الحجم»،
@@ -109,16 +112,28 @@ export function ExplainerInline() {
         /* فسحةٌ فوقه وتحته (علي: «نزّل الفيديو، خل المساحة واسعة مو كل شي فوق بعض») */
         .xi-wrap { width:100%; margin-inline:auto; margin-block:clamp(36px,7dvh,72px) clamp(20px,4dvh,44px); }
         @media (min-width:900px) { .xi-wrap { width:min(100%, 55vw); } }
-        /* هالةٌ خافتة بلونَي الفريقين خلف الإطار (علي: «لمسات على أطراف الفيديو
-           أو ظل») — لونٌ لا شكل، على قاعدة «اللمسة الخفيفة». */
-        .xi-wrap { position:relative; isolation:isolate; }
-        .xi-wrap::before {
-          content:''; position:absolute; z-index:-1; inset:-16% -12%;
-          background:
-            radial-gradient(closest-side at 24% 58%, rgba(255,206,60,.95), rgba(255,206,60,0)),
-            radial-gradient(closest-side at 78% 42%, rgba(123,211,208,.95), rgba(123,211,208,0));
-          filter:blur(22px);
-          pointer-events:none;
+        /* الفيديو داخل تلفزيون (علي: «جرب التلفزيون» بدل الهالة، ٣٠ سبتمبر ٢٠٢٦) —
+           التلفزيونُ نفسه الذي في الفيلم: إطارٌ داكن بزوايا مدوّرة، وقاعدة، وظلٌّ على
+           الأرضيّة. يقول «شاشة وحدة» قبل أن يُشغَّل. */
+        .xi-tv {
+          position:relative; padding:clamp(8px,1.4vw,18px);
+          border-radius:clamp(14px,2vw,28px); background:#1E1C19;
+          box-shadow:inset 0 0 0 2px #000, 0 28px 44px -18px rgba(60,30,10,.45);
+        }
+        .xi-tv::before {
+          content:''; position:absolute; top:clamp(3px,.5vw,7px); left:50%;
+          width:clamp(4px,.45vw,7px); aspect-ratio:1; border-radius:50%;
+          transform:translateX(-50%); background:#3a3631;
+        }
+        .xi-tv .xv-frame { border-radius:clamp(6px,.8vw,10px); box-shadow:none; }
+        .xi-stand {
+          position:relative; width:22%; height:clamp(10px,1.6vw,22px); margin:0 auto;
+          background:#1E1C19; border-radius:0 0 10px 10px;
+        }
+        .xi-stand::after {
+          content:''; position:absolute; left:-45%; right:-45%; bottom:calc(-1 * clamp(6px,.8vw,11px));
+          height:clamp(6px,.8vw,11px); border-radius:99px; background:#1E1C19;
+          box-shadow:0 14px 24px -6px rgba(60,30,10,.35);
         }
         ${FRAME_CSS}
         .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
