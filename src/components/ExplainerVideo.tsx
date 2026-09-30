@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 /**
  * فيديو شرح اللعبة، بهيئتين (قرار علي ٢٩ سبتمبر ٢٠٢٦):
  * - **الموقع:** ظاهرٌ تحت بطاقات المراحل (`ExplainerInline`) — زائر الموقع
- *   أحوج الناس إلى الشرح. صورةُ غلافٍ وعليها ▶، والفيديو لا يُحمَّل إلّا
+ *   أحوج الناس إلى الشرح. غلافٌ أسود وعليه ▶ (علي ٣٠ سبتمبر ٢٠٢٦: «خلّ
+ *   الـcover أسود» — كانت لقطةً من الفيلم)، والفيديو لا يُحمَّل إلّا
  *   بالضغط (`preload="none"`): الإعداد يُفتح كلّ لعبة فلا يثقل.
  * - **التطبيق:** زرّ «شاهد الشرح» جنب «مراحل اللعبة» يفتح نافذة (`ExplainerVideo`).
  *
@@ -14,7 +15,6 @@ import { useEffect, useRef, useState } from 'react'
  * المصدر في ~/Documents/f6een-explainer-video (film.html).
  */
 const SRC = '/explainer.mp4'
-const POSTER = '/explainer-poster.jpg'
 
 /** إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً. */
 const FRAME_CSS = `
@@ -51,7 +51,7 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
       <div className="xv-panel" role="dialog" aria-label="فيديو شرح اللعبة" onClick={(e) => e.stopPropagation()}>
         <button className="xv-x" onClick={onClose} aria-label="إغلاق">✕</button>
         <div className="xv-frame">
-          <video ref={video} src={SRC} poster={POSTER} autoPlay controls playsInline />
+          <video ref={video} src={SRC} autoPlay controls playsInline />
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
 
 function PlayingVideo() {
   const video = usePlayNow()
-  return <video ref={video} src={SRC} poster={POSTER} autoPlay controls playsInline />
+  return <video ref={video} src={SRC} autoPlay controls playsInline />
 }
 
 /** الموقع: الفيديو في الصفحة نفسها، غلافٌ حتى يُضغط. */
@@ -98,7 +98,6 @@ export function ExplainerInline() {
           <PlayingVideo />
         ) : (
           <button className="xi-poster" onClick={() => setPlaying(true)} aria-label="شغّل فيديو شرح اللعبة">
-            <img src={POSTER} alt="" />
             <span className="xi-play" aria-hidden="true">▶</span>
           </button>
         )}
@@ -137,7 +136,6 @@ export function ExplainerInline() {
         }
         ${FRAME_CSS}
         .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
-        .xi-poster img { display:block; width:100%; height:100%; object-fit:cover; }
         /* زرّ التشغيل بلغة الكتل: دائرةٌ بلون العلامة بحدّ حبرٍ وظلٍّ صلب */
         .xi-play {
           position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
