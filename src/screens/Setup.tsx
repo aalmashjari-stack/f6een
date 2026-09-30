@@ -289,7 +289,8 @@ export function Setup({
           {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته — في
               التطبيق وحده؛ الموقع يعرض الفيديو نفسه تحت البطاقات (انظر ExplainerVideo). */}
           <div className="stages-head">
-            <h2 className="setup-title brand">مراحل اللعبة</h2>
+            {/* في الموقع عنوانُ علي للبطاقات الثلاث؛ والتطبيق يبقى «مراحل اللعبة» فوق المراحل */}
+            <h2 className="setup-title brand">{isNativeApp ? 'مراحل اللعبة' : 'كل الي تحتاجه عشان تلعب لعبتنا'}</h2>
             {isNativeApp && (
               <button className="xv-open" onClick={() => setVideo(true)}>
                 <span aria-hidden="true">▶</span> شاهد الشرح
@@ -297,7 +298,29 @@ export function Setup({
             )}
           </div>
           {video && <ExplainerVideo onClose={() => setVideo(false)} />}
-          <div className="stages">
+          {/* في الموقع: بطاقات المراحل صارت تكراراً بوجود الفيديو («جودها صار ماله
+              معنى»، علي ٣٠ سبتمبر ٢٠٢٦)، فحلّت محلّها ثلاثٌ بالهيئة نفسها تقول ما
+              اللعبة، وسطرُه تحتها يدعو إلى الفيديو. رُفض قبلها نصٌّ رماديّ («ميت»)
+              وبطاقةٌ ملوّنة الكلمات. والتطبيق يبقى بالمراحل: الفيديو فيه خلف زرّ.
+              النصوص نصوصه حرفاً. */}
+          {!isNativeApp && (
+            <>
+              <div className="stages stages-intro">
+                {['فريقين', 'شاشة واحدة', 'حكم'].map((t, i) => (
+                  <article key={t} className={'stage-card tone-' + i}>
+                    <div className="stage-head">
+                      <span className="stage-no" aria-hidden="true">{i + 1}</span>
+                      <h3 className="stage-name">{t}</h3>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              {/* المسافةُ قبل الفاصلة كما كتبها، لكنّها لا تنكسر: وإلّا نزلت الفاصلةُ
+                  وحدها أوّل السطر في الجوال (مقيس). */}
+              <p className="stages-lede">و هذا الميدان يا حميدان{'\u00A0'}، شوف الفيديو عشان تفهم السالفة</p>
+            </>
+          )}
+          {isNativeApp && <div className="stages">
             {STAGES.map((s, i) => {
               const open = openStage === i
               return (
@@ -324,7 +347,7 @@ export function Setup({
                 </article>
               )
             })}
-          </div>
+          </div>}
           {!isNativeApp && <ExplainerInline />}
         </section>
 
@@ -1142,6 +1165,18 @@ export function Setup({
         }
         /* عنوان المراحل وزرّ الفيديو: العنوان يميناً والزرّ يساراً، كعنوان الفئات وشارته.
            الزرّ بلغة الكتل: أبيض بحدّ حبرٍ وظلٍّ صلب، واللون في المثلّث وحده. */
+        /* سطر الموقع تحت البطاقات الثلاث: غامقٌ متوسّط بحجمٍ واضح (الرماديّ الصغير
+           كان «ميتاً»، والبطاقة الملوّنة الكلمات رُفضت — ٣٠ سبتمبر ٢٠٢٦). */
+        html[data-skin] body .screen.setup .stages-lede {
+          width:100%; margin:clamp(14px,2.6dvh,28px) auto 0; text-align:center;
+          font-family:system-ui, -apple-system, 'Segoe UI', sans-serif; font-weight:600;
+          font-size:clamp(20px,2.2vw,30px); line-height:1.6; color:var(--n-ink, #22201C);
+          text-wrap:balance;
+        }
+        @media (min-width:900px) { html[data-skin] body .screen.setup .stages-lede { width:min(100%, 60vw); } }
+        /* بطاقات الموقع الثلاث لا تُفتح — فلا مؤشّرَ يدٍ ولا ضغطة */
+        html[data-skin] body .screen.setup .stages-intro .stage-head { cursor:default; }
+        html[data-skin] body .screen.setup .stages-intro .stage-head:active { transform:none; }
         html[data-skin] body .screen.setup .stages-head {
           display:flex; align-items:center; justify-content:space-between; gap:12px;
           align-self:stretch;
