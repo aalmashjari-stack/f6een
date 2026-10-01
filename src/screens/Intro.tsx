@@ -1,8 +1,7 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import { STAGES } from '../game/stages'
 import { authErrorText, signInWithGoogle } from '../lib/auth'
-import { isNativeApp } from '../lib/platform'
 import { SignUp } from './SignUp'
 import { ExplainerInline } from '../components/ExplainerVideo'
 import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
@@ -10,9 +9,9 @@ import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 /**
  * شاشة التعريف — تلي شاشة الشعار.
  *
- * لوحان فوق بعضهما في ممرّ واحد يُمرَّر: الشرح، ثم الدخول. زرّ «تسجيل الدخول»
- * لا ينقل إلى شاشة أخرى بل ينزل باللوح الثاني إلى مكانه (قرار علي ٢٦ أغسطس
- * ٢٠٢٦) — فيبقى الشرح خلفه يُرجَع إليه بالتمرير لا بزرّ رجوع.
+ * صفحتان: التعريف برأسٍ فيه «تسجيل الدخول»، ثمّ صفحة الدخول برجوعٍ تحتها
+ * (علي ١ أكتوبر ٢٠٢٦، في التطبيق ثمّ الموقع). كانت لوحين في ممرٍّ يُمرَّر
+ * ينزل الزرّ إلى الثاني (٢٦ أغسطس ٢٠٢٦).
  *
  * وهي بذلك ثاني شاشة تُمرَّر بعد الإعداد، خارج قاعدة «الشاشة لقطة واحدة»
  * (SPEC القسم ١٢) — استثناء مقصود لا سهو.
@@ -32,10 +31,12 @@ import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
  * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
  */
 export function Intro({ onDone }: { onDone?: () => void }) {
-  const signinRef = useRef<HTMLElement>(null)
   const [openStage, setOpenStage] = useState<number | null>(null)
   /* قبل أيّ رجوعٍ مبكّر: خطّافٌ بعد `if (email) return` يُسقط الشاشة كلّها. */
-  const [signinPage, setSigninPage] = useState(false)
+  /* رجوعٌ فاشل من غوغل يفتح صفحة الدخول نفسها: سببه مكتوبٌ فيها. */
+  const [signinPage, setSigninPage] = useState(
+    () => typeof window !== 'undefined' && /[?&#]error=/.test(window.location.search + window.location.hash),
+  )
   const [email, setEmail] = useState<false | 'signup' | 'signin'>(false)
   const [busy, setBusy] = useState(false)
   /* رجوعٌ فاشل من غوغل يحمل سببه في العنوان. بدون قراءته يجد اللاعب نفسه
@@ -76,18 +77,15 @@ export function Intro({ onDone }: { onDone?: () => void }) {
 
   if (email) return <SignUp initialMode={email} onBack={() => setEmail(false)} />
 
-  /* التطبيق: الدخول صفحةٌ مستقلّة لا نزولٌ إلى لوحٍ تحت (علي ١ أكتوبر ٢٠٢٦).
-     الموقع على حاله: ينزل إلى اللوح الثاني. */
-  const toSignin = () =>
-    isNativeApp
-      ? setSigninPage(true)
-      : signinRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  /* الدخول صفحةٌ مستقلّة لا نزولٌ إلى لوحٍ تحت (علي ١ أكتوبر ٢٠٢٦: في
+     التطبيق، ثمّ «انقل شاشة الدخول للموقع»). */
+  const toSignin = () => setSigninPage(true)
 
   return (
-    <div className={'screen intro' + (isNativeApp ? ' native' : '') + (signinPage ? ' signin-open' : '')}>
-      {/* التطبيق: رأسُ كتلةٍ بدل صفحة الدخول القديمة — الشعار و«تسجيل الدخول»
-          (علي ١ أكتوبر ٢٠٢٦، على مثالٍ أرسله بألوان فطين). الموقع لا يُمسّ. */}
-      {isNativeApp && !signinPage && (
+    <div className={'screen intro native' + (signinPage ? ' signin-open' : '')}>
+      {/* رأسُ كتلةٍ بدل صفحة الدخول القديمة — الشعار و«تسجيل الدخول» (علي ١
+          أكتوبر ٢٠٢٦، على مثالٍ أرسله بألوان فطين؛ في التطبيق ثمّ الموقع). */}
+      {!signinPage && (
         <header className="welcome-bar">
           <BrandLogo className="welcome-logo" />
           <button className="welcome-login" onClick={toSignin}>
@@ -101,67 +99,43 @@ export function Intro({ onDone }: { onDone?: () => void }) {
       )}
       {/* اللوح الأول — الشرح */}
       <section className="intro-pane">
-        <header className="intro-head">
-          <BrandLogo className="intro-logo" />
-          <p className="intro-tag">شاشة واحدة · فريقان · ثلاث مراحل</p>
-        </header>
-
-        {/* التطبيق: كتلةٌ واحدة بنصّ الموقع، والمراحل كبسولاتٍ فوق بعض، ثمّ
+        {/* كتلةٌ واحدة بنصّ الموقع، والمراحل كبسولاتٍ فوق بعض، ثمّ
             الفيديو وزرّ التسجيل (علي ١ أكتوبر ٢٠٢٦). النصوص نصوصه. */}
-        {isNativeApp && (
-          <section className="welcome-box" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
-            {/* «فطين» المكتوبة سقطت (علي ١ أكتوبر ٢٠٢٦): الشعار في الرأس فوقها. */}
-            {/* الجملة نفسها حرفاً، مقسومةً عند معناها: ما هي، ثمّ ما تفعله. */}
-            <p className="welcome-line">
-              <span className="welcome-what">لعبة ثقافية اجتماعية</span>
-              <span className="welcome-why">هدفها تخلي جمعاتكم اونس و تتكون من 3 مراحل</span>
-            </p>
-            <div className="welcome-stages">
-              {STAGES.map((st, i) => {
-                const open = openStage === i
-                return (
-                  <article key={st.name} className={'w-stage tone-' + i + (open ? ' open' : '')}>
-                    <button className="w-stage-head" onClick={() => setOpenStage(open ? null : i)} aria-expanded={open}>
-                      <span className="w-stage-no" aria-hidden="true">{i + 1}</span>
-                      <h2 className="w-stage-name">{st.name}</h2>
-                      <span className="w-stage-info" aria-label={open ? 'أخفِ الشرح' : 'اعرض الشرح'}>i</span>
-                    </button>
-                    {open && <p className="w-stage-desc">{st.desc}</p>}
-                  </article>
-                )
-              })}
-            </div>
-            <p className="welcome-video-line"><span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم اللعبة</p>
-            <ExplainerInline />
-            <button className="welcome-cta" onClick={toSignin}>سجل و احصل على لعبة مجانية</button>
-          </section>
-        )}
-
-        <ol className="intro-stages">
-          {STAGES.map((s, i) => (
-            <li key={s.name} className="intro-stage">
-              <span className="intro-no" aria-hidden="true">{i + 1}</span>
-              <div>
-                <h2 className="intro-name">{s.name}</h2>
-                <p className="intro-desc">{s.desc}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-
-        <button className="intro-go" onClick={toSignin}>
-          تسجيل الدخول
-        </button>
+        <section className="welcome-box" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
+          {/* «فطين» المكتوبة سقطت (علي ١ أكتوبر ٢٠٢٦): الشعار في الرأس فوقها. */}
+          {/* الجملة نفسها حرفاً، مقسومةً عند معناها: ما هي، ثمّ ما تفعله. */}
+          <p className="welcome-line">
+            <span className="welcome-what">لعبة ثقافية اجتماعية</span>
+            <span className="welcome-why">هدفها تخلي جمعاتكم اونس و تتكون من 3 مراحل</span>
+          </p>
+          <div className="welcome-stages">
+            {STAGES.map((st, i) => {
+              const open = openStage === i
+              return (
+                <article key={st.name} className={'w-stage tone-' + i + (open ? ' open' : '')}>
+                  <button className="w-stage-head" onClick={() => setOpenStage(open ? null : i)} aria-expanded={open}>
+                    <span className="w-stage-no" aria-hidden="true">{i + 1}</span>
+                    <h2 className="w-stage-name">{st.name}</h2>
+                    <span className="w-stage-info" aria-label={open ? 'أخفِ الشرح' : 'اعرض الشرح'}>i</span>
+                  </button>
+                  {open && <p className="w-stage-desc">{st.desc}</p>}
+                </article>
+              )
+            })}
+          </div>
+          <p className="welcome-video-line"><span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم اللعبة</p>
+          <ExplainerInline />
+          <button className="welcome-cta" onClick={toSignin}>سجل و احصل على لعبة مجانية</button>
+        </section>
       </section>
 
       {/* اللوح الثاني — الدخول */}
       <section
         className="intro-pane signin"
-        ref={signinRef}
-        style={isNativeApp ? { ['--welcome-cats' as string]: `url(${welcomeCats})` } : undefined}
+        style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}
       >
-        {/* صفحة الدخول في التطبيق بلا رأس: الشعار كبيراً فوقها (علي ١ أكتوبر ٢٠٢٦). */}
-        {isNativeApp && <BrandLogo className="signin-logo" />}
+        {/* صفحة الدخول بلا رأس: الشعار كبيراً فوقها (علي ١ أكتوبر ٢٠٢٦). */}
+        <BrandLogo className="signin-logo" />
         <h2 className="signin-title">تسجيل الدخول</h2>
         <p className="signin-sub">حسابك يحفظ رصيدك، ولا يعيد عليك سؤالاً سمعته</p>
 
@@ -179,8 +153,8 @@ export function Intro({ onDone }: { onDone?: () => void }) {
               disabled
               title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد"
             >
-              {/* التطبيق: «سجل دخولك عبر…» (علي ١ أكتوبر ٢٠٢٦)؛ الموقع على «المتابعة». */}
-              {isNativeApp ? 'سجل دخولك عبر Apple' : 'المتابعة عبر Apple'}
+              {/* «سجل دخولك عبر…» (علي ١ أكتوبر ٢٠٢٦). */}
+              سجل دخولك عبر Apple
             </button>
 
             <button className="method google" onClick={google} disabled={busy}>
@@ -188,7 +162,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
                   الأربعة كما في إرشادات غوغل، والاسم في aria-label. */}
               {busy ? 'جارٍ التحويل…' : (
                 <>
-                  {isNativeApp ? 'سجل دخولك عبر' : 'المتابعة عبر'}
+                  سجل دخولك عبر
                   <svg className="g-logo" viewBox="0 0 48 48" role="img" aria-label="Google">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
                     <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
@@ -199,24 +173,23 @@ export function Intro({ onDone }: { onDone?: () => void }) {
               )}
             </button>
 
-            <button className="method mail" onClick={() => setEmail(isNativeApp ? 'signin' : 'signup')}>
-              {isNativeApp ? 'سجل دخولك عبر البريد' : 'المتابعة بالبريد'}
+            <button className="method mail" onClick={() => setEmail('signin')}>
+              سجل دخولك عبر البريد
             </button>
           </div>
         )}
 
-        {/* التطبيق: الأزرار «سجل دخولك»، فمن لا حساب له يجد طريقه تحتها. وغوغل
+        {/* الأزرار «سجل دخولك»، فمن لا حساب له يجد طريقه تحتها. وغوغل
             يُنشئ الحساب بأوّل دخول، فالتسجيل هنا للبريد. */}
-        {isNativeApp && !onDone && (
+        {!onDone && (
           <button className="signin-first" onClick={() => setEmail('signup')}>
             أول مرة؟ <u>اضغط هنا للتسجيل</u>
           </button>
         )}
         {err && <p className="signin-err">{err}</p>}
         {/* والرجوع تحت الأزرار لا في رأسٍ سقط. */}
-        {isNativeApp && (
-          <button className="welcome-back" onClick={() => setSigninPage(false)}>→ رجوع</button>
-        )}
+        <button className="welcome-back" onClick={() => setSigninPage(false)}>→ رجوع</button>
+
       </section>
 
       <style>{`
@@ -249,53 +222,6 @@ export function Intro({ onDone }: { onDone?: () => void }) {
 
         .intro-pane > :first-child { margin-top:auto; }
         .intro-pane > :last-child { margin-bottom:auto; }
-        .intro-head { text-align:center; }
-        .intro-logo { font-size:clamp(34px,7vw,68px); }
-        .intro-tag {
-          margin:clamp(4px,1dvh,10px) 0 0;
-          color:var(--n-ink-2); font-weight:700;
-          font-size:clamp(12px,1.7vw,18px);
-        }
-
-        .intro-stages {
-          list-style:none; margin:0; padding:0;
-          display:flex; flex-direction:column; gap:clamp(6px,1.4dvh,14px);
-          max-width:820px; width:100%; margin-inline:auto;
-        }
-        /* صفٌّ واحد لكل مرحلة: الرقم، ثم الاسم والشرح. رأسيّاً لا شبكةً
-           أفقيّة — القراءة هنا تعليمية تُقرأ بالترتيب. عمود التنقيط في الطرف
-           سقط في ١٧ سبتمبر ٢٠٢٦ (علي: «شيل سطر النقاط») بعد أن صارت الأرقام
-           داخل شرح المرحلة نفسه. */
-        .intro-stage {
-          display:grid; grid-template-columns:auto 1fr; align-items:center;
-          gap:clamp(8px,1.6vw,18px);
-          background:var(--n-surface); border-radius:var(--n-r2);
-          box-shadow:var(--n-e1);
-          padding:clamp(8px,1.5dvh,16px) clamp(10px,2vw,20px);
-        }
-        .intro-no {
-          font-weight:800; color:var(--n-brand);
-          font-size:clamp(20px,3.4vw,34px); line-height:1;
-          min-width:1.2em; text-align:center;
-        }
-        .intro-name { margin:0; font-size:clamp(14px,2.1vw,22px); font-weight:800; }
-        .intro-desc {
-          margin:2px 0 0; color:var(--n-ink-2); font-weight:600;
-          font-size:clamp(11px,1.5vw,16px); line-height:1.5;
-        }
-
-        .intro-go {
-          font:inherit; font-weight:800; cursor:pointer; border:none;
-          border-radius:var(--n-r3);
-          background:var(--n-ink); color:#fff; box-shadow:var(--n-e2);
-          padding:clamp(10px,1.8dvh,18px) clamp(16px,3vw,34px);
-          font-size:clamp(14px,2vw,22px);
-          max-width:820px; width:100%; margin-inline:auto;
-          transition:transform .15s var(--ease-spring);
-        }
-        .intro-go:hover { background:#26262F; transform:translateY(-2px); box-shadow:var(--n-e3); }
-        .intro-go:active { transform:translateY(0) scale(.99); box-shadow:var(--n-e1); }
-
         .signin { justify-content:center; text-align:center; }
         .signin-title { margin:0; font-size:clamp(20px,3.6vw,36px); font-weight:800; color:var(--n-brand); }
         .signin-sub {
@@ -357,13 +283,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         }
         .welcome-login svg { width:19px; height:19px; display:block; }
         .welcome-login:active { transform:scale(.97); }
-        /* في التطبيق الرأسُ يقول الاسم ويدعو إلى الدخول: شعار اللوح الأوّل
-           وزرُّه القديم يسقطان. */
-        body .screen.intro.native { scroll-padding-top:96px; }
-        body .screen.intro.native .intro-head,
-        body .screen.intro.native .intro-go,
-        body .screen.intro.native .intro-stages { display:none; }
-        /* الكتلة أطول من الشاشة: الاستقرار الإجباريّ على اللوحين يعيق تمريرها. */
+        /* الرأسُ لاصقٌ فوق الكتلة، فالتمرير إلى عنصرٍ يحسب ارتفاعه. */        /* الكتلة أطول من الشاشة: الاستقرار الإجباريّ على اللوحين يعيق تمريرها. */
         body .screen.intro.native { scroll-snap-type:none; }
         /* صفحتان لا لوحان: التعريف وحده، أو الدخول وحده بعد الضغطة. */
         body .screen.intro.native:not(.signin-open) .intro-pane.signin,
@@ -378,8 +298,14 @@ export function Intro({ onDone }: { onDone?: () => void }) {
            (علي ١ أكتوبر ٢٠٢٦: «خلّها كاملة»). 96 = الرأس وهامشه. */
         body .screen.intro.native .intro-pane:first-of-type {
           padding-top:16px; padding-bottom:16px; min-height:calc(100% - 96px);
+          /* لا ينكمش تحت محتواه: الشاشة عمودٌ مرن، فكان اللوح يقصر عن الكتلة
+             فتفيض عنه بلا حشوةٍ تحتها. */
+          flex:none;
         }
-        body .screen.intro.native .welcome-box { flex:1; justify-content:space-evenly; }
+        /* ‏1 0 auto لا 1: overflow:hidden (لرسوم الفئات خلفها) يُسقط حدّها الأدنى،
+           فكانت تنكمش إلى ارتفاع الشاشة وتقصّ زرّ التسجيل حين يطول المحتوى
+           (قِيس على 1440×900: الفيديو 720 عرضاً). */
+        body .screen.intro.native .welcome-box { flex:1 0 auto; justify-content:space-evenly; }
         /* صفحة الدخول بهيئة صفحة التعريف (علي: «ضبّط صفحة تسجيل الدخول»):
            الكتلة البيضاء نفسها بظلّها الأسود، تملأ ما تحت الرأس، والأزرار
            في وسطها. */
@@ -485,15 +411,33 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         }
         .welcome-cta:active { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 1px 1px 0 var(--n-ink, #22201C); }
 
-        /* الجوال الأفقي قصير (ارتفاعه ٤٤٠px) — والشرح هو سبب اللوح الأول،
-           فلا يُخفى. ينكمش الشعار والحشو بدله. */
+        /* الجوال الأفقيّ قصير (ارتفاعه ٤٤٠px): الحشو والفجوات تنكمش. */
         @media (max-height:460px) {
-          .intro-logo { font-size:clamp(26px,5vw,40px); }
-          .intro-stage { padding-block:clamp(5px,1dvh,10px); }
-          .intro-desc { font-size:clamp(10px,1.35vw,14px); }
-          /* الحشو والفجوات تنكمش أيضاً — بدونها يفيض اللوح فيُقصّ الشعار. */
           .intro-pane { gap:clamp(6px,1.2dvh,12px); padding-block:clamp(8px,1.4dvh,14px); }
-          .intro-tag { font-size:clamp(11px,1.5vw,15px); }
+        }
+
+        /* ─── العرض (الموقع والآيباد) ─── الصفحتان عمودٌ واحد متوسّط بعرض
+           قراءةٍ مريح، والرأس بعرضه فوقه — مقاسات الجوال نفسها، فالشكل واحد. */
+        @media (min-width:641px), (orientation: landscape) {
+          /* الرأس بعرض الصفحة كي يغطّي ما يمرّ تحته وهو لاصق (بعرض العمود
+             كانت حافّتا الكتلة تطلّان بجانبه)، والخطّ الرماديّ بعرض العمود. */
+          .welcome-bar {
+            margin:0; padding:clamp(14px,3.4dvh,40px) max(16px, calc((100% - 720px) / 2)) 12px;
+            border-bottom:0;
+            background:
+              linear-gradient(rgba(34,32,28,.14), rgba(34,32,28,.14)) bottom center / min(calc(100% - 32px), 720px) 1.5px no-repeat,
+              var(--n-bg, #F6F5F2);
+          }
+          /* اللاصق يقف تحت حشوة الشاشة العليا فيطلّ المحتوى فوقه: الحشوة في الرأس. */
+          /* بوزن html[data-skin]: قاعدة «body .screen:not(.setup):not(.end)…» في
+             السمات تزن أربعة أصناف فتغلب ثلاثة. */
+          html[data-skin] body .screen.intro.native { padding-top:0; }
+          html[data-skin] body .screen.intro.native.signin-open { padding-top:clamp(14px,3.4dvh,40px); }
+          body .screen.intro.native .intro-pane:first-of-type { padding-block:28px 40px; }
+          body .screen.intro.native .intro-pane:first-of-type,
+          body .screen.intro.native .intro-pane.signin { width:min(calc(100% - 32px), 720px); margin-inline:auto; padding-inline:0; }
+          body .screen.intro.native .intro-pane.signin { padding:36px clamp(18px,6vw,72px); }
+          .welcome-cta, .welcome-login, .w-stage-head, .welcome-back, .signin-first { cursor:pointer; }
         }
       `}</style>
     </div>
