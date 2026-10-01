@@ -44,8 +44,10 @@ function ageFrom(birth: string): number | null {
  * والتحقّق كلّه قبل الإرسال برسائل عربيّة: تركُه للخادم يُرجع نصّاً
  * إنجليزيّاً في وجه لاعبٍ عربيّ.
  */
-export function SignUp({ onBack }: { onBack: () => void }) {
-  const [mode, setMode] = useState<'signup' | 'signin'>('signup')
+export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void; initialMode?: 'signup' | 'signin' }) {
+  /* من أين جاء يحدّد الوضع الأوّل: «سجل دخولك عبر البريد» دخولٌ، و«أول مرة؟»
+     تسجيل (علي ١ أكتوبر ٢٠٢٦). والتبديل بينهما باقٍ في الشاشة. */
+  const [mode, setMode] = useState<'signup' | 'signin'>(initialMode)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
