@@ -1381,7 +1381,10 @@ export function Setup({
           :root[data-skin] body .screen.setup .hnav.hnav-menu,
           :root[data-skin] body .screen.setup .hero-nav-veil { display:none; }
           :root[data-skin] body .screen.setup .hero-nav {
+            /* الصفّ في الطرف الأيسر بجانب «رصيد العابي» لا بجانب الشعار (علي ٢ أكتوبر
+               ٢٠٢٦: «زيحهم الى اليسار»): نهاية السطر في RTL. */
             order:1; display:flex; flex:1; flex-direction:row; align-items:center; flex-wrap:nowrap;
+            justify-content:flex-end;
             position:static; width:auto; margin:0; padding:0; gap:clamp(2px,.5vw,8px);
             background:none; border-radius:0; box-shadow:none;
           }
