@@ -12,6 +12,7 @@ import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 import { ExplainerInline } from '../components/ExplainerVideo'
 import { isNativeApp } from '../lib/platform'
+import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 import { authErrorText, signOut } from '../lib/auth'
 const MIN = 2
 const MAX = 6
@@ -235,7 +236,10 @@ export function Setup({
   }
 
   return (
-    <div className="screen setup">
+    <div
+      className="screen setup"
+      style={isNativeApp ? { ['--welcome-cats' as string]: `url(${welcomeCats})` } : undefined}
+    >
       {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
           يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
       {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
@@ -315,7 +319,7 @@ export function Setup({
             حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
-        <section className="setup-block">
+        <section className="setup-block stages-block">
           {/* البطاقات عادت تحت سطر «تتكون من ثلاث مراحل» (علي ٣٠ سبتمبر ٢٠٢٦:
               «رجّع الكبسولات القديمة»). */}
           <div className="stages">
@@ -761,7 +765,20 @@ export function Setup({
         }
         /* التطبيق بلا «فطين» المكتوبة: الشعار في الكبسولة فوقها مباشرةً
            (علي ٣٠ سبتمبر ٢٠٢٦: «شيل كلمة فطين بالأسود»). */
-        :root[data-native] .setup-intro-name { display:none; }
+        /* «فطين» والجملة تحتها سقطتا في إعداد التطبيق (علي ١ أكتوبر ٢٠٢٦: «شيل الجملة بعد»). */
+        :root[data-native] .setup-intro { display:none; }
+        /* والمراحل والفيديو لا تتكرّر بعد الدخول: هي في شاشة الدخول الأولى
+           (علي ١ أكتوبر ٢٠٢٦: «ما يحتاج بطاقات ولا يحتاج فيديو»). */
+        :root[data-native] .setup-block.stages-block { display:none; }
+        /* ورسوم الفئات خفيفةً على خلفيّة الإعداد في التطبيق، كشاشتَي الدخول
+           والشعار (علي ١ أكتوبر ٢٠٢٦). غطاءٌ بلون الأرضيّة بنسبة 93٪ فوق الصورة
+           = الصورة بشفافيّة 7٪، والشاشة ثابتة والتمرير داخلها فلا تتحرّك. */
+        html[data-skin][data-native] body .screen.setup {
+          background:
+            linear-gradient(rgba(246,245,242,.93), rgba(246,245,242,.93)),
+            var(--welcome-cats) center / cover no-repeat,
+            var(--n-bg, #F6F5F2);
+        }
         .setup-intro-line {
           margin:clamp(4px, 1dvh, 12px) 0 0; font-family:system-ui, -apple-system, sans-serif;
           font-weight:600; font-size:clamp(16px, 1.7vw, 24px); line-height:1.6;
@@ -1411,15 +1428,16 @@ export function Setup({
           /* ─── رأس التطبيق وحده (علي ٣٠ سبتمبر ٢٠٢٦: «لا تغيّر شي في الموقع») ───
              مستطيلٌ أبيض بزوايا مدوّرة (جُرّبت الكبسولة قبله: «ليش ما تخليها
              مستطيل»)، الشعار يميناً أصغر، و☰ بلون الهويّة وفي لوحه الصوت والخروج. */
+          /* كرأس شاشة الدخول (علي ١ أكتوبر ٢٠٢٦: «خلّه نفس صفحة التسجيل»): على
+             الخلفيّة بلا كونتينر، وخطٌّ رماديّ خفيف تحته. */
           html[data-skin][data-native] body .screen.setup .hero {
             justify-content:flex-start;
-            margin-top:10px; padding:12px 16px;
-            background:var(--n-surface, #fff);
-            border:1px solid rgba(34,32,28,.07); border-radius:16px;
-            box-shadow:0 12px 32px -14px rgba(70,40,10,.26), 0 2px 6px -2px rgba(70,40,10,.08);
+            margin:0; padding:12px 4px;
+            background:none; border:0; border-radius:0; box-shadow:none;
+            border-bottom:1.5px solid rgba(34,32,28,.14);
           }
           html[data-skin][data-native] body .screen.setup .hero-logo.f6een-mark { top:0; font-size:clamp(33px,9vw,38px); }
-          html[data-skin][data-native] body .screen.setup .hnav-menu { inset-inline-end:14px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:none; }
+          html[data-skin][data-native] body .screen.setup .hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:none; }
           html[data-skin][data-native] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); }
           html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound { display:flex; align-items:center; justify-content:center; gap:10px; }
           html[data-skin][data-native] body .screen.setup .hnav-sound.off { opacity:.6; }
@@ -1430,7 +1448,7 @@ export function Setup({
           html[data-skin][data-native] body .screen.setup .hnav-balance {
             display:flex; align-items:center; gap:5px;
             position:absolute; z-index:2; top:50%; transform:translateY(-50%);
-            inset-inline-end:62px; height:40px; padding:0 8px 0 14px; border-radius:999px;
+            inset-inline-end:52px; height:40px; padding:0 8px 0 14px; border-radius:999px;
             background:var(--n-bg, #F6F5F2); color:var(--n-ink-2, #57524A);
             font-size:15px; font-weight:700; color:var(--n-ink-2, #57524A); white-space:nowrap;
             border:0; font-family:inherit; cursor:pointer; /* جُرّب إطارٌ برتقاليّ: «مو حلو» */
@@ -1444,6 +1462,21 @@ export function Setup({
           html[data-skin][data-native] body .screen.setup .setup-mute { display:none; }
           /* سطر التعريف سطرٌ واحد: عرضه بخطّ الجهاز 600 نحو 27.04em (قيس
              بـNSFont)، فالمقاس ما يسعه عرضُ الشاشة ناقص الحشوة. */
+          /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
+             حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. */
+          html[data-skin][data-native] body .screen.setup .setup-body {
+            /* بطول محتواه: الطبقات الأخرى تقصره على ارتفاع الشاشة فكان المحتوى
+               يفيض تحت حدّه الأبيض (قِيس في معاينةٍ محلّيّة: 816 من 1968). */
+            flex:0 0 auto; height:auto; min-height:0; max-height:none;
+            margin:16px 0 18px; padding:20px 14px 18px;
+            background:var(--n-surface, #fff); border-radius:22px;
+            box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
+          }
+          /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
+          html[data-skin][data-native] body .screen.setup .cats-head { margin-top:8px; }
+          html[data-skin][data-native] body .screen.setup .setup-block + .setup-block { margin-top:0; }
+          /* الرفعة السالبة لكبسولة الفرق (للموقع) تُخرجها فوق حدّ الكونتينر هنا. */
+          html[data-skin][data-native] body .screen.setup .setup-block > .title-cap-wrap { margin-top:0; margin-bottom:6px; }
           html[data-skin][data-native] body .screen.setup .setup-intro-line {
             white-space:nowrap; font-size:min(16px, calc((100vw - 36px) / 27.6));
           }

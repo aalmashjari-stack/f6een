@@ -155,7 +155,11 @@ export function Intro({ onDone }: { onDone?: () => void }) {
       </section>
 
       {/* اللوح الثاني — الدخول */}
-      <section className="intro-pane signin" ref={signinRef}>
+      <section
+        className="intro-pane signin"
+        ref={signinRef}
+        style={isNativeApp ? { ['--welcome-cats' as string]: `url(${welcomeCats})` } : undefined}
+      >
         {/* صفحة الدخول في التطبيق بلا رأس: الشعار كبيراً فوقها (علي ١ أكتوبر ٢٠٢٦). */}
         {isNativeApp && <BrandLogo className="signin-logo" />}
         <h2 className="signin-title">تسجيل الدخول</h2>
@@ -415,8 +419,11 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         /* لمسةٌ خفيفة جدّاً خلف الكتلة: رسوم الفئات شبكةً مائلة كافتتاحيّة فيديو
            الشرح (علي ١ أكتوبر ٢٠٢٦: «مثل صور الفئات بس خفيييفة»). صورةٌ واحدة
            مجمَّعة من assets/categories لا تسع عشرة. والمحتوى فوقها. */
-        .welcome-box { position:relative; isolation:isolate; overflow:hidden; }
-        .welcome-box::before {
+        .welcome-box,
+        body .screen.intro.native .intro-pane.signin { position:relative; isolation:isolate; overflow:hidden; }
+        /* وفي صفحة الدخول كذلك (علي ١ أكتوبر ٢٠٢٦: «سوّها في صفحة تسجيل الدخول»). */
+        .welcome-box::before,
+        body .screen.intro.native .intro-pane.signin::before {
           content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
           background:var(--welcome-cats) center / cover no-repeat;
           opacity:.07;
