@@ -277,12 +277,19 @@ export function Setup({
             {/* فاصلٌ رفيع بين الروابط وبين «حسابي» والشراء — في الكبسولة العريضة وحدها. */}
             <span className="hnav-sep" aria-hidden="true" />
             {/* الصوت والخروج داخل لوح ☰ (علي ١ أكتوبر ٢٠٢٦، في التطبيق ثمّ الموقع). */}
-            <button className={'hnav hnav-sound' + (mute ? ' off' : '')} onClick={toggleMute} aria-pressed={mute}>
+            <button
+              className={'hnav hnav-sound' + (mute ? ' off' : '')}
+              onClick={toggleMute}
+              aria-pressed={mute}
+              aria-label={mute ? 'الصوت مكتوم — شغّله' : 'الصوت يعمل — اكتمه'}
+              title={mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
+            >
               <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
                 {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
               </svg>
-              {mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
+              {/* الكلمة تسقط في صفّ الموقع فيبقى الرمز وحده (علي ٢ أكتوبر ٢٠٢٦). */}
+              <span className="hnav-sound-label">{mute ? 'الصوت مكتوم' : 'الصوت يعمل'}</span>
             </button>
             <button className="hnav hnav-logout" onClick={logout}>تسجيل الخروج</button>
           </nav>
@@ -1384,6 +1391,13 @@ export function Setup({
           }
           html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav::before,
           html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound svg { width:1.15em; height:1.15em; }
+          /* الصوت رمزٌ وحده في دائرة بجانب الخروج (علي ٢ أكتوبر ٢٠٢٦: «الصوت يعمل
+             استبدلها بايقونة واجعلها بجانب تسجيل الخروج»). */
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound {
+            width:clamp(40px,3.4vw,50px); padding:0; justify-content:center;
+          }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound-label { display:none; }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound svg { width:1.4em; height:1.4em; }
           /* فاصلٌ رفيع قبل الصوت والخروج. */
           html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sep {
             display:block; flex:none; width:1px; height:1.6em; margin-inline:clamp(4px,.6vw,10px);
@@ -1401,9 +1415,8 @@ export function Setup({
         /* الجوال الأفقيّ والنوافذ الضيّقة: الصفّ لا يسع الأيقونات — الكلمات وحدها
            (قِيس على 844: الشعار انضغط تحت القائمة). */
         @media (orientation: landscape) and (max-width:1000px), (min-width:641px) and (max-width:1000px) {
-          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav::before,
-          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound svg { display:none; }
-          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav { padding:0 8px; font-size:15px; }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav::before { display:none; }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav:not(.hnav-sound) { padding:0 8px; font-size:15px; }
           html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sep { margin-inline:2px; }
         }
         /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
