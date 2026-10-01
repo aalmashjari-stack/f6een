@@ -82,7 +82,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
         .splash-cats {
           position:absolute; inset:0; z-index:-1; pointer-events:none;
           background-position:center; background-size:cover; background-repeat:no-repeat;
-          opacity:.07;
+          opacity:var(--cats-alpha);
         }
         .splash > .splash-logo { grid-area:1 / 1; }
         /* الشعار يكبر قليلاً ويستقرّ — لا دوران ولا قفز: هويّة تُقدَّم

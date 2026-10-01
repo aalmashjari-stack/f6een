@@ -352,7 +352,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         body .screen.intro.native .intro-pane.signin::before {
           content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
           background:var(--welcome-cats) center / cover no-repeat;
-          opacity:.07;
+          opacity:var(--cats-alpha);
         }
         .welcome-name {
           margin:0; font-family:system-ui, -apple-system, sans-serif; font-weight:800;

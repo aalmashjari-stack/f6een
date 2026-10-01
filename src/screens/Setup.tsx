@@ -1368,12 +1368,12 @@ export function Setup({
           flex:0 0 auto; height:auto; min-height:0; max-height:none;
           margin:16px 0 18px; padding:20px 14px 18px;
           /* أبيض وفيه رسوم الفئات خفيفةً كصفحة التسجيل، والصفحة حوله رماديّة سادة
-             (علي ١ أكتوبر ٢٠٢٦). غطاءٌ أبيض 93٪ = الصورة بشفافيّة 7٪. والصورة
+             (علي ١ أكتوبر ٢٠٢٦). غطاءٌ أبيض 1 − ‎--cats-alpha‎ = الصورة بشفافيّتها (theme.css). والصورة
              دورةٌ كاملة من 24 صفّاً تنطبق حافّتاها فتتكرّر طولاً بلا وصلة: نسخةٌ
              غير دوريّة تركت شريطاً أبيض، ونسخةٌ طويلة غير متكرّرة انتهت قبل
              آخر الفئات في القاعدة الحيّة (علي: «من تصنيف بنات تختفي»). */
           background:
-            linear-gradient(rgba(255,255,255,.93), rgba(255,255,255,.93)),
+            linear-gradient(rgba(255,255,255,calc(1 - var(--cats-alpha))), rgba(255,255,255,calc(1 - var(--cats-alpha)))),
             var(--welcome-cats) top center / 100% auto repeat-y,
             var(--n-surface, #fff);
           border-radius:22px;
