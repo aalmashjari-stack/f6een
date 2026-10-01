@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { SetupInput } from '../game/session'
 import { STAGE1_CATEGORIES } from '../game/session'
 import type { TeamId } from '../game/types'
-import { STAGES } from '../game/stages'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
 import { categoryArt } from '../components/categoryArt'
 import { categoryInfo } from '../components/categoryInfo'
@@ -10,8 +9,6 @@ import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
-import { ExplainerInline } from '../components/ExplainerVideo'
-import { isNativeApp } from '../lib/platform'
 import welcomeCats from '../../assets/backgrounds/welcome-cats-tall.jpg'
 import { authErrorText, signOut } from '../lib/auth'
 const MIN = 2
@@ -59,10 +56,6 @@ export function Setup({
   const [menuOpen, setMenuOpen] = useState(false)
   /* الفئة المفتوحة نبذتُها من علامة (i) على بطاقتها — `null` = لا لوح. */
   const [infoCat, setInfoCat] = useState<string | null>(null)
-  /* أيّ مرحلة شرحُها مفتوح (طلب علي ١٧ سبتمبر ٢٠٢٦): البطاقة سطرٌ واحد
-     «1 الجولة الجماعية» وعلامةُ i تفتح الشرح المختصر والنقاط تحته. واحدة
-     في كلّ مرّة — الشرح يُقرأ مرّةً لا يُقارَن. */
-  const [openStage, setOpenStage] = useState<number | null>(null)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -299,63 +292,9 @@ export function Setup({
       {/* ما بعد الهيرو يتوسّط المساحة الباقية — بلا هذا يتكدّس كل شيء
           في أعلى التابلت الطولي ويبقى ثلثه السفلي فارغاً. */}
       <div className="setup-body">
-        {/* تعريفٌ فوق كلّ شيء (علي ٣٠ سبتمبر ٢٠٢٦) — النصّ نصّه حرفاً،
-            و«فطين» كتابةً عاديّة بخطّ الجهاز لا الشعار الملوّن. */}
-        <header className="setup-intro">
-          <h1 className="setup-intro-name">فطين</h1>
-          {/* التطبيق بصياغةٍ أقصر تسع سطراً في الجوال؛ الموقع على ما نُشر. */}
-          <p className="setup-intro-line">
-            {isNativeApp
-              ? 'لعبة ثقافية اجتماعية هدفها تخلي جمعاتكم امتع و فيها ثلاث مراحل'
-              : 'لعبة ثقافية اجتماعية هدفها تخلي جمعاتكم اونس و تتكون من ثلاث مراحل'}
-          </p>
-        </header>
-        {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين.
-            حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
-            لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
-            نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
-        <section className="setup-block stages-block">
-          {/* البطاقات عادت تحت سطر «تتكون من ثلاث مراحل» (علي ٣٠ سبتمبر ٢٠٢٦:
-              «رجّع الكبسولات القديمة»). */}
-          <div className="stages">
-            {STAGES.map((s, i) => {
-              const open = openStage === i
-              return (
-                <article key={s.name} className={'stage-card tone-' + i + (open ? ' open' : '')}>
-                  {/* السطر كلّه زرّ لا العلامةُ وحدها: هدفٌ بعرض البطاقة أسهل
-                      إصابةً من دائرةٍ صغيرة، والعلامة تقول ما يفعله. */}
-                  <button
-                    className="stage-head"
-                    onClick={() => setOpenStage(open ? null : i)}
-                    aria-expanded={open}
-                    aria-controls={'stage-more-' + i}
-                  >
-                    <span className="stage-no" aria-hidden="true">{i + 1}</span>
-                    <h3 className="stage-name">{s.name}</h3>
-                    <span className="stage-info" aria-label={open ? 'أخفِ الشرح' : 'اعرض الشرح'}>i</span>
-                  </button>
-                  {open && (
-                    <div className="stage-more" id={'stage-more-' + i}>
-                      {/* الشرح وحده: كبسولة النقاط سقطت في ١٧ سبتمبر ٢٠٢٦ (علي:
-                          «شيل سطر النقاط») بعد أن صارت الأرقام داخل الجملة نفسها. */}
-                      <p className="stage-desc">{s.desc}</p>
-                    </div>
-                  )}
-                </article>
-              )
-            })}
-          </div>
-          {/* الموقع والتطبيق سواء (علي ٣٠ سبتمبر ٢٠٢٦: «خلّه مثل الموقع بالضبط») —
-              كان التطبيق يفتح الفيديو من زرٍّ في نافذة. */}
-          <>
-              {/* نصٌّ عاديّ لا كبسولة مرحلة: تحت بطاقات المراحل كانت تُقرأ مرحلةً
-                  رابعة (علي ٣٠ سبتمبر ٢٠٢٦: جُرّبت شارةٌ بلون الهويّة ثمّ «نصّ عادي»). */}
-              <div className="video-cap-wrap video-badge-wrap">
-                <span className="video-badge"><span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم السالفة</span>
-              </div>
-              <ExplainerInline />
-          </>
-        </section>
+        {/* التعريف و«فطين» والمراحل والفيديو سقطت من الإعداد (علي ١ أكتوبر ٢٠٢٦:
+            في التطبيق «ما يحتاج بطاقات ولا يحتاج فيديو»، ثمّ «انقل الإعداد بلا
+            مراحل وفيديو للموقع»): هي في شاشة الدخول وفي «شرح اللعبة». */}
 
         {/* حقول الفريقين. حُذف عنوان «بيانات الفريقين المتنافسين» في ٢١ أغسطس
             ٢٠٢٦: حقولٌ باسم فريق ولاعبين لا تحتاج عنواناً يسمّيها، وارتفاعه
@@ -723,10 +662,6 @@ export function Setup({
           gap:var(--gap-block);
         }
         .setup-block { display:flex; flex-direction:column; gap:var(--gap-in); }
-        .setup-intro { text-align:center; }
-        /* الكبسولة فوق الفيديو لصيقةٌ به: فسحتُه العليا الواسعة كانت تفصله عن
-           «مراحل اللعبة»، والكبسولة الآن هي ما يفصل. */
-        .video-cap-wrap + .xi-wrap { margin-top:clamp(12px, 2.4dvh, 28px); }
         /* عمودٌ واحد بطول نصّها في الوسط (علي: «صغّر الكبسولة»). */
         html[data-skin] body .screen.setup .stages.video-cap-wrap {
           grid-template-columns:1fr; margin-top:clamp(36px, 7dvh, 88px);
@@ -734,16 +669,6 @@ export function Setup({
         }
         html[data-skin] body .screen.setup .video-cap-wrap .stage-name { padding-inline:clamp(16px,1.8vw,24px); }
         html[data-skin] body .screen.setup .video-cap .stage-head { cursor:default; }
-        html[data-skin] body .screen.setup .video-badge-wrap {
-          display:flex; justify-content:center; margin-top:clamp(36px, 7dvh, 88px);
-        }
-        /* نصٌّ عاديّ لا شارة (علي: «خلّه نصّ عادي») — بهيئة سطر التعريف تحت «فطين». */
-        html[data-skin] body .screen.setup .video-badge {
-          font-family:system-ui, -apple-system, sans-serif; font-weight:600;
-          font-size:clamp(16px, 1.7vw, 22px); line-height:1.5;
-          color:var(--n-ink, #22201C);
-        }
-        html[data-skin] body .screen.setup .video-badge > span { font-size:.8em; }
         html[data-skin] body .screen.setup .stages.title-cap-wrap { margin-top:0; margin-inline:0; }
         /* كبسولة الفرق وحدها أعلى قليلاً والحقول في مكانها (علي ٣٠ سبتمبر ٢٠٢٦:
            «الكبسولة بس») — ما تنقصه من فوقها يُردّ تحتها. */
@@ -753,23 +678,6 @@ export function Setup({
         }
         html[data-skin] body .screen.setup .video-cap .stage-head:active { transform:none; }
         html[data-skin] body .screen.setup .video-cap .stage-no { font-size:clamp(16px,1.6vw,20px); padding-inline-start:.12em; }
-        .setup-intro-name {
-          margin:0; font-family:system-ui, -apple-system, sans-serif; font-weight:800;
-          font-size:clamp(44px, 6vw, 96px); line-height:1.1;
-          color:var(--n-ink, #22201C);
-        }
-        /* التطبيق بلا «فطين» المكتوبة: الشعار في الكبسولة فوقها مباشرةً
-           (علي ٣٠ سبتمبر ٢٠٢٦: «شيل كلمة فطين بالأسود»). */
-        /* «فطين» والجملة تحتها سقطتا في إعداد التطبيق (علي ١ أكتوبر ٢٠٢٦: «شيل الجملة بعد»). */
-        :root[data-native] .setup-intro { display:none; }
-        /* والمراحل والفيديو لا تتكرّر بعد الدخول: هي في شاشة الدخول الأولى
-           (علي ١ أكتوبر ٢٠٢٦: «ما يحتاج بطاقات ولا يحتاج فيديو»). */
-        :root[data-native] .setup-block.stages-block { display:none; }
-        .setup-intro-line {
-          margin:clamp(4px, 1dvh, 12px) 0 0; font-family:system-ui, -apple-system, sans-serif;
-          font-weight:600; font-size:clamp(16px, 1.7vw, 24px); line-height:1.6;
-          color:var(--n-ink-2, #57524A);
-        }
         /* فصل بصري أوضح بين شرح المراحل وحقول الفرق: العنوان التالي لا
            يلتصق بظلال البطاقات، مع إبقاء الإيقاع الداخلي لكل قسم كما هو. */
         .setup-block + .setup-block {
@@ -1329,11 +1237,6 @@ export function Setup({
           /* الرأس بلا كتلة أخفّ من التذكرة، ففسحة blocks.css تحته (≈40) كانت
              تُقرأ فراغاً (علي ٢٦ سبتمبر ٢٠٢٦: «صغّرهم»). */
           html[data-skin] body .screen.setup .setup-body { margin-top:clamp(10px, 2dvh, 20px); }
-          /* سطر التعريف سطرٌ واحد: عرضه بخطّ الجهاز 600 نحو 27.04em (قيس
-             بـNSFont)، فالمقاس ما يسعه عرضُ الشاشة ناقص الحشوة. */
-          html[data-skin][data-native] body .screen.setup .setup-intro-line {
-            white-space:nowrap; font-size:min(16px, calc((100vw - 36px) / 27.6));
-          }
         }
         /* ─── الرأس: الشعار، و«رصيد العابي» و☰ — في كلّ مقاس، الموقع والتطبيق ───
            كان هذا للجوال الطوليّ وحده والعرضُ كبسولةٌ عائمة بروابط؛ نقله علي

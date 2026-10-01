@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { sendMessage } from '../lib/messages'
 import { STAGES } from '../game/stages'
 import { ExplainerInline } from './ExplainerVideo'
-import { isNativeApp } from '../lib/platform'
 import type { CategoryInfo } from './categoryInfo'
 
 /**
@@ -230,13 +229,11 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
         ))}
       </div>
 
-      {/* فيديو الشرح في التطبيق (علي ١ أكتوبر ٢٠٢٦): خرج من الإعداد بعد الدخول،
-          فمكانه هنا تحت المراحل (علي: «حطّ الفيديو تحت البطاقات»). والموقع يعرضه في الإعداد نفسه. */}
-      {isNativeApp && (
-        <div className="sp-video">
-          <ExplainerInline />
-        </div>
-      )}
+      {/* فيديو الشرح (علي ١ أكتوبر ٢٠٢٦): خرج من الإعداد بعد الدخول — في التطبيق
+          ثمّ الموقع — فمكانه هنا تحت المراحل (علي: «حطّ الفيديو تحت البطاقات»). */}
+      <div className="sp-video">
+        <ExplainerInline />
+      </div>
 
       <style>{`
         .sp-video .xi-wrap { margin:0; width:100%; }
