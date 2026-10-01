@@ -381,8 +381,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           min-height:calc(100% - 32px);
           margin:16px; padding:28px 18px;
           background:var(--n-surface, #fff); border-radius:22px;
-          border:1px solid rgba(34,32,28,.07);
-          box-shadow:5px 6px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ كبطاقة «إنشاء حساب» */
           justify-content:center; gap:14px;
         }
         body .screen.intro.native .intro-pane.signin > :first-child,
@@ -408,8 +407,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           margin-top:0; padding:22px 16px 20px;
           /* أبيض بظلّ الرأس الناعم؛ جُرّب قبله الخوخيّ ثمّ الفيروزيّ الفاتح. */
           background:var(--n-surface, #fff); border-radius:22px;
-          border:1px solid rgba(34,32,28,.07);
-          box-shadow:5px 6px 0 var(--n-ink, #22201C); /* ظلٌّ أسود صلب (علي ١ أكتوبر ٢٠٢٦) بدل الناعم */
+          box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ وظلٌّ صلب كبطاقة «إنشاء حساب» (علي ١ أكتوبر ٢٠٢٦) */
           text-align:center;
         }
         .welcome-name {
