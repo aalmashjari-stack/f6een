@@ -12,7 +12,7 @@ import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
 import { ExplainerInline } from '../components/ExplainerVideo'
 import { isNativeApp } from '../lib/platform'
-import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
+import welcomeCats from '../../assets/backgrounds/welcome-cats-tall.jpg'
 import { authErrorText, signOut } from '../lib/auth'
 const MIN = 2
 const MAX = 6
@@ -770,15 +770,6 @@ export function Setup({
         /* والمراحل والفيديو لا تتكرّر بعد الدخول: هي في شاشة الدخول الأولى
            (علي ١ أكتوبر ٢٠٢٦: «ما يحتاج بطاقات ولا يحتاج فيديو»). */
         :root[data-native] .setup-block.stages-block { display:none; }
-        /* ورسوم الفئات خفيفةً على خلفيّة الإعداد في التطبيق، كشاشتَي الدخول
-           والشعار (علي ١ أكتوبر ٢٠٢٦). غطاءٌ بلون الأرضيّة بنسبة 93٪ فوق الصورة
-           = الصورة بشفافيّة 7٪، والشاشة ثابتة والتمرير داخلها فلا تتحرّك. */
-        html[data-skin][data-native] body .screen.setup {
-          background:
-            linear-gradient(rgba(246,245,242,.93), rgba(246,245,242,.93)),
-            var(--welcome-cats) center / cover no-repeat,
-            var(--n-bg, #F6F5F2);
-        }
         .setup-intro-line {
           margin:clamp(4px, 1dvh, 12px) 0 0; font-family:system-ui, -apple-system, sans-serif;
           font-weight:600; font-size:clamp(16px, 1.7vw, 24px); line-height:1.6;
@@ -1469,7 +1460,15 @@ export function Setup({
                يفيض تحت حدّه الأبيض (قِيس في معاينةٍ محلّيّة: 816 من 1968). */
             flex:0 0 auto; height:auto; min-height:0; max-height:none;
             margin:16px 0 18px; padding:20px 14px 18px;
-            background:var(--n-surface, #fff); border-radius:22px;
+            /* أبيض وفيه رسوم الفئات خفيفةً كصفحة التسجيل، والصفحة حوله رماديّة سادة
+               (علي ١ أكتوبر ٢٠٢٦). غطاءٌ أبيض 93٪ = الصورة بشفافيّة 7٪. والصورة
+               نسخةٌ طويلة (550×3200) بعرض الكونتينر بلا تكرار: التكرار ترك
+               شريطاً أبيض عند الوصلة (قِيس في المعاينة). */
+            background:
+              linear-gradient(rgba(255,255,255,.93), rgba(255,255,255,.93)),
+              var(--welcome-cats) top center / 100% auto no-repeat,
+              var(--n-surface, #fff);
+            border-radius:22px;
             box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
           }
           /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
