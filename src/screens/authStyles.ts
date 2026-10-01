@@ -33,6 +33,20 @@ export const AUTH_CSS = `
     font-size:clamp(13px,1.7vw,16px);
   }
   .su-in::placeholder { color:var(--n-ink-3,#948CA8); font-weight:700; }
+  .su-date { position:relative; display:block; min-width:0; }
+  .su-date .su-in {
+    display:block; min-width:0; max-width:100%; box-sizing:border-box;
+    -webkit-appearance:none; appearance:none; text-align:start;
+    /* بارتفاع أخواته: سطرُ النصّ فيها 1.77em بخطّ اللعبة (قيس في المحاكي 51 نقطة
+       على 13px)، وحقل التاريخ الفارغ لا سطر فيه فيقصر. */
+    min-height:calc(1.77em + 2 * clamp(9px,1.5vh,13px) + 2px);
+  }
+  .su-date .su-in::-webkit-date-and-time-value { text-align:start; }
+  .su-date .su-in.empty { color:transparent; }
+  .su-date-ph {
+    position:absolute; inset-inline-start:clamp(10px,1.6vw,14px); top:50%; transform:translateY(-50%);
+    pointer-events:none; color:var(--n-ink-3,#948CA8); font-weight:700; font-size:clamp(13px,1.7vw,16px);
+  }
   .su-in:focus { outline:none; border-color:var(--n-brand,#7A3E9D); background:#fff; }
   .su-terms { display:flex; align-items:flex-start; gap:8px;
               font-size:clamp(12px,1.5vw,14px); color:var(--n-ink-2,#5D5670); font-weight:700; }

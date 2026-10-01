@@ -182,9 +182,14 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
         {signup && (
           <>
             {/* حقل تاريخ من النظام لا ثلاث قوائم — أقلّ نقرات وأقلّ خطأ. */}
-            <input className="su-in" type="date" value={birthDate}
-                   max={new Date().toISOString().slice(0, 10)}
-                   onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد" />
+            {/* سفاري iOS يرسمه فارغاً بلا عنوان وأعرض من أخواته: العنوان يُرسم فوقه
+                ما دام فارغاً، والعرض يُقيَّد (علي ١ أكتوبر ٢٠٢٦: «صلّح الخانة»). */}
+            <label className="su-date">
+              <input className={'su-in' + (birthDate ? '' : ' empty')} type="date" value={birthDate}
+                     max={new Date().toISOString().slice(0, 10)}
+                     onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد" />
+              {!birthDate && <span className="su-date-ph" aria-hidden="true">تاريخ الميلاد</span>}
+            </label>
 
             <div className="su-row phone">
               <select className="su-in" value={dialCode} aria-label="رمز الدولة"
