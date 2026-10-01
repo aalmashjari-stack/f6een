@@ -1496,6 +1496,41 @@ export function Setup({
           html[data-skin] body .screen.setup .hero-nav .hnav {
             font-size:16px; padding:12px 18px; text-align:center;
           }
+
+          /* ─── لوح ☰ في التطبيق: قائمةٌ لا أزرار (علي ١ أكتوبر ٢٠٢٦: «ضبّط عناصر
+             القائمة») ─── صفوفٌ بأيقونةٍ لكلٍّ منها وخطٍّ رفيع بينها بدل خمس
+             كبسولاتٍ متطابقة، والخروج منفصلٌ بالأحمر في آخرها. والأيقونات
+             أقنعة CSS لا عناصر: الأزرار نفسها في الموقع بلا أيقونات. */
+          html[data-skin][data-native] body .screen.setup .hero-nav { padding:8px; gap:0; border-radius:18px; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav {
+            display:flex; align-items:center; justify-content:flex-start; gap:12px;
+            height:52px; padding:0 14px; margin:0; border-radius:12px;
+            background:none; box-shadow:none; transform:none;
+            font-size:16px; font-weight:700; color:var(--n-ink, #22201C); text-align:start;
+          }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav:active { background:var(--n-bg, #F6F5F2); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact { border-bottom:1px solid rgba(34,32,28,.08); border-radius:0; }
+          /* الشراء خارج اللوح («رصيد العابي» يفتحه) — تُعاد هنا لأنّ display:flex أعلاه يغلبها. */
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-buy { display:none; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account::before,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules::before,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact::before,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout::before {
+            content:''; flex:none; width:22px; height:22px; background:currentColor;
+            -webkit-mask:var(--ic) center / contain no-repeat; mask:var(--ic) center / contain no-repeat;
+          }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%224%22/%3E%3Cpath%20d%3D%22M4%2021c1-4%204.5-6%208-6s7%202%208%206%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a2%202%200%200%201%202-2h12v18H6a2%202%200%200%201-2-2z%22/%3E%3Cpath%20d%3D%22M8%207h6M8%2011h6%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205h16v11H8l-4%204z%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M10%204H6a2%202%200%200%200-2%202v12a2%202%200%200%200%202%202h4%22/%3E%3Cpath%20d%3D%22M21%2012H10M17%208l4%204-4%204%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound svg { width:22px; height:22px; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound.off { opacity:.55; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout {
+            margin-top:6px; border-top:1px solid rgba(34,32,28,.16); border-radius:0;
+            color:var(--n-bad, #CE2F1E);
+          }
         }
         /* ─── صينيّة المختارات ─── كانت للجوال الطوليّ وحده بحجّة أنّ الشبكة
            في العرض تُرى في نظرة؛ فطلبها علي في الموقع والآيباد أيضاً (١٧
