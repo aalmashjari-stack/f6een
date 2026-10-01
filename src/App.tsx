@@ -42,6 +42,7 @@ import { CrashScreen } from './components/CrashScreen'
 import { useWakeLock } from './components/useWakeLock'
 import { useTapGuard } from './components/tapGuard'
 import { BootHold, Splash } from './screens/Splash'
+import { isNativeApp } from './lib/platform'
 import { lockOrientation } from './lib/orientation'
 import { Intro } from './screens/Intro'
 import { ConfirmEmail } from './screens/ConfirmEmail'
@@ -180,9 +181,9 @@ export default function App() {
      لحظةً قبل أن تُستأنف اللعبة المحفوظة. */
   const [booted, setBooted] = useState(false)
   const [balance, setBalance] = useState<number | null>(null)
-  /* شاشة الشعار في التطبيق والموقع (علي ١ أكتوبر ٢٠٢٦: «انقل شاشة الشعار
-     للموقع») — كان المتصفّح يبدأها «منتهية» ويحجب بسطحٍ صامت. */
-  const [splashDone, setSplashDone] = useState(false)
+  /* شاشة الشعار للتطبيق المثبَّت وحده — انظر `isNativeApp`. في المتصفّح
+     تبدأ «منتهية»، فلا يُصيَّر الشعار أصلاً ولا يعمل مؤقّته. */
+  const [splashDone, setSplashDone] = useState(!isNativeApp)
   const [introDone, setIntroDone] = useState(false)
   /* صفحة القائمة المفتوحة خارج اللعب: شراء الألعاب · حسابي · تواصل معنا.
      واحدة في كل لحظة، وتعيش هنا لأنّ «حسابي» يحتاج الجلسة والرصيد. */
@@ -549,7 +550,11 @@ export default function App() {
   }
 
   if (!splashDone || session === undefined || !booted) {
-    return <Splash onDone={leaveSplash} />
+    return isNativeApp ? (
+      <Splash onDone={leaveSplash} />
+    ) : (
+      <BootHold />
+    )
   }
 
   /* التعريف يُعرض لمن لا جلسة له. وحين يكون الدخول موقوفاً يمرّ منه بزرّ
