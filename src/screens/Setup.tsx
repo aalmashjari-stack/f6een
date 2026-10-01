@@ -1359,6 +1359,53 @@ export function Setup({
         @media (max-height:480px) {
           html[data-skin] body .screen.setup .hero { padding-block:6px; }
         }
+        /* ─── الموقع في العرض: قائمةٌ عاديّة لا ☰ (علي ٢ أكتوبر ٢٠٢٦: «شيل شعار
+           القائمة و خلها قائمة عادية و كبر حجم البانر شوي… كبّر») ───
+           عناصر اللوح نفسها صفّاً بجانب الشعار بأيقوناتها، و«رصيد العابي» في
+           الطرف الآخر. والتطبيق (والآيباد فيه) يبقى بـ☰. الوزن :not([data-native])
+           يغلب قواعد اللوح أعلاه. */
+        @media (min-width:641px), (orientation: landscape) {
+          html[data-skin]:not([data-native]) body .screen.setup .hero {
+            display:flex; align-items:center; gap:clamp(18px,2.4vw,40px);
+            padding-block:clamp(16px,3dvh,32px);
+          }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-logo.f6een-mark { order:0; flex:none; font-size:clamp(46px,4.4vw,72px); }
+          html[data-skin]:not([data-native]) body .screen.setup .hnav.hnav-menu,
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav-veil { display:none; }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav {
+            order:1; display:flex; flex:1; flex-direction:row; align-items:center; flex-wrap:nowrap;
+            position:static; width:auto; margin:0; padding:0; gap:clamp(2px,.5vw,8px);
+            background:none; border-radius:0; box-shadow:none;
+          }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav {
+            height:clamp(40px,3.4vw,50px); padding:0 clamp(10px,1vw,16px); gap:8px;
+            border:0; border-radius:999px; margin:0; white-space:nowrap;
+            font-size:clamp(15px,1.2vw,19px);
+          }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav::before,
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound svg { width:1.15em; height:1.15em; }
+          /* فاصلٌ رفيع قبل الصوت والخروج. */
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sep {
+            display:block; flex:none; width:1px; height:1.6em; margin-inline:clamp(4px,.6vw,10px);
+            background:rgba(34,32,28,.16);
+          }
+          html[data-skin]:not([data-native]) body .screen.setup .hnav-balance {
+            order:2; position:static; transform:none; flex:none;
+            height:clamp(44px,3.6vw,54px); padding:0 10px 0 clamp(16px,1.4vw,22px); gap:8px;
+            font-size:clamp(16px,1.3vw,20px);
+          }
+          html[data-skin]:not([data-native]) body .screen.setup .hnav-balance b {
+            min-width:clamp(28px,2.3vw,36px); height:clamp(28px,2.3vw,36px); font-size:clamp(14px,1.15vw,18px);
+          }
+        }
+        /* الجوال الأفقيّ والنوافذ الضيّقة: الصفّ لا يسع الأيقونات — الكلمات وحدها
+           (قِيس على 844: الشعار انضغط تحت القائمة). */
+        @media (orientation: landscape) and (max-width:1000px), (min-width:641px) and (max-width:1000px) {
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav::before,
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sound svg { display:none; }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav { padding:0 8px; font-size:15px; }
+          html[data-skin]:not([data-native]) body .screen.setup .hero-nav .hnav-sep { margin-inline:2px; }
+        }
         /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
            حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. وفي الموقع
            كذلك (علي ١ أكتوبر ٢٠٢٦: «الشكل واحد» — الإعداد في كونتينر). */
