@@ -1428,7 +1428,7 @@ export function Setup({
             border-bottom:1.5px solid rgba(34,32,28,.14);
           }
           html[data-skin][data-native] body .screen.setup .hero-logo.f6een-mark { top:0; font-size:clamp(33px,9vw,38px); }
-          html[data-skin][data-native] body .screen.setup .hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:none; }
+          html[data-skin][data-native] body .screen.setup .hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:0 0 0 2px var(--n-ink, #22201C); }
           html[data-skin][data-native] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); }
           html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound { display:flex; align-items:center; justify-content:center; gap:10px; }
           html[data-skin][data-native] body .screen.setup .hnav-sound.off { opacity:.6; }
@@ -1440,9 +1440,11 @@ export function Setup({
             display:flex; align-items:center; gap:5px;
             position:absolute; z-index:2; top:50%; transform:translateY(-50%);
             inset-inline-end:52px; height:40px; padding:0 8px 0 14px; border-radius:999px;
-            background:var(--n-bg, #F6F5F2); color:var(--n-ink-2, #57524A);
-            font-size:15px; font-weight:700; color:var(--n-ink-2, #57524A); white-space:nowrap;
-            border:0; font-family:inherit; cursor:pointer; /* جُرّب إطارٌ برتقاليّ: «مو حلو» */
+            /* أبيض بحلقة حبرٍ كـ☰ جاره وبارتفاعه (علي: «غير منسّقين» — كان بلون
+               الأرضيّة فيذوب فيها). جُرّب قبله إطارٌ برتقاليّ: «مو حلو». */
+            background:var(--n-surface, #fff); box-shadow:0 0 0 2px var(--n-ink, #22201C);
+            font-size:15px; font-weight:800; color:var(--n-ink, #22201C); white-space:nowrap;
+            border:0; font-family:inherit; cursor:pointer;
           }
           html[data-skin][data-native] body .screen.setup .hnav-balance b {
             display:grid; place-items:center; min-width:26px; height:26px; padding:0 7px;
