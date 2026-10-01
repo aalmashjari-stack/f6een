@@ -218,14 +218,6 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
         والنقاط تتراكم إلى الختام.
       </p>
 
-      {/* فيديو الشرح في التطبيق (علي ١ أكتوبر ٢٠٢٦): خرج من الإعداد بعد الدخول،
-          فمكانه هنا لمن يريد الرجوع إليه. والموقع يعرضه في الإعداد نفسه. */}
-      {isNativeApp && (
-        <div className="sp-video">
-          <ExplainerInline />
-        </div>
-      )}
-
       <div className="sp-stages">
         {STAGES.map((st, i) => (
           <article key={st.name} className="sp-stage">
@@ -237,6 +229,14 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
           </article>
         ))}
       </div>
+
+      {/* فيديو الشرح في التطبيق (علي ١ أكتوبر ٢٠٢٦): خرج من الإعداد بعد الدخول،
+          فمكانه هنا تحت المراحل (علي: «حطّ الفيديو تحت البطاقات»). والموقع يعرضه في الإعداد نفسه. */}
+      {isNativeApp && (
+        <div className="sp-video">
+          <ExplainerInline />
+        </div>
+      )}
 
       <style>{`
         .sp-video .xi-wrap { margin:0; width:100%; }
