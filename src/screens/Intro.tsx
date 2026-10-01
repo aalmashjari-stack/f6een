@@ -335,12 +335,12 @@ export function Intro({ onDone }: { onDone?: () => void }) {
            الأعلى: الممرّ يستقرّ على لوحيه (scroll-snap)، ورأسٌ لا يلصق يُمرَّر
            من فوقه فلا يُرى (قِيس في المحاكي). */
         .welcome-bar {
-          position:sticky; top:10px; z-index:5; flex:none;
+          position:sticky; top:0; z-index:5; flex:none;
           display:flex; align-items:center; justify-content:space-between; gap:12px;
-          margin:10px 14px 0; padding:12px 14px;
-          background:var(--n-surface, #fff);
-          border:1px solid rgba(34,32,28,.07); border-radius:16px;
-          box-shadow:5px 6px 0 var(--n-ink, #22201C); /* ظلٌّ أسود صلب (علي ١ أكتوبر ٢٠٢٦) بدل الناعم */
+          margin:0 16px; padding:12px 4px;
+          /* بلا كونتينر: على الخلفيّة نفسها (علي ١ أكتوبر ٢٠٢٦: «شيل كونتينر
+             البانر»). لونُها لا شفافيّة: لاصقٌ يمرّ تحته المحتوى عند التمرير. */
+          background:var(--n-bg, #F6F5F2);
         }
         .welcome-logo { font-size:clamp(33px,9vw,38px); }
         .welcome-login {
