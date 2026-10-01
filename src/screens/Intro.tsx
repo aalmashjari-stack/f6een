@@ -416,28 +416,64 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           .intro-pane { gap:clamp(6px,1.2dvh,12px); padding-block:clamp(8px,1.4dvh,14px); }
         }
 
-        /* ─── العرض (الموقع والآيباد) ─── الصفحتان عمودٌ واحد متوسّط بعرض
-           قراءةٍ مريح، والرأس بعرضه فوقه — مقاسات الجوال نفسها، فالشكل واحد. */
+        /* ─── العرض (الموقع والآيباد) ─── عمودٌ بعرض كونتينر الإعداد (1140)
+           والرأسُ بعرضه، والخطّ والأزرار بمقاس الشاشة لا بأرقام الجوال (علي ١
+           أكتوبر ٢٠٢٦: بعرض 720 وبمقاسات الجوال «صغيرة جدّاً»). والمراحل صفٌّ
+           واحد كبطاقات الإعداد في الموقع. */
         @media (min-width:641px), (orientation: landscape) {
+          body .screen.intro.native { --col:min(calc(100% - 48px), 1140px); }
           /* الرأس بعرض الصفحة كي يغطّي ما يمرّ تحته وهو لاصق (بعرض العمود
              كانت حافّتا الكتلة تطلّان بجانبه)، والخطّ الرماديّ بعرض العمود. */
           .welcome-bar {
-            margin:0; padding:clamp(14px,3.4dvh,40px) max(16px, calc((100% - 720px) / 2)) 12px;
+            margin:0; padding:clamp(14px,3.4dvh,40px) calc((100% - var(--col)) / 2) clamp(12px,2dvh,20px);
             border-bottom:0;
             background:
-              linear-gradient(rgba(34,32,28,.14), rgba(34,32,28,.14)) bottom center / min(calc(100% - 32px), 720px) 1.5px no-repeat,
+              linear-gradient(rgba(34,32,28,.14), rgba(34,32,28,.14)) bottom center / var(--col) 1.5px no-repeat,
               var(--n-bg, #F6F5F2);
           }
+          .welcome-logo { font-size:clamp(40px,3.9vw,64px); }
+          .welcome-login { height:clamp(44px,3.6vw,54px); padding:0 clamp(18px,1.8vw,28px); font-size:clamp(15px,1.25vw,19px); }
+          .welcome-login svg { width:1.25em; height:1.25em; }
           /* اللاصق يقف تحت حشوة الشاشة العليا فيطلّ المحتوى فوقه: الحشوة في الرأس. */
           /* بوزن html[data-skin]: قاعدة «body .screen:not(.setup):not(.end)…» في
              السمات تزن أربعة أصناف فتغلب ثلاثة. */
           html[data-skin] body .screen.intro.native { padding-top:0; }
           html[data-skin] body .screen.intro.native.signin-open { padding-top:clamp(14px,3.4dvh,40px); }
-          body .screen.intro.native .intro-pane:first-of-type { padding-block:28px 40px; }
-          body .screen.intro.native .intro-pane:first-of-type,
-          body .screen.intro.native .intro-pane.signin { width:min(calc(100% - 32px), 720px); margin-inline:auto; padding-inline:0; }
-          body .screen.intro.native .intro-pane.signin { padding:36px clamp(18px,6vw,72px); }
+          body .screen.intro.native .intro-pane:first-of-type { padding-block:clamp(24px,4dvh,48px) 40px; }
+          body .screen.intro.native .intro-pane:first-of-type { width:var(--col); margin-inline:auto; padding-inline:0; }
+
+          .welcome-box { gap:clamp(14px,2.2dvh,24px); padding:clamp(26px,4.4dvh,56px) clamp(20px,3.2vw,56px) clamp(24px,4dvh,48px); border-radius:clamp(22px,2vw,32px); }
+          .welcome-line { gap:clamp(6px,1dvh,12px); margin-bottom:clamp(8px,1.6dvh,20px); }
+          .welcome-what { font-size:clamp(26px,2.9vw,46px); }
+          .welcome-why { font-size:clamp(16px,1.5vw,23px); }
+          .welcome-stages { display:grid; grid-template-columns:repeat(3, 1fr); align-items:start; gap:clamp(10px,1.4vw,22px); }
+          .w-stage-no { width:clamp(50px,4.2vw,64px); min-height:clamp(50px,4.2vw,64px); font-size:clamp(21px,1.9vw,28px); }
+          .w-stage-name { font-size:clamp(16px,1.45vw,22px); padding-inline:clamp(10px,1.2vw,18px); }
+          .w-stage-info { width:clamp(26px,2.2vw,32px); height:clamp(26px,2.2vw,32px); font-size:clamp(15px,1.25vw,18px); }
+          .w-stage-desc { font-size:clamp(14px,1.15vw,17px); }
+          .welcome-video-line { margin-top:clamp(16px,3dvh,36px); font-size:clamp(17px,1.5vw,22px); }
+          /* الفيديو بعرضه في الإعداد (55vw)، متوسّطاً. */
+          .welcome-box .xi-wrap { margin-inline:auto; }
+          .welcome-cta {
+            align-self:center; width:min(100%, 560px); height:clamp(52px,4.4vw,66px);
+            margin-top:clamp(8px,2dvh,24px); font-size:clamp(17px,1.5vw,22px);
+          }
+
+          /* صفحة الدخول: كتلةٌ أضيق من التعريف (أزرارها عمودٌ واحد) وبمقاسٍ أكبر. */
+          body .screen.intro.native .intro-pane.signin {
+            width:min(calc(100% - 48px), 760px); margin-inline:auto;
+            padding:clamp(36px,6dvh,72px) clamp(18px,6vw,72px);
+          }
+          body .screen.intro.native .signin-logo { font-size:clamp(96px,9vw,140px); }
+          body .screen.intro.native .signin-methods { max-width:520px; gap:clamp(12px,1.8dvh,18px); }
+          body .screen.intro.native .method { font-size:clamp(17px,1.4vw,21px); padding:clamp(15px,2.2dvh,20px) 18px; }
+          .signin-first { font-size:clamp(16px,1.3vw,19px); }
+          .welcome-back { height:clamp(40px,3.4vw,48px); font-size:clamp(15px,1.2vw,18px); }
           .welcome-cta, .welcome-login, .w-stage-head, .welcome-back, .signin-first { cursor:pointer; }
+        }
+        /* الآيباد الطوليّ والنوافذ الضيّقة: ثلاثُ بطاقاتٍ في صفٍّ تخنق الأسماء. */
+        @media (max-width:760px) {
+          .welcome-stages { display:flex; }
         }
       `}</style>
     </div>
