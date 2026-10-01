@@ -341,6 +341,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           /* بلا كونتينر: على الخلفيّة نفسها (علي ١ أكتوبر ٢٠٢٦: «شيل كونتينر
              البانر»). لونُها لا شفافيّة: لاصقٌ يمرّ تحته المحتوى عند التمرير. */
           background:var(--n-bg, #F6F5F2);
+          border-bottom:1.5px solid rgba(34,32,28,.14); /* خطٌّ رماديّ خفيف بين الشعار والكونتينر (علي ١ أكتوبر ٢٠٢٦) */
         }
         .welcome-logo { font-size:clamp(33px,9vw,38px); }
         .welcome-login {
@@ -371,7 +372,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         /* الكتلة تملأ ما بقي تحت الرأس إلى أسفل الشاشة، بلا فراغٍ في آخرها
            (علي ١ أكتوبر ٢٠٢٦: «خلّها كاملة»). 96 = الرأس وهامشه. */
         body .screen.intro.native .intro-pane:first-of-type {
-          padding-top:6px; padding-bottom:16px; min-height:calc(100% - 96px);
+          padding-top:16px; padding-bottom:16px; min-height:calc(100% - 96px);
         }
         body .screen.intro.native .welcome-box { flex:1; justify-content:space-evenly; }
         /* صفحة الدخول بهيئة صفحة التعريف (علي: «ضبّط صفحة تسجيل الدخول»):
