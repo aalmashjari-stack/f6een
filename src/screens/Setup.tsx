@@ -10,8 +10,10 @@ import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
-import { ExplainerInline, ExplainerVideo } from '../components/ExplainerVideo'
+import { ExplainerInline } from '../components/ExplainerVideo'
 import { isNativeApp } from '../lib/platform'
+import welcomeCats from '../../assets/backgrounds/welcome-cats-tall.jpg'
+import { authErrorText, signOut } from '../lib/auth'
 const MIN = 2
 const MAX = 6
 
@@ -61,7 +63,6 @@ export function Setup({
      «1 الجولة الجماعية» وعلامةُ i تفتح الشرح المختصر والنقاط تحته. واحدة
      في كلّ مرّة — الشرح يُقرأ مرّةً لا يُقارَن. */
   const [openStage, setOpenStage] = useState<number | null>(null)
-  const [video, setVideo] = useState(false)
   const [tossing, setTossing] = useState(false)
   const [tossFace, setTossFace] = useState<TeamId>(0)
   const [mute, setMute] = useState(isMuted())
@@ -80,6 +81,16 @@ export function Setup({
     setMuted(next)
     // عيّنة عند التشغيل: الحكم يسمع المستوى قبل أن يبدأ لا في منتصف سؤال
     if (!next) play('pickLand')
+  }
+
+  /** الخروج من لوح ☰: الجلسة تختفي فتتبدّل الشاشة كلّها إلى الدخول. */
+  async function logout() {
+    setMenuOpen(false)
+    try {
+      await signOut()
+    } catch (e) {
+      setErr(authErrorText(e, 'تعذّر الخروج'))
+    }
   }
 
   const teamLabel = (t: TeamId) => names[t].trim() || FALLBACK_TEAM[t]
@@ -225,7 +236,10 @@ export function Setup({
   }
 
   return (
-    <div className="screen setup">
+    <div
+      className="screen setup"
+      style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}
+    >
       {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
           يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
       {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
@@ -249,6 +263,14 @@ export function Setup({
             <span aria-hidden="true">{menuOpen ? '✕' : '☰'}</span>
           </button>
         )}
+        {/* رصيد الألعاب بجانب ☰ في التطبيق (علي ١ أكتوبر ٢٠٢٦). لا يظهر ما لم
+            يُقرأ: «لم يُقرأ» ليس صفراً. */}
+        {isNativeApp && onNav && balance != null && (
+          /* «رصيد العابي» وعددها، والضغطة تفتح الشراء (علي ١ أكتوبر ٢٠٢٦). */
+          <button className="hnav-balance" onClick={() => { setMenuOpen(false); onNav('buy') }}>
+            رصيد العابي <b>{balance}</b>
+          </button>
+        )}
         {/* ضغطةٌ خارج اللوح تغلقه — ستارٌ شفّاف تحته يلتقطها. */}
         {onNav && menuOpen && <div className="hero-nav-veil" onClick={() => setMenuOpen(false)} />}
         {onNav && (
@@ -261,6 +283,20 @@ export function Setup({
             <button className="hnav hnav-contact" onClick={() => { setMenuOpen(false); onNav('contact') }}>تواصل معنا</button>
             {/* فاصلٌ رفيع بين الروابط وبين «حسابي» والشراء — في الكبسولة العريضة وحدها. */}
             <span className="hnav-sep" aria-hidden="true" />
+            {/* الصوت والخروج داخل لوح ☰ في التطبيق وحده (علي ١ أكتوبر ٢٠٢٦) —
+                كان الصوت أيقونةً بجانب ☰. والموقع لا يُمسّ. */}
+            {isNativeApp && (
+              <button className={'hnav hnav-sound' + (mute ? ' off' : '')} onClick={toggleMute} aria-pressed={mute}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
+                  {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
+                </svg>
+                {mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
+              </button>
+            )}
+            {isNativeApp && (
+              <button className="hnav hnav-logout" onClick={logout}>تسجيل الخروج</button>
+            )}
           </nav>
         )}
       </div>
@@ -272,26 +308,18 @@ export function Setup({
             و«فطين» كتابةً عاديّة بخطّ الجهاز لا الشعار الملوّن. */}
         <header className="setup-intro">
           <h1 className="setup-intro-name">فطين</h1>
-          <p className="setup-intro-line">لعبة ثقافية اجتماعية هدفها تخلي جمعاتكم اونس و تتكون من ثلاث مراحل</p>
+          {/* التطبيق بصياغةٍ أقصر تسع سطراً في الجوال؛ الموقع على ما نُشر. */}
+          <p className="setup-intro-line">
+            {isNativeApp
+              ? 'لعبة ثقافية اجتماعية هدفها تخلي جمعاتكم امتع و فيها ثلاث مراحل'
+              : 'لعبة ثقافية اجتماعية هدفها تخلي جمعاتكم اونس و تتكون من ثلاث مراحل'}
+          </p>
         </header>
         {/* شرح المراحل الثلاث — ظاهر دائماً بين الشعار وبطاقتي الفريقين.
             حُذف سطر التقديم فوقها في ٢١ أغسطس ٢٠٢٦ لضيق الارتفاع، وعاد
             لافتةً في ١٧ سبتمبر ٢٠٢٦ (طلب علي: «تمهيد لـ1، 2، 3») بالهيئة
             نفسها التي فوق الفريقين والفئات، فتتماثل الأقسام الثلاثة. */}
-        <section className="setup-block">
-          {/* العنوان وزرّ فيديو الشرح في سطرٍ واحد، كعنوان الفئات وشارته — في
-              التطبيق وحده؛ الموقع يعرض الفيديو نفسه تحت البطاقات (انظر ExplainerVideo). */}
-          {/* «مراحل اللعبة» في التطبيق وحده: الموقع تقوده كبسولة الفيديو
-              (علي ٣٠ سبتمبر ٢٠٢٦: «شيل كلمة مراحل اللعبة»). */}
-          {isNativeApp && (
-            <div className="stages-head">
-              <h2 className="setup-title brand">مراحل اللعبة</h2>
-              <button className="xv-open" onClick={() => setVideo(true)}>
-                <span aria-hidden="true">▶</span> شاهد الشرح
-              </button>
-            </div>
-          )}
-          {video && <ExplainerVideo onClose={() => setVideo(false)} />}
+        <section className="setup-block stages-block">
           {/* البطاقات عادت تحت سطر «تتكون من ثلاث مراحل» (علي ٣٠ سبتمبر ٢٠٢٦:
               «رجّع الكبسولات القديمة»). */}
           <div className="stages">
@@ -322,16 +350,16 @@ export function Setup({
               )
             })}
           </div>
-          {!isNativeApp && (
-            <>
+          {/* الموقع والتطبيق سواء (علي ٣٠ سبتمبر ٢٠٢٦: «خلّه مثل الموقع بالضبط») —
+              كان التطبيق يفتح الفيديو من زرٍّ في نافذة. */}
+          <>
               {/* نصٌّ عاديّ لا كبسولة مرحلة: تحت بطاقات المراحل كانت تُقرأ مرحلةً
                   رابعة (علي ٣٠ سبتمبر ٢٠٢٦: جُرّبت شارةٌ بلون الهويّة ثمّ «نصّ عادي»). */}
               <div className="video-cap-wrap video-badge-wrap">
                 <span className="video-badge"><span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم السالفة</span>
               </div>
               <ExplainerInline />
-            </>
-          )}
+          </>
         </section>
 
         {/* حقول الفريقين. حُذف عنوان «بيانات الفريقين المتنافسين» في ٢١ أغسطس
@@ -665,6 +693,7 @@ export function Setup({
 
         /* زرّ القائمة ولوحُها في طبقة التذكرة آخر الملفّ. */
         body .screen.setup .hnav-menu { display:none; }
+        body .screen.setup .hnav-sound, body .screen.setup .hnav-logout, body .screen.setup .hnav-balance { display:none; }
         body .screen.setup .hero-nav-veil { display:none; }
 
         body .screen.setup .hero-logo {
@@ -734,6 +763,13 @@ export function Setup({
           font-size:clamp(44px, 6vw, 96px); line-height:1.1;
           color:var(--n-ink, #22201C);
         }
+        /* التطبيق بلا «فطين» المكتوبة: الشعار في الكبسولة فوقها مباشرةً
+           (علي ٣٠ سبتمبر ٢٠٢٦: «شيل كلمة فطين بالأسود»). */
+        /* «فطين» والجملة تحتها سقطتا في إعداد التطبيق (علي ١ أكتوبر ٢٠٢٦: «شيل الجملة بعد»). */
+        :root[data-native] .setup-intro { display:none; }
+        /* والمراحل والفيديو لا تتكرّر بعد الدخول: هي في شاشة الدخول الأولى
+           (علي ١ أكتوبر ٢٠٢٦: «ما يحتاج بطاقات ولا يحتاج فيديو»). */
+        :root[data-native] .setup-block.stages-block { display:none; }
         .setup-intro-line {
           margin:clamp(4px, 1dvh, 12px) 0 0; font-family:system-ui, -apple-system, sans-serif;
           font-weight:600; font-size:clamp(16px, 1.7vw, 24px); line-height:1.6;
@@ -1380,6 +1416,48 @@ export function Setup({
           }
           html[data-skin] body .screen.setup .hnav-menu:hover { transform:translateY(-50%); }
           html[data-skin] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
+          /* ─── رأس التطبيق وحده (علي ٣٠ سبتمبر ٢٠٢٦: «لا تغيّر شي في الموقع») ───
+             مستطيلٌ أبيض بزوايا مدوّرة (جُرّبت الكبسولة قبله: «ليش ما تخليها
+             مستطيل»)، الشعار يميناً أصغر، و☰ بلون الهويّة وفي لوحه الصوت والخروج. */
+          /* كرأس شاشة الدخول (علي ١ أكتوبر ٢٠٢٦: «خلّه نفس صفحة التسجيل»): على
+             الخلفيّة بلا كونتينر، وخطٌّ رماديّ خفيف تحته. */
+          html[data-skin][data-native] body .screen.setup .hero {
+            justify-content:flex-start;
+            margin:0; padding:12px 4px;
+            background:none; border:0; border-radius:0; box-shadow:none;
+            border-bottom:1.5px solid rgba(34,32,28,.14);
+          }
+          html[data-skin][data-native] body .screen.setup .hero-logo.f6een-mark { top:0; font-size:clamp(33px,9vw,38px); }
+          html[data-skin][data-native] body .screen.setup .hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:0 0 0 2px var(--n-ink, #22201C); }
+          html[data-skin][data-native] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound { display:flex; align-items:center; justify-content:center; gap:10px; }
+          html[data-skin][data-native] body .screen.setup .hnav-sound.off { opacity:.6; }
+          html[data-skin][data-native] body .screen.setup .hnav-sound svg { width:20px; height:20px; display:block; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout { display:block; }
+          /* الشراء خرج من اللوح: زرّ «رصيد العابي» بجانب ☰ يفتحه (علي ١ أكتوبر ٢٠٢٦). */
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-buy { display:none; }
+          html[data-skin][data-native] body .screen.setup .hnav-balance {
+            display:flex; align-items:center; gap:5px;
+            position:absolute; z-index:2; top:50%; transform:translateY(-50%);
+            inset-inline-end:52px; height:40px; padding:0 8px 0 14px; border-radius:999px;
+            /* أبيض بحلقة حبرٍ كـ☰ جاره وبارتفاعه (علي: «غير منسّقين» — كان بلون
+               الأرضيّة فيذوب فيها). جُرّب قبله إطارٌ برتقاليّ: «مو حلو». */
+            background:var(--n-surface, #fff); box-shadow:0 0 0 2px var(--n-ink, #22201C);
+            font-size:15px; font-weight:800; color:var(--n-ink, #22201C); white-space:nowrap;
+            border:0; font-family:inherit; cursor:pointer;
+          }
+          html[data-skin][data-native] body .screen.setup .hnav-balance b {
+            display:grid; place-items:center; min-width:26px; height:26px; padding:0 7px;
+            border-radius:999px; background:var(--n-brand, #E8542F); color:#fff;
+            font-size:14px; font-weight:800;
+          }
+          /* والسطر تحت «ابدأ اللعبة» يسقط: الصوت في لوح ☰. */
+          html[data-skin][data-native] body .screen.setup .setup-mute { display:none; }
+          /* سطر التعريف سطرٌ واحد: عرضه بخطّ الجهاز 600 نحو 27.04em (قيس
+             بـNSFont)، فالمقاس ما يسعه عرضُ الشاشة ناقص الحشوة. */
+          html[data-skin][data-native] body .screen.setup .setup-intro-line {
+            white-space:nowrap; font-size:min(16px, calc((100vw - 36px) / 27.6));
+          }
           /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت التذكرة مباشرةً،
              بالهيئة نفسها فيُقرأ امتداداً لها لا نافذةً غريبة. */
           html[data-skin] body .screen.setup .hero-nav {
@@ -1395,6 +1473,81 @@ export function Setup({
           html[data-skin] body .screen.setup .hero-nav .hnav {
             font-size:16px; padding:12px 18px; text-align:center;
           }
+
+          /* ─── لوح ☰ في التطبيق: قائمةٌ لا أزرار (علي ١ أكتوبر ٢٠٢٦: «ضبّط عناصر
+             القائمة») ─── صفوفٌ بأيقونةٍ لكلٍّ منها وخطٍّ رفيع بينها بدل خمس
+             كبسولاتٍ متطابقة، والخروج منفصلٌ بالأحمر في آخرها. والأيقونات
+             أقنعة CSS لا عناصر: الأزرار نفسها في الموقع بلا أيقونات. */
+          html[data-skin][data-native] body .screen.setup .hero-nav { padding:8px; gap:0; border-radius:18px; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav {
+            display:flex; align-items:center; justify-content:flex-start; gap:12px;
+            height:52px; padding:0 14px; margin:0; border-radius:12px;
+            background:none; box-shadow:none; transform:none;
+            font-size:16px; font-weight:700; color:var(--n-ink, #22201C); text-align:start;
+          }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav:active { background:var(--n-bg, #F6F5F2); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact { border-bottom:1px solid rgba(34,32,28,.08); border-radius:0; }
+          /* الشراء خارج اللوح («رصيد العابي» يفتحه) — تُعاد هنا لأنّ display:flex أعلاه يغلبها. */
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-buy { display:none; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account::before,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules::before,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact::before,
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout::before {
+            content:''; flex:none; width:22px; height:22px; background:currentColor;
+            -webkit-mask:var(--ic) center / contain no-repeat; mask:var(--ic) center / contain no-repeat;
+          }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%224%22/%3E%3Cpath%20d%3D%22M4%2021c1-4%204.5-6%208-6s7%202%208%206%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a2%202%200%200%201%202-2h12v18H6a2%202%200%200%201-2-2z%22/%3E%3Cpath%20d%3D%22M8%207h6M8%2011h6%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205h16v11H8l-4%204z%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M10%204H6a2%202%200%200%200-2%202v12a2%202%200%200%200%202%202h4%22/%3E%3Cpath%20d%3D%22M21%2012H10M17%208l4%204-4%204%22/%3E%3C/svg%3E"); }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound svg { width:22px; height:22px; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound.off { opacity:.55; }
+          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout {
+            margin-top:6px; border-top:1px solid rgba(34,32,28,.16); border-radius:0;
+            color:var(--n-bad, #CE2F1E);
+          }
+        }
+        /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
+           حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. وفي الموقع
+           كذلك (علي ١ أكتوبر ٢٠٢٦: «الشكل واحد» — الإعداد في كونتينر). */
+        html[data-skin] body .screen.setup .setup-body {
+          /* بطول محتواه: الطبقات الأخرى تقصره على ارتفاع الشاشة فكان المحتوى
+             يفيض تحت حدّه الأبيض (قِيس في معاينةٍ محلّيّة: 816 من 1968). */
+          flex:0 0 auto; height:auto; min-height:0; max-height:none;
+          margin:16px 0 18px; padding:20px 14px 18px;
+          /* أبيض وفيه رسوم الفئات خفيفةً كصفحة التسجيل، والصفحة حوله رماديّة سادة
+             (علي ١ أكتوبر ٢٠٢٦). غطاءٌ أبيض 93٪ = الصورة بشفافيّة 7٪. والصورة
+             دورةٌ كاملة من 24 صفّاً تنطبق حافّتاها فتتكرّر طولاً بلا وصلة: نسخةٌ
+             غير دوريّة تركت شريطاً أبيض، ونسخةٌ طويلة غير متكرّرة انتهت قبل
+             آخر الفئات في القاعدة الحيّة (علي: «من تصنيف بنات تختفي»). */
+          background:
+            linear-gradient(rgba(255,255,255,.93), rgba(255,255,255,.93)),
+            var(--welcome-cats) top center / 100% auto repeat-y,
+            var(--n-surface, #fff);
+          border-radius:22px;
+          box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
+        }
+        /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
+        html[data-skin] body .screen.setup .cats-head { margin-top:8px; }
+        html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:0; }
+        /* الرفعة السالبة لكبسولة الفرق (للموقع) تُخرجها فوق حدّ الكونتينر هنا. */
+        html[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-top:0; margin-bottom:6px; }
+        /* ─── الكونتينر في العرض (الموقع والآيباد) ───
+           الحشوة والفسحة بمقاس الشاشة لا بأرقام الجوال، والفسحة الواسعة بين
+           الأقسام (علي: «زد») تضيق داخل الكونتينر كما ضاقت في التطبيق. */
+        @media (min-width:641px), (orientation: landscape) {
+          html[data-skin] body .screen.setup .setup-body {
+            margin-inline:auto; margin-bottom:clamp(18px,3dvh,40px);
+            padding:clamp(22px,4dvh,56px) clamp(20px,3.2vw,56px) clamp(20px,3.4dvh,44px);
+            border-radius:clamp(22px,2vw,32px);
+          }
+          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(16px,3.4dvh,48px); }
+        }
+        @media (min-width:900px) and (orientation: landscape) {
+          html[data-skin] body .screen.setup .setup-body { margin-top:clamp(28px, 5dvh, 64px); }
+          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(16px,3.4dvh,48px); }
         }
         /* ─── صينيّة المختارات ─── كانت للجوال الطوليّ وحده بحجّة أنّ الشبكة
            في العرض تُرى في نظرة؛ فطلبها علي في الموقع والآيباد أيضاً (١٧

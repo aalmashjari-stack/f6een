@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
+import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 
 /* مدّة الشعار. ثانيةٌ وسبعمئة: تكفي لتكتمل حركة الدخول ويستقرّ الشعار لحظةً
    قبل الانتقال، ولا تطول فتصير ضريبةً يدفعها الحكم في كل تشغيل. */
@@ -51,7 +52,12 @@ export function Splash({ onDone }: { onDone: () => void }) {
   }, [onDone])
 
   return (
-    <div className="screen splash" onClick={onDone} role="presentation">
+    <div
+      className="screen splash"
+      onClick={onDone}
+      role="presentation"
+    >
+      <div className="splash-cats" aria-hidden="true" style={{ backgroundImage: `url(${welcomeCats})` }} />
       <BrandLogo className="splash-logo" />
 
       <style>{`
@@ -69,6 +75,16 @@ export function Splash({ onDone }: { onDone: () => void }) {
             linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18)),
             var(--n-surface, #fff);
         }
+        /* ورسوم الفئات خفيفةً جدّاً تحت الغسلة، كشاشتَي الدخول (علي ١ أكتوبر
+           ٢٠٢٦: «بنفس الأسلوب سوّها هني»). عنصرٌ لا ::before: صنف .screen
+           يشغل ::before بخطَّي الهويّة فيغلب. */
+        .splash { isolation:isolate; }
+        .splash-cats {
+          position:absolute; inset:0; z-index:-1; pointer-events:none;
+          background-position:center; background-size:cover; background-repeat:no-repeat;
+          opacity:.07;
+        }
+        .splash > .splash-logo { grid-area:1 / 1; }
         /* الشعار يكبر قليلاً ويستقرّ — لا دوران ولا قفز: هويّة تُقدَّم
            لا حركة تُستعرض. */
         .splash-logo {

@@ -44,8 +44,10 @@ function ageFrom(birth: string): number | null {
  * والتحقّق كلّه قبل الإرسال برسائل عربيّة: تركُه للخادم يُرجع نصّاً
  * إنجليزيّاً في وجه لاعبٍ عربيّ.
  */
-export function SignUp({ onBack }: { onBack: () => void }) {
-  const [mode, setMode] = useState<'signup' | 'signin'>('signup')
+export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void; initialMode?: 'signup' | 'signin' }) {
+  /* من أين جاء يحدّد الوضع الأوّل: «سجل دخولك عبر البريد» دخولٌ، و«أول مرة؟»
+     تسجيل (علي ١ أكتوبر ٢٠٢٦). والتبديل بينهما باقٍ في الشاشة. */
+  const [mode, setMode] = useState<'signup' | 'signin'>(initialMode)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -180,9 +182,14 @@ export function SignUp({ onBack }: { onBack: () => void }) {
         {signup && (
           <>
             {/* حقل تاريخ من النظام لا ثلاث قوائم — أقلّ نقرات وأقلّ خطأ. */}
-            <input className="su-in" type="date" value={birthDate}
-                   max={new Date().toISOString().slice(0, 10)}
-                   onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد" />
+            {/* سفاري iOS يرسمه فارغاً بلا عنوان وأعرض من أخواته: العنوان يُرسم فوقه
+                ما دام فارغاً، والعرض يُقيَّد (علي ١ أكتوبر ٢٠٢٦: «صلّح الخانة»). */}
+            <label className="su-date">
+              <input className={'su-in' + (birthDate ? '' : ' empty')} type="date" value={birthDate}
+                     max={new Date().toISOString().slice(0, 10)}
+                     onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد" />
+              {!birthDate && <span className="su-date-ph" aria-hidden="true">تاريخ الميلاد</span>}
+            </label>
 
             <div className="su-row phone">
               <select className="su-in" value={dialCode} aria-label="رمز الدولة"
