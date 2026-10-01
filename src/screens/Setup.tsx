@@ -238,7 +238,7 @@ export function Setup({
   return (
     <div
       className="screen setup"
-      style={isNativeApp ? { ['--welcome-cats' as string]: `url(${welcomeCats})` } : undefined}
+      style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}
     >
       {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
           يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
@@ -1455,30 +1455,6 @@ export function Setup({
           html[data-skin][data-native] body .screen.setup .setup-mute { display:none; }
           /* سطر التعريف سطرٌ واحد: عرضه بخطّ الجهاز 600 نحو 27.04em (قيس
              بـNSFont)، فالمقاس ما يسعه عرضُ الشاشة ناقص الحشوة. */
-          /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
-             حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. */
-          html[data-skin][data-native] body .screen.setup .setup-body {
-            /* بطول محتواه: الطبقات الأخرى تقصره على ارتفاع الشاشة فكان المحتوى
-               يفيض تحت حدّه الأبيض (قِيس في معاينةٍ محلّيّة: 816 من 1968). */
-            flex:0 0 auto; height:auto; min-height:0; max-height:none;
-            margin:16px 0 18px; padding:20px 14px 18px;
-            /* أبيض وفيه رسوم الفئات خفيفةً كصفحة التسجيل، والصفحة حوله رماديّة سادة
-               (علي ١ أكتوبر ٢٠٢٦). غطاءٌ أبيض 93٪ = الصورة بشفافيّة 7٪. والصورة
-               دورةٌ كاملة من 24 صفّاً تنطبق حافّتاها فتتكرّر طولاً بلا وصلة: نسخةٌ
-               غير دوريّة تركت شريطاً أبيض، ونسخةٌ طويلة غير متكرّرة انتهت قبل
-               آخر الفئات في القاعدة الحيّة (علي: «من تصنيف بنات تختفي»). */
-            background:
-              linear-gradient(rgba(255,255,255,.93), rgba(255,255,255,.93)),
-              var(--welcome-cats) top center / 100% auto repeat-y,
-              var(--n-surface, #fff);
-            border-radius:22px;
-            box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
-          }
-          /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
-          html[data-skin][data-native] body .screen.setup .cats-head { margin-top:8px; }
-          html[data-skin][data-native] body .screen.setup .setup-block + .setup-block { margin-top:0; }
-          /* الرفعة السالبة لكبسولة الفرق (للموقع) تُخرجها فوق حدّ الكونتينر هنا. */
-          html[data-skin][data-native] body .screen.setup .setup-block > .title-cap-wrap { margin-top:0; margin-bottom:6px; }
           html[data-skin][data-native] body .screen.setup .setup-intro-line {
             white-space:nowrap; font-size:min(16px, calc((100vw - 36px) / 27.6));
           }
@@ -1532,6 +1508,46 @@ export function Setup({
             margin-top:6px; border-top:1px solid rgba(34,32,28,.16); border-radius:0;
             color:var(--n-bad, #CE2F1E);
           }
+        }
+        /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
+           حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. وفي الموقع
+           كذلك (علي ١ أكتوبر ٢٠٢٦: «الشكل واحد» — الإعداد في كونتينر). */
+        html[data-skin] body .screen.setup .setup-body {
+          /* بطول محتواه: الطبقات الأخرى تقصره على ارتفاع الشاشة فكان المحتوى
+             يفيض تحت حدّه الأبيض (قِيس في معاينةٍ محلّيّة: 816 من 1968). */
+          flex:0 0 auto; height:auto; min-height:0; max-height:none;
+          margin:16px 0 18px; padding:20px 14px 18px;
+          /* أبيض وفيه رسوم الفئات خفيفةً كصفحة التسجيل، والصفحة حوله رماديّة سادة
+             (علي ١ أكتوبر ٢٠٢٦). غطاءٌ أبيض 93٪ = الصورة بشفافيّة 7٪. والصورة
+             دورةٌ كاملة من 24 صفّاً تنطبق حافّتاها فتتكرّر طولاً بلا وصلة: نسخةٌ
+             غير دوريّة تركت شريطاً أبيض، ونسخةٌ طويلة غير متكرّرة انتهت قبل
+             آخر الفئات في القاعدة الحيّة (علي: «من تصنيف بنات تختفي»). */
+          background:
+            linear-gradient(rgba(255,255,255,.93), rgba(255,255,255,.93)),
+            var(--welcome-cats) top center / 100% auto repeat-y,
+            var(--n-surface, #fff);
+          border-radius:22px;
+          box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
+        }
+        /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
+        html[data-skin] body .screen.setup .cats-head { margin-top:8px; }
+        html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:0; }
+        /* الرفعة السالبة لكبسولة الفرق (للموقع) تُخرجها فوق حدّ الكونتينر هنا. */
+        html[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-top:0; margin-bottom:6px; }
+        /* ─── الكونتينر في العرض (الموقع والآيباد) ───
+           الحشوة والفسحة بمقاس الشاشة لا بأرقام الجوال، والفسحة الواسعة بين
+           الأقسام (علي: «زد») تضيق داخل الكونتينر كما ضاقت في التطبيق. */
+        @media (min-width:641px), (orientation: landscape) {
+          html[data-skin] body .screen.setup .setup-body {
+            margin-inline:auto; margin-bottom:clamp(18px,3dvh,40px);
+            padding:clamp(22px,4dvh,56px) clamp(20px,3.2vw,56px) clamp(20px,3.4dvh,44px);
+            border-radius:clamp(22px,2vw,32px);
+          }
+          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(16px,3.4dvh,48px); }
+        }
+        @media (min-width:900px) and (orientation: landscape) {
+          html[data-skin] body .screen.setup .setup-body { margin-top:clamp(28px, 5dvh, 64px); }
+          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(16px,3.4dvh,48px); }
         }
         /* ─── صينيّة المختارات ─── كانت للجوال الطوليّ وحده بحجّة أنّ الشبكة
            في العرض تُرى في نظرة؛ فطلبها علي في الموقع والآيباد أيضاً (١٧
