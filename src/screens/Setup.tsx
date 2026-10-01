@@ -263,9 +263,9 @@ export function Setup({
             <span aria-hidden="true">{menuOpen ? '✕' : '☰'}</span>
           </button>
         )}
-        {/* رصيد الألعاب بجانب ☰ في التطبيق (علي ١ أكتوبر ٢٠٢٦). لا يظهر ما لم
+        {/* رصيد الألعاب بجانب ☰ (علي ١ أكتوبر ٢٠٢٦، في التطبيق ثمّ الموقع). لا يظهر ما لم
             يُقرأ: «لم يُقرأ» ليس صفراً. */}
-        {isNativeApp && onNav && balance != null && (
+        {onNav && balance != null && (
           /* «رصيد العابي» وعددها، والضغطة تفتح الشراء (علي ١ أكتوبر ٢٠٢٦). */
           <button className="hnav-balance" onClick={() => { setMenuOpen(false); onNav('buy') }}>
             رصيد العابي <b>{balance}</b>
@@ -283,20 +283,15 @@ export function Setup({
             <button className="hnav hnav-contact" onClick={() => { setMenuOpen(false); onNav('contact') }}>تواصل معنا</button>
             {/* فاصلٌ رفيع بين الروابط وبين «حسابي» والشراء — في الكبسولة العريضة وحدها. */}
             <span className="hnav-sep" aria-hidden="true" />
-            {/* الصوت والخروج داخل لوح ☰ في التطبيق وحده (علي ١ أكتوبر ٢٠٢٦) —
-                كان الصوت أيقونةً بجانب ☰. والموقع لا يُمسّ. */}
-            {isNativeApp && (
-              <button className={'hnav hnav-sound' + (mute ? ' off' : '')} onClick={toggleMute} aria-pressed={mute}>
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
-                  {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
-                </svg>
-                {mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
-              </button>
-            )}
-            {isNativeApp && (
-              <button className="hnav hnav-logout" onClick={logout}>تسجيل الخروج</button>
-            )}
+            {/* الصوت والخروج داخل لوح ☰ (علي ١ أكتوبر ٢٠٢٦، في التطبيق ثمّ الموقع). */}
+            <button className={'hnav hnav-sound' + (mute ? ' off' : '')} onClick={toggleMute} aria-pressed={mute}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" />
+                {mute ? <path d="M16 9.5l5 5M21 9.5l-5 5" /> : <path d="M15.8 9a4.2 4.2 0 0 1 0 6M18.6 6.5a8 8 0 0 1 0 11" />}
+              </svg>
+              {mute ? 'الصوت مكتوم' : 'الصوت يعمل'}
+            </button>
+            <button className="hnav hnav-logout" onClick={logout}>تسجيل الخروج</button>
           </nav>
         )}
       </div>
@@ -1325,189 +1320,141 @@ export function Setup({
              في العرض، وفي الطوليّ كان يزيح الشعار عن المنتصف. */
           margin:0;
         }
-        /* القائمة خارج لوح الجوال: روابط نصّيّة هادئة، و«شراء الألعاب» وحده
-           كبسولةٌ بلون الهويّة — كانت أربعَ كبسولاتٍ
-           بحدود حبرٍ تتزاحم بجانب الشعار. */
-        @media (min-width:641px), (orientation: landscape) {
-          html[data-skin] body .screen.setup .hero-nav { gap:clamp(14px,2vw,28px); }
-          html[data-skin] body .screen.setup .hnav:not(.hnav-buy) {
-            background:none; box-shadow:none; border-radius:0;
-            padding:6px 2px; color:var(--n-ink-2, #57524A); font-weight:700;
-            border-bottom:2px solid transparent;
-          }
-          html[data-skin] body .screen.setup .hnav:not(.hnav-buy):hover {
-            transform:none; box-shadow:none;
-            color:var(--n-ink, #22201C); border-bottom-color:var(--n-ink, #22201C);
-          }
-        }
-        }
-        /* الآيباد الطوليّ وما يشبهه: القاعدة الأساس (1.4vw) تعطي نحو 12
-           بكسلاً على 834 فتُقرأ الروابط بجهد إلى جانب الشعار (علي ٢٧ سبتمبر
-           ٢٠٢٦: «كبّرها»). الارتفاع شرطٌ كي لا يبلغها الجوال الأفقيّ. */
-        @media (min-width:700px) and (min-height:600px) {
-          html[data-skin] body .screen.setup .hnav { font-size:15px; }
-          html[data-skin] body .screen.setup .hnav-buy { padding:9px 20px; }
-        }
-        @media (min-width:900px) and (orientation: landscape) {
-          html[data-skin] body .screen.setup .hero { padding-block:clamp(22px,4dvh,40px) clamp(18px,3dvh,32px); }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(64px,5.4vw,104px); }
-          html[data-skin] body .screen.setup .hnav { font-size:clamp(15px,1.15vw,21px); }
-          html[data-skin] body .screen.setup .hnav-buy { padding:clamp(9px,1.2dvh,14px) clamp(20px,1.7vw,32px); }
-          /* فسحة أوسع بين الرأس و«مراحل اللعبة» (علي: «انزل وزد المسافة») —
-             تغلب clamp(18px,4.5dvh,56px) التي في blocks.css. */
-          html[data-skin] body .screen.setup .setup-body { margin-top:clamp(56px, 12dvh, 150px); }
-          /* وبين الأقسام كذلك (علي: «زد» عن المسافة بين الأقسام). */
-          html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(40px, 8dvh, 120px); }
-        }
-        /* الجوال الأفقيّ على الويب (≤480 ارتفاعاً): الرأس أقصر فلا يأكل ثلث الشاشة. */
-        @media (max-height:480px) {
-          html[data-skin] body .screen.setup .hero { padding-block:8px; }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(34px,10dvh,46px); }
-        }
-        /* ─── الرأس كبسولةٌ عائمة (علي ٣٠ سبتمبر ٢٠٢٦: «خلّ البانر بنفس هالطريقة»
-           على مثالٍ أرسله) ───
-           كتلةٌ بيضاء بطرفين مدوّرين وظلٍّ ناعم بدل الخطّ الفاصل تحت الرأس.
-           الشعار يميناً وحده، ثمّ من اليمين: الروابط، فاصلٌ رفيع،
-           «حسابي»، و«شراء الألعاب» في الطرف الأيسر. الترتيب بـorder لا بترتيب
-           العناصر: لوح ☰ في الجوال الطوليّ يبقى على ترتيبه (الشراء أوّلاً). */
+        /* كانت هنا الكبسولة العائمة في العرض (٣٠ سبتمبر ٢٠٢٦، PRs #228–#235):
+           روابط نصّيّة بجانب الشعار و«شراء الألعاب» ممتلئة. سقطت حين صار رأس
+           التطبيق رأسَ الموقع (١ أكتوبر ٢٠٢٦)؛ والفاصل بقي للّوح مخفيّاً. */
         html[data-skin] body .screen.setup .hnav-sep { display:none; }
-        @media (min-width:641px), (orientation: landscape) {
-          html[data-skin] body .screen.setup .hero {
-            margin-top:clamp(10px,2.2dvh,22px);
-            padding:clamp(14px,2.4dvh,24px) clamp(22px,2.6vw,42px);
-            background:var(--n-surface, #fff);
-            border:1px solid rgba(34,32,28,.07); border-radius:999px;
-            box-shadow:0 12px 32px -14px rgba(70,40,10,.26), 0 2px 6px -2px rgba(70,40,10,.08);
-          }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(40px,3.9vw,70px); top:0; }
-          html[data-skin] body .screen.setup .hero-nav { flex-wrap:nowrap; gap:clamp(16px,2.1vw,34px); }
-          html[data-skin] body .screen.setup .hnav-rules { order:2; }
-          html[data-skin] body .screen.setup .hnav-contact { order:3; }
-          html[data-skin] body .screen.setup .hnav-sep {
-            order:4; display:block; flex:none; width:1px; height:1.7em;
-            background:rgba(34,32,28,.14);
-          }
-          html[data-skin] body .screen.setup .hnav-account { order:5; }
-          /* الشراء كبسولةٌ ممتلئة بلون الهويّة بلا حلقة حبر، كزرّ المثال. */
-          html[data-skin] body .screen.setup .hnav-buy {
-            order:6; box-shadow:none;
-            padding:clamp(10px,1.4dvh,15px) clamp(22px,2vw,38px);
-          }
-          html[data-skin] body .screen.setup .hnav-buy:hover { transform:none; box-shadow:none; filter:brightness(.93); }
-        }
-        @media (max-height:480px) {
-          html[data-skin] body .screen.setup .hero { margin-top:8px; padding-block:5px; }
-          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(32px,9dvh,42px); }
-        }
-        /* ─── الجوال الطوليّ: الكبسولات خلف ☰ ─── */
+        /* ─── الجوال الطوليّ ─── */
         @media (orientation: portrait) and (max-width:640px) {
-          html[data-skin] body .screen.setup .hero { justify-content:center; }
           /* الرأس بلا كتلة أخفّ من التذكرة، ففسحة blocks.css تحته (≈40) كانت
              تُقرأ فراغاً (علي ٢٦ سبتمبر ٢٠٢٦: «صغّرهم»). */
           html[data-skin] body .screen.setup .setup-body { margin-top:clamp(10px, 2dvh, 20px); }
-          html[data-skin] body .screen.setup .hnav-menu {
-            display:grid; place-items:center;
-            position:absolute; z-index:2;
-            /* يسار الرأس (طلب علي): نهاية السطر في RTL، وفي منتصف ارتفاع الشعار. */
-            inset-inline-end:0; top:50%; transform:translateY(-50%);
-            width:40px; height:40px; padding:0;
-            font-size:19px; line-height:1;
-            box-shadow:0 0 0 2px var(--n-ink, #22201C);
-          }
-          html[data-skin] body .screen.setup .hnav-menu:hover { transform:translateY(-50%); }
-          html[data-skin] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
-          /* ─── رأس التطبيق وحده (علي ٣٠ سبتمبر ٢٠٢٦: «لا تغيّر شي في الموقع») ───
-             مستطيلٌ أبيض بزوايا مدوّرة (جُرّبت الكبسولة قبله: «ليش ما تخليها
-             مستطيل»)، الشعار يميناً أصغر، و☰ بلون الهويّة وفي لوحه الصوت والخروج. */
-          /* كرأس شاشة الدخول (علي ١ أكتوبر ٢٠٢٦: «خلّه نفس صفحة التسجيل»): على
-             الخلفيّة بلا كونتينر، وخطٌّ رماديّ خفيف تحته. */
-          html[data-skin][data-native] body .screen.setup .hero {
-            justify-content:flex-start;
-            margin:0; padding:12px 4px;
-            background:none; border:0; border-radius:0; box-shadow:none;
-            border-bottom:1.5px solid rgba(34,32,28,.14);
-          }
-          html[data-skin][data-native] body .screen.setup .hero-logo.f6een-mark { top:0; font-size:clamp(33px,9vw,38px); }
-          html[data-skin][data-native] body .screen.setup .hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:0 0 0 2px var(--n-ink, #22201C); }
-          html[data-skin][data-native] body .screen.setup .hnav-menu.open { background:var(--n-ink, #22201C); }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound { display:flex; align-items:center; justify-content:center; gap:10px; }
-          html[data-skin][data-native] body .screen.setup .hnav-sound.off { opacity:.6; }
-          html[data-skin][data-native] body .screen.setup .hnav-sound svg { width:20px; height:20px; display:block; }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout { display:block; }
-          /* الشراء خرج من اللوح: زرّ «رصيد العابي» بجانب ☰ يفتحه (علي ١ أكتوبر ٢٠٢٦). */
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-buy { display:none; }
-          html[data-skin][data-native] body .screen.setup .hnav-balance {
-            display:flex; align-items:center; gap:5px;
-            position:absolute; z-index:2; top:50%; transform:translateY(-50%);
-            inset-inline-end:52px; height:40px; padding:0 8px 0 14px; border-radius:999px;
-            /* أبيض بحلقة حبرٍ كـ☰ جاره وبارتفاعه (علي: «غير منسّقين» — كان بلون
-               الأرضيّة فيذوب فيها). جُرّب قبله إطارٌ برتقاليّ: «مو حلو». */
-            background:var(--n-surface, #fff); box-shadow:0 0 0 2px var(--n-ink, #22201C);
-            font-size:15px; font-weight:800; color:var(--n-ink, #22201C); white-space:nowrap;
-            border:0; font-family:inherit; cursor:pointer;
-          }
-          html[data-skin][data-native] body .screen.setup .hnav-balance b {
-            display:grid; place-items:center; min-width:26px; height:26px; padding:0 7px;
-            border-radius:999px; background:var(--n-brand, #E8542F); color:#fff;
-            font-size:14px; font-weight:800;
-          }
-          /* والسطر تحت «ابدأ اللعبة» يسقط: الصوت في لوح ☰. */
-          html[data-skin][data-native] body .screen.setup .setup-mute { display:none; }
           /* سطر التعريف سطرٌ واحد: عرضه بخطّ الجهاز 600 نحو 27.04em (قيس
              بـNSFont)، فالمقاس ما يسعه عرضُ الشاشة ناقص الحشوة. */
           html[data-skin][data-native] body .screen.setup .setup-intro-line {
             white-space:nowrap; font-size:min(16px, calc((100vw - 36px) / 27.6));
           }
-          /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت التذكرة مباشرةً،
-             بالهيئة نفسها فيُقرأ امتداداً لها لا نافذةً غريبة. */
-          html[data-skin] body .screen.setup .hero-nav {
-            display:none;
-            position:absolute; z-index:3; top:100%; inset-inline:0;
-            margin:12px 0 0; padding:12px;
-            flex-direction:column; align-items:stretch; gap:10px;
-            background:var(--n-surface, #fff); border-radius:18px;
-            box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
-          }
-          html[data-skin] body .screen.setup .hero-nav.open { display:flex; }
-          html[data-skin] body .screen.setup .hero-nav-veil { display:block; position:fixed; inset:0; z-index:2; }
-          html[data-skin] body .screen.setup .hero-nav .hnav {
-            font-size:16px; padding:12px 18px; text-align:center;
-          }
+        }
+        /* ─── الرأس: الشعار، و«رصيد العابي» و☰ — في كلّ مقاس، الموقع والتطبيق ───
+           كان هذا للجوال الطوليّ وحده والعرضُ كبسولةٌ عائمة بروابط؛ نقله علي
+           إلى الموقع (١ أكتوبر ٢٠٢٦). يأتي بعد قواعد الكبسولة فيغلبها. */
+        html[data-skin] body .screen.setup .hnav.hnav-menu {
+          display:grid; place-items:center;
+          position:absolute; z-index:2;
+          /* يسار الرأس (طلب علي): نهاية السطر في RTL، وفي منتصف ارتفاع الشعار. */
+          inset-inline-end:0; top:50%; transform:translateY(-50%);
+          width:40px; height:40px; padding:0; border-radius:999px;
+          font-size:19px; line-height:1;
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
+        }
+        html[data-skin] body .screen.setup .hnav.hnav-menu:hover { transform:translateY(-50%); }
+        html[data-skin] body .screen.setup .hnav.hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
+        /* ─── رأس التطبيق (علي ٣٠ سبتمبر ٢٠٢٦؛ وفي الموقع منذ ١ أكتوبر ٢٠٢٦:
+           «انقل رأس التطبيق ورصيد العابي للموقع») ───
+           مستطيلٌ أبيض بزوايا مدوّرة (جُرّبت الكبسولة قبله: «ليش ما تخليها
+           مستطيل»)، الشعار يميناً أصغر، و☰ بلون الهويّة وفي لوحه الصوت والخروج. */
+        /* كرأس شاشة الدخول (علي ١ أكتوبر ٢٠٢٦: «خلّه نفس صفحة التسجيل»): على
+           الخلفيّة بلا كونتينر، وخطٌّ رماديّ خفيف تحته. */
+        html[data-skin] body .screen.setup .hero {
+          justify-content:flex-start;
+          margin:0; padding:12px 4px;
+          background:none; border:0; border-radius:0; box-shadow:none;
+          border-bottom:1.5px solid rgba(34,32,28,.14);
+        }
+        html[data-skin] body .screen.setup .hero-logo.f6een-mark { top:0; font-size:clamp(33px,9vw,38px); }
+        html[data-skin] body .screen.setup .hnav.hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:0 0 0 2px var(--n-ink, #22201C); }
+        html[data-skin] body .screen.setup .hnav.hnav-menu.open { background:var(--n-ink, #22201C); }
+        html[data-skin] body .screen.setup .hero-nav .hnav-sound { display:flex; align-items:center; justify-content:center; gap:10px; }
+        html[data-skin] body .screen.setup .hnav-sound.off { opacity:.6; }
+        html[data-skin] body .screen.setup .hnav-sound svg { width:20px; height:20px; display:block; }
+        html[data-skin] body .screen.setup .hero-nav .hnav-logout { display:block; }
+        /* الشراء خرج من اللوح: زرّ «رصيد العابي» بجانب ☰ يفتحه (علي ١ أكتوبر ٢٠٢٦). */
+        html[data-skin] body .screen.setup .hero-nav .hnav-buy { display:none; }
+        html[data-skin] body .screen.setup .hnav-balance {
+          display:flex; align-items:center; gap:5px;
+          position:absolute; z-index:2; top:50%; transform:translateY(-50%);
+          inset-inline-end:52px; height:40px; padding:0 8px 0 14px; border-radius:999px;
+          /* أبيض بحلقة حبرٍ كـ☰ جاره وبارتفاعه (علي: «غير منسّقين» — كان بلون
+             الأرضيّة فيذوب فيها). جُرّب قبله إطارٌ برتقاليّ: «مو حلو». */
+          background:var(--n-surface, #fff); box-shadow:0 0 0 2px var(--n-ink, #22201C);
+          font-size:15px; font-weight:800; color:var(--n-ink, #22201C); white-space:nowrap;
+          border:0; font-family:inherit; cursor:pointer;
+        }
+        html[data-skin] body .screen.setup .hnav-balance b {
+          display:grid; place-items:center; min-width:26px; height:26px; padding:0 7px;
+          border-radius:999px; background:var(--n-brand, #E8542F); color:#fff;
+          font-size:14px; font-weight:800;
+        }
+        /* والسطر تحت «ابدأ اللعبة» يسقط: الصوت في لوح ☰. */
+        html[data-skin] body .screen.setup .setup-mute { display:none; }
+        /* اللوح: مخفيّ حتى يُفتح، ثمّ عمودٌ بعرض الشاشة تحت التذكرة مباشرةً،
+           بالهيئة نفسها فيُقرأ امتداداً لها لا نافذةً غريبة. */
+        html[data-skin] body .screen.setup .hero-nav {
+          display:none;
+          position:absolute; z-index:3; top:100%; inset-inline:0;
+          margin:12px 0 0; padding:12px;
+          flex-direction:column; align-items:stretch; gap:10px;
+          background:var(--n-surface, #fff); border-radius:18px;
+          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+        }
+        html[data-skin] body .screen.setup .hero-nav.open { display:flex; }
+        html[data-skin] body .screen.setup .hero-nav-veil { display:block; position:fixed; inset:0; z-index:2; }
+        html[data-skin] body .screen.setup .hero-nav .hnav {
+          font-size:16px; padding:12px 18px; text-align:center;
+        }
 
-          /* ─── لوح ☰ في التطبيق: قائمةٌ لا أزرار (علي ١ أكتوبر ٢٠٢٦: «ضبّط عناصر
-             القائمة») ─── صفوفٌ بأيقونةٍ لكلٍّ منها وخطٍّ رفيع بينها بدل خمس
-             كبسولاتٍ متطابقة، والخروج منفصلٌ بالأحمر في آخرها. والأيقونات
-             أقنعة CSS لا عناصر: الأزرار نفسها في الموقع بلا أيقونات. */
-          html[data-skin][data-native] body .screen.setup .hero-nav { padding:8px; gap:0; border-radius:18px; }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav {
-            display:flex; align-items:center; justify-content:flex-start; gap:12px;
-            height:52px; padding:0 14px; margin:0; border-radius:12px;
-            background:none; box-shadow:none; transform:none;
-            font-size:16px; font-weight:700; color:var(--n-ink, #22201C); text-align:start;
+        /* ─── لوح ☰ في التطبيق: قائمةٌ لا أزرار (علي ١ أكتوبر ٢٠٢٦: «ضبّط عناصر
+           القائمة») ─── صفوفٌ بأيقونةٍ لكلٍّ منها وخطٍّ رفيع بينها بدل خمس
+           كبسولاتٍ متطابقة، والخروج منفصلٌ بالأحمر في آخرها. والأيقونات
+           أقنعة CSS لا عناصر: الأزرار نفسها في الموقع بلا أيقونات. */
+        html[data-skin] body .screen.setup .hero-nav { padding:8px; gap:0; border-radius:18px; }
+        html[data-skin] body .screen.setup .hero-nav .hnav {
+          display:flex; align-items:center; justify-content:flex-start; gap:12px;
+          height:52px; padding:0 14px; margin:0; border-radius:12px;
+          background:none; box-shadow:none; transform:none;
+          font-size:16px; font-weight:700; color:var(--n-ink, #22201C); text-align:start;
+        }
+        html[data-skin] body .screen.setup .hero-nav .hnav:active { background:var(--n-bg, #F6F5F2); }
+        html[data-skin] body .screen.setup .hero-nav .hnav-account,
+        html[data-skin] body .screen.setup .hero-nav .hnav-rules,
+        html[data-skin] body .screen.setup .hero-nav .hnav-contact { border-bottom:1px solid rgba(34,32,28,.08); border-radius:0; }
+        /* الشراء خارج اللوح («رصيد العابي» يفتحه) — تُعاد هنا لأنّ display:flex أعلاه يغلبها. */
+        html[data-skin] body .screen.setup .hero-nav .hnav-buy { display:none; }
+        html[data-skin] body .screen.setup .hero-nav .hnav-account::before,
+        html[data-skin] body .screen.setup .hero-nav .hnav-rules::before,
+        html[data-skin] body .screen.setup .hero-nav .hnav-contact::before,
+        html[data-skin] body .screen.setup .hero-nav .hnav-logout::before {
+          content:''; flex:none; width:22px; height:22px; background:currentColor;
+          -webkit-mask:var(--ic) center / contain no-repeat; mask:var(--ic) center / contain no-repeat;
+        }
+        html[data-skin] body .screen.setup .hero-nav .hnav-account { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%224%22/%3E%3Cpath%20d%3D%22M4%2021c1-4%204.5-6%208-6s7%202%208%206%22/%3E%3C/svg%3E"); }
+        html[data-skin] body .screen.setup .hero-nav .hnav-rules { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a2%202%200%200%201%202-2h12v18H6a2%202%200%200%201-2-2z%22/%3E%3Cpath%20d%3D%22M8%207h6M8%2011h6%22/%3E%3C/svg%3E"); }
+        html[data-skin] body .screen.setup .hero-nav .hnav-contact { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205h16v11H8l-4%204z%22/%3E%3C/svg%3E"); }
+        html[data-skin] body .screen.setup .hero-nav .hnav-logout { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M10%204H6a2%202%200%200%200-2%202v12a2%202%200%200%200%202%202h4%22/%3E%3Cpath%20d%3D%22M21%2012H10M17%208l4%204-4%204%22/%3E%3C/svg%3E"); }
+        html[data-skin] body .screen.setup .hero-nav .hnav-sound svg { width:22px; height:22px; }
+        html[data-skin] body .screen.setup .hero-nav .hnav-sound.off { opacity:.55; }
+        html[data-skin] body .screen.setup .hero-nav .hnav-logout {
+          margin-top:6px; border-top:1px solid rgba(34,32,28,.16); border-radius:0;
+          color:var(--n-bad, #CE2F1E);
+        }
+        /* التحويم بالفأرة في الموقع كالضغط في التطبيق. */
+        @media (hover:hover) {
+          html[data-skin] body .screen.setup .hero-nav .hnav:hover { background:var(--n-bg, #F6F5F2); transform:none; box-shadow:none; }
+        }
+        /* العرض: الرأس بعرض الكونتينر تحته، واللوح قائمةٌ منسدلة عند ☰ لا
+           عمودٌ بعرض الصفحة؛ والشعار والزرّان أكبر قليلاً بمقاس الشاشة. */
+        @media (min-width:641px), (orientation: landscape) {
+          html[data-skin] body .screen.setup .hero {
+            width:min(100%, 1140px); margin-inline:auto; padding-block:clamp(12px,2dvh,22px);
           }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav:active { background:var(--n-bg, #F6F5F2); }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account,
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules,
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact { border-bottom:1px solid rgba(34,32,28,.08); border-radius:0; }
-          /* الشراء خارج اللوح («رصيد العابي» يفتحه) — تُعاد هنا لأنّ display:flex أعلاه يغلبها. */
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-buy { display:none; }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account::before,
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules::before,
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact::before,
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout::before {
-            content:''; flex:none; width:22px; height:22px; background:currentColor;
-            -webkit-mask:var(--ic) center / contain no-repeat; mask:var(--ic) center / contain no-repeat;
+          html[data-skin] body .screen.setup .hero-logo.f6een-mark { font-size:clamp(36px,3.2vw,50px); }
+          html[data-skin] body .screen.setup .hero-nav {
+            inset-inline:auto; inset-inline-end:4px; width:290px; margin-top:10px;
           }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-account { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%224%22/%3E%3Cpath%20d%3D%22M4%2021c1-4%204.5-6%208-6s7%202%208%206%22/%3E%3C/svg%3E"); }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-rules { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a2%202%200%200%201%202-2h12v18H6a2%202%200%200%201-2-2z%22/%3E%3Cpath%20d%3D%22M8%207h6M8%2011h6%22/%3E%3C/svg%3E"); }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-contact { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205h16v11H8l-4%204z%22/%3E%3C/svg%3E"); }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout { --ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M10%204H6a2%202%200%200%200-2%202v12a2%202%200%200%200%202%202h4%22/%3E%3Cpath%20d%3D%22M21%2012H10M17%208l4%204-4%204%22/%3E%3C/svg%3E"); }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound svg { width:22px; height:22px; }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-sound.off { opacity:.55; }
-          html[data-skin][data-native] body .screen.setup .hero-nav .hnav-logout {
-            margin-top:6px; border-top:1px solid rgba(34,32,28,.16); border-radius:0;
-            color:var(--n-bad, #CE2F1E);
-          }
+          html[data-skin] body .screen.setup .hero-nav .hnav { cursor:pointer; }
+        }
+        @media (max-height:480px) {
+          html[data-skin] body .screen.setup .hero { padding-block:6px; }
         }
         /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
            حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. وفي الموقع
