@@ -5,6 +5,7 @@ import { authErrorText, signInWithGoogle } from '../lib/auth'
 import { isNativeApp } from '../lib/platform'
 import { SignUp } from './SignUp'
 import { ExplainerInline } from '../components/ExplainerVideo'
+import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 
 /**
  * شاشة التعريف — تلي شاشة الشعار.
@@ -108,7 +109,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         {/* التطبيق: كتلةٌ واحدة بنصّ الموقع، والمراحل كبسولاتٍ فوق بعض، ثمّ
             الفيديو وزرّ التسجيل (علي ١ أكتوبر ٢٠٢٦). النصوص نصوصه. */}
         {isNativeApp && (
-          <section className="welcome-box">
+          <section className="welcome-box" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
             {/* «فطين» المكتوبة سقطت (علي ١ أكتوبر ٢٠٢٦): الشعار في الرأس فوقها. */}
             {/* الجملة نفسها حرفاً، مقسومةً عند معناها: ما هي، ثمّ ما تفعله. */}
             <p className="welcome-line">
@@ -410,6 +411,15 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           background:var(--n-surface, #fff); border-radius:22px;
           box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ وظلٌّ صلب كبطاقة «إنشاء حساب» (علي ١ أكتوبر ٢٠٢٦) */
           text-align:center;
+        }
+        /* لمسةٌ خفيفة جدّاً خلف الكتلة: رسوم الفئات شبكةً مائلة كافتتاحيّة فيديو
+           الشرح (علي ١ أكتوبر ٢٠٢٦: «مثل صور الفئات بس خفيييفة»). صورةٌ واحدة
+           مجمَّعة من assets/categories لا تسع عشرة. والمحتوى فوقها. */
+        .welcome-box { position:relative; isolation:isolate; overflow:hidden; }
+        .welcome-box::before {
+          content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+          background:var(--welcome-cats) center / cover no-repeat;
+          opacity:.07;
         }
         .welcome-name {
           margin:0; font-family:system-ui, -apple-system, sans-serif; font-weight:800;
