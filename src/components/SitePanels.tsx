@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { sendMessage } from '../lib/messages'
 import { STAGES } from '../game/stages'
+import { ExplainerInline } from './ExplainerVideo'
+import { isNativeApp } from '../lib/platform'
 import type { CategoryInfo } from './categoryInfo'
 
 /**
@@ -216,6 +218,14 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
         والنقاط تتراكم إلى الختام.
       </p>
 
+      {/* فيديو الشرح في التطبيق (علي ١ أكتوبر ٢٠٢٦): خرج من الإعداد بعد الدخول،
+          فمكانه هنا لمن يريد الرجوع إليه. والموقع يعرضه في الإعداد نفسه. */}
+      {isNativeApp && (
+        <div className="sp-video">
+          <ExplainerInline />
+        </div>
+      )}
+
       <div className="sp-stages">
         {STAGES.map((st, i) => (
           <article key={st.name} className="sp-stage">
@@ -229,6 +239,7 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
       </div>
 
       <style>{`
+        .sp-video .xi-wrap { margin:0; width:100%; }
         .sp-stages { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
         .sp-stage {
           display:flex; align-items:flex-start; gap:clamp(9px,1.6vw,15px);
