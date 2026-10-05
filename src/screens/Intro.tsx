@@ -123,9 +123,12 @@ export function Intro({ onDone }: { onDone?: () => void }) {
               )
             })}
           </div>
+          {/* زرّ التسجيل قبل الفيديو لا بعده (علي ٥ أكتوبر ٢٠٢٦، من تدقيق
+              التجربة): بعده كان تحت حافّة الشاشة في كلّ مقاسٍ أفقيّ — 996px
+              على 900 — فلا يرى الزائر «لعبة مجانية» إلّا إن مرّر. */}
+          <button className="welcome-cta" onClick={toSignin}>سجل و احصل على لعبة مجانية</button>
           <p className="welcome-video-line"><span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم اللعبة</p>
           <ExplainerInline />
-          <button className="welcome-cta" onClick={toSignin}>سجل و احصل على لعبة مجانية</button>
         </section>
       </section>
 
@@ -315,6 +318,11 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           background:var(--n-surface, #fff); border-radius:22px;
           box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ كبطاقة «إنشاء حساب» */
           justify-content:center; gap:14px;
+          /* لا ينكمش تحت محتواه — العلّة نفسها في الكتلة أدناه: overflow:hidden
+             (لرسوم الفئات) يُسقط حدّه الأدنى، فكان يُحشر في ارتفاع الشاشة
+             ويقصّ الشعار من أعلى و«أول مرة؟» و«رجوع» من أسفل بلا تمرير
+             (قِيس ٥ أكتوبر ٢٠٢٦ على 667×375 و844×390 و932×430). */
+          flex:none;
         }
         body .screen.intro.native .intro-pane.signin > :first-child,
         body .screen.intro.native .intro-pane.signin > :last-child { margin-block:0; }
@@ -471,9 +479,30 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           .welcome-back { height:clamp(40px,3.4vw,48px); font-size:clamp(15px,1.2vw,18px); }
           .welcome-cta, .welcome-login, .w-stage-head, .welcome-back, .signin-first { cursor:pointer; }
         }
+        /* الجوال الأفقيّ: صفحة الدخول تسع الشاشة بلا تمرير. الشعار أصغر، والعنوان
+           والجملة المخفيّان (visibility) يُسقطان من التدفّق — كانا يحجزان
+           مكانهما فيدفعان «أول مرة؟» تحت الحافّة. */
+        @media (max-height:460px) {
+          body .screen.intro.native .intro-pane.signin { padding:14px 18px; gap:8px; }
+          body .screen.intro.native .signin-logo { font-size:56px; margin-bottom:0; }
+          body .screen.intro.native .signin-title,
+          body .screen.intro.native .signin-sub { display:none; }
+          body .screen.intro.native .signin-methods { gap:8px; }
+          body .screen.intro.native .method { padding:9px 18px; font-size:16px; }
+          .signin-first { margin-top:0; padding:2px; font-size:15px; }
+          body .screen.intro.native .signin .welcome-back { margin-top:0; height:34px; }
+        }
         /* الآيباد الطوليّ والنوافذ الضيّقة: ثلاثُ بطاقاتٍ في صفٍّ تخنق الأسماء. */
         @media (max-width:760px) {
           .welcome-stages { display:flex; }
+        }
+        /* إلّا الجوال الأفقيّ القصير: المراحل عموداً تدفع زرّ التسجيل تحت
+           الحافّة (416px على 667×375)، والعرض هناك يسع صفّاً. */
+        @media (orientation: landscape) and (max-height:460px) {
+          .welcome-stages { display:grid; }
+          .w-stage-name { padding-inline:8px; font-size:15px; }
+          .w-stage-no { width:40px; min-height:40px; font-size:18px; }
+          .w-stage-info { margin-inline-end:8px; }
         }
       `}</style>
     </div>
