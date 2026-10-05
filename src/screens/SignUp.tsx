@@ -34,9 +34,15 @@ function ageFrom(birth: string): number | null {
  * إنشاء حساب بالبريد — والدخول بحساب قائم.
  *
  * الحقول: اسم أوّل وعائلة، وبريد، وتاريخ ميلاد، ورمز دولة ورقم هاتف، وكلمة
- * سرّ وتأكيدها. **حُذفت الزائدة ثم أُرجعت بقرار علي (٢٧ أغسطس ٢٠٢٦) لحاجة
+ * سرّ. **حُذفت الزائدة ثم أُرجعت بقرار علي (٢٧ أغسطس ٢٠٢٦) لحاجة
  * مستقبليّة** — ولا يقرؤها شيء في اللعبة اليوم، فتُذكر في سياسة الخصوصيّة
  * وفي إقرار المتجرين ما دامت تُجمع.
+ *
+ * **والإلزاميّ أربعة لا ثمانية** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة: «قلّل
+ * الحقول الإلزامية»): الاسم الأوّل والبريد وكلمة السرّ والموافقة. العائلة
+ * والميلاد والهاتف باقيةٌ في النموذج اختياريّة — الحاجة المستقبليّة لم تسقط،
+ * لكنّها لا تقف بين لاعبٍ وأوّل لعبة. و«تأكيد كلمة المرور» سقط وحلّ محلّه
+ * زرّ إظهارها: الحقل الثاني يحرس من خطأ كتابةٍ لا يُرى، والإظهار يجعله يُرى.
  *
  * وضعان في شاشة واحدة — تسجيل ودخول — لأنّ حقولهما واحدة، وفصلهما يضاعف
  * التخطيط ويربك من أخطأ في الوضع.
@@ -55,7 +61,7 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
   const [dialCode, setDialCode] = useState('+965')
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
-  const [confirm, setConfirm] = useState('')
+  const [showPass, setShowPass] = useState(false)
   const [agreed, setAgreed] = useState(false)
 
   const [busy, setBusy] = useState(false)
@@ -69,17 +75,16 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
 
   function validate(): string | null {
     if (signup && !firstName.trim()) return 'اكتب اسمك الأول'
-    if (signup && !lastName.trim()) return 'اكتب اسم العائلة'
     if (!email.trim()) return 'اكتب بريدك الإلكتروني'
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return 'البريد غير صحيح'
     if (!password) return 'اكتب كلمة المرور'
     if (!signup) return null
-    if (!birthDate) return 'اكتب تاريخ ميلادك'
-    const age = ageFrom(birthDate)
-    if (age === null || age < 0 || age > 120) return 'تاريخ الميلاد غير صحيح'
-    if (!phone.trim()) return 'اكتب رقم هاتفك'
+    /* الاختياريّ يُفحص إن كُتب: تاريخٌ مستحيل خطأٌ وإن لم يكن مطلوباً. */
+    if (birthDate) {
+      const age = ageFrom(birthDate)
+      if (age === null || age < 0 || age > 120) return 'تاريخ الميلاد غير صحيح'
+    }
     if (password.length < MIN_PASSWORD) return `كلمة المرور ${MIN_PASSWORD} أحرف على الأقل`
-    if (password !== confirm) return 'كلمتا المرور غير متطابقتين'
     if (!agreed) return 'وافق على سياسة الخصوصية'
     return null
   }
@@ -171,7 +176,7 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
           <div className="su-row">
             <input className="su-in" placeholder="الاسم الأول" value={firstName}
                    onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" />
-            <input className="su-in" placeholder="اسم العائلة" value={lastName}
+            <input className="su-in" placeholder="اسم العائلة (اختياري)" value={lastName}
                    onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" />
           </div>
         )}
@@ -187,8 +192,8 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
             <label className="su-date">
               <input className={'su-in' + (birthDate ? '' : ' empty')} type="date" value={birthDate}
                      max={new Date().toISOString().slice(0, 10)}
-                     onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد" />
-              {!birthDate && <span className="su-date-ph" aria-hidden="true">تاريخ الميلاد</span>}
+                     onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد (اختياري)" />
+              {!birthDate && <span className="su-date-ph" aria-hidden="true">تاريخ الميلاد (اختياري)</span>}
             </label>
 
             <div className="su-row phone">
@@ -198,20 +203,24 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
                   <option key={d.code} value={d.code}>{d.name} ({d.code})</option>
                 ))}
               </select>
-              <input className="su-in" type="tel" placeholder="رقم التليفون" value={phone}
+              <input className="su-in" type="tel" placeholder="رقم التليفون (اختياري)" value={phone}
                      onChange={(e) => setPhone(e.target.value)} autoComplete="tel" dir="ltr" />
             </div>
           </>
         )}
 
-        <input className="su-in" type="password" placeholder="كلمة المرور" value={password}
-               onChange={(e) => setPassword(e.target.value)}
-               autoComplete={signup ? 'new-password' : 'current-password'} dir="ltr" />
+        <div className="su-pass">
+          <input className="su-in" type={showPass ? 'text' : 'password'} placeholder="كلمة المرور" value={password}
+                 onChange={(e) => setPassword(e.target.value)}
+                 autoComplete={signup ? 'new-password' : 'current-password'} dir="ltr" />
+          <button type="button" className="su-pass-eye" onClick={() => setShowPass((v) => !v)}
+                  aria-pressed={showPass}>
+            {showPass ? 'إخفاء' : 'إظهار'}
+          </button>
+        </div>
 
         {signup && (
           <>
-            <input className="su-in" type="password" placeholder="تأكيد كلمة المرور" value={confirm}
-                   onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" dir="ltr" />
 
             {/* لا ذكر لـ«الشروط والأحكام»: لا وجود لها بعد، والإشارة إلى صفحة
                 غائبة وعدٌ لا يُوفى. تُضاف حين تُكتب. */}

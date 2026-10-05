@@ -217,7 +217,8 @@ export async function signUpWithEmail(f: SignUpFields) {
         first_name: f.firstName.trim(),
         last_name: f.lastName.trim(),
         full_name: `${f.firstName.trim()} ${f.lastName.trim()}`.trim(),
-        birth_date: f.birthDate,
+        /* اختياريّ منذ ٥ أكتوبر ٢٠٢٦: الفارغ null كالهاتف لا نصّاً فارغاً. */
+        birth_date: f.birthDate || null,
         /* الصفر البادئ يُحذف: من يكتب ٠٥٠… مع رمز دولة يُنتج رقماً خاطئاً. */
         phone: f.phone.trim() ? `${f.dialCode}${f.phone.trim().replace(/^0+/, '')}` : null,
       },
