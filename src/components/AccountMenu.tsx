@@ -296,25 +296,28 @@ export function AccountMenu({
           background:rgba(220,64,51,.07); box-shadow:inset 0 0 0 1.5px rgba(220,64,51,.35);
         }
         .acct-load-err .acct-err { margin:0; }
-        .acct-load-err .acct-act { flex:none; min-height:40px; padding-inline:16px; background:var(--n-ink, #22201C); color:#fff; }
+        .acct-load-err .acct-act, .acct-load-err .acct-act:hover:not(:disabled) { flex:none; min-height:40px; padding-inline:16px; background:var(--n-ink, #22201C); color:#fff; }
         /* الغطاء يُغلق بالضغط خارج الصفحة — المخرج نفسه الذي يتوقّعه الإبهام. */
         .acct-veil {
           position:fixed; inset:0; z-index:60;
           display:flex; align-items:center; justify-content:center;
           padding:clamp(8px,2dvh,24px);
-          background:rgba(10,8,20,.5);
+          background:rgba(34,32,28,.5);
           backdrop-filter:blur(2px);
         }
 
         /* الصفحة لا تتمدّد بتمدّد قائمة الألعاب: ارتفاعها مقيَّد والقائمة
            وحدها تتمرّر داخلها — فتبقى القاعدة «الشاشة الواحدة» قائمة. */
+        /* بلا قشدة (علي ٥ أكتوبر ٢٠٢٦: «هذه الصفحة مازالت عالقديم») — كلوحة
+           الإدارة: صبغةٌ محايدة، وأزرارٌ بحلقة حبر كأزرار الموقع، وحقلٌ أبيض. */
         .acct-panel {
+          --acct-soft:#EFEDE8;
           display:flex; flex-direction:column;
           width:min(560px, 100%); max-height:min(86dvh, 760px);
           overflow:hidden;
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
-          border-radius:var(--n-r2, 14px);
-          box-shadow:var(--n-e3, 0 22px 50px rgba(0,0,0,.16));
+          border-radius:var(--n-r3, 20px);
+          box-shadow:var(--n-e2, 0 22px 50px rgba(0,0,0,.16));
         }
         .acct-head {
           display:flex; align-items:center; justify-content:space-between;
@@ -326,7 +329,8 @@ export function AccountMenu({
           font:inherit; font-size:20px; font-weight:800; line-height:1;
           cursor:pointer; border:0; border-radius:999px;
           width:32px; height:32px;
-          background:var(--n-surface-2, #F8F7FC); color:var(--n-ink-2, #5D5670);
+          background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
+          box-shadow:0 0 0 1.5px var(--n-ink, #22201C);
         }
 
         .acct-body { overflow:auto; padding:14px 16px; display:flex; flex-direction:column; gap:18px; }
@@ -349,19 +353,19 @@ export function AccountMenu({
 
         .acct-gift { display:grid; grid-template-columns:1fr auto; gap:8px; margin-block-start:4px; }
         .acct-in {
-          font:inherit; font-weight:700; font-size:14px; width:100%;
-          padding:9px 12px; border-radius:10px;
-          border:1px solid var(--n-line, #E5E1F0);
-          background:var(--n-surface-2, #F8F7FC); color:var(--n-ink, #1A1626);
+          font:inherit; font-weight:700; font-size:14px; width:100%; box-sizing:border-box;
+          padding:9px 12px; border-radius:12px;
+          border:1.5px solid rgba(34,32,28,.28);
+          background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
         }
         .acct-in::placeholder { color:var(--n-ink-3, #948CA8); font-weight:700; }
-        .acct-in:focus { outline:none; border-color:var(--n-brand, #7A3E9D); background:#fff; }
+        .acct-in:focus { outline:none; border-color:var(--n-brand, #7A3E9D); box-shadow:0 0 0 3px var(--n-brand-tint, #FFE3D6); }
 
         .acct-games { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
         .g-row {
           display:flex; flex-direction:column; gap:4px;
-          padding:9px 11px; border-radius:10px;
-          background:var(--n-surface-2, #F8F7FC);
+          padding:9px 11px; border-radius:12px;
+          background:var(--acct-soft);
         }
         .g-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
         .g-date { font-size:12px; font-weight:700; color:var(--n-ink-3, #948CA8); }
@@ -388,18 +392,22 @@ export function AccountMenu({
         }
         .acct-act {
           font:inherit; font-weight:800; cursor:pointer;
-          font-size:14px; padding:9px 12px;
-          border:0; border-radius:10px;
-          background:var(--n-surface-2, #F8F7FC); color:var(--n-ink, #1A1626);
+          font-size:14px; padding:9px 14px;
+          border:0; border-radius:999px;
+          background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
+          box-shadow:0 0 0 1.5px var(--n-ink, #22201C);
           transition:background .2s ease, color .2s ease;
         }
-        .acct-act:disabled { opacity:.5; cursor:default; }
+        .acct-act:hover:not(:disabled) { background:var(--acct-soft); }
+        .acct-act:disabled { opacity:.45; cursor:default; }
         /* الرابط يلبس زيّ الأزرار: هو في صفٍّ معها، وفرقُ شكله يقرأ عطلاً. */
         a.acct-act { text-decoration:none; text-align:center; }
-        .acct-act.admin { color:var(--n-brand, #7A3E9D); }
+        .acct-act.admin { background:var(--n-brand, #E8542F); color:#fff;
+          box-shadow:0 0 0 1.5px var(--n-ink, #22201C), 2px 3px 0 var(--n-ink, #22201C); }
+        .acct-act.admin:hover { background:#D44A27; }
         .acct-act.danger { color:var(--n-bad, #DC4033); }
         /* الحالة المسلَّحة صريحة اللون: لا تُضغط وهي بلون الحياد. */
-        .acct-act.danger.armed { background:var(--n-bad, #DC4033); color:#fff; }
+        .acct-act.danger.armed, .acct-act.danger.armed:hover:not(:disabled) { background:var(--n-bad, #DC4033); color:#fff; }
         .acct-warn, .acct-err, .acct-note {
           margin:0; font-size:12px; font-weight:700; line-height:1.6;
         }
