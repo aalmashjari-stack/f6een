@@ -66,6 +66,10 @@ export function AccountMenu({
   const [admin, setAdmin] = useState(false)
   const [games, setGames] = useState<GameSummary[] | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
+  /* «أعد المحاولة» تزيده فتُعاد القراءة نفسها (علي ٥ أكتوبر ٢٠٢٦، من تدقيق
+     التجربة): كان الخطأ يُقال تحت «ألعابي» وحدها، و«عضو منذ» يبقى «…» إلى
+     الأبد، ولا سبيل إلى إعادةٍ إلّا بإغلاق الصفحة وفتحها. */
+  const [reload, setReload] = useState(0)
 
   const meta = (session.user.user_metadata ?? {}) as Record<string, unknown>
   const email = session.user.email ?? 'حساب مجهول'
@@ -102,7 +106,7 @@ export function AccountMenu({
     return () => {
       alive = false
     }
-  }, [open, onBalance])
+  }, [open, onBalance, reload])
 
   /* **التسليح لا يعيش بعد لحظته** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة):
      كانت الضغطة الأولى على «حذف الحساب» تبقى بعد الإغلاق — المكوّن مركَّبٌ
@@ -183,6 +187,14 @@ export function AccountMenu({
             </header>
 
             <div className="acct-body">
+              {loadErr && (
+                <div className="acct-load-err" role="alert">
+                  <p className="acct-err">{loadErr}</p>
+                  <button className="acct-act" onClick={() => setReload((n) => n + 1)}>
+                    أعد المحاولة
+                  </button>
+                </div>
+              )}
               <section className="acct-sec">
                 <h3 className="acct-h3">بياناتي</h3>
                 <dl className="acct-data">
@@ -190,10 +202,10 @@ export function AccountMenu({
                   <Row label="البريد" value={email} ltr />
                   {phone && <Row label="الهاتف" value={phone} ltr />}
                   {birth && <Row label="الميلاد" value={day(birth)} />}
-                  <Row label="عضو منذ" value={profile ? day(profile.createdAt) : '…'} />
+                  <Row label="عضو منذ" value={profile ? day(profile.createdAt) : loadErr ? '—' : '…'} />
                   <Row
                     label="الرصيد"
-                    value={shown === null || shown === undefined ? '…' : gamesLabel(shown)}
+                    value={shown === null || shown === undefined ? (loadErr ? '—' : '…') : gamesLabel(shown)}
                     strong
                   />
                 </dl>
@@ -218,7 +230,7 @@ export function AccountMenu({
                 <h3 className="acct-h3">
                   ألعابي{games && games.length > 0 ? ` · ${games.length}` : ''}
                 </h3>
-                {loadErr && <p className="acct-err">{loadErr}</p>}
+                {loadErr && games === null && <p className="acct-note">—</p>}
                 {!loadErr && games === null && <p className="acct-note">…</p>}
                 {!loadErr && games !== null && games.length === 0 && (
                   <p className="acct-note">لا ألعاب بعد — أوّل لعبة تظهر هنا.</p>
@@ -278,6 +290,13 @@ export function AccountMenu({
       )}
 
       <style>{`
+        .acct-load-err {
+          display:flex; align-items:center; justify-content:space-between; gap:12px;
+          padding:10px 12px; border-radius:14px; margin-bottom:4px;
+          background:rgba(220,64,51,.07); box-shadow:inset 0 0 0 1.5px rgba(220,64,51,.35);
+        }
+        .acct-load-err .acct-err { margin:0; }
+        .acct-load-err .acct-act { flex:none; min-height:40px; padding-inline:16px; background:var(--n-ink, #22201C); color:#fff; }
         /* الغطاء يُغلق بالضغط خارج الصفحة — المخرج نفسه الذي يتوقّعه الإبهام. */
         .acct-veil {
           position:fixed; inset:0; z-index:60;
