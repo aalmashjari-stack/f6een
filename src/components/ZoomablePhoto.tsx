@@ -19,9 +19,40 @@ import { createPortal } from 'react-dom'
  *
  * المؤقّت لا يتوقّف خلف الطبقة — مقصود: ساعة «الحق ما تلحق» لا تتوقّف أبداً
  * (SPEC §٦)، والتكبير ضغطةٌ تكلّف وقتاً كأيّ ضغطةٍ سواها.
+ *
+ * **والصورة التي لا تصل تُقال لا تُكسر** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة):
+ * الصور المرفوعة من اللوحة روابط بعيدة، وانقطاعٌ لحظيّ كان يترك أيقونةً مكسورة
+ * مكان السؤال نفسه في جلسةٍ مدفوعة — ولا تخطّي (SPEC §١). فتُعاد مرّةً وحدها
+ * بعد ثانية ونصف، ثمّ تحلّ محلّها بطاقةٌ بزرّ إعادةٍ يضغطه الحكم.
  */
+const RETRY_MS = 1500
+
+/** رابطٌ يتجاوز ذاكرة المتصفّح للمحاولة التالية — ورابط data: لا يُمسّ. */
+function retrySrc(src: string, attempt: number): string {
+  if (attempt === 0 || src.startsWith('data:')) return src
+  return src + (src.includes('?') ? '&' : '?') + 'r=' + attempt
+}
+
 export function ZoomablePhoto({ src, className }: { src: string; className: string }) {
   const [zoomed, setZoomed] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+  const [failed, setFailed] = useState(false)
+
+  /* سؤالٌ جديد يبدأ نظيفاً: المكوّن قد يبقى مركَّباً بين سؤالين. */
+  useEffect(() => {
+    setAttempt(0)
+    setFailed(false)
+  }, [src])
+
+  function onError() {
+    if (attempt === 0) window.setTimeout(() => setAttempt(1), RETRY_MS)
+    else setFailed(true)
+  }
+
+  function retry() {
+    setFailed(false)
+    setAttempt((a) => a + 1)
+  }
 
   // الهروب يغلق — الشاشة الكبيرة قد تكون موصولةً بلوحة مفاتيح لا بلمس
   useEffect(() => {
@@ -33,11 +64,36 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
 
   const open = () => setZoomed(true)
 
+  if (failed)
+    return (
+      <div className={className + ' photo-failed'} role="alert">
+        <span className="photo-failed-text">تعذّر تحميل الصورة</span>
+        <button type="button" className="photo-failed-retry" onClick={retry}>
+          أعد المحاولة
+        </button>
+        <style>{`
+          .photo-failed {
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            gap:clamp(8px,1.6dvh,16px); min-height:clamp(120px,30dvh,320px); width:min(100%,560px);
+            align-self:center; border-radius:18px; padding:16px;
+            background:var(--n-surface-2, #F6F5F2); border:2px dashed var(--n-ink-3, #8A8578);
+          }
+          .photo-failed-text { font-weight:800; font-size:clamp(16px,min(2.4vw,3.6dvh),28px); color:var(--n-ink, #22201C); }
+          .photo-failed-retry {
+            font:inherit; font-weight:800; cursor:pointer; border:0; border-radius:999px;
+            min-height:44px; padding:0 22px; font-size:clamp(15px,min(1.8vw,2.8dvh),20px);
+            background:var(--n-ink, #22201C); color:#fff;
+          }
+        `}</style>
+      </div>
+    )
+
   return (
     <>
       <img
         className={className + ' photo-tap'}
-        src={src}
+        src={retrySrc(src, attempt)}
+        onError={onError}
         alt=""
         role="button"
         tabIndex={0}
@@ -82,7 +138,7 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
             >
               ✕
             </button>
-            <img src={src} alt="" />
+            <img src={retrySrc(src, attempt)} alt="" />
             <span className="photo-zoom-hint">اضغط في أي مكان للإغلاق</span>
           </div>,
           document.body,

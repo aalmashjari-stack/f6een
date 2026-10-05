@@ -65,10 +65,10 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
       <div className="rv-card">
         {q.image ? (
-          <img className="rv-photo" src={celebSrc(q.image)} alt="" />
+          <img className="rv-photo" src={celebSrc(q.image)} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
         ) : charade ? (
           poster ? (
-            <img className="rv-photo rv-poster" src={poster} alt="" />
+            <img className="rv-photo rv-poster" src={poster} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
           ) : (
             <div className="rv-q">الكلمة كانت</div>
           )

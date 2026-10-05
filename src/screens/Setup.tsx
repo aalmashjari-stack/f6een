@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { SetupInput } from '../game/session'
-import { STAGE1_CATEGORIES } from '../game/session'
+import { STAGE1_CATEGORIES, readScoped, writeScoped } from '../game/session'
 import type { TeamId } from '../game/types'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
 import { categoryArt } from '../components/categoryArt'
@@ -29,6 +29,28 @@ const FALLBACK_TEAM = ['الفريق الأول', 'الفريق الثاني']
  * و`balance` قد تكون `null` — «لم يُقرأ» لا «صفر»، فلا تمنع البدء: القاعدة
  * هي التي تمنع، ومنعُ من رصيده سليم لأنّ الشبكة تأخّرت خطأٌ في الاتّجاه الأسوأ.
  */
+/* **آخر فرقٍ ولاعبين للحساب** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة): «لعبة
+   جديدة» كانت تُفرغ الإعداد، فإعادةُ المباراة مع الجماعة نفسها تعني كتابة
+   حتى أربعة عشر اسماً في اللحظة التي يريد فيها المجلس الجولة الثانية. تُحفظ
+   عند «ابدأ اللعبة» باسم الحساب (`writeScoped`)، والفئات لا تُحفظ — اختيارُها
+   من متعة الجولة. وما لا يُقرأ شكلُه يُطرح بصمت فيبدأ الإعداد فارغاً كما كان. */
+const LAST_TEAMS_KEY = 'f6een.lastTeams'
+
+function loadLastTeams(): { names: [string, string]; players: [string[], string[]] } | null {
+  try {
+    const raw = readScoped(LAST_TEAMS_KEY)
+    if (!raw) return null
+    const v = JSON.parse(raw) as { names?: unknown; players?: unknown }
+    const strs = (a: unknown, min: number, max: number): a is string[] =>
+      Array.isArray(a) && a.length >= min && a.length <= max && a.every((x) => typeof x === 'string')
+    if (!strs(v.names, 2, 2) || !Array.isArray(v.players) || v.players.length !== 2) return null
+    if (!v.players.every((t) => strs(t, 2, 6))) return null
+    return { names: v.names as [string, string], players: v.players as [string[], string[]] }
+  } catch {
+    return null
+  }
+}
+
 export function Setup({
   onStart,
   balance,
@@ -39,11 +61,14 @@ export function Setup({
   /** قائمة الرأس: شراء الألعاب · حسابي · تواصل معنا — تُفتح صفحاتها في App. */
   onNav?: (page: 'buy' | 'account' | 'rules' | 'contact') => void
 }) {
-  const [names, setNames] = useState<[string, string]>(['', ''])
-  const [players, setPlayers] = useState<[string[], string[]]>([
-    ['', ''],
-    ['', ''],
-  ])
+  const [last] = useState(loadLastTeams)
+  const [names, setNames] = useState<[string, string]>(last?.names ?? ['', ''])
+  const [players, setPlayers] = useState<[string[], string[]]>(
+    last?.players ?? [
+      ['', ''],
+      ['', ''],
+    ],
+  )
   const [starter, setStarter] = useState<TeamId | null>(null)
   /* فئات لوح الجولة الجماعية — ثلاث لكل فريق (SPEC ٤). */
   const [cats, setCats] = useState<string[]>([])
@@ -199,6 +224,13 @@ export function Setup({
     if (starter === null || !namesReady || !catsReady || busy || noBalance) return
     setErr(null)
     setBusy(true)
+    writeScoped(
+      LAST_TEAMS_KEY,
+      JSON.stringify({
+        names: [names[0].trim(), names[1].trim()],
+        players: [players[0].map((p) => p.trim()), players[1].map((p) => p.trim())],
+      }),
+    )
     try {
       await onStart({
         teamNames: [teamLabel(0), teamLabel(1)],
@@ -323,6 +355,22 @@ export function Setup({
               </div>
             </div>
           </div>
+          {/* مخرجُ الجماعة الجديدة من الأسماء المحفوظة: ضغطةٌ تُفرغ الحقول كلّها
+              بدل مسح أربعة عشر حقلاً واحداً واحداً. لا يظهر والحقول فارغة. */}
+          {(names.some((n) => n.trim()) || players.some((t) => t.some((p) => p.trim()))) && (
+            <button
+              className="names-reset"
+              onClick={() => {
+                setNames(['', ''])
+                setPlayers([
+                  ['', ''],
+                  ['', ''],
+                ])
+              }}
+            >
+              أسماء جديدة
+            </button>
+          )}
           <div className="teams-grid">
             {[0, 1].map((ti) => {
               const team = ti as TeamId
@@ -564,6 +612,11 @@ export function Setup({
       </div>
 
       <style>{`
+        .names-reset {
+          align-self:center; margin:-4px auto 2px; padding:6px 12px; border:0; background:none;
+          font:inherit; font-weight:700; font-size:15px; color:var(--n-ink-2, #57524A); cursor:pointer;
+          text-decoration:underline; text-underline-offset:4px;
+        }
         /* التمرير مسموح هنا وحدها (قرار علي ٢١ أغسطس ٢٠٢٦) — والمقاسات مع ذلك
            مضبوطة لتسع ٦+٦ لاعبين بلا تمرير في المقاسات الشائعة، فيبقى التمرير
            شبكة أمان لا الوضع الطبيعي. */
