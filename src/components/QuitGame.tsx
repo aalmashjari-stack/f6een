@@ -63,6 +63,20 @@ export function QuitGame({ onQuit, charged = false }: { onQuit: () => void; char
           display:flex; flex-direction:column; align-items:flex-start;
           gap:clamp(4px,.7dvh,7px);
         }
+        /* **والأزرار العريضة تحجز الزاوية** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق
+           التجربة): «ابدأ» في الفاصل و«ابدأ الآن» و✓/✗ في الحق ما تلحق تمتدّ
+           إلى الحافّة، فكان هذا الزرّ يركب على طرف ✓ (37×25 على الجوال
+           الأفقيّ) — وضغطةٌ هناك في أسرع لحظات اللعبة تسلّح «إنهاء» بدل
+           الإجابة. هامشٌ بعرض الزاوية على الجانبين لا على جانبه وحده كي يبقى
+           الزرّ متوسّطاً. والقاعدة هنا لا في الشاشات: تعيش ما عاش هذا الزرّ،
+           فلا تمسّ الإعداد ولا الختام. والهامش بعرض الحالة الثانية لا الأولى:
+           «تأكيد الإنهاء» ضعفُ «إنهاء»، وتراكبُه مع ✓ أخطر — ضغطةٌ هناك
+           تُنهي اللعبة. إزاحة الزاوية + عرض «تأكيد الإنهاء» + فجوة، مقيسةً
+           على 667 و844 و1180 و1440. */
+        html[data-skin] body .screen > .action:not(.compact),
+        html[data-skin] body .screen > .s3-verdicts {
+          margin-inline:calc(env(safe-area-inset-right) + clamp(80px, 11vw, 118px));
+        }
         .quit-game {
           font:inherit; font-weight:800; cursor:pointer;
           font-size:clamp(10px,1.3vw,14px);
