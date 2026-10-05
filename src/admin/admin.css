@@ -6,23 +6,33 @@
  *
  * والرموز من «البلوكات» نفسها (`src/skins/blocks.css`) كي لا تصير اللوحة
  * تطبيقاً آخر بصرياً — لوّحت بنفسجيّ نيو حتى ٣١ أغسطس ٢٠٢٦ ثم تبعت
- * الهويّة المعتمدة. والخطّ يبقى Cairo لا Baloo: جدولٌ كثيف بخانات 13px
- * يُقرأ بخطّ البيانات لا بخطّ المسرح.
+ * الهويّة المعتمدة. والخطّ يبقى Cairo لا Baloo في الجداول والحقول: جدولٌ
+ * كثيف بخانات 13px يُقرأ بخطّ البيانات لا بخطّ المسرح. أمّا العناوين
+ * والأزرار والألسنة فبخطّ الموقع (Baloo).
+ *
+ * ٥ أكتوبر ٢٠٢٦ (علي: «نفس ستايل الموقع و ليس بالالوان القديمة»): الأرضية
+ * الأبيض الرماديّ كما في الموقع منذ ٣٠ سبتمبر بدل القشدة، والصبغة الثانية
+ * محايدة لا كريميّة، والأزرار والألسنة كتلٌ بحلقة حبرٍ وظلٍّ صلب كأزرار
+ * الموقع لا حبوبٌ مسطّحة.
  */
 
 :root {
-  --n-bg: #FFF8EE;
+  --n-bg: #F6F5F2;
   --n-surface: #FFFFFF;
-  --n-surface-2: #FFF3E0;
+  --n-surface-2: #EFEDE8;
   --n-ink: #22201C;
   --n-ink-2: #57524A;
   --n-ink-3: #8A8578;
-  --n-line: #E8E0D0;
+  --n-line: #E4E0D8;
   --n-brand: #E8542F;
   --n-brand-tint: #FFE3D6;
   --n-bad: #CE2F1E;
   --n-good: #1D9E5F;
   --n-warn: #9A6B00;
+  --n-display: 'Baloo Bhaijaan 2', 'Cairo', system-ui, sans-serif;
+  /* سُلّم الارتفاع نفسه في blocks.css: حلقة حبر + ظلّ صلب مزاح */
+  --n-e1: 0 0 0 2px var(--n-ink), 3px 3px 0 var(--n-ink);
+  --n-e2: 0 0 0 2.5px var(--n-ink), 5px 6px 0 var(--n-ink);
 }
 
 * { box-sizing: border-box; }
@@ -51,8 +61,10 @@ body {
 .a-top {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; flex-wrap: wrap; margin-block-end: 16px;
+  /* كرأس الموقع (‎.welcome-bar‎): على الأرضية نفسها بخطٍّ رماديّ خفيف تحته */
+  padding-block-end: 12px; border-bottom: 1.5px solid rgba(34, 32, 28, .14);
 }
-.a-title { margin: 0; font-size: 20px; font-weight: 900; }
+.a-title { margin: 0; font-family: var(--n-display); font-size: 24px; font-weight: 800; }
 .a-title span { color: var(--n-brand); }
 .a-who { display: flex; align-items: center; gap: 10px; }
 .a-mail { font-size: 13px; font-weight: 700; color: var(--n-ink-3); direction: ltr; }
@@ -60,28 +72,30 @@ body {
 /* ── البطاقات ── */
 .a-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
 .a-tile {
-  background: var(--n-surface); border-radius: 12px; padding: 11px 13px;
-  /* حلقة حبرٍ رقيقة لا ظلّ رمادي — نسخة هادئة من كتل الهويّة تليق بلوحةٍ كثيفة */
-  box-shadow: 0 0 0 1.5px var(--n-ink), 2px 2px 0 var(--n-ink);
+  background: var(--n-surface); border-radius: 14px; padding: 11px 13px;
+  /* حلقة حبرٍ وظلٌّ صلب — كتل الموقع نفسها */
+  box-shadow: var(--n-e1);
 }
 .a-tile b { display: block; font-size: 20px; font-weight: 900; color: var(--n-brand);
   font-variant-numeric: tabular-nums; }
-.a-tile span { font-size: 12px; font-weight: 700; color: var(--n-ink-3); }
+.a-tile span { font-size: 12px; font-weight: 700; color: var(--n-ink-2); }
 
 /* ── الألسنة ── */
 .a-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 10px; }
 .a-tab {
-  font: inherit; font-weight: 800; font-size: 13px; cursor: pointer;
-  padding: 8px 14px; border: 0; border-radius: 999px;
-  background: var(--n-surface); color: var(--n-ink-2);
+  font: inherit; font-family: var(--n-display); font-weight: 800; font-size: 14px; cursor: pointer;
+  padding: 7px 15px; border: 0; border-radius: 999px;
+  background: var(--n-surface); color: var(--n-ink);
+  box-shadow: 0 0 0 2px var(--n-ink);
 }
-.a-tab.on { background: var(--n-brand); color: #fff; }
+.a-tab:hover { background: var(--n-surface-2); }
+.a-tab.on { background: var(--n-brand); color: #fff; box-shadow: var(--n-e1); }
 
 /* ── الجدول ──
    الغلاف وحده يتمرّر أفقياً: الصفحة نفسها لا تنزلق تحت الإصبع، وأعمدة
    الحسابات تسعة لا تدخل في جوال. */
-.a-card { background: var(--n-surface); border-radius: 14px; overflow: hidden;
-  box-shadow: 0 0 0 1.5px var(--n-ink), 3px 3px 0 var(--n-ink); }
+.a-card { background: var(--n-surface); border-radius: 18px; overflow: hidden;
+  box-shadow: var(--n-e1); }
 .a-scroll { overflow-x: auto; }
 /* ‎min-width:max-content‎ هو ما يجعل ‎.a-scroll‎ يتمرّر فعلاً: بـ‎width:100%‎
    وحدها يسحق تخطيطُ الجداول آخرَ عمودٍ حين يضيق العرض بدل أن يتمدّد
@@ -137,31 +151,39 @@ table.a-tbl { width: 100%; min-width: max-content; border-collapse: collapse; wh
 /* ── الحقول والأزرار ── */
 .a-in, .a-num {
   font: inherit; font-weight: 700; font-size: 13px;
-  padding: 8px 11px; border-radius: 9px;
-  border: 1px solid var(--n-line); background: var(--n-surface-2); color: var(--n-ink);
+  padding: 8px 11px; border-radius: 12px;
+  border: 1.5px solid rgba(34, 32, 28, .28); background: var(--n-surface); color: var(--n-ink);
 }
 .a-num { width: 72px; text-align: center; font-variant-numeric: tabular-nums; }
 /* قائمةٌ داخل خليّة جدول — أضيق وأخفّ من حقل النموذج. */
 .a-in.slim { padding: 5px 8px; font-size: 12px; max-width: 150px; }
-.a-in:focus, .a-num:focus { outline: none; border-color: var(--n-brand); background: #fff; }
+.a-in:focus, .a-num:focus { outline: none; border-color: var(--n-brand);
+  box-shadow: 0 0 0 3px var(--n-brand-tint); }
+/* زرّ الموقع: حبّةٌ بيضاء بحلقة حبر، والأساسيّ برتقاليٌّ بظلٍّ صلب.
+   الحلقة ظلٌّ لا border فلا تغيّر قياس الأزرار داخل الجداول. */
 .a-btn {
-  font: inherit; font-weight: 800; font-size: 13px; cursor: pointer;
-  padding: 8px 13px; border: 0; border-radius: 9px;
-  background: var(--n-surface-2); color: var(--n-ink);
+  font: inherit; font-family: var(--n-display); font-weight: 800; font-size: 13px; cursor: pointer;
+  padding: 7px 14px; border: 0; border-radius: 999px;
+  background: var(--n-surface); color: var(--n-ink);
+  box-shadow: 0 0 0 1.5px var(--n-ink);
 }
+.a-btn:hover:not(:disabled) { background: var(--n-surface-2); }
+.a-btn:active:not(:disabled) { transform: translateY(1px); }
 /* الزرّ قد يكون رابطاً (العودة للرئيسية): الرابط سطريٌّ افتراضاً بحشوةٍ
    لا تُحترم رأسياً، ومسطَّرٌ بلونٍ موروث — فتُلغى الثلاثة ويُوسَّط نصُّه. */
 a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
-.a-btn.go { background: var(--n-brand); color: #fff; }
+.a-btn.go { background: var(--n-brand); color: #fff;
+  box-shadow: 0 0 0 1.5px var(--n-ink), 2px 3px 0 var(--n-ink); }
+.a-btn.go:hover:not(:disabled) { background: #D44A27; }
 .a-btn.danger { color: var(--n-bad); }
-.a-btn:disabled { opacity: .45; cursor: default; }
+.a-btn:disabled { opacity: .45; cursor: default; box-shadow: 0 0 0 1.5px var(--n-ink-3); }
 
 .a-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-block-end: 10px; }
 /* «حدّد الكل» في شريط المسوّدات: مربّعٌ ونصّه صنوان يُضغطان معاً. */
 .a-bar .pick-all { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .a-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: end;
-  padding: 12px; background: var(--n-surface); border-radius: 14px; margin-block-end: 10px;
-  box-shadow: 0 0 0 1.5px var(--n-ink), 2px 2px 0 var(--n-ink); }
+  padding: 12px; background: var(--n-surface); border-radius: 18px; margin-block-end: 10px;
+  box-shadow: var(--n-e1); }
 .a-field { display: flex; flex-direction: column; gap: 4px; }
 .a-field label { font-size: 11px; font-weight: 800; color: var(--n-ink-3); }
 
@@ -175,10 +197,12 @@ a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
 }
 .a-gate-card {
   width: min(360px, 100%); display: flex; flex-direction: column; gap: 10px;
-  background: var(--n-surface); padding: 20px; border-radius: 16px;
-  box-shadow: 0 22px 50px rgba(0,0,0,.10);
+  background: var(--n-surface); padding: 22px; border-radius: 20px;
+  box-shadow: var(--n-e2);
 }
-.a-gate-card h1 { margin: 0 0 4px; font-size: 18px; font-weight: 900; }
+.a-gate-card h1 { margin: 0 0 4px; font-family: var(--n-display); font-size: 22px; font-weight: 800;
+  color: var(--n-brand); text-align: center; }
+.a-gate-card .a-btn { padding-block: 10px; justify-content: center; }
 
 /* ── النوافذ (نموذج السؤال ورفع الملفّ) ──
    هنا لا داخل مكوّنٍ منها: كانت مكتوبة في نموذج السؤال وحده، فنافذة الرفع
@@ -189,14 +213,14 @@ a.a-btn { display: inline-flex; align-items: center; text-decoration: none; }
   display: flex; align-items: center; justify-content: center;
   padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
     max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-  background: rgba(10, 8, 20, .5);
+  background: rgba(34, 32, 28, .5);
 }
 .q-box {
   display: flex; flex-direction: column; gap: 10px;
   width: min(680px, 100%); max-height: min(88dvh, 760px); overflow: auto;
-  padding: 16px; border-radius: 16px;
+  padding: 16px; border-radius: 20px;
   background: var(--n-surface); color: var(--n-ink);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .28);
+  box-shadow: var(--n-e2);
 }
 .q-box textarea.a-in { font: inherit; font-size: 14px; line-height: 1.7; resize: vertical; }
 /* الحقول الطويلة (السؤال والإجابة) تملأ العرض، والثلاثة القصيرة تتقاسم
@@ -325,7 +349,7 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .ins.busy { opacity: .6; transition: opacity .15s; }
 .ins-toggle { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; cursor: pointer; }
 .ins-sec { padding: 14px 16px; overflow: visible; }
-.ins-h3 { margin: 0 0 4px; font-size: 16px; font-weight: 900; }
+.ins-h3 { margin: 0 0 4px; font-family: var(--n-display); font-size: 17px; font-weight: 800; }
 .ins-h4 { margin: 12px 0 6px; font-size: 13px; font-weight: 800; color: var(--n-ink-2); }
 .ins-sub { margin: 0 0 10px; font-size: 12px; font-weight: 700; color: var(--n-ink-3); }
 .ins-sec .a-tiles { margin-top: 6px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
@@ -376,7 +400,8 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 
 /* ─── نبذة (i) للفئة — لوحٌ تحت صفّها (٢٤ سبتمبر ٢٠٢٦) ─── */
 .a-btn.on { background: var(--n-ink); color: #fff; }
-.info-row > td { background: var(--n-bg, #FFF8EE); }
+.a-btn.on:hover:not(:disabled) { background: var(--n-ink-2); }
+.info-row > td { background: var(--n-bg); }
 .info-ed { display: grid; gap: 10px; padding: 8px 4px; max-width: 760px; }
 .info-ed label { display: grid; gap: 4px; }
 .info-ed label > span { font-weight: 800; font-size: 12px; color: var(--n-ink-2, #57524A); }
