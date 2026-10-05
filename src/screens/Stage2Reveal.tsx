@@ -36,7 +36,7 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
 
       {q.image ? (
-        <img className="reveal-photo" src={celebSrc(q.image)} alt="" />
+        <img className="reveal-photo" src={celebSrc(q.image)} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
       ) : (
         <div className={'reveal-q center fade' + questionSizeSuffix(q.question)}>{q.question}</div>
       )}

@@ -104,6 +104,19 @@ export function AccountMenu({
     }
   }, [open, onBalance])
 
+  /* **التسليح لا يعيش بعد لحظته** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة):
+     كانت الضغطة الأولى على «حذف الحساب» تبقى بعد الإغلاق — المكوّن مركَّبٌ
+     ما دام الإعداد — فمن عاد إلى «حسابي» بعد دقائق وجد الحذف النهائيّ على
+     بُعد ضغطة. يُصفَّر عند الإغلاق، وينطفئ وحده بعد خمس ثوانٍ كـ«إنهاء». */
+  useEffect(() => {
+    if (!open) setConfirming(false)
+  }, [open])
+  useEffect(() => {
+    if (!confirming) return
+    const t = setTimeout(() => setConfirming(false), 5000)
+    return () => clearTimeout(t)
+  }, [confirming])
+
   /* Escape يغلق: الصفحة تغطّي الشاشة، والمخرج يجب أن يكون بيد الحكم دائماً. */
   useEffect(() => {
     if (!open) return

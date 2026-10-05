@@ -623,7 +623,7 @@ export default function App() {
   return (
     <>
       {/* شاشةُ اللعب تحت شبكة أمان: خطأٌ في الرسم يُعرض بزرّين بدل جذرٍ فارغ. */}
-      <CrashScreen onNewGame={quit}>{screen}</CrashScreen>
+      <CrashScreen onNewGame={quit} charged={sessionId !== null}>{screen}</CrashScreen>
       {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
       {state.phase !== 'endgame' && <QuitGame onQuit={quit} charged={sessionId !== null} />}
     </>

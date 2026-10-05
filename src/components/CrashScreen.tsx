@@ -10,12 +10,22 @@ import { Component, type ErrorInfo, type ReactNode } from 'react'
  * الشاشة لا تقرّر عن اللاعب: «حاول مجدّداً» تعيد التحميل واللقطة كما هي،
  * و«ابدأ لعبة جديدة» تُنهي الجلسة كانسحاب. سياسةُ التعويض عن الانهيار في
  * SPEC ٩ (كود الهدية) لا تتغيّر هنا.
+ *
+ * **والإنهاء بضغطتين كـ«إنهاء»** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة): البطاقة
+ * تطمئن «محفوظة» ثمّ كان زرّها الثاني يرمي اللعبة المدفوعة بضغطة بلا كلمة عن
+ * الثمن. الأولى تكشف «اللعبة مخصومة ولا تُعاد»، والثانية تُنهي، وتنطفئ وحدها
+ * بعد أربع ثوانٍ. النصوص نصوص `QuitGame` نفسها.
  */
 export class CrashScreen extends Component<
-  { onNewGame: () => void; children: ReactNode },
-  { error: Error | null }
+  { onNewGame: () => void; charged?: boolean; children: ReactNode },
+  { error: Error | null; asking: boolean }
 > {
-  state = { error: null as Error | null }
+  state = { error: null as Error | null, asking: false }
+  private disarm: number | undefined
+
+  componentWillUnmount() {
+    window.clearTimeout(this.disarm)
+  }
 
   static getDerivedStateFromError(error: Error) {
     return { error }
@@ -40,14 +50,24 @@ export class CrashScreen extends Component<
               <button className="action coral" onClick={() => window.location.reload()}>
                 حاول مجدّداً
               </button>
+              {this.state.asking && this.props.charged && (
+                <p className="crash-warn">اللعبة مخصومة ولا تُعاد</p>
+              )}
               <button
-                className="action ghost"
+                className={'action ghost' + (this.state.asking ? ' asking' : '')}
                 onClick={() => {
-                  this.setState({ error: null })
+                  if (!this.state.asking) {
+                    this.setState({ asking: true })
+                    window.clearTimeout(this.disarm)
+                    this.disarm = window.setTimeout(() => this.setState({ asking: false }), 4000)
+                    return
+                  }
+                  window.clearTimeout(this.disarm)
+                  this.setState({ error: null, asking: false })
                   this.props.onNewGame()
                 }}
               >
-                ابدأ لعبة جديدة
+                {this.state.asking ? 'تأكيد الإنهاء' : 'ابدأ لعبة جديدة'}
               </button>
             </div>
           </div>
@@ -57,6 +77,8 @@ export class CrashScreen extends Component<
           .crash-title { font-size: clamp(28px, 5vw, 44px); font-weight: 800; }
           .crash-text { font-size: clamp(16px, 2.4vw, 22px); margin: 0; opacity: .85; }
           .crash-actions { display: grid; gap: 12px; }
+          .crash-warn { margin: 0; font-weight: 800; color: var(--n-bad, #DC4033); font-size: clamp(14px, 2vw, 18px); }
+          html[data-skin] .crash .action.ghost.asking { background: #fff; color: var(--n-bad, #DC4033); box-shadow: inset 0 0 0 3px var(--n-bad, #DC4033); }
         `}</style>
       </div>
     )
