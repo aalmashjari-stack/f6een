@@ -47,6 +47,23 @@ export const AUTH_CSS = `
     position:absolute; inset-inline-start:clamp(10px,1.6vw,14px); top:50%; transform:translateY(-50%);
     pointer-events:none; color:var(--n-ink-3,#948CA8); font-weight:700; font-size:clamp(13px,1.7vw,16px);
   }
+  /* أيقونة التقويم تقف حيث يبدأ العنوان فتركبه — في كروم الحاسوب وأندرويد
+     وفايرفوكس. سفاري iOS وحده لا يرسمها، فيعود العنوان إلى حافّته هناك
+     (\`-webkit-touch-callout\` لا يدعمه غيره). */
+  .su-date-ph { inset-inline-start:calc(clamp(10px,1.6vw,14px) + 28px); }
+  @supports (-webkit-touch-callout: none) {
+    .su-date-ph { inset-inline-start:clamp(10px,1.6vw,14px); }
+  }
+  /* زرّ الإظهار داخل الحقل في طرفه — والحقل ltr فحشوتُه اليسرى صريحة. */
+  .su-pass { position:relative; }
+  .su-pass .su-in { padding-left:72px; }
+  .su-pass-eye {
+    position:absolute; left:6px; top:50%; transform:translateY(-50%);
+    min-height:36px; padding:0 12px; border:0; border-radius:var(--n-r2,14px); cursor:pointer;
+    font:inherit; font-weight:800; font-size:clamp(12px,1.5vw,14px);
+    background:transparent; color:var(--n-ink-2,#57524A);
+  }
+  .su-pass-eye:hover { background:rgba(34,32,28,.06); }
   .su-in:focus { outline:none; border-color:var(--n-brand,#7A3E9D); background:#fff; }
   .su-terms { display:flex; align-items:flex-start; gap:8px;
               font-size:clamp(12px,1.5vw,14px); color:var(--n-ink-2,#5D5670); font-weight:700; }
