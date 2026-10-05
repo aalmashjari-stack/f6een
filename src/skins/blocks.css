@@ -676,3 +676,18 @@ html[data-skin='blocks'] body .screen .pick-none {
 html[data-skin='blocks'] body .screen .toss-result.missing.alert { color: var(--n-accent); }
 
 html[data-skin='blocks'] body .screen .cats-lead { color: var(--n-accent); }
+
+/* **نصوص المجلس الصغيرة أكبر قليلاً** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق التجربة:
+   «كبّرها شوي دون المساس بباقي العناصر»). «صاحب الدور» و«الفريق الثاني» فوق
+   اسم الفريق كانا 11px على الشاشة الكبيرة و9 على الجوال، ومستويات اللوح
+   «سهل · متوسط · صعب · تعجيزي» بين 9 و14 — وهي ما يحتاجه المجلس كلّه في كلّ
+   سؤال. نحو الثلث أكبر، والحاوياتُ بارتفاعها: البطاقة والخليّة فيهما متّسعٌ
+   يحمله النصّ الأكبر (قِيس من 667×375 إلى 1920×1080: لا بكسل تغيّر في
+   ارتفاع بطاقة الفريق ولا الخليّة). والوزن عالٍ و!important لأنّ قاعدة
+   الخطّ في neo.css وshowtime.css كلتيهما !important. */
+html[data-skin] body .screen .scorebar .team .team-kicker {
+  font-size: clamp(11px, 1.25vw, 14px) !important;
+}
+html[data-skin] body .screen .bcell .bc-level {
+  font-size: clamp(11px, min(1.3vw, 2.3dvh), 17px);
+}
