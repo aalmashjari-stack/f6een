@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '../fonts/cairo.css'
+import '../fonts/baloo.css'
 import './admin.css'
 import AdminApp from './AdminApp'
 import { setRequestTimeout } from '../lib/supabase'
