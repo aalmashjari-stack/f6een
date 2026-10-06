@@ -316,9 +316,11 @@ export function ContactPanel({ onClose, email }: { onClose: () => void; email?: 
       setErr(
         m.includes('too_many_messages')
           ? 'وصلتنا رسائلك — أمهلنا ساعةً قبل رسالةٍ أخرى'
-          : m.includes('not_authenticated')
-            ? 'سجّل دخولك أولاً لتصلنا رسالتك'
-            : 'تعذّر الإرسال، تحقّق من اتصالك',
+          : m.includes('invalid_email')
+            ? 'البريد غير صالح'
+            : m.includes('not_authenticated')
+              ? 'سجّل دخولك أولاً لتصلنا رسالتك'
+              : 'تعذّر الإرسال، تحقّق من اتصالك',
       )
       setBusy(false)
     }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import { STAGES } from '../game/stages'
-import { authErrorText, signInWithGoogle } from '../lib/auth'
+import { authErrorText, knownAuthErrorText, signInWithGoogle } from '../lib/auth'
 import { SignUp } from './SignUp'
 import { ExplainerInline } from '../components/ExplainerVideo'
 import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
@@ -47,16 +47,10 @@ export function Intro({ onDone }: { onDone?: () => void }) {
     const h = new URLSearchParams(window.location.hash.replace(/^#/, ''))
     const code = q.get('error') ?? h.get('error')
     if (!code) return null
-    const why = q.get('error_description') ?? h.get('error_description')
-    if (!why) return code
-    /* `URLSearchParams` فكّ الترميز أصلاً؛ فكٌّ ثانٍ يلتقط ما بقي مرمَّزاً
-       مرّتين، ويرمي على `%` عاريةٍ في نصٍّ فُكّ فعلاً — ورميةٌ هنا داخل
-       مُهيّئ الحالة تُسقط شاشة التعريف كلّها. */
-    try {
-      return decodeURIComponent(why.replace(/\+/g, ' '))
-    } catch {
-      return why
-    }
+    const why = q.get('error_description') ?? h.get('error_description') ?? ''
+    /* النصُّ من العنوان لا يُعرض كما هو — يكتبه من يصنع الرابط؛ يُطابَق
+       بالمعروف وإلّا فالاحتياطيّ. */
+    return knownAuthErrorText(code, why.replace(/\+/g, ' '), 'تعذّر فتح دخول غوغل')
   })
 
   async function google() {

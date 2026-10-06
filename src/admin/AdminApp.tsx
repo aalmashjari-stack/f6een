@@ -2791,7 +2791,7 @@ function Messages() {
                     {m.status !== 'done' && (
                       <button className="a-btn go" onClick={() => mark(m, 'done')}>منتهية</button>
                     )}
-                    <a className="a-btn" href={`mailto:${m.email}`}>ردّ</a>
+                    <a className="a-btn" href={`mailto:${encodeURIComponent(m.email)}`}>ردّ</a>
                   </div>
                 </td>
               </tr>

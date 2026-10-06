@@ -266,6 +266,15 @@ export function authErrorText(e: unknown, fallback: string): string {
         ? String((e as { message?: unknown }).message ?? '')
         : ''
   if (/[؀-ۿ]/.test(message)) return message
+  return knownAuthErrorText(code, message, fallback)
+}
+
+/**
+ * المعروفُ يُترجَم وما سواه احتياطيّ — **بلا تمرير العربيّ**. لخطأٍ يأتي في
+ * عنوان الصفحة (`?error_description=`): العنوانُ يكتبه من يصنع الرابط، فلو
+ * مرّ نصُّه لعرض أيُّ أحدٍ جملته على f6een.com نفسه (تصيّد بنطاقنا).
+ */
+export function knownAuthErrorText(code: string, message: string, fallback: string): string {
   for (const [re, text] of AUTH_ERRORS) if (re.test(code) || re.test(message)) return text
   return fallback
 }
