@@ -79,6 +79,36 @@ function parseRange(header, size) {
  * (`/%E0%A4`)، فيُمسك هنا ويُردّ المسارُ باطلاً بدل أن يصعد الخطأ رفضاً
  * غير مُمسَك يُسقط العمليّة كلّها — طلبٌ واحد مشوَّه كان يطفئ الخادم.
  */
+function safeDecode(urlPath) {
+  try {
+    return decodeURIComponent(urlPath)
+  } catch {
+    return urlPath
+  }
+}
+
+/**
+ * رؤوسُ الأمان على كلّ ردّ.
+ *
+ * - `frame-ancestors 'none'` و`X-Frame-Options`: لا يُضمَّن الموقع في إطار
+ *   موقعٍ آخر — اللوحة تعمل بجلسة المدير المحفوظة، فإطارٌ شفّاف فوقها يسرق
+ *   نقرةً على «حذف» أو «رصيد» (clickjacking).
+ * - `object-src`/`base-uri`/`form-action`: لا إضافات، ولا `<base>` يحرّف
+ *   الروابط النسبيّة، ولا نموذج يُرسَل إلى غير الموقع.
+ * - HSTS: بعد أوّل زيارة لا يُفتح الموقع بـhttp ولو على شبكةٍ معادية.
+ *   بلا includeSubDomains — لا نعرف كلَّ نطاقٍ فرعيّ عند المسجِّل.
+ * - لا كاميرا ولا ميكروفون ولا موقع: اللعبة لا تطلبها، فلا يطلبها شيءٌ باسمها.
+ *   وقفلُ الشاشة (Wake Lock) يبقى مسموحاً — «إبقاء الشاشة مستيقظة» يحتاجه.
+ */
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Content-Security-Policy': "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'",
+  'Strict-Transport-Security': 'max-age=31536000',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+}
+
 function safeJoin(urlPath) {
   let decoded
   try {
@@ -106,6 +136,13 @@ async function handle(req, res) {
     return
   }
   const urlPath = (req.url ?? '/').split('?')[0]
+  /* مقطعٌ يبدأ بنقطة (`/.env`، `/.git/config`) لا يُخدَم ولا يرتدّ إلى
+     الصفحة: لا شيء منها في `dist`، وردُّ 200 عليها يُقرأ في الفاحصات
+     الأمنيّة تسريباً، ويخفي يوماً ملفّاً نُسخ إلى `dist` بالخطأ. */
+  if (/(^|\/)\./.test(urlPath) || /(^|\/)\./.test(safeDecode(urlPath))) {
+    res.writeHead(404, { ...SECURITY_HEADERS, 'Content-Type': 'text/plain; charset=utf-8' }).end('غير موجود')
+    return
+  }
   const target = safeJoin(urlPath === '/' ? '/index.html' : urlPath)
   if (!target) {
     res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' }).end('bad path')
@@ -134,15 +171,15 @@ async function handle(req, res) {
   }
 
   if (!body) {
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('غير موجود')
+    res.writeHead(404, { ...SECURITY_HEADERS, 'Content-Type': 'text/plain; charset=utf-8' }).end('غير موجود')
     return
   }
 
   const headers = {
+    ...SECURITY_HEADERS,
     'Content-Type': TYPES[extname(path).toLowerCase()] ?? 'application/octet-stream',
     'Cache-Control': cacheFor(urlPath),
     'Accept-Ranges': 'bytes',
-    'X-Content-Type-Options': 'nosniff',
   }
   const total = body.length
   const range = parseRange(req.headers.range, total)
