@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { authErrorText, requestPasswordReset, resendConfirmation, signInWithEmail, signUpWithEmail } from '../lib/auth'
+import { authErrorText, MIN_PASSWORD, requestPasswordReset, resendConfirmation, signInWithEmail, signUpWithEmail } from '../lib/auth'
 import { AUTH_CSS } from './authStyles'
 
 /* رموز الاتصال — الخليج أوّلاً ثم الأكثر وروداً. الكويت الافتراضيّة. */
@@ -15,8 +15,6 @@ const DIAL_CODES = [
   { code: '+961', name: 'لبنان' },
   { code: '+964', name: 'العراق' },
 ] as const
-
-const MIN_PASSWORD = 8
 
 /** العمر بالسنوات — بالتاريخ الكامل لا بطرح السنة، وإلا أخطأ بسنة قبل الميلاد. */
 function ageFrom(birth: string): number | null {

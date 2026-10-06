@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { setNewPassword } from '../lib/auth'
+import { MIN_PASSWORD, setNewPassword } from '../lib/auth'
 import { AUTH_CSS } from './authStyles'
-
-const MIN_PASSWORD = 8
 
 /**
  * تعيين كلمة سرّ جديدة بعد فتح رابط الاستعادة.
