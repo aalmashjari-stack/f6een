@@ -53,3 +53,6 @@ outputs/
 
 # ملفّات عمل Supabase CLI المؤقّتة — لا تُتابَع.
 supabase/.temp/
+
+# نسخ القاعدة الاحتياطيّة (npm run db:backup) — فيها رسائلُ اللاعبين وبريدهم.
+backups/

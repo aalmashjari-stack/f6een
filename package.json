@@ -15,6 +15,7 @@
     "db:status": "node scripts/db.mjs status",
     "db:push": "node scripts/db.mjs push",
     "db:adopt": "node scripts/db.mjs adopt",
+    "db:backup": "node scripts/backup.mjs",
     "test:watch": "vitest",
     "sync": "npm run build && cap sync && npm run clean:dupes",
     "ios": "npm run build && cap sync ios && npm run clean:dupes && cap open ios",
