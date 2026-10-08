@@ -16,6 +16,10 @@ import { useEffect, useRef, useState } from 'react'
  * **من استبدله غيّر اسمه** — Cloudflare يُبقي القديم يوماً باسمه.
  */
 const SRC = '/explainer-v4.mp4'
+/** غلاف الموقع: عائلةٌ أمام الشاشة — مقصوصةٌ 16:9 من رسمة المجلس في جذر المستودع
+ *  (DESIGN.md §8 و§12.5، ٨ أكتوبر ٢٠٢٦). كان أسودَ بقرار ٣٠ سبتمبر؛ والرجوع
+ *  إليه حذفُ ‎background‎ من ‎.xi-poster‎. */
+const POSTER = '/explainer-poster.jpg'
 
 /** إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً. */
 const FRAME_CSS = `
@@ -119,7 +123,10 @@ export function ExplainerInline() {
         }
         .xi-tv .xv-frame { border-radius:var(--n-r1); box-shadow:none; }
         ${FRAME_CSS}
-        .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
+        .xi-poster {
+          all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer;
+          background:#000 url('${POSTER}') center / cover no-repeat;
+        }
         /* زرّ التشغيل بلغة الكتل: دائرةٌ بلون العلامة بحدّ حبرٍ وظلٍّ صلب */
         .xi-play {
           position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
