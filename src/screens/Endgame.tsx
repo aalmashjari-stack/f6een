@@ -345,13 +345,13 @@ export function Endgame({
         .es-chips { display:flex; gap:5px; flex-wrap:nowrap; justify-content:flex-end; }
         .chip {
           display:inline-flex; align-items:center; gap:4px;
-          border:1px solid var(--n-line); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
+          border:0; box-shadow:0 0 0 2px var(--n-ink); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
           color:var(--n-ink-2); font-size:clamp(9px,min(1.2vw,1.4dvh),15px); font-weight:700; white-space:nowrap;
           line-height:1.4;
         }
         .chip .tabular { font-size:1.15em; font-weight:800; }
-        .chip.ok { color:var(--n-ink); border-color:rgba(255,189,89,.45); }
-        .chip.no { color:var(--n-bad); border-color:rgba(228,103,74,.45); }
+        .chip.ok { color:var(--n-ink); background:var(--n-good-tint); }
+        .chip.no { color:var(--n-ink); background:var(--n-bad-tint); }
         .foot { display:flex; align-items:center; gap:10px; color:var(--n-ink-3); font-size:13px; }
         .foot-link { background:none; border:none; color:var(--n-ink-2); font-family:inherit; font-size:13px; cursor:pointer; text-decoration:underline; }
         .report-note { max-width:560px; color:var(--n-ink-2); font-size:13px; line-height:1.6; background:var(--n-surface); border:1px solid var(--n-line); border-radius:var(--n-r2); padding:12px 16px; }
@@ -442,7 +442,7 @@ function ReportPanel({
           width:min(760px, 100%); max-height:min(84dvh, 720px);
           padding:16px; overflow:hidden;
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
-          border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.28);
+          border-radius:var(--n-r3); box-shadow:var(--n-e3);
           text-align:start;
         }
         .rp-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
@@ -459,7 +459,7 @@ function ReportPanel({
         }
         .rp-row {
           display:flex; align-items:center; justify-content:space-between; gap:12px;
-          padding:9px 11px; border-radius:10px; background:var(--n-surface-2, #F8F7FC);
+          padding:9px 11px; border-radius:var(--n-r1); background:var(--n-surface-2, #F8F7FC);
         }
         .rp-q { font-size:14px; font-weight:700; line-height:1.5; color:var(--n-ink, #1A1626); }
         .rp-cat {

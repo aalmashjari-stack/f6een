@@ -128,7 +128,17 @@ html[data-skin='blocks'] .scorebar .pts-adj button {
   color: var(--n-ink);
   background: #fff;
   border: 0;
+  border-radius: var(--n-r1);
   box-shadow: inset 0 0 0 2px var(--n-ink);
+}
+/* زرّا ±10 يكبران نحو 44px وبينهما 8px (التدقيق M6) — على الشاشة الكبيرة،
+   ويبقيان 28 تحت 480px ارتفاعاً حيث الشريط كلّه 46. */
+html[data-skin='blocks'] .scorebar .pts-adj { gap: 8px; }
+@media (min-height: 481px) {
+  html[data-skin='blocks'] .scorebar .pts-adj button {
+    width: clamp(30px, 4.4dvh, 44px);
+    height: clamp(30px, 4.4dvh, 44px);
+  }
 }
 
 /* القرص أبيض بحدّ حبر، والرقم حبرٌ — كما في المعاينة المعتمدة */
@@ -186,36 +196,39 @@ html[data-skin='blocks'] .rd-chip:nth-child(even) {
 html[data-skin='blocks'] .rd-chip.turn { background: var(--n-ink); color: #fff; }
 
 /* ─── ٥. الأزرار ─────────────────────────────────────────────────────── */
-/* زرّ الحكم كتلة حبرٍ بظلّ باهت (ظلُّ الحبر على حبرٍ لا يُرى، فيُصبغ
-   بشفافيته) — والضغط يدفع الكتلة في ظلّها: إزاحةٌ لا انكماش. */
+/* الزرّ الرئيسيّ بصوت الهويّة البرتقاليّ (DESIGN.md §2.5) بحلقة حبرٍ وظلٍّ
+   صلب من السُّلّم — كان كتلة حبرٍ بظلٍّ شفيف خارج الدرجات (‎4px 5px‎ بشفافية
+   ‎.22‎). والضغط يدفع الكتلة في ظلّها: إزاحةٌ بقدر الظلّ وتبقى الحلقة وحدها. */
 html[data-skin='blocks'] .action {
   border-radius: var(--n-r2);
-  background: var(--n-ink);
+  background: var(--n-brand);
   color: #fff;
-  box-shadow: 4px 5px 0 rgba(34,32,28,.22);
+  box-shadow: var(--n-e2);
   font-weight: 800;
 }
 html[data-skin='blocks'] .action:hover:not(:disabled) {
-  background: #2E2B26;
-  transform: translateY(-2px);
-  box-shadow: 5px 7px 0 rgba(34,32,28,.25);
+  background: var(--n-brand);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--n-e2);
 }
 html[data-skin='blocks'] .action:active:not(:disabled) {
-  transform: translate(2px, 3px);
-  box-shadow: 1px 1px 0 rgba(34,32,28,.22);
+  transform: translate(5px, 6px);
+  box-shadow: 0 0 0 2.5px var(--n-ink);
 }
 html[data-skin='blocks'] .action:disabled {
   background: var(--spent);
   color: var(--spent-text);
-  box-shadow: none;
+  box-shadow: 0 0 0 2px var(--spent-text);
 }
 html[data-skin='blocks'] .action.ghost {
   background: var(--n-surface);
   color: var(--n-ink);
   box-shadow: var(--n-e1);
 }
-html[data-skin='blocks'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); }
-html[data-skin='blocks'] .action.coral { background: var(--n-bad); box-shadow: 4px 5px 0 rgba(34,32,28,.3); }
+html[data-skin='blocks'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); box-shadow: var(--n-e1); }
+html[data-skin='blocks'] .action.ghost:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0 0 0 2px var(--n-ink); }
+html[data-skin='blocks'] .action.coral,
+html[data-skin='blocks'] .action.coral:hover:not(:disabled) { background: var(--n-bad); box-shadow: var(--n-e2); }
 
 /* ─── ٥ب. رأس الإعداد: شريطٌ بقائمة، بلا بانر ────────────────────────── */
 /* الرأس تذكرةٌ تُرسم في Setup.tsx (١٧ سبتمبر ٢٠٢٦، لكلّ المقاسات) — كان
@@ -344,13 +357,13 @@ html[data-skin='blocks'] body .screen .cat {
 }
 html[data-skin='blocks'] body .screen .cat.spent {
   background: var(--n-bg);
-  box-shadow: 0 0 0 2px rgba(34,32,28,.18);
+  box-shadow: 0 0 0 2px var(--spent-text);
 }
 html[data-skin='blocks'] body .screen .cat.cursor {
-  box-shadow: 0 0 0 3px var(--n-brand), 5px 6px 0 var(--n-brand);
+  box-shadow: 0 0 0 2.5px var(--n-brand), 5px 6px 0 var(--n-brand);
 }
 html[data-skin='blocks'] body .screen .cat.landed {
-  box-shadow: 0 0 0 3px var(--n-ink), 7px 8px 0 var(--n-ink);
+  box-shadow: var(--n-e3);
 }
 
 /* ─── ٩ب. لوح الجولة الجماعية وشريحة اختيار الفئة ────────────────────── */
@@ -361,7 +374,7 @@ html[data-skin='blocks'] body .screen .cat.landed {
    فتُقرأ بلمحة وتجمع «فئاتنا الثلاث» بلا حدٍّ باهت. */
 html[data-skin='blocks'] body .screen .bunit {
   border-radius: var(--n-r3);
-  box-shadow: 0 0 0 2.5px var(--n-ink), 5px 6px 0 var(--n-ink);
+  box-shadow: var(--n-e2);
 }
 html[data-skin='blocks'] body .screen .bunit.team-0 { background: #FFF0C4; }
 html[data-skin='blocks'] body .screen .bunit.team-1 { background: #DCF2F1; }
@@ -376,9 +389,9 @@ html[data-skin='blocks'] body .screen .bcell {
 html[data-skin='blocks'] body .screen .bcell:not(.played):hover { box-shadow: var(--n-e2); }
 html[data-skin='blocks'] body .screen .bcell.played {
   background: var(--n-bg);
-  box-shadow: 0 0 0 2px rgba(34,32,28,.18);
+  box-shadow: 0 0 0 2px var(--spent-text);
 }
-html[data-skin='blocks'] body .screen .bh-owner { box-shadow: 0 0 0 1.5px var(--n-ink); }
+html[data-skin='blocks'] body .screen .bh-owner { box-shadow: 0 0 0 2px var(--n-ink); }
 
 /* ─── ٩ج. بلاطة الحروف (فئة «حروف») ──────────────────────────────────── */
 /* بلاطاتٌ مشبعة بحدّ حبرٍ وظلٍّ صلب — رسمةُ الفئة نفسها حيّةً على الشاشة:
@@ -389,17 +402,17 @@ html[data-skin='blocks'] body .screen .bh-owner { box-shadow: 0 0 0 1.5px var(--
 html[data-skin='blocks'] body .screen .ltile {
   border: 0; border-radius: var(--n-r2);
   background: var(--n-surface); color: var(--n-ink);
-  box-shadow: 0 0 0 2.5px var(--n-ink), 4px 5px 0 var(--n-ink);
+  box-shadow: var(--n-e2);
 }
 html[data-skin='blocks'] body .screen .ltile[data-tone='a'] { background: var(--n-a-tint); }
 html[data-skin='blocks'] body .screen .ltile[data-tone='b'] { background: var(--n-b-tint); }
 html[data-skin='blocks'] body .screen .ltile.lit {
   background: var(--n-ink); color: #fff;
-  box-shadow: 0 0 0 2.5px var(--n-ink), 7px 8px 0 var(--n-ink);
+  box-shadow: var(--n-e3);
 }
 html[data-skin='blocks'] body .screen .letters-grid.landed .ltile.lit {
   background: var(--n-brand); color: #fff;
-  box-shadow: 0 0 0 3px var(--n-ink), 8px 9px 0 var(--n-ink);
+  box-shadow: var(--n-e3);
 }
 html[data-skin='blocks'] body .screen .letters-grid.landed .ltile.lit::after { border-color: var(--n-brand); }
 /* الباقي يبقى ظاهراً باهتاً بألوانه — لا يختفي ولا يبيضّ */
@@ -422,14 +435,14 @@ html[data-skin='blocks'] body .screen .catchip {
   border-radius: var(--n-r1);
   box-shadow: 0 0 0 2px var(--n-ink);
 }
-html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: 0 0 0 2px var(--n-ink), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px rgba(34,32,28,.18); }
+html[data-skin='blocks'] body .screen .catchip:not(.dimmed):hover { box-shadow: var(--n-e1); }
+html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 0 0 0 2px var(--spent-text); }
 html[data-skin='blocks'] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
-html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 4px var(--n-accent), 4px 4px 0 var(--n-ink); }
+html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
 html[data-skin='blocks'] body .screen .cc-tick {
   background: var(--n-accent); color: #fff;
   border-radius: var(--n-r1);
-  box-shadow: 0 0 0 2px var(--n-ink), 2px 2px 0 var(--n-ink);
+  box-shadow: var(--n-e1);
 }
 html[data-skin='blocks'] .cats-turn { box-shadow: 0 0 0 2px var(--n-ink); }
 
@@ -492,9 +505,9 @@ html[data-skin='blocks'] .s3-ready-rules span {
 }
 html[data-skin='blocks'] .s3-verdicts .v {
   border-radius: var(--n-r2);
-  box-shadow: 3px 4px 0 rgba(34,32,28,.3);
+  box-shadow: var(--n-e2);
 }
-html[data-skin='blocks'] .s3-verdicts .v:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(34,32,28,.3); }
+html[data-skin='blocks'] .s3-verdicts .v:active { transform: translate(5px, 6px); box-shadow: 0 0 0 2.5px var(--n-ink); }
 html[data-skin='blocks'] .tb { box-shadow: var(--n-e1); }
 
 /* ─── ١٢. الإعداد ────────────────────────────────────────────────────── */
@@ -530,7 +543,7 @@ html[data-skin='blocks'] .screen.setup .player:focus {
 html[data-skin='blocks'] .screen.setup .team-name { border-bottom: 2px solid rgba(34,32,28,.3); }
 html[data-skin='blocks'] .screen.setup .counter { border-top: 2px solid rgba(34,32,28,.18); color: var(--n-ink-2); }
 html[data-skin='blocks'] .screen.setup .pill { background: #fff; box-shadow: 0 0 0 2px var(--n-ink); }
-html[data-skin='blocks'] .screen.setup .pill:disabled { box-shadow: 0 0 0 2px rgba(34,32,28,.2); background: transparent; }
+html[data-skin='blocks'] .screen.setup .pill:disabled { box-shadow: 0 0 0 2px var(--spent-text); background: transparent; }
 
 /* ─── ١٣. الختام ─────────────────────────────────────────────────────── */
 html[data-skin='blocks'] .screen.end .winner {
@@ -550,6 +563,11 @@ html[data-skin='blocks'] .screen.end .es-row { border-top: 2px solid var(--n-lin
 html[data-skin='blocks'] .screen.end .es-row:first-child { border-top: 0; }
 html[data-skin='blocks'] .screen.end .es-row > .es-num.up:first-child { color: var(--n-a); }
 html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: var(--n-b); }
+/* شارتا ✓/✗ لكلّ لاعب: حلقة حبرٍ كبقيّة العناصر وأرضيّةٌ بصبغة الحكم، والرقم
+   حبر — الأخضر والأحمر الرفيعان على الأبيض كانا لا يُقرآن. */
+html[data-skin='blocks'] .screen.end .chip { border: 0; box-shadow: 0 0 0 2px var(--n-ink); color: var(--n-ink); }
+html[data-skin='blocks'] .screen.end .chip.ok { background: var(--n-good-tint); }
+html[data-skin='blocks'] .screen.end .chip.no { background: var(--n-bad-tint); }
 
 /* ─── ١٤. الشاشات القصيرة ────────────────────────────────────────────── */
 /* الميل والظلال البعيدة زينةُ المتّسع. على الجوال الأفقي (تحت 480px)
@@ -569,16 +587,16 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
   html[data-skin='blocks'] .screen.end .winner-stamp { transform: none; }
   html[data-skin='blocks'] .scorebar .team-0.turn,
   html[data-skin='blocks'] .scorebar .team-1.turn { transform: translateY(-1px); }
-  html[data-skin='blocks'] .scorebar .team { box-shadow: 0 0 0 2px var(--n-ink), 2px 3px 0 var(--n-ink); }
+  html[data-skin='blocks'] .scorebar .team { box-shadow: var(--n-e1); }
   html[data-skin='blocks'] .q-box,
-  html[data-skin='blocks'] .s3-q { box-shadow: 0 0 0 2px var(--n-ink), 4px 5px 0 var(--n-ink); }
+  html[data-skin='blocks'] .s3-q { box-shadow: var(--n-e2); }
   html[data-skin='blocks'] .timer-progress { height: 8px; }
   html[data-skin='blocks'] .ring-timer,
   html[data-skin='blocks'] .rd-title { transform: none; }
   html[data-skin='blocks'] .ring-timer {
     min-width: 116px;
     padding: 4px 14px 8px;
-    box-shadow: 0 0 0 2px var(--n-ink), 2px 3px 0 var(--n-ink);
+    box-shadow: var(--n-e1);
   }
 }
 
@@ -609,10 +627,9 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
     align-items: center;
     gap: clamp(10px, 2.4dvh, 18px);
     padding: clamp(20px, 5vw, 32px) clamp(24px, 7vw, 40px);
-    border: 3px solid var(--n-ink);
-    border-radius: 22px 6px 22px 6px;
+    border-radius: var(--n-r3);
     background: var(--n-surface);
-    box-shadow: 7px 8px 0 var(--n-ink);
+    box-shadow: var(--n-e3);
   }
   html[data-skin='blocks'] #rotate-gate .rotate-gate-icon {
     width: clamp(76px, 24vw, 104px);
@@ -662,8 +679,8 @@ html[data-skin='blocks'] body .screen .pick-team.team-1 { border-color: var(--n-
 html[data-skin='blocks'] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
 html[data-skin='blocks'] body .screen .rv-ask { color: var(--n-ink); }
 html[data-skin='blocks'] body .screen .pick-none {
-  border-color: var(--n-ink); color: var(--n-ink);
-  border-radius: var(--n-r1); box-shadow: 3px 3px 0 var(--n-ink);
+  border: 0; color: var(--n-ink);
+  border-radius: var(--n-r1); box-shadow: var(--n-e1);
 }
 
 /* تنبيهُ النقص: الرسالة تحت زرّ القرعة تحمرّ حين يُضغط الزرّ وشيءٌ ناقص
@@ -686,3 +703,9 @@ html[data-skin] body .screen .scorebar .team .team-kicker {
 html[data-skin] body .screen .bcell .bc-level {
   font-size: clamp(11px, min(1.3vw, 2.3dvh), 17px);
 }
+
+/* لا لمعةَ ولا تدرّج على الكتل (DESIGN.md §5 و§7): الوميض الذهبيّ العابر على
+   بطاقة الكشف وإضاءة رأس بطاقتَي «من أجاب؟» إرثُ المسرح الليليّ. */
+html[data-skin='blocks'] body .screen .rv-card::after,
+html[data-skin='blocks'] body .screen .reveal-a::after,
+html[data-skin='blocks'] body .screen .pick::before { display: none; }

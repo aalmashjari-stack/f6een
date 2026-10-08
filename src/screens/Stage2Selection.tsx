@@ -180,7 +180,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         /* حلقة تتمدّد وتتلاشى لحظة الاستقرار — إشارة «وقع الاختيار» */
         .vs-ring {
           position:absolute; width:2.2em; height:2.2em; border-radius:50%;
-          border:2px solid var(--n-bad); opacity:0; pointer-events:none;
+          border:2px solid var(--n-brand); opacity:0; pointer-events:none;
         }
         .vs-wrap.settled .vs-ring { animation:ring-out .75s ease-out; }
         @keyframes ring-out {

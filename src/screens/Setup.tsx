@@ -682,7 +682,7 @@ export function Setup({
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
           transition:transform .15s var(--ease-spring), box-shadow .15s ease;
         }
-        body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:0 0 0 2px var(--n-ink,#22201C), 2px 3px 0 var(--n-ink,#22201C); }
+        body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:var(--n-e1); }
         body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:#fff; }
 
         /* زرّ القائمة ولوحُها في طبقة التذكرة آخر الملفّ. */
@@ -796,7 +796,7 @@ export function Setup({
             color-mix(in srgb, var(--n-surface-2) 94%, transparent),
             color-mix(in srgb, var(--n-surface) 80%, transparent) 68%);
           border:2px solid var(--n-line);
-          border-radius:clamp(24px, 3.8dvh, 36px);
+          border-radius:var(--n-r4);
           box-shadow:var(--n-e2);
           transition:border-color .3s ease, box-shadow .3s ease;
         }
@@ -1053,7 +1053,7 @@ export function Setup({
           min-width:0;
           padding:0;
           font-family:inherit; cursor:pointer; text-align:center;
-          border-radius:14px;
+          border-radius:var(--n-r1);
           border:2px solid var(--n-line);
           background-color:var(--n-surface-2);
           color:var(--n-ink-2);
@@ -1102,9 +1102,9 @@ export function Setup({
           display:none; place-items:center;
           width:clamp(24px,3.2vw,34px); aspect-ratio:1;
           border-radius:999px;
-          background:var(--n-ink); color:#1a1626;
+          background:var(--n-ink); color:#fff;
           font-size:clamp(14px,1.9vw,20px); font-weight:900; line-height:1;
-          box-shadow:0 2px 6px rgba(0,0,0,.35);
+          box-shadow:var(--n-e1);
         }
         .catchip.taken .cc-tick { display:grid; }
         /* الخليّة تحمل البطاقة وعلامة (i) فوقها — البطاقة تملأها كما كانت
@@ -1120,7 +1120,7 @@ export function Setup({
           width:clamp(20px,2.4vw,27px); aspect-ratio:1; padding:0;
           border:0; border-radius:999px; cursor:pointer;
           background:#fff; color:var(--n-ink, #22201C);
-          box-shadow:0 0 0 2px var(--n-ink, #22201C), 0 2px 6px rgba(0,0,0,.3);
+          box-shadow:0 0 0 2px var(--n-ink, #22201C);
           font-family:'Cairo', serif; font-style:italic; font-weight:800;
           font-size:clamp(11px,1.35vw,14px); line-height:1;
           animation:chip-in .34s var(--ease-spring) both;
@@ -1150,7 +1150,7 @@ export function Setup({
         }
         html[data-skin] body .screen.setup .stage-card {
           position:relative; overflow:hidden; display:flex; flex-direction:column;
-          padding:0; border:0; border-radius:18px; transform:none;
+          padding:0; border:0; border-radius:var(--n-r2); transform:none;
           background:var(--n-surface, #fff);
           box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--tone);
           transition:transform .15s var(--ease-spring);
@@ -1197,7 +1197,7 @@ export function Setup({
           display:flex; flex-direction:column; align-items:center; gap:8px;
           margin:0 clamp(10px,1.2vw,14px) clamp(10px,1.4dvh,14px);
           padding:clamp(10px,1.4dvh,14px) clamp(12px,1.4vw,16px);
-          border-radius:12px; background:var(--tone-soft);
+          border-radius:var(--n-r1); background:var(--tone-soft);
           animation:stage-more-in .22s var(--ease-spring) both;
         }
         @keyframes stage-more-in {
@@ -1237,11 +1237,11 @@ export function Setup({
           display:inline-flex; align-items:center; gap:.45em; white-space:nowrap;
           padding:.35em 1.05em; border:0; border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-          box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e1);
           transition:transform .14s var(--ease-spring), box-shadow .14s ease;
         }
         html[data-skin] body .screen.setup .xv-open span { color:var(--n-brand, #E8542F); font-size:.85em; }
-        html[data-skin] body .screen.setup .xv-open:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C), 1px 1px 0 var(--n-ink, #22201C); }
+        html[data-skin] body .screen.setup .xv-open:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink); }
         /* عنوان الفئات وشارة «اكتمل اللوح» في سطرٍ واحد: العنوان يميناً والشارة يساراً. */
         html[data-skin] body .screen.setup .cats-head {
           /* العنوان كبسولةٌ في الوسط، وشارة «اكتمل اللوح» بجانبها. */
@@ -1357,8 +1357,8 @@ export function Setup({
           position:absolute; z-index:3; top:100%; inset-inline:0;
           margin:12px 0 0; padding:12px;
           flex-direction:column; align-items:stretch; gap:10px;
-          background:var(--n-surface, #fff); border-radius:18px;
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+          background:var(--n-surface, #fff); border-radius:var(--n-r2);
+          box-shadow:var(--n-e2);
         }
         html[data-skin] body .screen.setup .hero-nav.open { display:flex; }
         html[data-skin] body .screen.setup .hero-nav-veil { display:block; position:fixed; inset:0; z-index:2; }
@@ -1370,10 +1370,10 @@ export function Setup({
            القائمة») ─── صفوفٌ بأيقونةٍ لكلٍّ منها وخطٍّ رفيع بينها بدل خمس
            كبسولاتٍ متطابقة، والخروج منفصلٌ بالأحمر في آخرها. والأيقونات
            أقنعة CSS لا عناصر: الأزرار نفسها في الموقع بلا أيقونات. */
-        html[data-skin] body .screen.setup .hero-nav { padding:8px; gap:0; border-radius:18px; }
+        html[data-skin] body .screen.setup .hero-nav { padding:8px; gap:0; border-radius:var(--n-r2); }
         html[data-skin] body .screen.setup .hero-nav .hnav {
           display:flex; align-items:center; justify-content:flex-start; gap:12px;
-          height:52px; padding:0 14px; margin:0; border-radius:12px;
+          height:52px; padding:0 14px; margin:0; border-radius:var(--n-r1);
           background:none; box-shadow:none; transform:none;
           font-size:16px; font-weight:700; color:var(--n-ink, #22201C); text-align:start;
         }
@@ -1493,7 +1493,7 @@ export function Setup({
             linear-gradient(rgba(255,255,255,calc(1 - var(--cats-alpha))), rgba(255,255,255,calc(1 - var(--cats-alpha)))),
             var(--welcome-cats) top center / 100% auto repeat-y,
             var(--n-surface, #fff);
-          border-radius:22px;
+          border-radius:var(--n-r3);
           box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
         }
         /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
@@ -1508,7 +1508,7 @@ export function Setup({
           html[data-skin] body .screen.setup .setup-body {
             margin-inline:auto; margin-bottom:clamp(18px,3dvh,40px);
             padding:clamp(22px,4dvh,56px) clamp(20px,3.2vw,56px) clamp(20px,3.4dvh,44px);
-            border-radius:clamp(22px,2vw,32px);
+            border-radius:var(--n-r4);
           }
           html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:clamp(16px,3.4dvh,48px); }
         }
@@ -1525,12 +1525,12 @@ export function Setup({
           display:flex; justify-content:center; align-items:center; gap:8px;
           position:sticky; bottom:8px; z-index:4;
           margin-top:14px; padding:8px 10px;
-          background:var(--n-surface, #fff); border-radius:16px;
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+          background:var(--n-surface, #fff); border-radius:var(--n-r2);
+          box-shadow:var(--n-e2);
         }
         html[data-skin] body .screen.setup .tray-slot {
           flex:none; width:clamp(38px,11vw,48px); aspect-ratio:1;
-          border-radius:10px; padding:0;
+          border-radius:var(--n-r1); padding:0;
           border:2px dashed var(--n-ink-3, #8A8578); background:var(--n-bg, #FFF8EE);
         }
         html[data-skin] body .screen.setup .tray-slot.filled {
@@ -1549,7 +1549,7 @@ export function Setup({
             align-self:center; width:max-content; gap:12px;
             margin-top:20px; padding:10px 14px; bottom:12px;
           }
-          html[data-skin] body .screen.setup .tray-slot { width:clamp(48px,4.2vw,76px); border-radius:12px; }
+          html[data-skin] body .screen.setup .tray-slot { width:clamp(48px,4.2vw,76px); border-radius:var(--n-r1); }
         }
       `}</style>
     </div>

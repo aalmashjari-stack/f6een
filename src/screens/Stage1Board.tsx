@@ -120,7 +120,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           gap:clamp(5px,.7vw,11px);
           min-width:0; min-height:0;
           padding:clamp(5px,.9dvh,11px);
-          border-radius:clamp(13px,2dvh,22px);
+          border-radius:var(--n-r2);
           border:2px solid var(--n-line);
           background:var(--n-surface-2);
         }
@@ -131,7 +131,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         .bhead {
           display:flex; flex-direction:column; justify-content:flex-end;
           min-width:0; min-height:0; overflow:hidden;
-          border-radius:clamp(10px,1.6dvh,18px);
+          border-radius:var(--n-r2);
           --art:none;
           background-image:var(--art);
           background-size:cover;
@@ -171,7 +171,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           gap:clamp(4px,.7vw,10px);
           min-width:0; min-height:0;
           font-family:inherit; cursor:pointer;
-          border-radius:clamp(9px,1.4dvh,15px);
+          border-radius:var(--n-r1);
           border:2px solid var(--n-ink);
           background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 68%);
           color:var(--n-ink);
@@ -181,9 +181,9 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         .bc-points { font-size:clamp(15px, min(2vw, 3.6dvh), 32px); font-weight:800; line-height:1; }
         .bc-level  { font-size:clamp(9px, min(1.05vw, 1.9dvh), 14px); font-weight:700; color:var(--n-ink-2); }
         .bcell:active { transform:scale(.96); }
-        .bcell:focus-visible { outline:none; box-shadow:var(--n-e2), 0 0 0 4px rgba(255,189,89,.5); }
+        .bcell:focus-visible { outline:3px solid var(--n-brand); outline-offset:3px; }
         @media (hover:hover) {
-          .bcell:not(.played):hover { transform:translateY(-3px); box-shadow:0 18px 34px rgba(0,0,0,.34), 0 0 28px rgba(255,189,89,.28); }
+          .bcell:not(.played):hover { transform:translateY(-3px); box-shadow:var(--n-e2); }
         }
 
         /* المستهلَك: ظاهر باهت لا يختفي — قاعدة العجلة نفسها (القسم ٧). */
@@ -208,7 +208,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
            أصغر ما يُقرأ، ولون إطار الوحدة يقول ما تقوله. */
         @media (max-height:480px) {
           .s1-board { --cols:3; gap:6px; }
-          .bunit { grid-template-columns:1.25fr 1fr; gap:4px; padding:3px; border-radius:10px; }
+          .bunit { grid-template-columns:1.25fr 1fr; gap:4px; padding:3px; border-radius:var(--n-r1); }
           .bh-plate { padding:clamp(8px,2dvh,14px) 3px 3px; }
           .bh-owner { display:none; }
           .blevels { gap:3px; }

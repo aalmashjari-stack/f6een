@@ -75,7 +75,7 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
           .photo-failed {
             display:flex; flex-direction:column; align-items:center; justify-content:center;
             gap:clamp(8px,1.6dvh,16px); min-height:clamp(120px,30dvh,320px); width:min(100%,560px);
-            align-self:center; border-radius:18px; padding:16px;
+            align-self:center; border-radius:var(--n-r2); padding:16px;
             background:var(--n-surface-2, #F6F5F2); border:2px dashed var(--n-ink-3, #8A8578);
           }
           .photo-failed-text { font-weight:800; font-size:clamp(16px,min(2.4vw,3.6dvh),28px); color:var(--n-ink, #22201C); }
@@ -187,7 +187,7 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
         .photo-zoom-x:focus-visible { outline:3px solid #fff; outline-offset:3px; }
         .photo-zoom img {
           max-width:100%; max-height:100%; min-height:0;
-          object-fit:contain; border-radius:14px;
+          object-fit:contain; border-radius:var(--n-r1);
         }
         /* السطر يعوم فوق الطبقة لا داخل عمودها: لو اقتطع ارتفاعاً لوجب
            إخفاؤه على الجوال الأفقي — وهو أشدُّ المقاسات حاجةً إليه. */

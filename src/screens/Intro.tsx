@@ -309,7 +309,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         body .screen.intro.native .intro-pane.signin {
           min-height:calc(100% - 32px);
           margin:16px; padding:28px 18px;
-          background:var(--n-surface, #fff); border-radius:22px;
+          background:var(--n-surface, #fff); border-radius:var(--n-r3);
           box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ كبطاقة «إنشاء حساب» */
           justify-content:center; gap:14px;
           /* لا ينكمش تحت محتواه — العلّة نفسها في الكتلة أدناه: overflow:hidden
@@ -340,7 +340,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           display:flex; flex-direction:column; gap:14px;
           margin-top:0; padding:22px 16px 20px;
           /* أبيض بظلّ الرأس الناعم؛ جُرّب قبله الخوخيّ ثمّ الفيروزيّ الفاتح. */
-          background:var(--n-surface, #fff); border-radius:22px;
+          background:var(--n-surface, #fff); border-radius:var(--n-r3);
           box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ وظلٌّ صلب كبطاقة «إنشاء حساب» (علي ١ أكتوبر ٢٠٢٦) */
           text-align:center;
         }
@@ -373,7 +373,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         }
         .welcome-stages { display:flex; flex-direction:column; gap:10px; margin-top:6px; text-align:start; }
         .w-stage {
-          overflow:hidden; border-radius:18px; background:var(--n-surface, #fff);
+          overflow:hidden; border-radius:var(--n-r2); background:var(--n-surface, #fff);
           box-shadow:0 0 0 2.5px var(--n-ink, #22201C); /* بلا ظلّ ملوّن (علي ١ أكتوبر ٢٠٢٦) */
         }
         .w-stage.tone-0 { --tone:#FFD966; --tone-soft:#FFF4CC; }
@@ -397,7 +397,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         }
         .w-stage.open .w-stage-info { background:var(--n-ink, #22201C); color:#fff; }
         .w-stage-desc {
-          margin:0 12px 12px; padding:10px 12px; border-radius:12px; background:var(--tone-soft);
+          margin:0 12px 12px; padding:10px 12px; border-radius:var(--n-r1); background:var(--tone-soft);
           text-align:center; font-weight:600; font-size:14px; line-height:1.6; color:var(--n-ink, #22201C);
         }
         .welcome-video-line {
@@ -409,9 +409,9 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           margin-top:6px; height:52px; border:0; border-radius:999px; cursor:pointer;
           font:inherit; font-weight:800; font-size:17px;
           background:var(--n-brand, #E8542F); color:#fff;
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e2);
         }
-        .welcome-cta:active { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 1px 1px 0 var(--n-ink, #22201C); }
+        .welcome-cta:active { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink); }
 
         /* الجوال الأفقيّ قصير (ارتفاعه ٤٤٠px): الحشو والفجوات تنكمش. */
         @media (max-height:460px) {
@@ -444,7 +444,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           body .screen.intro.native .intro-pane:first-of-type { padding-block:clamp(24px,4dvh,48px) 40px; }
           body .screen.intro.native .intro-pane:first-of-type { width:var(--col); margin-inline:auto; padding-inline:0; }
 
-          .welcome-box { gap:clamp(14px,2.2dvh,24px); padding:clamp(26px,4.4dvh,56px) clamp(20px,3.2vw,56px) clamp(24px,4dvh,48px); border-radius:clamp(22px,2vw,32px); }
+          .welcome-box { gap:clamp(14px,2.2dvh,24px); padding:clamp(26px,4.4dvh,56px) clamp(20px,3.2vw,56px) clamp(24px,4dvh,48px); border-radius:var(--n-r4); }
           .welcome-line { gap:clamp(6px,1dvh,12px); margin-bottom:clamp(8px,1.6dvh,20px); }
           .welcome-what { font-size:clamp(26px,2.9vw,46px); }
           .welcome-why { font-size:clamp(16px,1.5vw,23px); }

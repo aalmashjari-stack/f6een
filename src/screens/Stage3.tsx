@@ -115,7 +115,7 @@ function Stage3Styles() {
         .s3-q {
           background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 60%);
           border:1px solid var(--n-line);
-          border-radius:clamp(30px, 6dvh, 64px);
+          border-radius:var(--n-r4);
           padding:clamp(22px,4dvh,48px) clamp(28px,5vw,64px);
           box-shadow:var(--n-e2);
         }

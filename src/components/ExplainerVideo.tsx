@@ -20,8 +20,8 @@ const SRC = '/explainer-v4.mp4'
 /** إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً. */
 const FRAME_CSS = `
         .xv-frame {
-          aspect-ratio:16 / 9; border-radius:18px; overflow:hidden; background:#000;
-          box-shadow:0 0 0 3px var(--n-ink, #22201C), 7px 8px 0 var(--n-ink, #22201C);
+          aspect-ratio:16 / 9; border-radius:var(--n-r2); overflow:hidden; background:#000;
+          box-shadow:var(--n-e3);
         }
         .xv-frame video { display:block; width:100%; height:100%; background:#000; }
 `
@@ -76,7 +76,7 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
           font:inherit; font-weight:800; cursor:pointer;
           width:40px; height:40px; border:0; border-radius:50%;
           background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e1);
         }
       `}</style>
     </div>
@@ -115,9 +115,9 @@ export function ExplainerInline() {
            اسود بس») — بلا قاعدة ولا نقطة كاميرا ولا ظلّ على الأرضيّة. */
         .xi-tv {
           padding:clamp(4px,.6vw,8px);
-          border-radius:clamp(12px,1.4vw,18px); background:#000;
+          border-radius:var(--n-r2); background:#000;
         }
-        .xi-tv .xv-frame { border-radius:clamp(8px,1vw,12px); box-shadow:none; }
+        .xi-tv .xv-frame { border-radius:var(--n-r1); box-shadow:none; }
         ${FRAME_CSS}
         .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
         /* زرّ التشغيل بلغة الكتل: دائرةٌ بلون العلامة بحدّ حبرٍ وظلٍّ صلب */
@@ -126,7 +126,7 @@ export function ExplainerInline() {
           width:clamp(58px,9vw,84px); height:clamp(58px,9vw,84px); border-radius:50%;
           display:grid; place-items:center; padding-inline-start:.12em;
           font-size:clamp(24px,3.6vw,34px); color:#fff; background:var(--n-brand, #E8542F);
-          box-shadow:0 0 0 3px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e2);
           transition:transform .16s var(--ease-spring);
         }
         .xi-poster:hover .xi-play { transform:translate(-50%,-50%) scale(1.08); }

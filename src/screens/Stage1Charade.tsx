@@ -66,7 +66,7 @@ export function Stage1Charade({ state, dispatch }: { state: GameState; dispatch:
         .charade-qr {
           width:min(100cqw, 100cqh); height:min(100cqw, 100cqh);
           display:block;
-          border-radius:clamp(8px,1.2dvh,14px);
+          border-radius:var(--n-r1);
           box-shadow:var(--n-e2);
         }
         @media (max-height:480px) {

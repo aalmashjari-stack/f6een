@@ -123,7 +123,7 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
           display:flex; align-items:center; justify-content:center;
           min-width:0; min-height:0;
           container-type:inline-size;
-          border-radius:clamp(9px,1.4dvh,16px);
+          border-radius:var(--n-r1);
           border:2px solid var(--n-ink);
           background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 68%);
           color:var(--n-ink);
@@ -172,7 +172,7 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
         @media (max-height:480px) {
           .letters-wrap { padding-block:2px; }
           .letters-grid { gap:4px; }
-          .ltile { border-radius:8px; --tilt:0deg; }
+          .ltile { border-radius:var(--n-r1); --tilt:0deg; }
           .letters-note { display:none; }
         }
       `}</style>

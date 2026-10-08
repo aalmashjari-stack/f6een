@@ -50,9 +50,9 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
           overflow:auto;
           display:flex; flex-direction:column; gap:clamp(10px,2dvh,18px);
           padding:clamp(14px,2.6dvh,24px) clamp(16px,3vw,28px);
-          border-radius:22px;
+          border-radius:var(--n-r3);
           background:var(--n-surface, #fff);
-          box-shadow:0 0 0 3px var(--n-ink, #22201C), 7px 8px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e3);
         }
         .sp-head { display:flex; align-items:center; justify-content:space-between; }
         .sp-title { margin:0; font-size:clamp(18px,2.4vw,24px); font-weight:800; color:var(--n-ink, #22201C); }
@@ -67,13 +67,13 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-pack {
           display:flex; flex-direction:column; align-items:center; gap:2px;
           padding:clamp(10px,1.8dvh,16px) 8px;
-          border-radius:16px;
+          border-radius:var(--n-r2);
           background:var(--n-bg, #FFF8EE);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
           text-align:center;
         }
         /* حزمة الخمس هي المعروضة للدفع الأمثل — تلبس الأصفر لتُقرأ أولاً */
-        .sp-pack.hot { background:var(--n-a-tint, #FFCE3C); box-shadow:0 0 0 2.5px var(--n-ink,#22201C), 4px 5px 0 var(--n-ink,#22201C); }
+        .sp-pack.hot { background:var(--n-a-tint, #FFCE3C); box-shadow:var(--n-e2); }
         .sp-count { font-weight:800; font-size:clamp(14px,1.7vw,18px); color:var(--n-ink, #22201C); }
         .sp-price { font-weight:800; font-size:clamp(20px,2.6vw,28px); color:var(--n-brand, #E8542F); direction:ltr; }
         .sp-price small { font-size:.5em; font-weight:700; color:var(--n-ink-2, #57524A); }
@@ -94,7 +94,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-field > span { font-weight:800; font-size:clamp(12px,1.4vw,14px); color:var(--n-ink-2, #57524A); }
         .sp-in {
           font:inherit; font-weight:700; font-size:clamp(13px,1.5vw,16px);
-          padding:10px 14px; border:0; border-radius:12px;
+          padding:10px 14px; border:0; border-radius:var(--n-r1);
           background:var(--n-bg, #FFF8EE); color:var(--n-ink, #22201C);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
         }
@@ -104,9 +104,9 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         .sp-send {
           align-self:center;
           font:inherit; font-weight:800; font-size:clamp(14px,1.8vw,17px); cursor:pointer;
-          padding:10px 34px; border:0; border-radius:14px;
+          padding:10px 34px; border:0; border-radius:var(--n-r1);
           background:var(--n-brand, #E8542F); color:#fff;
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e2);
           transition:transform .14s var(--ease-spring), box-shadow .14s ease;
         }
         .sp-send:active:not(:disabled) { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink,#22201C); }
@@ -171,7 +171,7 @@ export function CategoryInfoPanel({
         .cip-sample {
           display:flex; flex-direction:column; align-items:center; gap:clamp(8px,1.4dvh,12px);
           padding:clamp(12px,2dvh,18px) clamp(14px,2.4vw,22px);
-          border-radius:16px;
+          border-radius:var(--n-r2);
           background:var(--n-bg, #FFF8EE);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
           text-align:center;
@@ -183,7 +183,7 @@ export function CategoryInfoPanel({
         }
         .cip-q { margin:0; font-weight:800; font-size:clamp(16px,2.1vw,21px); line-height:1.7; color:var(--n-ink, #22201C); }
         .cip-a {
-          margin:0; padding:4px 18px; border-radius:12px;
+          margin:0; padding:4px 18px; border-radius:var(--n-r1);
           background:var(--n-a-tint, #FFCE3C); color:var(--n-ink, #22201C);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
           font-weight:800; font-size:clamp(16px,2vw,20px);
@@ -192,7 +192,7 @@ export function CategoryInfoPanel({
           font:inherit; font-weight:800; font-size:clamp(14px,1.7vw,16px); cursor:pointer;
           padding:8px 22px; border:0; border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-          box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+          box-shadow:var(--n-e1);
         }
         .cip-reveal:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C); }
       `}</style>
@@ -241,7 +241,7 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
         .sp-stage {
           display:flex; align-items:flex-start; gap:clamp(9px,1.6vw,15px);
           padding:clamp(10px,1.8dvh,16px) clamp(11px,2vw,18px);
-          border-radius:16px;
+          border-radius:var(--n-r2);
           background:var(--n-bg, #FFF8EE);
           box-shadow:0 0 0 2px var(--n-ink, #22201C);
         }

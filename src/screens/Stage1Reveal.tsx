@@ -164,11 +164,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           display:flex; flex-direction:column; align-items:center; justify-content:center;
           gap:clamp(8px,1.6dvh,16px);
           padding:clamp(14px,3.2dvh,36px) clamp(24px,5vw,64px);
-          border-radius:clamp(24px, 5dvh, 52px);
-          border:1px solid var(--n-ink);
-          background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 60%);
-          box-shadow:none;
-          animation:pop-in .45s var(--ease-spring) both, rv-glow 1.1s ease-out both;
+          border-radius:var(--n-r4);
+          border:0;
+          background:var(--n-surface);
+          box-shadow:var(--n-e3);
+          animation:pop-in .45s var(--ease-spring) both;
         }
         /* السؤال باهت ومنكمش لكنه حاضر — المجلس ينسى ما سُئل لحظةَ ظهور الإجابة.
            درجتا الهبوط الإضافيتان (.long/.xlong) نفس عتبات QuestionText.tsx:
@@ -202,12 +202,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           overflow-wrap:anywhere;
           animation:pop-in .5s var(--ease-spring) .1s both;
         }
-        /* ذروة السؤال: توهّج يشتدّ ثم يهدأ، ولمعة ذهبية تمرّ مرة واحدة */
-        @keyframes rv-glow {
-          0%   { box-shadow:var(--n-e2), 0 0 0 rgba(255,189,89,0); }
-          35%  { box-shadow:var(--n-e2), 0 0 90px rgba(255,189,89,.6); }
-          100% { box-shadow:none; }
-        }
+        /* ذروة السؤال: لمعة تمرّ مرة واحدة (التوهّج الضبابيّ حُذف — DESIGN.md §5) */
         .rv-card::after {
           content:''; position:absolute; top:0; bottom:0; width:40%;
           background:linear-gradient(100deg, transparent, rgba(255,189,89,.28), transparent);
@@ -254,7 +249,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           display:flex; flex-direction:column; align-items:center; justify-content:center;
           gap:clamp(4px,1.2dvh,12px);
           padding:clamp(10px,2.4dvh,26px) clamp(12px,2vw,28px);
-          border-radius:clamp(16px, 3dvh, 28px);
+          border-radius:var(--n-r3);
           cursor:pointer; font-family:inherit;
           background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 68%);
           border:2px solid var(--n-ink);
@@ -271,9 +266,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           background:radial-gradient(120% 70% at 50% -12%, rgba(255,255,255,.13), transparent 62%);
         }
         .pick:active { transform:scale(.97); }
-        .pick:focus-visible { outline:none; box-shadow:var(--n-e2), 0 0 0 4px rgba(255,189,89,.5); }
+        .pick:focus-visible { outline:3px solid var(--n-brand); outline-offset:3px; }
         @media (hover:hover) {
-          .pick:hover { transform:translateY(-6px); box-shadow:0 26px 54px rgba(0,0,0,.4), 0 0 46px rgba(245,239,227,.22); }
+          .pick:hover { transform:translateY(-3px); box-shadow:var(--n-e3); }
         }
 
         /* كل مقاس يأخذ أصغر نصيبيه من العرض والارتفاع — علاج .q-text نفسه:

@@ -292,7 +292,7 @@ export function AccountMenu({
       <style>{`
         .acct-load-err {
           display:flex; align-items:center; justify-content:space-between; gap:12px;
-          padding:10px 12px; border-radius:14px; margin-bottom:4px;
+          padding:10px 12px; border-radius:var(--n-r1); margin-bottom:4px;
           background:rgba(220,64,51,.07); box-shadow:inset 0 0 0 1.5px rgba(220,64,51,.35);
         }
         .acct-load-err .acct-err { margin:0; }
@@ -330,7 +330,7 @@ export function AccountMenu({
           cursor:pointer; border:0; border-radius:999px;
           width:32px; height:32px;
           background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-          box-shadow:0 0 0 1.5px var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink);
         }
 
         .acct-body { overflow:auto; padding:14px 16px; display:flex; flex-direction:column; gap:18px; }
@@ -354,7 +354,7 @@ export function AccountMenu({
         .acct-gift { display:grid; grid-template-columns:1fr auto; gap:8px; margin-block-start:4px; }
         .acct-in {
           font:inherit; font-weight:700; font-size:14px; width:100%; box-sizing:border-box;
-          padding:9px 12px; border-radius:12px;
+          padding:9px 12px; border-radius:var(--n-r1);
           border:1.5px solid rgba(34,32,28,.28);
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
         }
@@ -364,7 +364,7 @@ export function AccountMenu({
         .acct-games { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
         .g-row {
           display:flex; flex-direction:column; gap:4px;
-          padding:9px 11px; border-radius:12px;
+          padding:9px 11px; border-radius:var(--n-r1);
           background:var(--acct-soft);
         }
         .g-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
@@ -395,7 +395,7 @@ export function AccountMenu({
           font-size:14px; padding:9px 14px;
           border:0; border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
-          box-shadow:0 0 0 1.5px var(--n-ink, #22201C);
+          box-shadow:0 0 0 2px var(--n-ink);
           transition:background .2s ease, color .2s ease;
         }
         .acct-act:hover:not(:disabled) { background:var(--acct-soft); }
@@ -403,7 +403,7 @@ export function AccountMenu({
         /* الرابط يلبس زيّ الأزرار: هو في صفٍّ معها، وفرقُ شكله يقرأ عطلاً. */
         a.acct-act { text-decoration:none; text-align:center; }
         .acct-act.admin { background:var(--n-brand, #E8542F); color:#fff;
-          box-shadow:0 0 0 1.5px var(--n-ink, #22201C), 2px 3px 0 var(--n-ink, #22201C); }
+          box-shadow:var(--n-e1); }
         .acct-act.admin:hover { background:#D44A27; }
         .acct-act.danger { color:var(--n-bad, #DC4033); }
         /* الحالة المسلَّحة صريحة اللون: لا تُضغط وهي بلون الحياد. */
