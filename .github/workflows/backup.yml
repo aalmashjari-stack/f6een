@@ -53,11 +53,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: الأدوات
         run: |
-          npm ci --ignore-scripts --no-audit --no-fund > /dev/null
+          # pg وحده في مجلّدٍ معزول — لا نحتاج اعتماديّات اللعبة، وقفلُها ليس شرطاً هنا.
+          mkdir -p "$RUNNER_TEMP/deps"
+          cp scripts/backup-nightly.mjs "$RUNNER_TEMP/deps/"
+          cd "$RUNNER_TEMP/deps" && npm init -y > /dev/null && npm install pg@8 --no-audit --no-fund > /dev/null
           sudo apt-get install -y -qq age > /dev/null
           age --version
           aws --version
@@ -74,7 +76,7 @@ jobs:
           OUT_DIR: ${{ runner.temp }}/db
           ART_DIR: ${{ runner.temp }}/art
           R2_ART_LISTING: ${{ runner.temp }}/r2-art.json
-        run: node scripts/backup-nightly.mjs
+        run: node "$RUNNER_TEMP/deps/backup-nightly.mjs"
 
       - name: التشفير والرفع
         env:
