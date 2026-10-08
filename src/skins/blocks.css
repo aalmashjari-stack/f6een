@@ -70,6 +70,14 @@ html[data-skin='blocks'] {
   --n-bad: #CE2F1E;
   --n-bad-tint: #FADFDA;
 
+  /* سُلّم الخطّ (DESIGN.md §6): أربع درجات بدل عشرة أحجامٍ في الصفحة الرئيسيّة.
+     السؤال خارجه ودائماً أكبر منه (‎.q-text‎). أصغر نصيبَي العرض والارتفاع
+     حتى لا ينتفخ على الشاشة العريضة القصيرة. */
+  --n-fs-h1: clamp(24px, min(2.9vw, 5.6dvh), 42px);
+  --n-fs-h2: clamp(17px, min(1.5vw, 2.9dvh), 22px);
+  --n-fs-body: clamp(16px, min(1.3vw, 2.5dvh), 19px);
+  --n-fs-small: clamp(12px, min(1vw, 1.9dvh), 15px);
+
   --n-r1: 12px;
   --n-r2: 18px;
   --n-r3: 22px;

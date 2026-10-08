@@ -214,10 +214,10 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         .intro-pane > :first-child { margin-top:auto; }
         .intro-pane > :last-child { margin-bottom:auto; }
         .signin { justify-content:center; text-align:center; }
-        .signin-title { margin:0; font-size:clamp(20px,3.6vw,36px); font-weight:800; color:var(--n-brand); }
+        .signin-title { margin:0; font-size:var(--n-fs-h1); font-weight:800; color:var(--n-brand); }
         .signin-sub {
           margin:0; color:var(--n-ink-2); font-weight:600;
-          font-size:clamp(12px,1.7vw,18px);
+          font-size:var(--n-fs-body);
         }
         .signin-methods {
           display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px);
@@ -227,7 +227,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           font:inherit; font-weight:800; cursor:pointer;
           border-radius:var(--n-r2);
           padding:clamp(10px,1.8dvh,16px) clamp(14px,2.6vw,24px);
-          font-size:clamp(13px,1.9vw,19px);
+          font-size:var(--n-fs-body);
           border:0; box-shadow:var(--n-e1);
           background:var(--n-surface); color:var(--n-ink);
           transition:transform .15s var(--ease-spring), border-color .2s ease;
@@ -244,11 +244,11 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         .method.go-now:not(:disabled):hover { background:#26262F; box-shadow:var(--n-e3); }
         .signin-note {
           margin:0; color:var(--n-ink-3); font-weight:700;
-          font-size:clamp(11px,1.5vw,15px);
+          font-size:var(--n-fs-small);
         }
         .signin-err {
           margin:0; color:var(--n-bad); font-weight:700;
-          font-size:clamp(12px,1.6vw,16px);
+          font-size:var(--n-fs-small);
         }
 
         /* ─── التطبيق: الرأس ─── مستطيل الإعداد الأبيض نفسه بظلّه الناعم (علي ١
@@ -268,7 +268,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         .welcome-logo { font-size:clamp(33px,9vw,38px); }
         .welcome-login {
           display:flex; align-items:center; gap:8px; height:40px;
-          font:inherit; font-weight:800; font-size:15px; cursor:pointer;
+          font:inherit; font-weight:800; font-size:var(--n-fs-body); cursor:pointer;
           padding:0 16px; border:0; border-radius:999px;
           background:var(--n-brand, #E8542F); color:var(--n-ink);
         }
@@ -281,7 +281,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         body .screen.intro.native.signin-open .intro-pane:not(.signin) { display:none; }
         .welcome-back {
           height:40px; padding:0 18px; border:0; border-radius:999px; cursor:pointer;
-          font:inherit; font-weight:800; font-size:15px;
+          font:inherit; font-weight:800; font-size:var(--n-fs-body);
           background:var(--n-bg, #F6F5F2); color:var(--n-ink, #22201C);
         }
         /* والكتلة تبدأ تحت الرأس لا في منتصف ما بقي. */
@@ -320,13 +320,13 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         body .screen.intro.native .signin-sub { visibility:hidden; } /* مكانهما باقٍ: الشعار في موضعه كما كان (علي: «ارفع الشعار نفس ما كان») */
         .signin-first {
           margin-top:4px; padding:6px; border:0; background:none; cursor:pointer;
-          font:inherit; font-weight:700; font-size:16px; color:var(--n-ink-2, #57524A);
+          font:inherit; font-weight:700; font-size:var(--n-fs-body); color:var(--n-ink-2, #57524A);
         }
         .signin-first u { color:var(--n-brand, #E8542F); text-underline-offset:4px; }
         body .screen.intro.native .signin .welcome-back { align-self:center; margin-top:8px; }
-        body .screen.intro.native .signin-sub { font-size:16px; margin-bottom:10px; }
+        body .screen.intro.native .signin-sub { margin-bottom:10px; }
         body .screen.intro.native .signin-methods { gap:12px; }
-        body .screen.intro.native .method { font-size:17px; padding:15px 18px; }
+        body .screen.intro.native .method { padding:15px 18px; }
 
         /* ─── كتلة التعريف ─── بيضاء كالرأس، والمراحل
            كبسولات الإعداد نفسها (رقمٌ في لسانٍ ملوّن، والاسم، وi تفتح الشرح). */
@@ -360,9 +360,9 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           display:flex; flex-direction:column; gap:6px;
           margin:4px 0 8px; font-family:system-ui, -apple-system, sans-serif;
         }
-        .welcome-what { font-weight:800; font-size:24px; line-height:1.3; color:var(--n-ink, #22201C); }
+        .welcome-what { font-weight:800; font-size:var(--n-fs-h1); line-height:1.3; color:var(--n-ink, #22201C); }
         .welcome-why {
-          font-weight:600; font-size:16px; line-height:1.6; color:var(--n-ink-2, #57524A);
+          font-weight:600; font-size:var(--n-fs-body); line-height:1.6; color:var(--n-ink-2, #57524A);
           text-wrap:balance;
         }
         .welcome-stages { display:flex; flex-direction:column; gap:10px; margin-top:6px; text-align:start; }
@@ -382,7 +382,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           background:var(--tone); border-inline-end:2.5px solid var(--n-ink, #22201C);
           font-weight:800; font-size:21px;
         }
-        .w-stage-name { flex:1; margin:0; align-self:center; padding-inline:14px; font-size:17px; font-weight:800; }
+        .w-stage-name { flex:1; margin:0; align-self:center; padding-inline:14px; font-size:var(--n-fs-h2); font-weight:800; }
         .w-stage-info {
           flex:none; align-self:center; margin-inline-end:14px; width:26px; height:26px; border-radius:50%;
           display:grid; place-items:center; background:var(--tone-soft);
@@ -392,16 +392,16 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         .w-stage.open .w-stage-info { background:var(--n-ink, #22201C); color:#fff; }
         .w-stage-desc {
           margin:0 12px 12px; padding:10px 12px; border-radius:var(--n-r1); background:var(--tone-soft);
-          text-align:center; font-weight:600; font-size:14px; line-height:1.6; color:var(--n-ink, #22201C);
+          text-align:center; font-weight:600; font-size:var(--n-fs-body); line-height:1.6; color:var(--n-ink, #22201C);
         }
         .welcome-video-line {
           margin:16px 0 0; font-family:system-ui, -apple-system, sans-serif; font-weight:600;
-          font-size:17px; color:var(--n-ink, #22201C);
+          font-size:var(--n-fs-body); color:var(--n-ink, #22201C);
         }
         .welcome-box .xi-wrap { margin:0; }
         .welcome-cta {
           margin-top:6px; height:52px; border:0; border-radius:999px; cursor:pointer;
-          font:inherit; font-weight:800; font-size:17px;
+          font:inherit; font-weight:800; font-size:var(--n-fs-h2);
           background:var(--n-brand, #E8542F); color:var(--n-ink);
           box-shadow:var(--n-e2);
         }
@@ -428,7 +428,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
               var(--n-bg, #F6F5F2);
           }
           .welcome-logo { font-size:clamp(40px,3.9vw,64px); }
-          .welcome-login { height:clamp(44px,3.6vw,54px); padding:0 clamp(18px,1.8vw,28px); font-size:clamp(15px,1.25vw,19px); }
+          .welcome-login { height:clamp(44px,3.6vw,54px); padding:0 clamp(18px,1.8vw,28px); font-size:var(--n-fs-body); }
           .welcome-login svg { width:1.25em; height:1.25em; }
           /* اللاصق يقف تحت حشوة الشاشة العليا فيطلّ المحتوى فوقه: الحشوة في الرأس. */
           /* بوزن html[data-skin]: قاعدة «body .screen:not(.setup):not(.end)…» في
@@ -440,19 +440,16 @@ export function Intro({ onDone }: { onDone?: () => void }) {
 
           .welcome-box { gap:clamp(14px,2.2dvh,24px); padding:clamp(26px,4.4dvh,56px) clamp(20px,3.2vw,56px) clamp(24px,4dvh,48px); border-radius:var(--n-r4); }
           .welcome-line { gap:clamp(6px,1dvh,12px); margin-bottom:clamp(8px,1.6dvh,20px); }
-          .welcome-what { font-size:clamp(26px,2.9vw,46px); }
-          .welcome-why { font-size:clamp(16px,1.5vw,23px); }
           .welcome-stages { display:grid; grid-template-columns:repeat(3, 1fr); align-items:start; gap:clamp(10px,1.4vw,22px); }
           .w-stage-no { width:clamp(50px,4.2vw,64px); min-height:clamp(50px,4.2vw,64px); font-size:clamp(21px,1.9vw,28px); }
-          .w-stage-name { font-size:clamp(16px,1.45vw,22px); padding-inline:clamp(10px,1.2vw,18px); }
+          .w-stage-name { padding-inline:clamp(10px,1.2vw,18px); }
           .w-stage-info { width:clamp(26px,2.2vw,32px); height:clamp(26px,2.2vw,32px); font-size:clamp(15px,1.25vw,18px); }
-          .w-stage-desc { font-size:clamp(14px,1.15vw,17px); }
-          .welcome-video-line { margin-top:clamp(16px,3dvh,36px); font-size:clamp(17px,1.5vw,22px); }
+          .welcome-video-line { margin-top:clamp(16px,3dvh,36px); }
           /* الفيديو بعرضه في الإعداد (55vw)، متوسّطاً. */
           .welcome-box .xi-wrap { margin-inline:auto; }
           .welcome-cta {
             align-self:center; width:min(100%, 560px); height:clamp(52px,4.4vw,66px);
-            margin-top:clamp(8px,2dvh,24px); font-size:clamp(17px,1.5vw,22px);
+            margin-top:clamp(8px,2dvh,24px);
           }
 
           /* صفحة الدخول: كتلةٌ أضيق من التعريف (أزرارها عمودٌ واحد) وبمقاسٍ أكبر. */
@@ -462,9 +459,8 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           }
           body .screen.intro.native .signin-logo { font-size:clamp(96px,9vw,140px); }
           body .screen.intro.native .signin-methods { max-width:520px; gap:clamp(12px,1.8dvh,18px); }
-          body .screen.intro.native .method { font-size:clamp(17px,1.4vw,21px); padding:clamp(15px,2.2dvh,20px) 18px; }
-          .signin-first { font-size:clamp(16px,1.3vw,19px); }
-          .welcome-back { height:clamp(40px,3.4vw,48px); font-size:clamp(15px,1.2vw,18px); }
+          body .screen.intro.native .method { padding:clamp(15px,2.2dvh,20px) 18px; }
+          .welcome-back { height:clamp(40px,3.4vw,48px); }
           .welcome-cta, .welcome-login, .w-stage-head, .welcome-back, .signin-first { cursor:pointer; }
         }
         /* الجوال الأفقيّ: صفحة الدخول تسع الشاشة بلا تمرير. الشعار أصغر، والعنوان
