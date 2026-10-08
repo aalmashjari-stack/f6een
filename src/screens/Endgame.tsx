@@ -34,6 +34,17 @@ export function Endgame({
   const [reportOpen, setReportOpen] = useState(false)
   const win = leader(state.teams)
   const stats = playerStats(state).sort((a, b) => b.correct - a.correct || a.wrong - b.wrong)
+  /* منصّة التتويج (DESIGN.md §8): الثلاثة الأوائل كتلٌ بأرقام تُرى من آخر
+     المجلس، والباقون في القائمة تحتها. لكنّ اللاعب يجيب في الديربي مرّةً أو
+     مرّتين، فالتعادل هو الغالب — ومنصّةٌ ثلاثُ درجاتها «1» لا تقول شيئاً.
+     فالمنصّة حين يتمايز الثلاثة وحدها، والشارة حين ينفرد الأوّل وحده؛ وإلّا
+     بقيت القائمة كما كانت. */
+  const rankOf = (i: number) =>
+    1 + stats.filter((o) => o.correct > stats[i].correct || (o.correct === stats[i].correct && o.wrong < stats[i].wrong)).length
+  const bestId = stats.length >= 2 && stats[0].correct > 0 && rankOf(1) > 1 ? stats[0].player.id : null
+  const podium =
+    bestId && stats.length >= 3 && rankOf(2) === 3 ? stats.slice(0, 3).map((s, i) => ({ s, rank: i + 1 })) : []
+  const listed = podium.length ? stats.slice(3) : stats
 
   const sp = state.stagePoints
   const rows = [
@@ -151,10 +162,45 @@ export function Endgame({
           يُقرأ صفرٌ أمام اسم لاعب اجتهد في المرحلتين الأخريين على أنه حكم عليه. */}
       <div className="es-block">
         <div className="es-title">الديربي · لاعباً لاعباً</div>
+        {podium.length > 0 && (
+          /* الأوّل في الوسط أعلى، والثاني والثالث على جانبيه — ترتيب المصدر
+             ٢ ثمّ ١ ثمّ ٣ يضعه في الوسط في الاتّجاهين. */
+          <div className="podium">
+            {[podium[1], podium[0], podium[2]].map(({ s, rank }) => (
+              <div key={s.player.id} className={`pod-step rank-${Math.min(rank, 3)} team-${s.teamId}`}>
+                {rank === 1 && (
+                  <span className="pod-badge">
+                    <span aria-hidden="true">★</span> أفضل لاعب
+                  </span>
+                )}
+                <span className="pod-card">
+                  <span className="pod-name">{s.player.name}</span>
+                  <span className="es-chips">
+                    <span className="chip ok" title="إجابات صحيحة">
+                      <span aria-hidden="true">✓</span>
+                      <span className="tabular">{s.correct}</span>
+                    </span>
+                    <span className="chip no" title="إجابات خاطئة">
+                      <span aria-hidden="true">✗</span>
+                      <span className="tabular">{s.wrong}</span>
+                    </span>
+                  </span>
+                </span>
+                <span className="pod-block tabular">{rank}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {listed.length > 0 && (
         <div className="es-table">
-          {stats.map((s, i) => (
+          {listed.map((s, i) => (
             <div key={s.player.id} className="es-row player" style={{ animationDelay: `${0.5 + i * 0.05}s` }}>
               <span className="sr-who">
+                {s.player.id === bestId && (
+                  <span className="pod-badge">
+                    <span aria-hidden="true">★</span> أفضل لاعب
+                  </span>
+                )}
                 <span className="sr-name">{s.player.name}</span>
                 <span className="sr-team">{state.teams[s.teamId].name}</span>
               </span>
@@ -174,6 +220,7 @@ export function Endgame({
             </div>
           ))}
         </div>
+        )}
       </div>
 
       </div>
@@ -275,13 +322,12 @@ export function Endgame({
         .w-title {
           color:var(--n-ink); font-weight:800; font-size:clamp(26px,min(5vw,6dvh),64px); line-height:1.05;
           animation:winner-in .8s var(--ease-spring) .26s both;
-          text-shadow:0 0 46px rgba(255,189,89,.42);
         }
         /* اسم الفائز يدخل كبيراً ثم يستقرّ — أكبر عنصر في أهم لحظة */
         @keyframes winner-in {
-          0%   { opacity:0; transform:scale(1.5); filter:blur(9px); }
-          55%  { opacity:1; filter:none; }
-          100% { opacity:1; transform:none; filter:none; }
+          0%   { opacity:0; transform:scale(1.5); }
+          55%  { opacity:1; }
+          100% { opacity:1; transform:none; }
         }
         .final-score {
           font-size:clamp(16px,min(2.6vw,3.2dvh),34px); font-weight:800; color:var(--n-ink); margin-top:clamp(1px,.5dvh,6px);
@@ -352,6 +398,51 @@ export function Endgame({
         .chip .tabular { font-size:1.15em; font-weight:800; }
         .chip.ok { color:var(--n-ink); background:var(--n-good-tint); }
         .chip.no { color:var(--n-ink); background:var(--n-bad-tint); }
+        /* ── منصّة التتويج ── */
+        .podium {
+          display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); align-items:end;
+          gap:clamp(6px,1vw,14px); width:100%;
+        }
+        .pod-step { display:flex; flex-direction:column; align-items:stretch; gap:clamp(4px,.8dvh,8px); min-width:0; }
+        .pod-card {
+          display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0;
+          padding:clamp(5px,1dvh,10px) clamp(6px,.8vw,12px);
+          border-radius:var(--n-r2); background:var(--n-surface); box-shadow:var(--n-e1);
+        }
+        .pod-step.team-0 .pod-card { background:var(--n-a-tint); }
+        .pod-step.team-1 .pod-card { background:var(--n-b-tint); }
+        .pod-name {
+          max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+          color:var(--n-ink); font-weight:800; line-height:1.3;
+          font-size:clamp(13px,min(1.7vw,2.2dvh),24px);
+        }
+        .pod-block {
+          display:grid; place-items:center;
+          border-radius:var(--n-r2) var(--n-r2) 0 0;
+          background:var(--n-ink); color:#fff;
+          font-family:'Cairo', sans-serif; font-weight:800; line-height:1;
+          font-size:clamp(22px,min(3.4vw,5dvh),56px);
+        }
+        .pod-step.rank-1 .pod-block { height:clamp(44px,10dvh,120px); }
+        .pod-step.rank-2 .pod-block { height:clamp(32px,7dvh,84px); }
+        .pod-step.rank-3 .pod-block { height:clamp(24px,5dvh,60px); }
+        .pod-badge {
+          align-self:center; display:inline-flex; align-items:center; gap:4px;
+          padding:2px 10px; border-radius:999px;
+          background:var(--n-surface); color:var(--n-ink); box-shadow:var(--n-e1);
+          font-weight:800; font-size:clamp(11px,min(1.3vw,1.7dvh),17px); white-space:nowrap;
+          transform:rotate(-3deg);
+        }
+        .pod-badge span { color:var(--n-brand); }
+        .sr-who .pod-badge { align-self:center; flex:none; transform:none; padding:0 8px; font-size:clamp(10px,min(1.1vw,1.4dvh),14px); }
+        .podium + .es-table { margin-top:4px; }
+        @media (max-height:480px) {
+          .pod-badge { transform:none; }
+          .pod-step.rank-1 .pod-block { height:34px; }
+          .pod-step.rank-2 .pod-block { height:26px; }
+          .pod-step.rank-3 .pod-block { height:20px; }
+          .pod-block { font-size:18px; }
+        }
         .foot { display:flex; align-items:center; gap:10px; color:var(--n-ink-3); font-size:13px; }
         .foot-link { background:none; border:none; color:var(--n-ink-2); font-family:inherit; font-size:13px; cursor:pointer; text-decoration:underline; }
         .report-note { max-width:560px; color:var(--n-ink-2); font-size:13px; line-height:1.6; background:var(--n-surface); border:1px solid var(--n-line); border-radius:var(--n-r2); padding:12px 16px; }
