@@ -25,7 +25,7 @@ import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
  * **غوغل يعمل فعلاً** عبر Supabase. وApple والبريد معطّلان بسببين مختلفين:
  * آبل تحتاج حساب مطوّر مدفوعاً لم يُسجَّل بعد، والبريد يحتاج شاشة إدخال
  * ورمز تحقّق. والبريد صار يفتح شاشة `SignUp` (طلب علي ٢٧ أغسطس ٢٠٢٦)،
- * وبقيت آبل معطّلةً بسبب مكتوب — زرٌّ معطّل بسبب خيرٌ من زرٍّ يعد بما لا يفي.
+ * وآبل مخفيّةٌ حتى تعمل (٨ أكتوبر ٢٠٢٦) — المعطّل بلا سببٍ ظاهر يُقرأ معطوباً.
  *
  * ولم يعد هنا طريق إلى اللعبة بلا حساب: هذا ما يشترطه SPEC القسم ٩
  * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
@@ -145,15 +145,9 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           </div>
         ) : (
           <div className="signin-methods">
-            <button
-              className="method apple"
-              disabled
-              title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد"
-            >
-              {/* «سجل دخولك عبر…» (علي ١ أكتوبر ٢٠٢٦). */}
-              سجل دخولك عبر Apple
-            </button>
-
+            {/* زرّ Apple مخفيٌّ حتى يعمل (التدقيق M1، DESIGN.md §8): كان رماديّاً
+                معطّلاً بلا حدّ ولا سبب ظاهر فيُقرأ معطوباً. نصّه حين يعود:
+                «سجل دخولك عبر Apple» (علي ١ أكتوبر ٢٠٢٦). */}
             <button className="method google" onClick={google} disabled={busy}>
               {/* الشعار لا الكلمة (طلب علي ٢٧ سبتمبر ٢٠٢٦): حرف G بألوانه
                   الأربعة كما في إرشادات غوغل، والاسم في aria-label. */}
@@ -276,7 +270,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           display:flex; align-items:center; gap:8px; height:40px;
           font:inherit; font-weight:800; font-size:15px; cursor:pointer;
           padding:0 16px; border:0; border-radius:999px;
-          background:var(--n-brand, #E8542F); color:#fff;
+          background:var(--n-brand, #E8542F); color:var(--n-ink);
         }
         .welcome-login svg { width:19px; height:19px; display:block; }
         .welcome-login:active { transform:scale(.97); }
@@ -408,7 +402,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         .welcome-cta {
           margin-top:6px; height:52px; border:0; border-radius:999px; cursor:pointer;
           font:inherit; font-weight:800; font-size:17px;
-          background:var(--n-brand, #E8542F); color:#fff;
+          background:var(--n-brand, #E8542F); color:var(--n-ink);
           box-shadow:var(--n-e2);
         }
         .welcome-cta:active { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink); }

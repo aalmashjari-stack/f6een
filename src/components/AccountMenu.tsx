@@ -349,7 +349,7 @@ export function AccountMenu({
         /* القيمة اللاتينية تبقى على حافة العمود نفسها: محاذاة البداية مع
            اتّجاهٍ لاتينيّ تقذفها إلى الطرف المقابل فتنفصل عن مفتاحها. */
         .acct-v.ltr { direction:ltr; text-align:end; }
-        .acct-v.strong { font-weight:900; color:var(--n-brand, #7A3E9D); }
+        .acct-v.strong { font-weight:900; color:var(--n-brand); }
 
         .acct-gift { display:grid; grid-template-columns:1fr auto; gap:8px; margin-block-start:4px; }
         .acct-in {
@@ -359,7 +359,7 @@ export function AccountMenu({
           background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
         }
         .acct-in::placeholder { color:var(--n-ink-3, #948CA8); font-weight:700; }
-        .acct-in:focus { outline:none; border-color:var(--n-brand, #7A3E9D); box-shadow:0 0 0 3px var(--n-brand-tint, #FFE3D6); }
+        .acct-in:focus { outline:none; border-color:var(--n-brand); box-shadow:0 0 0 3px var(--n-brand-tint, #FFE3D6); }
 
         .acct-games { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
         .g-row {
@@ -371,7 +371,7 @@ export function AccountMenu({
         .g-date { font-size:12px; font-weight:700; color:var(--n-ink-3, #948CA8); }
         .g-tag { font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px;
           background:var(--n-surface, #fff); color:var(--n-ink-3, #948CA8); }
-        .g-tag.open { color:var(--n-brand, #7A3E9D); }
+        .g-tag.open { color:var(--n-brand); }
         .g-teams { display:flex; align-items:baseline; gap:8px; font-size:14px; font-weight:700;
           flex-wrap:wrap; }
         .g-pair { display:inline-flex; align-items:baseline; gap:8px; }
@@ -381,7 +381,7 @@ export function AccountMenu({
            سطرٍ عربيّ يُقلب إلى «10−» بلا هذا العزل. */
         .g-score { direction:ltr; unicode-bidi:isolate; font-variant-numeric:tabular-nums; }
         /* الفائز وحده ملوّن: الصفّ يُقرأ بلمحة، والسؤال الوحيد فيه «مين فاز؟». */
-        .g-team.win { color:var(--n-brand, #7A3E9D); font-weight:900; }
+        .g-team.win { color:var(--n-brand); font-weight:900; }
         .g-sep { color:var(--n-ink-3, #948CA8); }
         .g-none { font-size:13px; font-weight:700; color:var(--n-ink-3, #948CA8); }
 
@@ -402,7 +402,7 @@ export function AccountMenu({
         .acct-act:disabled { opacity:.45; cursor:default; }
         /* الرابط يلبس زيّ الأزرار: هو في صفٍّ معها، وفرقُ شكله يقرأ عطلاً. */
         a.acct-act { text-decoration:none; text-align:center; }
-        .acct-act.admin { background:var(--n-brand, #E8542F); color:#fff;
+        .acct-act.admin { background:var(--n-brand, #E8542F); color:var(--n-ink);
           box-shadow:var(--n-e1); }
         .acct-act.admin:hover { background:#D44A27; }
         .acct-act.danger { color:var(--n-bad, #DC4033); }

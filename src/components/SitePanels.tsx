@@ -75,7 +75,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
         /* حزمة الخمس هي المعروضة للدفع الأمثل — تلبس الأصفر لتُقرأ أولاً */
         .sp-pack.hot { background:var(--n-a-tint, #FFCE3C); box-shadow:var(--n-e2); }
         .sp-count { font-weight:800; font-size:clamp(14px,1.7vw,18px); color:var(--n-ink, #22201C); }
-        .sp-price { font-weight:800; font-size:clamp(20px,2.6vw,28px); color:var(--n-brand, #E8542F); direction:ltr; }
+        .sp-price { font-weight:800; font-size:clamp(20px,2.6vw,28px); color:var(--n-ink, #22201C); direction:ltr; }
         .sp-price small { font-size:.5em; font-weight:700; color:var(--n-ink-2, #57524A); }
         .sp-per { font-size:clamp(10px,1.2vw,12px); font-weight:700; color:var(--n-ink-2, #57524A); }
 
@@ -105,7 +105,7 @@ function Veil({ onClose, label, children }: { onClose: () => void; label: string
           align-self:center;
           font:inherit; font-weight:800; font-size:clamp(14px,1.8vw,17px); cursor:pointer;
           padding:10px 34px; border:0; border-radius:var(--n-r1);
-          background:var(--n-brand, #E8542F); color:#fff;
+          background:var(--n-brand, #E8542F); color:var(--n-ink);
           box-shadow:var(--n-e2);
           transition:transform .14s var(--ease-spring), box-shadow .14s ease;
         }
@@ -250,7 +250,7 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
           display:grid; place-items:center;
           width:clamp(26px,3.4vw,34px); height:clamp(26px,3.4vw,34px);
           border-radius:50%;
-          background:var(--n-brand, #E8542F); color:#fff;
+          background:var(--n-brand, #E8542F); color:var(--n-ink);
           font-weight:900; font-size:clamp(13px,1.7vw,17px);
         }
         .sp-sbody { min-width:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }

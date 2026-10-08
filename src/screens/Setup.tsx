@@ -683,7 +683,7 @@ export function Setup({
           transition:transform .15s var(--ease-spring), box-shadow .15s ease;
         }
         body .screen.setup .hnav:hover { transform:translateY(-1px); box-shadow:var(--n-e1); }
-        body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:#fff; }
+        body .screen.setup .hnav-buy { background:var(--n-brand, #E8542F); color:var(--n-ink); }
 
         /* زرّ القائمة ولوحُها في طبقة التذكرة آخر الملفّ. */
         body .screen.setup .hnav-menu { display:none; }
@@ -1325,8 +1325,8 @@ export function Setup({
           border-bottom:1.5px solid rgba(34,32,28,.14);
         }
         html[data-skin] body .screen.setup .hero-logo.f6een-mark { top:0; font-size:clamp(33px,9vw,38px); }
-        html[data-skin] body .screen.setup .hnav.hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:#fff; box-shadow:0 0 0 2px var(--n-ink, #22201C); }
-        html[data-skin] body .screen.setup .hnav.hnav-menu.open { background:var(--n-ink, #22201C); }
+        html[data-skin] body .screen.setup .hnav.hnav-menu { inset-inline-end:4px; background:var(--n-brand, #E8542F); color:var(--n-ink); box-shadow:0 0 0 2px var(--n-ink, #22201C); }
+        html[data-skin] body .screen.setup .hnav.hnav-menu.open { background:var(--n-ink, #22201C); color:#fff; }
         html[data-skin] body .screen.setup .hero-nav .hnav-sound { display:flex; align-items:center; justify-content:center; gap:10px; }
         html[data-skin] body .screen.setup .hnav-sound.off { opacity:.6; }
         html[data-skin] body .screen.setup .hnav-sound svg { width:20px; height:20px; display:block; }
@@ -1345,7 +1345,7 @@ export function Setup({
         }
         html[data-skin] body .screen.setup .hnav-balance b {
           display:grid; place-items:center; min-width:26px; height:26px; padding:0 7px;
-          border-radius:999px; background:var(--n-brand, #E8542F); color:#fff;
+          border-radius:999px; background:var(--n-brand, #E8542F); color:var(--n-ink);
           font-size:14px; font-weight:800;
         }
         /* والسطر تحت «ابدأ اللعبة» يسقط: الصوت في لوح ☰. */

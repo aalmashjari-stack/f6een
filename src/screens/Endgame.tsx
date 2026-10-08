@@ -468,7 +468,7 @@ function ReportPanel({
         .rp-btn {
           flex:0 0 auto; font:inherit; font-weight:800; font-size:13px; cursor:pointer;
           padding:7px 14px; border:0; border-radius:999px;
-          background:var(--n-brand, #7A3E9D); color:#fff;
+          background:var(--n-brand); color:var(--n-ink);
         }
         .rp-btn.done { background:transparent; color:var(--n-ink-3, #948CA8);
           box-shadow:inset 0 0 0 1px currentColor; cursor:default; }

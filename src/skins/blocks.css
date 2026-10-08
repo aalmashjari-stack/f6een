@@ -36,7 +36,8 @@ html[data-skin='blocks'] {
   --n-surface-2: #FFF3E0;
   --n-ink: #22201C;
   --n-ink-2: #57524A;
-  --n-ink-3: #8A8578;
+  /* ‎#6E695E‎ بدل ‎#8A8578‎ (3.68 على الأبيض) — نحو 5:1 (التدقيق M11) */
+  --n-ink-3: #6E695E;
   --n-line: #E8E0D0;
 
   /* البرتقاليّ الأحمر هو صوت الهويّة: العناوين، الإجابة المكشوفة، «ضد».
@@ -57,7 +58,8 @@ html[data-skin='blocks'] {
   --n-b-line: #22201C;
 
   /* الحكم — كما في كلّ الهويّات: محجوزان */
-  --n-good: #1D9E5F;
+  /* ‎#157A49‎ بدل ‎#1D9E5F‎: الأبيض عليه 3.44 فصار نحو 5:1 (التدقيق M11) */
+  --n-good: #157A49;
   --n-good-tint: #DDF5E7;
   --n-bad: #CE2F1E;
   --n-bad-tint: #FADFDA;
@@ -179,7 +181,7 @@ html[data-skin='blocks'] .rd-title {
   padding: 2px 15px 4px;
   border-radius: 999px;
   background: var(--n-brand);
-  color: #fff;
+  color: var(--n-ink);
   box-shadow: 0 0 0 2px var(--n-ink);
   transform: rotate(-1deg);
   font-weight: 800;
@@ -202,7 +204,7 @@ html[data-skin='blocks'] .rd-chip.turn { background: var(--n-ink); color: #fff; 
 html[data-skin='blocks'] .action {
   border-radius: var(--n-r2);
   background: var(--n-brand);
-  color: #fff;
+  color: var(--n-ink);
   box-shadow: var(--n-e2);
   font-weight: 800;
 }
@@ -228,7 +230,7 @@ html[data-skin='blocks'] .action.ghost {
 html[data-skin='blocks'] .action.ghost:hover:not(:disabled) { background: var(--n-surface-2); box-shadow: var(--n-e1); }
 html[data-skin='blocks'] .action.ghost:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0 0 0 2px var(--n-ink); }
 html[data-skin='blocks'] .action.coral,
-html[data-skin='blocks'] .action.coral:hover:not(:disabled) { background: var(--n-bad); box-shadow: var(--n-e2); }
+html[data-skin='blocks'] .action.coral:hover:not(:disabled) { background: var(--n-bad); color: #fff; box-shadow: var(--n-e2); }
 
 /* ─── ٥ب. رأس الإعداد: شريطٌ بقائمة، بلا بانر ────────────────────────── */
 /* الرأس تذكرةٌ تُرسم في Setup.tsx (١٧ سبتمبر ٢٠٢٦، لكلّ المقاسات) — كان
@@ -440,7 +442,7 @@ html[data-skin='blocks'] body .screen .catchip.dimmed:not(.taken) { box-shadow: 
 html[data-skin='blocks'] body .screen .catchip.taken.dimmed { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
 html[data-skin='blocks'] body .screen .catchip.taken { box-shadow: 0 0 0 3px var(--n-accent), 3px 3px 0 var(--n-ink); }
 html[data-skin='blocks'] body .screen .cc-tick {
-  background: var(--n-accent); color: #fff;
+  background: var(--n-accent); color: var(--n-ink);
   border-radius: var(--n-r1);
   box-shadow: var(--n-e1);
 }
@@ -464,7 +466,7 @@ html[data-skin='blocks'] .pick.pick-no:hover { box-shadow: var(--n-e3); }
 html[data-skin='blocks'] .interval-card { box-shadow: var(--n-e3); border-radius: var(--n-r4); }
 html[data-skin='blocks'] .il-eyebrow {
   background: var(--n-brand);
-  color: #fff;
+  color: var(--n-ink);
   box-shadow: 0 0 0 2px var(--n-ink);
   transform: rotate(-1deg);
 }
@@ -553,7 +555,7 @@ html[data-skin='blocks'] .screen.end .winner {
 }
 html[data-skin='blocks'] .screen.end .winner-stamp {
   background: var(--n-brand);
-  color: #fff;
+  color: var(--n-ink);
   box-shadow: 0 0 0 2px var(--n-ink);
   transform: rotate(1.2deg);
   font-weight: 800;
@@ -709,3 +711,14 @@ html[data-skin] body .screen .bcell .bc-level {
 html[data-skin='blocks'] body .screen .rv-card::after,
 html[data-skin='blocks'] body .screen .reveal-a::after,
 html[data-skin='blocks'] body .screen .pick::before { display: none; }
+
+/* ─── التباين والتركيز (DESIGN.md §4 و§7.6، التدقيق M11 وL4) ───────────── */
+/* النصّ على الكتلة البرتقاليّة حبرٌ: الأبيض عليها 3.66 فلا يصلح إلّا للعناوين
+   الضخمة، والأزرار والشارات تنزل إلى 14px على الجوال. */
+/* مؤشّر التركيز برتقاليّ بإزاحة — مختلفٌ عن حدود الحبر الزخرفيّة التي تشبهه،
+   لمن يشغّل اللعبة من لوحة مفاتيح لابتوبٍ موصولٍ بالتلفزيون. ‎!important‎
+   يقابل ‎outline:none‎ المكتوبة في قواعد الشاشات. الحقول خارجه: لها حلقتها. */
+html[data-skin='blocks'] :focus-visible:not(input):not(textarea):not(select) {
+  outline: 3px solid var(--n-brand) !important;
+  outline-offset: 3px !important;
+}
