@@ -136,6 +136,7 @@ table.a-tbl { width: 100%; min-width: max-content; border-collapse: collapse; wh
 .tag.open { color: var(--n-brand); background: var(--n-brand-tint); }
 .tag.abandoned { color: var(--n-warn); }
 .tag.finished { color: var(--n-good); }
+.tag.bad { color: var(--n-bad); background: var(--n-bad-tint, #FADFDA); }
 
 /* خليّة الصلاحية: شارةٌ وزرّان في سطرٍ واحد لا يلتفّ. ‎.a-bar‎ يلتفّ
    بطبعه (‎flex-wrap:wrap‎) وهو صحيحٌ في أشرطة الأدوات العريضة، وخطأٌ في
