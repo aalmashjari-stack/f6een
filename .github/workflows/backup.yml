@@ -1,0 +1,97 @@
+# النسخة الاحتياطيّة الليليّة — مستقلّةٌ عن Supabase وعن جهاز علي.
+#
+# كلّ ليلة الساعة 3 فجراً بتوقيت الكويت (00:00 UTC):
+#   القاعدة  → backup.snapshot() → JSON لكلّ جدول → tar.gz → age → R2  db/daily/
+#   أوّلُ كلّ شهر تُنسخ أيضاً إلى                                         db/monthly/
+#   صور art  → الجديدُ والمتغيّر وحده →                                   R2  art/
+#
+# في R2: قفلٌ يمنع حذف db/ أو استبداله 30 يوماً، وقواعدُ تحذف اليوميّ بعد 35
+# والشهريّ بعد 400. والتشفير بمفتاح علي العامّ (AGE_RECIPIENT)؛ السرّيّ عنده
+# وحده — بدونه لا تُفتح نسخة.
+#
+# المستودع عامّ وسجلّاته يقرؤها أيّ أحد: لا خطوة هنا تطبع بيانات، وما يطبعه
+# السكربت أعدادٌ فقط.
+#
+# الأسرار: BACKUP_DB_URL (رابط backup_reader بالـSession pooler)،
+#   R2_ACCESS_KEY_ID، R2_SECRET_ACCESS_KEY، R2_ENDPOINT.
+# المتغيّرات: AGE_RECIPIENT، SUPABASE_URL.
+#
+# فتحُ نسخة (على جهاز علي، والمفتاح السرّيّ في ~/f6een-backup.key):
+#   aws s3 cp s3://f6een-backups/db/daily/<الملفّ> .   (أو التنزيل من لوحة R2)
+#   age -d -i ~/f6een-backup.key <الملفّ> | tar -xzf - -C <مجلّد>
+# فيخرج ملفُّ JSON لكلّ جدول — بصيغة npm run db:backup نفسها.
+
+name: backup
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BUCKET: f6een-backups
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      AWS_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT }}
+      AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+      AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: الأدوات
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund > /dev/null
+          sudo apt-get install -y -qq age > /dev/null
+          age --version
+          aws --version
+
+      - name: قائمة الصور في R2
+        run: |
+          aws s3api list-objects-v2 --bucket "$BUCKET" --prefix art/ \
+            --query 'Contents[].[Key,Size]' --output json > "$RUNNER_TEMP/r2-art.json"
+
+      - name: اللقطة والصور الجديدة
+        env:
+          BACKUP_DB_URL: ${{ secrets.BACKUP_DB_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          OUT_DIR: ${{ runner.temp }}/db
+          ART_DIR: ${{ runner.temp }}/art
+          R2_ART_LISTING: ${{ runner.temp }}/r2-art.json
+        run: node scripts/backup-nightly.mjs
+
+      - name: التشفير والرفع
+        env:
+          AGE_RECIPIENT: ${{ vars.AGE_RECIPIENT }}
+        run: |
+          set -euo pipefail
+          stamp=$(date -u +%Y-%m-%dT%H-%M-%SZ)
+          file="$RUNNER_TEMP/f6een-$stamp.tar.gz.age"
+          tar -czf - -C "$RUNNER_TEMP/db" . | age -r "$AGE_RECIPIENT" -o "$file"
+          rm -rf "$RUNNER_TEMP/db"
+
+          aws s3 cp "$file" "s3://$BUCKET/db/daily/f6een-$stamp.tar.gz.age" --only-show-errors
+          if [ "$(date -u +%d)" = "01" ]; then
+            aws s3 cp "$file" "s3://$BUCKET/db/monthly/f6een-$stamp.tar.gz.age" --only-show-errors
+          fi
+          aws s3 ls "s3://$BUCKET/db/daily/f6een-$stamp.tar.gz.age"
+
+          if [ -d "$RUNNER_TEMP/art" ] && [ -n "$(ls -A "$RUNNER_TEMP/art")" ]; then
+            aws s3 cp "$RUNNER_TEMP/art" "s3://$BUCKET/art/" --recursive --only-show-errors
+          fi
