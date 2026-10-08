@@ -59,7 +59,7 @@ jobs:
         run: |
           # pg وحده في مجلّدٍ معزول — لا نحتاج اعتماديّات اللعبة، وقفلُها ليس شرطاً هنا.
           mkdir -p "$RUNNER_TEMP/deps"
-          cp scripts/backup-nightly.mjs "$RUNNER_TEMP/deps/"
+          cp scripts/backup-nightly.mjs scripts/backup-record.mjs "$RUNNER_TEMP/deps/"
           cd "$RUNNER_TEMP/deps" && npm init -y > /dev/null && npm install pg@8 --no-audit --no-fund > /dev/null
           sudo apt-get install -y -qq age > /dev/null
           age --version
@@ -78,6 +78,7 @@ jobs:
           ART_DIR: ${{ runner.temp }}/art
           R2_ART_LISTING: ${{ runner.temp }}/r2-art.json
           REPORT: ${{ runner.temp }}/report.txt
+          RUN_JSON: ${{ runner.temp }}/run.json
         run: node "$RUNNER_TEMP/deps/backup-nightly.mjs"
 
       - name: التشفير والرفع
@@ -96,9 +97,22 @@ jobs:
           fi
           aws s3 ls "s3://$BUCKET/db/daily/f6een-$stamp.tar.gz.age"
           echo "الحجم: $(du -h "$file" | cut -f1)" >> "$RUNNER_TEMP/report.txt"
+          printf '{"file":"db/daily/f6een-%s.tar.gz.age","size_bytes":%s}' "$stamp" "$(stat -c %s "$file")" > "$RUNNER_TEMP/upload.json"
 
           if [ -d "$RUNNER_TEMP/art" ] && [ -n "$(ls -A "$RUNNER_TEMP/art")" ]; then
             aws s3 cp "$RUNNER_TEMP/art" "s3://$BUCKET/art/" --recursive --only-show-errors
+          fi
+
+      - name: سجلّ اللوحة
+        if: always()
+        continue-on-error: true
+        env:
+          BACKUP_DB_URL: ${{ secrets.BACKUP_DB_URL }}
+          STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -f "$RUNNER_TEMP/deps/backup-record.mjs" ] && [ -d "$RUNNER_TEMP/deps/node_modules/pg" ]; then
+            node "$RUNNER_TEMP/deps/backup-record.mjs"
           fi
 
       - name: تيليغرام

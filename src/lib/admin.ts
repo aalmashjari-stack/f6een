@@ -272,6 +272,25 @@ export async function fetchInsights(excludeAdmins: boolean): Promise<Insights> {
   return data as Insights
 }
 
+/** سطرٌ من `backup.runs` — تكتبه المهمّة الليليّة بعد كلّ تشغيل. */
+export interface BackupRun {
+  id: number
+  at: string
+  ok: boolean
+  file: string | null
+  size_bytes: number | null
+  tables: Record<string, number> | null
+  images_total: number | null
+  images_new: number | null
+  run_url: string | null
+}
+
+export async function fetchBackups(): Promise<BackupRun[]> {
+  const { data, error } = await supabase.rpc('admin_backups')
+  if (error) throw new Error(translate(error.message))
+  return (data ?? []) as BackupRun[]
+}
+
 /* أخطاء القاعدة إنجليزيّة بطبعها، واللوحة عربيّة كبقيّة التطبيق. */
 const ERRORS: Record<string, string> = {
   not_admin: 'هذا الحساب ليس مديراً',

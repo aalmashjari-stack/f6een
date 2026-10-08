@@ -18,7 +18,7 @@ import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import pg from 'pg'
 
-const { BACKUP_DB_URL, SUPABASE_URL, OUT_DIR, ART_DIR, R2_ART_LISTING, REPORT } = process.env
+const { BACKUP_DB_URL, SUPABASE_URL, OUT_DIR, ART_DIR, R2_ART_LISTING, REPORT, RUN_JSON } = process.env
 for (const [k, v] of Object.entries({ BACKUP_DB_URL, SUPABASE_URL, OUT_DIR, ART_DIR, R2_ART_LISTING })) {
   if (!v) {
     console.error(`ينقص ${k}`)
@@ -76,6 +76,14 @@ for (const { name, size } of snap['storage.objects'] ?? []) {
 }
 const imagesLine = `الصور: ${(snap['storage.objects'] ?? []).length} في الدلو، ${fetched} جديدة${failed ? `، وفشل ${failed}` : ''}`
 console.log(imagesLine)
+
+/* ما يكتبه `backup-record.mjs` في سجلّ اللوحة. */
+if (RUN_JSON) {
+  writeFileSync(
+    RUN_JSON,
+    JSON.stringify({ tables: summary, images_total: (snap['storage.objects'] ?? []).length, images_new: fetched }),
+  )
+}
 
 /* سطور رسالة تيليغرام — أعدادٌ فقط، كسجلّ المهمّة. */
 if (REPORT) {

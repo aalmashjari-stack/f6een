@@ -20,6 +20,7 @@ import { uploadArt, listArt, deleteArt, type ArtFile } from '../lib/uploads'
 import { isImageUrl } from '../game/celebs'
 import { shippedImage } from '../game/shippedImage'
 import { Insights } from './Insights'
+import { Backups } from './Backups'
 import type { Plan } from '../lib/importQuestions'
 import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
@@ -190,6 +191,7 @@ type Tab =
   | 'drafts'
   | 'uploads'
   | 'insights'
+  | 'backups'
 
 /**
  * الألسنة مرتّبةٌ بالعمل لا بتاريخ إضافتها: **المحتوى أوّلاً** (الأسئلة
@@ -213,6 +215,7 @@ const TABS: [Tab, string, boolean][] = [
   ['sessions', 'الجلسات', true],
   ['codes', 'أكواد الهدية', true],
   ['messages', 'الرسائل', true],
+  ['backups', 'النسخ الاحتياطي', true],
 ]
 
 function Dashboard({ session, superAdmin }: { session: Session; superAdmin: boolean }) {
@@ -294,6 +297,7 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       {tab === 'drafts' && <Drafts />}
       {tab === 'uploads' && <Uploads />}
       {tab === 'insights' && <Insights />}
+      {tab === 'backups' && <Backups />}
     </div>
   )
 }
