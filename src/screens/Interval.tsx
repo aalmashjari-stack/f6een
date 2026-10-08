@@ -81,16 +81,16 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
       </button>
       <style>{`
         .center-col { display:flex; flex-direction:column; }
-        .interval-card { max-width:760px; text-align:center; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:clamp(28px,6dvh,60px); display:flex; flex-direction:column; gap:16px; }
+        .interval-card { max-width:760px; text-align:center; background:var(--n-surface); border:1px solid var(--n-line); border-radius:var(--n-r4); padding:clamp(28px,6dvh,60px); display:flex; flex-direction:column; gap:16px; }
         /* القاعدة تظهر بعد الاسم بلحظة: الفريق يقرأ «الديربي» ثم يقرأ قاعدتها،
            وهي أهم سطر في الشاشة لأن قواعد المرحلة تغيّرت للتوّ. */
-        .il-eyebrow { color:var(--text-2); font-weight:700; font-size:clamp(14px,1.8vw,18px); animation:il-rise .5s ease-out .1s both; }
+        .il-eyebrow { color:var(--n-ink-2); font-weight:700; font-size:clamp(14px,1.8vw,18px); animation:il-rise .5s ease-out .1s both; }
         .il-title {
-          color:var(--gold); font-weight:800; font-size:clamp(38px,7vw,72px); line-height:1.1;
+          color:var(--n-ink); font-weight:800; font-size:clamp(38px,7vw,72px); line-height:1.1;
           animation:il-title .7s var(--ease-spring) .2s both;
           text-shadow:0 0 40px rgba(255,189,89,.35);
         }
-        .il-rule { color:var(--cream); font-size:clamp(17px,2.4vw,24px); line-height:1.7; font-weight:600; animation:il-rise .55s ease-out .55s both; }
+        .il-rule { color:var(--n-ink); font-size:clamp(17px,2.4vw,24px); line-height:1.7; font-weight:600; animation:il-rise .55s ease-out .55s both; }
 
         /* جوال أفقي: قاعدة الديربي ستّة أسطر بـ line-height 1.7 وحشوة ٢٨، فتتجاوز
            البطاقة الشاشةَ صعوداً حتى تحجب شريط النتيجة ونزولاً حتى يقطعها الزر.
@@ -105,8 +105,8 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
 
         /* التعادل مرجاني لا ذهبي: المرجاني لغة التوتّر في هذه اللعبة (القسم ١١)،
            وهذه اللحظة الوحيدة التي تكون فيها اللعبة معلّقة بسؤال واحد. */
-        .interval-card.tie { border-color:var(--coral); box-shadow:var(--glow-coral); }
-        .interval-card.tie .il-title { color:var(--coral); text-shadow:0 0 40px rgba(228,103,74,.4); }
+        .interval-card.tie { border-color:var(--n-bad); box-shadow:none; }
+        .interval-card.tie .il-title { color:var(--n-bad); text-shadow:0 0 40px rgba(228,103,74,.4); }
         @keyframes il-title {
           from { opacity:0; transform:scale(.82); filter:blur(6px); }
           to   { opacity:1; transform:none; filter:none; }

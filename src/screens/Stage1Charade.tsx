@@ -49,11 +49,11 @@ export function Stage1Charade({ state, dispatch }: { state: GameState; dispatch:
           text-align:center; margin-top:clamp(4px,1.6dvh,18px);
         }
         .charade-team {
-          color:var(--gold); font-weight:800;
+          color:var(--n-ink); font-weight:800;
           font-size:clamp(18px, min(3vw, 4.4dvh), 34px); line-height:1.2;
         }
         .charade-ask {
-          color:var(--text-2); font-weight:600;
+          color:var(--n-ink-2); font-weight:600;
           font-size:clamp(13px, min(1.8vw, 2.8dvh), 22px); line-height:1.35;
         }
         /* الغلاف حاويةٌ تُقاس: الرمز مربّعٌ يأخذ أضيقَ بُعدَيها كاملاً —
@@ -67,7 +67,7 @@ export function Stage1Charade({ state, dispatch }: { state: GameState; dispatch:
           width:min(100cqw, 100cqh); height:min(100cqw, 100cqh);
           display:block;
           border-radius:clamp(8px,1.2dvh,14px);
-          box-shadow:var(--lift);
+          box-shadow:var(--n-e2);
         }
         @media (max-height:480px) {
           .charade-lead { margin-top:0; gap:0; }

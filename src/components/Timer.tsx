@@ -21,7 +21,7 @@ export function Timer({
 }) {
   const secs = Math.ceil(remainingMs / 1000)
   const pct = Math.max(0, Math.min(1, remainingMs / totalMs))
-  const color = coral ? 'var(--coral)' : 'var(--gold)'
+  const color = coral ? 'var(--n-bad)' : 'var(--n-ink)'
   const low = remainingMs <= 5000 && remainingMs > 0
 
   /**
@@ -66,7 +66,7 @@ export function Timer({
         .ring-timer.md { flex:0 1 auto; height:clamp(120px,20dvh,200px); max-height:100%; }
         .ring-timer.lg { flex:0 1 auto; height:min(32dvh, 40vw, 320px); max-height:100%; }
         .ring-timer svg { width:100%; height:100%; transform:rotate(-90deg); overflow:visible; }
-        .ring-timer .track { fill:none; stroke:var(--border); stroke-width:8; opacity:.55; }
+        .ring-timer .track { fill:none; stroke:var(--n-line); stroke-width:8; opacity:.55; }
         .ring-timer .fill {
           fill:none; stroke-width:8; stroke-linecap:round;
           transition:stroke-dashoffset .12s linear;

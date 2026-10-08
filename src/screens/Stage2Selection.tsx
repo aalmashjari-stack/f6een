@@ -150,7 +150,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
           overflow-wrap:anywhere;
           /* البديل هو قيمة clamp نفسها المحسوبة في fit() أعلاه، لتُستخدم قبل أول قياس */
           font-size:var(--vs-size, clamp(30px,6vw,68px));
-          font-weight:800; color:var(--cream);
+          font-weight:800; color:var(--n-ink);
           animation:reel-step .16s ease-out;
         }
         /* الاسم يهبط من فوق كبكرة تدور */
@@ -159,7 +159,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
           to   { transform:none; opacity:1; filter:none; }
         }
         .vs-wrap.settled .vs-player {
-          color:var(--gold);
+          color:var(--n-ink);
           animation:slam .5s var(--ease-spring);
           text-shadow:0 0 34px rgba(255,189,89,.5);
         }
@@ -170,7 +170,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         }
 
         .vs { position:relative; display:grid; place-items:center; flex:none; }
-        .vs-word { color:var(--coral); font-weight:800; font-size:clamp(22px,3.4vw,40px); }
+        .vs-word { color:var(--n-bad); font-weight:800; font-size:clamp(22px,3.4vw,40px); }
         .vs-wrap.settled .vs-word { animation:clash .55s var(--ease-spring); }
         @keyframes clash {
           0%   { transform:scale(1); }
@@ -180,7 +180,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         /* حلقة تتمدّد وتتلاشى لحظة الاستقرار — إشارة «وقع الاختيار» */
         .vs-ring {
           position:absolute; width:2.2em; height:2.2em; border-radius:50%;
-          border:2px solid var(--coral); opacity:0; pointer-events:none;
+          border:2px solid var(--n-bad); opacity:0; pointer-events:none;
         }
         .vs-wrap.settled .vs-ring { animation:ring-out .75s ease-out; }
         @keyframes ring-out {

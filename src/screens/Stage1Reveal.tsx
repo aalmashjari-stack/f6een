@@ -165,9 +165,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           gap:clamp(8px,1.6dvh,16px);
           padding:clamp(14px,3.2dvh,36px) clamp(24px,5vw,64px);
           border-radius:clamp(24px, 5dvh, 52px);
-          border:1px solid var(--gold);
-          background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
-          box-shadow:var(--lift), var(--glow-gold);
+          border:1px solid var(--n-ink);
+          background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 60%);
+          box-shadow:none;
           animation:pop-in .45s var(--ease-spring) both, rv-glow 1.1s ease-out both;
         }
         /* السؤال باهت ومنكمش لكنه حاضر — المجلس ينسى ما سُئل لحظةَ ظهور الإجابة.
@@ -175,7 +175,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
            سؤال «من أنا؟» الطويل يفيض على هذه البطاقة الأصغر بالمقاس الثابت
            نفسه الذي كان يفيض به على بطاقة السؤال الحيّ قبل أن تُبنى تلك. */
         .rv-q {
-          color:var(--text-2); font-weight:600; text-align:center;
+          color:var(--n-ink-2); font-weight:600; text-align:center;
           font-size:clamp(14px, min(2vw, 2.8dvh), 22px); line-height:1.4;
         }
         .rv-q.long  { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); }
@@ -187,7 +187,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .rv-poster-title { flex:none; max-width:100%; min-width:0; }
         .rv-kind {
           flex:none; padding:2px clamp(10px,1.4vw,16px); border-radius:999px;
-          border:2px solid var(--festival-ink); background:var(--festival-mint); color:var(--festival-ink);
+          border:2px solid var(--n-ink); background:var(--n-b-tint); color:var(--n-ink);
           font-weight:800; font-size:clamp(12px, min(1.6vw, 2.4dvh), 18px); line-height:1.5;
           animation:pop-in .45s var(--ease-spring) both;
         }
@@ -197,16 +197,16 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         @media (max-height:620px) { body .screen .rv-photo.rv-poster { display:block; max-height:22dvh; } }
         @media (max-height:480px) { body .screen .rv-photo.rv-poster { display:none; } }
         .rv-a {
-          color:var(--gold); font-weight:800; text-align:center;
+          color:var(--n-ink); font-weight:800; text-align:center;
           font-size:clamp(28px, min(5.6vw, 9dvh), 60px); line-height:1.2;
           overflow-wrap:anywhere;
           animation:pop-in .5s var(--ease-spring) .1s both;
         }
         /* ذروة السؤال: توهّج يشتدّ ثم يهدأ، ولمعة ذهبية تمرّ مرة واحدة */
         @keyframes rv-glow {
-          0%   { box-shadow:var(--lift), 0 0 0 rgba(255,189,89,0); }
-          35%  { box-shadow:var(--lift), 0 0 90px rgba(255,189,89,.6); }
-          100% { box-shadow:var(--lift), var(--glow-gold); }
+          0%   { box-shadow:var(--n-e2), 0 0 0 rgba(255,189,89,0); }
+          35%  { box-shadow:var(--n-e2), 0 0 90px rgba(255,189,89,.6); }
+          100% { box-shadow:none; }
         }
         .rv-card::after {
           content:''; position:absolute; top:0; bottom:0; width:40%;
@@ -227,7 +227,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           font-size:clamp(17px,2.6vw,28px);
           font-weight:900;
           letter-spacing:0;
-          color:var(--cream);
+          color:var(--n-ink);
         }
 
         /* ===== البطاقتان ===== */
@@ -256,10 +256,10 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           padding:clamp(10px,2.4dvh,26px) clamp(12px,2vw,28px);
           border-radius:clamp(16px, 3dvh, 28px);
           cursor:pointer; font-family:inherit;
-          background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
-          border:2px solid var(--cream);
-          color:var(--cream);
-          box-shadow:var(--lift);
+          background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 68%);
+          border:2px solid var(--n-ink);
+          color:var(--n-ink);
+          box-shadow:var(--n-e2);
           transition:transform .2s var(--ease-spring), box-shadow .25s ease;
           animation:pop-in .45s var(--ease-spring) both;
         }
@@ -271,7 +271,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           background:radial-gradient(120% 70% at 50% -12%, rgba(255,255,255,.13), transparent 62%);
         }
         .pick:active { transform:scale(.97); }
-        .pick:focus-visible { outline:none; box-shadow:var(--lift), 0 0 0 4px rgba(255,189,89,.5); }
+        .pick:focus-visible { outline:none; box-shadow:var(--n-e2), 0 0 0 4px rgba(255,189,89,.5); }
         @media (hover:hover) {
           .pick:hover { transform:translateY(-6px); box-shadow:0 26px 54px rgba(0,0,0,.4), 0 0 46px rgba(245,239,227,.22); }
         }
@@ -279,7 +279,7 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         /* كل مقاس يأخذ أصغر نصيبيه من العرض والارتفاع — علاج .q-text نفسه:
            بـ vw وحده يتضخّم الخط على شاشة عريضة قصيرة فيفيض على حدود البطاقة. */
         .pk-role {
-          font-size:clamp(11px, min(1.4vw, 2.4dvh), 15px); color:var(--text-2);
+          font-size:clamp(11px, min(1.4vw, 2.4dvh), 15px); color:var(--n-ink-2);
           font-weight:700; letter-spacing:.06em; line-height:1.3;
         }
         .pk-name {
@@ -291,23 +291,23 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           display:flex; align-items:center; gap:clamp(5px,.8vw,10px);
           font-size:clamp(13px, min(2vw, 3.2dvh), 24px); font-weight:800; line-height:1.2;
         }
-        .pk-from  { color:var(--text-3); }
-        .pk-arrow { color:var(--text-3); font-weight:600; }
-        .pk-to    { color:var(--gold); }
+        .pk-from  { color:var(--n-ink-3); }
+        .pk-arrow { color:var(--n-ink-3); font-weight:600; }
+        .pk-to    { color:var(--n-ink); }
 
         /* البطاقتان فريقان لا حكمان، فتتساويان في البروز (SPEC ١٠) وتأخذ كلٌّ
            لونَ فريقها كما في شريط النتيجة — فيربط الحكمُ الاسمَ بصاحبه بلمحة. */
         /* «أصاب / أخطأ» في «ولا كلمة»: لغة تنقيط الديربي — الصحّ ذهبيّ
            والغلط مرجانيّ؛ وهيئة «البلوكات» تعيد تلوينهما في blocks.css. */
-        .pick.pick-yes { border-color:var(--gold); }
-        .pick.pick-yes .pk-to { color:var(--gold); }
-        .pick.pick-no  { border-color:var(--coral); }
-        .pick.pick-no  .pk-to { color:var(--text-3); }
+        .pick.pick-yes { border-color:var(--n-ink); }
+        .pick.pick-yes .pk-to { color:var(--n-ink); }
+        .pick.pick-no  { border-color:var(--n-bad); }
+        .pick.pick-no  .pk-to { color:var(--n-ink-3); }
 
-        .pick-team.team-0 { border-color:var(--gold); }
-        .pick-team.team-0 .pk-to { color:var(--gold); }
-        .pick-team.team-1 { border-color:var(--cream); }
-        .pick-team.team-1 .pk-to { color:var(--cream); }
+        .pick-team.team-0 { border-color:var(--n-ink); }
+        .pick-team.team-0 .pk-to { color:var(--n-ink); }
+        .pick-team.team-1 { border-color:var(--n-ink); }
+        .pick-team.team-1 .pk-to { color:var(--n-ink); }
 
         /* «لم يجب أحد» دون البطاقتين في البروز — لأنّه الأندر — لكنّه قرارٌ
            يُضغط لا حاشية، فيكبر ويشتدّ حدُّه عمّا كان (ملاحظة علي). */
@@ -316,11 +316,11 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
           padding:clamp(9px,1.8dvh,16px) clamp(26px,4.5vw,48px);
           border-radius:999px; cursor:pointer; font-family:inherit;
           font-size:clamp(14px,1.9vw,21px); font-weight:900;
-          background:transparent; border:2.5px solid var(--text-2); color:var(--cream);
+          background:transparent; border:2.5px solid var(--n-ink-2); color:var(--n-ink);
         }
         .pick-none:active { transform:scale(.97); }
-        .pick-none:focus-visible { outline:none; border-color:var(--gold); color:var(--cream); }
-        @media (hover:hover) { .pick-none:hover { border-color:var(--cream); color:var(--cream); } }
+        .pick-none:focus-visible { outline:none; border-color:var(--n-ink); color:var(--n-ink); }
+        @media (hover:hover) { .pick-none:hover { border-color:var(--n-ink); color:var(--n-ink); } }
 
 
         /* أضيق الشاشات: الحشوة وحدها هي ما يمكن التنازل عنه داخل البطاقة.

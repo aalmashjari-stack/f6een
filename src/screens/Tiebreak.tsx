@@ -68,10 +68,10 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
 
       <style>{`
         .s3-inner { display:flex; flex-direction:column; gap:20px; align-items:center; }
-        .s3-answer { font-size:clamp(20px,3vw,32px); font-weight:800; color:var(--gold); text-align:center; }
-        .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
+        .s3-answer { font-size:clamp(20px,3vw,32px); font-weight:800; color:var(--n-ink); text-align:center; }
+        .s3-answer .a-label { color:var(--n-ink-2); font-weight:700; font-size:.7em; }
         .tb-picks { display:flex; gap:14px; }
-        .tb { flex:1; border:2px solid var(--gold); background:transparent; color:var(--cream); font-family:inherit; font-weight:800; font-size:clamp(20px,3vw,30px); padding:clamp(18px,3dvh,28px); border-radius:var(--r-lg); cursor:pointer; }
+        .tb { flex:1; border:2px solid var(--n-ink); background:transparent; color:var(--n-ink); font-family:inherit; font-weight:800; font-size:clamp(20px,3vw,30px); padding:clamp(18px,3dvh,28px); border-radius:var(--n-r4); cursor:pointer; }
         .tb:active { transform:scale(.98); }
 
         /* جوال أفقي: فجوة ٢٠ بين السؤال والإجابة وحشوة ١٨ في زرَّي الحسم

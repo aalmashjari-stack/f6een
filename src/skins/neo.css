@@ -70,24 +70,6 @@ html[data-skin] {
   --n-e2: 0 0 0 1px rgba(23,23,31,.05), 0 2px 6px rgba(23,23,31,.045), 0 8px 20px rgba(23,23,31,.055);
   --n-e3: 0 0 0 1px rgba(23,23,31,.045), 0 6px 14px rgba(23,23,31,.06), 0 22px 50px rgba(23,23,31,.09);
 
-  /* إعادة ربط رموز المحرّك: Timer.tsx يلوّن رقمه وشريطه inline من
-     ‎--gold/--coral‎، فلا سبيل لتلوينهما إلا من هنا. */
-  --gold: var(--n-ink);
-  --coral: var(--n-bad);
-  --cream: var(--n-ink);
-  --night: var(--n-bg);
-  --night-deep: var(--n-bg);
-  --surface: var(--n-surface);
-  --surface-2: var(--n-surface-2);
-  --border: var(--n-line);
-  --text-2: var(--n-ink-2);
-  --text-3: var(--n-ink-3);
-  --on-gold: #FFFFFF;
-  --on-coral: #FFFFFF;
-  --grad-gold: var(--n-ink);
-  --glow-gold: none;
-  --glow-coral: none;
-  --lift: var(--n-e2);
   --spent: #ECECF1;
   --spent-text: #A5A5B3;
 

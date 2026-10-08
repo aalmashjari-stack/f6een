@@ -124,10 +124,10 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
           min-width:0; min-height:0;
           container-type:inline-size;
           border-radius:clamp(9px,1.4dvh,16px);
-          border:2px solid var(--gold);
-          background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
-          color:var(--gold);
-          box-shadow:var(--lift);
+          border:2px solid var(--n-ink);
+          background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 68%);
+          color:var(--n-ink);
+          box-shadow:var(--n-e2);
           transform:rotate(var(--tilt, 0deg));
           /* الحركة على الهيئة وحدها: لونٌ يتدرّج بين قفزتين يترك بلاطاتٍ رماديّة
              نصفَ مضاءة خلف الضوء، والقفز يجب أن يكون حادّاً. */
@@ -140,7 +140,7 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
         }
         /* الضوء الجاري: البلاطة تقفز قليلاً وتنقلب ألوانها */
         .ltile.lit {
-          background:var(--gold); color:var(--on-gold, #1b1508);
+          background:var(--n-ink); color:#fff;
           transform:rotate(var(--tilt, 0deg)) scale(1.1) translateY(-3%);
         }
         /* الوقوف: البلاطة تصفع (كصفعة اسم الديربي) وتبقى مرفوعة، وحلقةٌ
@@ -148,11 +148,11 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
         .letters-grid.landed .ltile.lit {
           position:relative;
           animation:ltile-slam .55s var(--ease-spring) both;
-          background:var(--coral); color:var(--cream); border-color:var(--coral);
+          background:var(--n-bad); color:var(--n-ink); border-color:var(--n-bad);
         }
         .letters-grid.landed .ltile.lit::after {
           content:''; position:absolute; inset:-6%;
-          border-radius:inherit; border:3px solid var(--coral);
+          border-radius:inherit; border:3px solid var(--n-bad);
           pointer-events:none;
           animation:ltile-ring .8s ease-out both;
         }

@@ -757,13 +757,13 @@ export function Setup({
         /* ─── سطر التقديم ──────────────────────────────────────────────── */
         .stages-intro {
           text-align:center; margin:0;
-          color:var(--text-2); font-size:clamp(15px,1.9vw,20px); line-height:1.7;
+          color:var(--n-ink-2); font-size:clamp(15px,1.9vw,20px); line-height:1.7;
         }
         /* «فطين» بتصميم مميّز — تدرّج ذهبي↔مرجاني بلونَي العلامة نفسها،
            أكبر من محيطه قليلاً وبوهج خافت، فيُقرأ كاسم اللعبة لا كلمة عابرة. */
         .brand-inline {
           font-weight:800; font-size:1.35em;
-          background:linear-gradient(120deg, var(--gold) 0%, #FFD98A 45%, var(--coral) 100%);
+          background:linear-gradient(120deg, var(--n-ink) 0%, #FFD98A 45%, var(--n-bad) 100%);
           -webkit-background-clip:text; background-clip:text;
           -webkit-text-fill-color:transparent; color:transparent;
           padding-inline:2px;
@@ -777,7 +777,7 @@ export function Setup({
         .setup-rule {
           display:flex; align-items:center; gap:clamp(12px, 2vw, 22px);
           margin:0; font-size:clamp(16px,2vw,21px); font-weight:800;
-          color:var(--gold); letter-spacing:.3px;
+          color:var(--n-ink); letter-spacing:.3px;
         }
         .setup-rule::before, .setup-rule::after {
           content:''; flex:1; height:1px;
@@ -793,32 +793,32 @@ export function Setup({
           display:flex; flex-direction:column; gap:clamp(6px, 1.1dvh, 16px);
           padding:clamp(10px,1.7dvh,26px) clamp(12px,1.6vw,24px);
           background:linear-gradient(165deg,
-            color-mix(in srgb, var(--surface-2) 94%, transparent),
-            color-mix(in srgb, var(--surface) 80%, transparent) 68%);
-          border:2px solid var(--border);
+            color-mix(in srgb, var(--n-surface-2) 94%, transparent),
+            color-mix(in srgb, var(--n-surface) 80%, transparent) 68%);
+          border:2px solid var(--n-line);
           border-radius:clamp(24px, 3.8dvh, 36px);
-          box-shadow:var(--lift);
+          box-shadow:var(--n-e2);
           transition:border-color .3s ease, box-shadow .3s ease;
         }
-        .team-card.starter { border-color:var(--gold); box-shadow:var(--lift), var(--glow-gold); }
+        .team-card.starter { border-color:var(--n-ink); box-shadow:none; }
 
         /* شارة الترتيب — تسمّي البطاقة قبل أن يُكتب فيها اسم، فلا تبقى مجهولة. */
         .team-badge {
           align-self:center; padding:clamp(1px,.35dvh,5px) 14px; border-radius:999px;
-          border:1px solid var(--border); background:rgba(15,44,66,.55);
-          color:var(--text-2); font-size:clamp(10px,1.1vw,13px); font-weight:700; line-height:1.4;
+          border:1px solid var(--n-line); background:rgba(15,44,66,.55);
+          color:var(--n-ink-2); font-size:clamp(10px,1.1vw,13px); font-weight:700; line-height:1.4;
           transition:color .3s ease, border-color .3s ease;
         }
-        .team-card.starter .team-badge { color:var(--gold); border-color:rgba(255,189,89,.5); }
+        .team-card.starter .team-badge { color:var(--n-ink); border-color:rgba(255,189,89,.5); }
 
         .team-name {
-          background:transparent; border:none; border-bottom:2px solid var(--border);
-          color:var(--gold); font-weight:800; font-size:clamp(15px,1.9vw,24px);
+          background:transparent; border:none; border-bottom:2px solid var(--n-line);
+          color:var(--n-ink); font-weight:800; font-size:clamp(15px,1.9vw,24px);
           font-family:inherit; text-align:center; padding:clamp(1px,.45dvh,9px) 8px; outline:none;
           line-height:1.35;
           transition:border-color .2s ease;
         }
-        .team-name::placeholder { color:var(--text-3); font-weight:700; }
+        .team-name::placeholder { color:var(--n-ink-3); font-weight:700; }
 
         .players { display:flex; flex-direction:column; gap:clamp(4px, .8dvh, 11px); }
         /* من خمسة لاعبين فصاعداً يقف الحقلان جنباً إلى جنب: ستة أسماء في
@@ -832,34 +832,34 @@ export function Setup({
         /* الحشوة الرأسية هي ما يتنازل مع ستّة لاعبين — لا حجم الحرف: الاسم
            يُقرأ عن بُعد، والفراغ حوله لا. */
         .player {
-          background:rgba(15,44,66,.6); border:1px solid var(--border);
-          border-radius:999px; color:var(--cream); font-family:inherit;
+          background:rgba(15,44,66,.6); border:1px solid var(--n-line);
+          border-radius:999px; color:var(--n-ink); font-family:inherit;
           font-size:clamp(13px,1.4vw,17px); padding:clamp(5px,.95dvh,12px) 20px; outline:none; text-align:center;
           /* بلا هذا لا يتقلّص عمود الشبكة تحت عرض النصّ الافتراضي (min-width
              الضمني = auto)، فتتمدّد البطاقة وتخرج من الشاشة أفقياً. */
           min-width:0;
           transition:border-color .2s ease, background .2s ease;
         }
-        .player::placeholder { color:var(--text-3); }
-        .player:focus, .team-name:focus { border-color:var(--gold); }
+        .player::placeholder { color:var(--n-ink-3); }
+        .player:focus, .team-name:focus { border-color:var(--n-ink); }
         .player:focus { background:rgba(15,44,66,.9); }
 
         /* خيط فاصل فوق العدّاد — يفصل ضبط العدد عن حقول الأسماء. */
         .counter {
           display:flex; align-items:center; justify-content:center; gap:16px;
-          color:var(--text-2); font-weight:700; font-size:clamp(12px,1.3vw,16px);
+          color:var(--n-ink-2); font-weight:700; font-size:clamp(12px,1.3vw,16px);
           padding-top:clamp(2px, .55dvh, 13px);
-          border-top:1px solid var(--border);
+          border-top:1px solid var(--n-line);
         }
         .pill {
           flex:none;
           width:clamp(24px,3.4dvh,40px); height:clamp(24px,3.4dvh,40px);
-          border-radius:50%; border:1px solid var(--border);
-          background:rgba(15,44,66,.6); color:var(--cream);
+          border-radius:50%; border:1px solid var(--n-line);
+          background:rgba(15,44,66,.6); color:var(--n-ink);
           font-size:clamp(16px,2.2dvh,21px); cursor:pointer;
           transition:transform .15s var(--ease-spring), border-color .2s ease, color .2s ease;
         }
-        @media (hover:hover) { .pill:not(:disabled):hover { border-color:var(--gold); color:var(--gold); } }
+        @media (hover:hover) { .pill:not(:disabled):hover { border-color:var(--n-ink); color:var(--n-ink); } }
         .pill:active { transform:scale(.9); }
         .pill:disabled { opacity:.3; cursor:default; }
 
@@ -868,10 +868,10 @@ export function Setup({
            وبلا حجزها يقفز الزرّان تحتها لحظة ظهورها. */
         .toss { text-align:center; min-height:clamp(18px,2.8dvh,38px); display:grid; place-items:center; }
         .toss-result { font-size:clamp(14px,2vw,26px); font-weight:700; line-height:1.35; }
-        .toss-result b { color:var(--gold); }
-        .toss-result.missing { color:var(--text-2); font-weight:700; }
-        .toss-result.missing.alert { color:var(--coral); font-weight:900; }
-        .toss-note { color:var(--text-2); font-weight:700; font-size:.72em; }
+        .toss-result b { color:var(--n-ink); }
+        .toss-result.missing { color:var(--n-ink-2); font-weight:700; }
+        .toss-result.missing.alert { color:var(--n-bad); font-weight:900; }
+        .toss-note { color:var(--n-ink-2); font-weight:700; font-size:.72em; }
 
         /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين
            فيبقى الفعل الأساسي هو الأكبر، والقرعة إلى جانبه لا فوقه. */
@@ -965,7 +965,7 @@ export function Setup({
           margin:clamp(12px,2.6dvh,30px) 0 clamp(10px,2dvh,20px);
           text-align:center;
         }
-        .cats-lead { margin:0; font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--gold); }
+        .cats-lead { margin:0; font-size:clamp(15px,2vw,22px); font-weight:900; color:var(--n-ink); }
         @keyframes count-pop {
           from { transform:scale(.72); opacity:.4; }
           to   { transform:scale(1);   opacity:1; }
@@ -1000,9 +1000,9 @@ export function Setup({
           font-size:clamp(11px,1.3vw,14px); font-weight:800;
           padding:.2em .8em; border-radius:999px;
         }
-        .cats-turn.done { background:var(--surface-2); color:var(--text-2); }
-        .cats-turn.team-0 { background:var(--gold); color:var(--on-gold); }
-        .cats-turn.team-1 { background:var(--coral); color:var(--on-coral); }
+        .cats-turn.done { background:var(--n-surface-2); color:var(--n-ink-2); }
+        .cats-turn.team-0 { background:var(--n-ink); color:#fff; }
+        .cats-turn.team-1 { background:var(--n-bad); color:#fff; }
 
         /* شبكة تلقائية لا بعدد ثابت: الفئات تُضاف من اللوحة فيتغيّر عددها. */
         /* بطاقةٌ كبيرة تُرى رسمتُها من بعيد (طلب علي، ٣ سبتمبر ٢٠٢٦): الشبكة
@@ -1020,10 +1020,10 @@ export function Setup({
           margin:0 0 clamp(6px,0.8vw,12px);
           display:flex; align-items:center; gap:10px;
           font-size:clamp(13px,1.15vw,17px); font-weight:800;
-          color:var(--text-2); letter-spacing:.2px;
+          color:var(--n-ink-2); letter-spacing:.2px;
         }
         .cats-sec-title::after {
-          content:''; flex:1; height:1px; background:var(--border);
+          content:''; flex:1; height:1px; background:var(--n-line);
         }
         /* صفوفٌ ملفوفة لا شبكة: الصفّ الأخير الناقص يتوسّط بدل أن يلتصق
            باليمين وبجانبه خانةٌ فارغة (علي ٢٦ سبتمبر ٢٠٢٦ — «شعارات أندية»
@@ -1054,9 +1054,9 @@ export function Setup({
           padding:0;
           font-family:inherit; cursor:pointer; text-align:center;
           border-radius:14px;
-          border:2px solid var(--border);
-          background-color:var(--surface-2);
-          color:var(--text-2);
+          border:2px solid var(--n-line);
+          background-color:var(--n-surface-2);
+          color:var(--n-ink-2);
           transition:border-color .2s ease, color .2s ease, transform .12s var(--ease-spring);
         }
         .cc-img {
@@ -1085,8 +1085,8 @@ export function Setup({
            اكتمال اللوح، فلا تُقفل معها. */
         .catchip.dimmed.taken { opacity:.78; }
         .catchip:not(.dimmed):active, .catchip.taken:active { transform:scale(.97); }
-        .catchip:focus-visible { outline:none; border-color:var(--gold); }
-        @media (hover:hover) { .catchip:not(.dimmed):hover, .catchip.taken:hover { color:var(--cream); border-color:var(--text-3); } }
+        .catchip:focus-visible { outline:none; border-color:var(--n-ink); }
+        @media (hover:hover) { .catchip:not(.dimmed):hover, .catchip.taken:hover { color:var(--n-ink); border-color:var(--n-ink-3); } }
         .cc-name {
           font-size:clamp(14px,1.85vw,23px); font-weight:800; line-height:1.2; color:#fff;
           max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
@@ -1095,14 +1095,14 @@ export function Setup({
         .catchip.taken .cc-plate { background:linear-gradient(to top, rgba(14,11,22,.94) 0%, rgba(14,11,22,.7) 55%, rgba(14,11,22,.08) 100%); }
         /* المختارة: حدٌّ سميك، ورسمتُها تصفو، وعلامةُ صحّ في الزاوية. ثلاث
            إشارات لا واحدة — البطاقة صغيرة وفوقها رسمة، فالحدّ وحده يضيع. */
-        .catchip.taken { border-color:var(--gold); border-width:4px; }
+        .catchip.taken { border-color:var(--n-ink); border-width:4px; }
         .catchip.taken .cc-img { filter:saturate(1.15); }
         .cc-tick {
           position:absolute; z-index:2; top:6px; inset-inline-start:6px;
           display:none; place-items:center;
           width:clamp(24px,3.2vw,34px); aspect-ratio:1;
           border-radius:999px;
-          background:var(--gold); color:#1a1626;
+          background:var(--n-ink); color:#1a1626;
           font-size:clamp(14px,1.9vw,20px); font-weight:900; line-height:1;
           box-shadow:0 2px 6px rgba(0,0,0,.35);
         }
@@ -1130,7 +1130,7 @@ export function Setup({
            شفّاف — لا تكبر العلامة فتغطّي الرسمة. */
         .cc-info::after { content:''; position:absolute; inset:-10px; }
         .cc-info:active { transform:scale(.9); }
-        .cc-info:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
+        .cc-info:focus-visible { outline:3px solid var(--n-ink); outline-offset:2px; }
         @media (prefers-reduced-motion: reduce) { .cc-info { animation:none; } }
 
         /* ─── بطاقات المراحل (١٧ سبتمبر ٢٠٢٦، طلب علي) ────────────────────

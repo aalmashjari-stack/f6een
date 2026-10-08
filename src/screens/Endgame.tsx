@@ -253,7 +253,7 @@ export function Endgame({
         /* خطٌّ يفصل الاسم عن الرقم: بلا فاصلٍ يُقرآن سطراً واحداً متّصلاً. */
         .winner .final-score {
           padding-inline-start:clamp(12px,2.4vw,40px);
-          border-inline-start:2px solid var(--border);
+          border-inline-start:2px solid var(--n-line);
           margin-top:0;
         }
         /* الشاشة الضيّقة ترجع بهما عمودين — الصفُّ يحتاج عرضاً. */
@@ -262,7 +262,7 @@ export function Endgame({
           .winner .final-score { padding-inline-start:0; border-inline-start:0; }
         }
         .w-eyebrow {
-          color:var(--text-2); font-weight:700; line-height:1.2;
+          color:var(--n-ink-2); font-weight:700; line-height:1.2;
           font-size:clamp(12px,min(1.6vw,2dvh),18px);
           animation:rise .5s ease-out .18s both;
         }
@@ -273,7 +273,7 @@ export function Endgame({
            تحته تُقرأ وتُناقَش. سقفه هنا أقلّ من السابق (٦٤ بدل ٨٤) ونصيبه من
            الارتفاع أقلّ (٦vh بدل ٧٫٤) — الفرق كلّه يذهب إلى الجداول. */
         .w-title {
-          color:var(--gold); font-weight:800; font-size:clamp(26px,min(5vw,6dvh),64px); line-height:1.05;
+          color:var(--n-ink); font-weight:800; font-size:clamp(26px,min(5vw,6dvh),64px); line-height:1.05;
           animation:winner-in .8s var(--ease-spring) .26s both;
           text-shadow:0 0 46px rgba(255,189,89,.42);
         }
@@ -284,7 +284,7 @@ export function Endgame({
           100% { opacity:1; transform:none; filter:none; }
         }
         .final-score {
-          font-size:clamp(16px,min(2.6vw,3.2dvh),34px); font-weight:800; color:var(--cream); margin-top:clamp(1px,.5dvh,6px);
+          font-size:clamp(16px,min(2.6vw,3.2dvh),34px); font-weight:800; color:var(--n-ink); margin-top:clamp(1px,.5dvh,6px);
           line-height:1.2;
           animation:rise .5s ease-out .42s both;
         }
@@ -295,7 +295,7 @@ export function Endgame({
 
         /* لا تمرير داخلي: الصفحة كلها تُمرَّر حتى لا يُقتطع لاعب من القائمة (حتى ١٢ لاعباً). */
         .es-block { width:100%; max-width:680px; min-width:0; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }
-        .es-title { color:var(--text-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7dvh),17px); text-align:center; }
+        .es-title { color:var(--n-ink-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7dvh),17px); text-align:center; }
         .es-table { display:flex; flex-direction:column; gap:6px; width:100%; }
         /* من تسعة لاعبين فصاعداً ينقسم الجدول عمودين: اثنا عشر لاعباً في ستة
            صفوف بدل اثني عشر — وهو أطول جدول في الشاشة. وكان الحدُّ سبعة، فلمّا
@@ -306,18 +306,18 @@ export function Endgame({
         }
         .es-row {
           display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
-          background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+          background:var(--n-surface); border:1px solid var(--n-line); border-radius:var(--n-r2);
           padding:clamp(9px,1.4dvh,14px) clamp(12px,2vw,20px);
         }
-        .es-label { color:var(--text-2); font-size:clamp(11px,min(1.6vw,1.9dvh),19px); font-weight:700; white-space:nowrap; line-height:1.35; }
-        .es-label.strong { color:var(--cream); }
-        .es-num { font-size:clamp(14px,min(2.1vw,2.5dvh),30px); font-weight:800; color:var(--text-2); line-height:1.25; }
+        .es-label { color:var(--n-ink-2); font-size:clamp(11px,min(1.6vw,1.9dvh),19px); font-weight:700; white-space:nowrap; line-height:1.35; }
+        .es-label.strong { color:var(--n-ink); }
+        .es-num { font-size:clamp(14px,min(2.1vw,2.5dvh),30px); font-weight:800; color:var(--n-ink-2); line-height:1.25; }
         /* الأعلى في المرحلة وحده ذهبي — الفرق يُقرأ بلمحة بلا مقارنة رقمين */
-        .es-num.up { color:var(--gold); }
+        .es-num.up { color:var(--n-ink); }
         .es-row.head { background:transparent; border-color:transparent; padding-bottom:0; }
-        .es-row.head span { color:var(--text-2); font-weight:700; font-size:clamp(10px,min(1.4vw,1.6dvh),17px); }
-        .es-row.total { border-color:var(--gold); background:transparent; }
-        .es-row.total .es-num { color:var(--gold); font-size:clamp(16px,min(2.5vw,2.9dvh),36px); }
+        .es-row.head span { color:var(--n-ink-2); font-weight:700; font-size:clamp(10px,min(1.4vw,1.6dvh),17px); }
+        .es-row.total { border-color:var(--n-ink); background:transparent; }
+        .es-row.total .es-num { color:var(--n-ink); font-size:clamp(16px,min(2.5vw,2.9dvh),36px); }
 
         .es-row.s3, .es-row.player { grid-template-columns:minmax(0,1fr) auto; }
         .es-row.player { animation:rise .45s ease-out both; }
@@ -337,7 +337,7 @@ export function Endgame({
         /* اسم الفريق يتقلّص هو أيضاً — عمود auto لا يتنازل من تلقائه، فيدفع
            السطر خارج الكتلة أفقياً على الشاشة الأضيق. */
         .sr-team {
-          color:var(--text-3); font-size:clamp(9px,min(1.1vw,1.3dvh),14px);
+          color:var(--n-ink-3); font-size:clamp(9px,min(1.1vw,1.3dvh),14px);
           white-space:nowrap; line-height:1.35;
           min-width:0; overflow:hidden; text-overflow:ellipsis;
         }
@@ -345,16 +345,16 @@ export function Endgame({
         .es-chips { display:flex; gap:5px; flex-wrap:nowrap; justify-content:flex-end; }
         .chip {
           display:inline-flex; align-items:center; gap:4px;
-          border:1px solid var(--border); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
-          color:var(--text-2); font-size:clamp(9px,min(1.2vw,1.4dvh),15px); font-weight:700; white-space:nowrap;
+          border:1px solid var(--n-line); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
+          color:var(--n-ink-2); font-size:clamp(9px,min(1.2vw,1.4dvh),15px); font-weight:700; white-space:nowrap;
           line-height:1.4;
         }
         .chip .tabular { font-size:1.15em; font-weight:800; }
-        .chip.ok { color:var(--gold); border-color:rgba(255,189,89,.45); }
-        .chip.no { color:var(--coral); border-color:rgba(228,103,74,.45); }
-        .foot { display:flex; align-items:center; gap:10px; color:var(--text-3); font-size:13px; }
-        .foot-link { background:none; border:none; color:var(--text-2); font-family:inherit; font-size:13px; cursor:pointer; text-decoration:underline; }
-        .report-note { max-width:560px; color:var(--text-2); font-size:13px; line-height:1.6; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 16px; }
+        .chip.ok { color:var(--n-ink); border-color:rgba(255,189,89,.45); }
+        .chip.no { color:var(--n-bad); border-color:rgba(228,103,74,.45); }
+        .foot { display:flex; align-items:center; gap:10px; color:var(--n-ink-3); font-size:13px; }
+        .foot-link { background:none; border:none; color:var(--n-ink-2); font-family:inherit; font-size:13px; cursor:pointer; text-decoration:underline; }
+        .report-note { max-width:560px; color:var(--n-ink-2); font-size:13px; line-height:1.6; background:var(--n-surface); border:1px solid var(--n-line); border-radius:var(--n-r2); padding:12px 16px; }
       `}</style>
     </div>
   )
@@ -432,9 +432,6 @@ function ReportPanel({
       </div>
 
       <style>{`
-        /* رموز «نيو» صراحةً لا رموز المسرح (--gold و--surface): تلك تُترجَم
-           في نيو إلى حبرٍ داكن، فتصير اللوحة نصّاً فاتحاً على أبيض وزرّاً
-           أسود بنصٍّ بنّي. جُرِّب فبان. */
         .rp-veil {
           position:fixed; inset:0; z-index:80;
           display:flex; align-items:center; justify-content:center; padding:16px;

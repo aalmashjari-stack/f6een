@@ -137,15 +137,15 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
           display:flex; flex-direction:column; align-items:center; justify-content:center;
           gap:clamp(6px,1.2dvh,14px);
           padding:clamp(10px,1.8dvh,22px);
-          border-radius:var(--r-lg); border:2px solid var(--border); background:var(--surface);
-          color:var(--cream);
+          border-radius:var(--n-r4); border:2px solid var(--n-line); background:var(--n-surface);
+          color:var(--n-ink);
           transition:border-color .18s ease, box-shadow .18s ease;
         }
         /* البطاقة تحمل أثر الاختيار ليُقرأ من آخر المجلس بلمحة، والمربع يحمل التفصيل */
-        .mcard.صح { border-color:var(--gold); box-shadow:var(--glow-gold); }
-        .mcard.غلط { border-color:var(--coral); box-shadow:var(--glow-coral); }
+        .mcard.صح { border-color:var(--n-ink); box-shadow:none; }
+        .mcard.غلط { border-color:var(--n-bad); box-shadow:none; }
 
-        .mc-team { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); font-weight:700; color:var(--text-2); }
+        .mc-team { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); font-weight:700; color:var(--n-ink-2); }
         .mc-name {
           font-size:clamp(22px, min(3.6vw, 4.6dvh), 44px);
           font-weight:800; line-height:1.15; text-align:center; overflow-wrap:anywhere;
@@ -156,8 +156,8 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
           flex:1; min-width:0;
           display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
           padding:clamp(8px, 1.5dvh, 18px) 6px;
-          border-radius:var(--r-md); border:2px solid var(--border);
-          background:transparent; color:var(--text-2);
+          border-radius:var(--n-r2); border:2px solid var(--n-line);
+          background:transparent; color:var(--n-ink-2);
           font-family:inherit; cursor:pointer;
           transition:transform .08s ease, background .16s ease, color .16s ease, border-color .16s ease, opacity .16s ease;
         }
@@ -166,8 +166,8 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         .c-pts { font-size:clamp(18px, min(2.8vw, 3.6dvh), 34px); font-weight:800; line-height:1.15; }
 
         /* المختار يمتلئ، وغير المختار يخفت — الفرق لون كامل لا درجة أفتح بقليل */
-        .choice.ok.on { background:var(--gold); border-color:var(--gold); color:var(--on-gold); }
-        .choice.no.on { background:rgba(228,103,74,.16); border-color:var(--coral); color:var(--coral); }
+        .choice.ok.on { background:var(--n-ink); border-color:var(--n-ink); color:#fff; }
+        .choice.no.on { background:rgba(228,103,74,.16); border-color:var(--n-bad); color:var(--n-bad); }
         .mcard.صح .choice.no, .mcard.غلط .choice.ok { opacity:.4; }
 
         @media (max-width:560px) {

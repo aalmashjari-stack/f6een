@@ -149,7 +149,7 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
         .photo-tap:focus-visible { outline:3px solid currentColor; outline-offset:3px; }
         .photo-tap-hint {
           flex:none; align-self:center; cursor:zoom-in;
-          color:var(--text-3);
+          color:var(--n-ink-3);
           font-size:clamp(9px, min(1.2vw,1.7dvh), 13px); font-weight:700;
           letter-spacing:.02em;
         }

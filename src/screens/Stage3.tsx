@@ -109,15 +109,15 @@ function Stage3Styles() {
     <style>{`
         .center-col { display:flex; flex-direction:column; }
         .s3-ready { text-align:center; display:flex; flex-direction:column; gap:12px; }
-        .s3r-eyebrow { color:var(--coral); font-weight:800; font-size:clamp(16px,2.2vw,22px); }
-        .s3r-team { color:var(--cream); font-weight:800; font-size:clamp(34px,6vw,64px); }
-        .s3r-note { color:var(--text-3); font-size:clamp(14px,1.7vw,18px); }
+        .s3r-eyebrow { color:var(--n-bad); font-weight:800; font-size:clamp(16px,2.2vw,22px); }
+        .s3r-team { color:var(--n-ink); font-weight:800; font-size:clamp(34px,6vw,64px); }
+        .s3r-note { color:var(--n-ink-3); font-size:clamp(14px,1.7vw,18px); }
         .s3-q {
-          background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
-          border:1px solid var(--border);
+          background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 60%);
+          border:1px solid var(--n-line);
           border-radius:clamp(30px, 6dvh, 64px);
           padding:clamp(22px,4dvh,48px) clamp(28px,5vw,64px);
-          box-shadow:var(--lift);
+          box-shadow:var(--n-e2);
         }
         /* عمودٌ مرن لا صندوقٌ بارتفاع محتواه: في سؤال الصورة يجب أن ينتقل ضيقُ
            البطاقة إلى الصورة فتنكمش — وإلا فاضت الصورةُ فوق الإجابة والزرّين. */
@@ -131,16 +131,16 @@ function Stage3Styles() {
            السطر ٥٤px على شاشة عريضة قصيرة فيزاحم الصورة فوقه. */
         .s3-answer {
           flex:none;
-          font-size:clamp(20px,min(4.4vw,6.4dvh),54px); font-weight:800; color:var(--gold);
+          font-size:clamp(20px,min(4.4vw,6.4dvh),54px); font-weight:800; color:var(--n-ink);
           text-align:center; line-height:1.25; overflow-wrap:anywhere;
         }
-        .s3-answer .a-label { color:var(--text-2); font-weight:700; font-size:.7em; }
+        .s3-answer .a-label { color:var(--n-ink-2); font-weight:700; font-size:.7em; }
         .s3-verdicts { display:flex; gap:14px; align-items:stretch; }
-        .v { border:none; cursor:pointer; font-family:inherit; font-weight:800; border-radius:var(--r-lg); display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .08s ease; }
+        .v { border:none; cursor:pointer; font-family:inherit; font-weight:800; border-radius:var(--n-r4); display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .08s ease; }
         .v:active { transform:scale(.97); }
-        .v.correct { flex:1; background:var(--gold); color:var(--on-gold); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5dvh,34px); }
+        .v.correct { flex:1; background:var(--n-ink); color:#fff; font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5dvh,34px); }
         .v.correct .v-pts { font-size:.5em; }
-        .v.wrong { flex:1; background:var(--coral); color:var(--on-coral); font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5dvh,34px); }
+        .v.wrong { flex:1; background:var(--n-bad); color:#fff; font-size:clamp(30px,5vw,52px); padding:clamp(20px,3.5dvh,34px); }
 
         /* جوال أفقي: أرضيات الحشوة والخط هنا (٢٢ للبطاقة و٣٠ للإجابة و٢٠ لزرَّي
            الحكم) وُضعت لشاشة طويلة، فيفيض السؤالُ والإجابةُ من البطاقة ويركبان

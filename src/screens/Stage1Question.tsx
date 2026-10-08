@@ -54,11 +54,11 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
             text-align:center; margin-top:clamp(6px, 3dvh, 34px);
           }
           .charade-acting-team {
-            color:var(--gold); font-weight:800;
+            color:var(--n-ink); font-weight:800;
             font-size:clamp(22px, min(3.6vw, 5.4dvh), 44px); line-height:1.2;
           }
           .charade-acting-note {
-            color:var(--text-2); font-weight:700;
+            color:var(--n-ink-2); font-weight:700;
             font-size:clamp(14px, min(2vw, 3.2dvh), 26px); line-height:1.3;
           }
           .timer-stage {

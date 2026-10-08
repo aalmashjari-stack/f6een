@@ -74,11 +74,7 @@ html[data-skin='blocks'] {
   --n-e2: 0 0 0 2.5px var(--n-ink), 5px 6px 0 var(--n-ink);
   --n-e3: 0 0 0 3px var(--n-ink), 7px 8px 0 var(--n-ink);
 
-  /* رموز المحرّك المعادُ ربطها (Timer.tsx يقرأها inline) */
-  --gold: var(--n-ink);
-  --coral: var(--n-bad);
-  --border: var(--n-line);
-  --lift: var(--n-e2);
+  /* المستهلَك — اللوح المطفأ والزرّ المعطّل */
   --spent: #F0E9DB;
   --spent-text: #A39C8D;
 
@@ -299,9 +295,8 @@ html[data-skin='blocks'] .timer-progress {
   box-shadow: 0 0 0 2px var(--n-ink);
   overflow: hidden;
 }
-/* ‎!important‎ ضرورة لا عادة: Timer.tsx يصبغ الامتلاء inline من ‎--gold‎،
-   وهي في هذه الهويّة حبرٌ (ليبقى الرقم الضخم مقروءاً) — فيخرج الشريط
-   كتلةً سوداء. الأصفر هنا، والأحمر حيث العداء مع الوقت. */
+/* ‎!important‎ ضرورة لا عادة: Timer.tsx يصبغ الامتلاء inline من ‎--n-ink‎
+   (حبرٌ ليبقى الرقم الضخم مقروءاً) — فيخرج الشريط كتلةً سوداء. الأصفر هنا، والأحمر حيث العداء مع الوقت. */
 html[data-skin='blocks'] .timer-progress > span { background: var(--n-a-tint) !important; }
 html[data-skin='blocks'] .screen:has(.s3-q) .timer-progress > span,
 html[data-skin='blocks'] .ring-timer.low .timer-progress > span { background: var(--n-bad) !important; }

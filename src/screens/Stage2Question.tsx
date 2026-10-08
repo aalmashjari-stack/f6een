@@ -73,7 +73,7 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
           font-size:clamp(11px,min(1.5vw,1.9dvh),16px);
           font-weight:700; font-style:normal; opacity:.82;
         }
-        .s2-versus .vs { color:var(--coral); font-weight:800; font-size:clamp(16px,2vw,22px); }
+        .s2-versus .vs { color:var(--n-bad); font-weight:800; font-size:clamp(16px,2vw,22px); }
         /* display:contents يحفظ تخطيط سؤال النص كما كان: البطاقة والمؤقّت
            ابنان مباشران للشاشة. في سؤال الصورة وحده يصير الغلاف صفّاً. */
         .s2-question-body { display:contents; }

@@ -121,11 +121,11 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           min-width:0; min-height:0;
           padding:clamp(5px,.9dvh,11px);
           border-radius:clamp(13px,2dvh,22px);
-          border:2px solid var(--border);
-          background:var(--surface-2);
+          border:2px solid var(--n-line);
+          background:var(--n-surface-2);
         }
-        .bunit.team-0 { border-color:var(--gold); }
-        .bunit.team-1 { border-color:var(--coral); }
+        .bunit.team-0 { border-color:var(--n-ink); }
+        .bunit.team-1 { border-color:var(--n-bad); }
 
         /* ===== بطاقة الفئة ===== */
         .bhead {
@@ -136,8 +136,8 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           background-image:var(--art);
           background-size:cover;
           background-position:center;
-          background-color:var(--surface-2);
-          border:1px solid var(--border);
+          background-color:var(--n-surface-2);
+          border:1px solid var(--n-line);
         }
         .bh-plate {
           display:flex; flex-direction:column; align-items:center;
@@ -148,7 +148,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         }
         .bh-name {
           font-size:clamp(12px, min(1.5vw, 2.6dvh), 21px); font-weight:800; line-height:1.15;
-          color:var(--cream); text-align:center; max-width:100%;
+          color:var(--n-ink); text-align:center; max-width:100%;
           white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
         /* شارة صاحب الاختيار — الفريقان بلونين ثابتين لا بترتيب الظهور. */
@@ -157,8 +157,8 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           padding:.18em .7em; border-radius:999px;
           max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
-        .bh-owner.team-0 { background:var(--gold); color:var(--on-gold); }
-        .bh-owner.team-1 { background:var(--coral); color:var(--on-coral); }
+        .bh-owner.team-0 { background:var(--n-ink); color:#fff; }
+        .bh-owner.team-1 { background:var(--n-bad); color:#fff; }
 
         /* ===== عمود المستويات ===== */
         .blevels {
@@ -172,16 +172,16 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
           min-width:0; min-height:0;
           font-family:inherit; cursor:pointer;
           border-radius:clamp(9px,1.4dvh,15px);
-          border:2px solid var(--gold);
-          background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
-          color:var(--gold);
-          box-shadow:var(--lift);
+          border:2px solid var(--n-ink);
+          background:linear-gradient(165deg, var(--n-surface-2), var(--n-surface) 68%);
+          color:var(--n-ink);
+          box-shadow:var(--n-e2);
           transition:transform .18s var(--ease-spring), box-shadow .25s ease, opacity .25s ease;
         }
         .bc-points { font-size:clamp(15px, min(2vw, 3.6dvh), 32px); font-weight:800; line-height:1; }
-        .bc-level  { font-size:clamp(9px, min(1.05vw, 1.9dvh), 14px); font-weight:700; color:var(--text-2); }
+        .bc-level  { font-size:clamp(9px, min(1.05vw, 1.9dvh), 14px); font-weight:700; color:var(--n-ink-2); }
         .bcell:active { transform:scale(.96); }
-        .bcell:focus-visible { outline:none; box-shadow:var(--lift), 0 0 0 4px rgba(255,189,89,.5); }
+        .bcell:focus-visible { outline:none; box-shadow:var(--n-e2), 0 0 0 4px rgba(255,189,89,.5); }
         @media (hover:hover) {
           .bcell:not(.played):hover { transform:translateY(-3px); box-shadow:0 18px 34px rgba(0,0,0,.34), 0 0 28px rgba(255,189,89,.28); }
         }
@@ -189,7 +189,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
         /* المستهلَك: ظاهر باهت لا يختفي — قاعدة العجلة نفسها (القسم ٧). */
         .bcell.played {
           cursor:default; opacity:.4; box-shadow:none;
-          border-color:var(--border); color:var(--spent-text);
+          border-color:var(--n-line); color:var(--spent-text);
           background:var(--spent);
         }
         .bcell.played .bc-level { color:var(--spent-text); }
