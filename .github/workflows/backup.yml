@@ -14,6 +14,7 @@
 #
 # الأسرار: BACKUP_DB_URL (رابط backup_reader بالـSession pooler)،
 #   R2_ACCESS_KEY_ID، R2_SECRET_ACCESS_KEY، R2_ENDPOINT.
+#   TELEGRAM_BOT_TOKEN، TELEGRAM_CHAT_ID (اختياريّان: رسالةٌ بالنتيجة نجاحاً أو فشلاً).
 # المتغيّرات: AGE_RECIPIENT، SUPABASE_URL.
 #
 # فتحُ نسخة (على جهاز علي، والمفتاح السرّيّ في ~/f6een-backup.key):
@@ -76,6 +77,7 @@ jobs:
           OUT_DIR: ${{ runner.temp }}/db
           ART_DIR: ${{ runner.temp }}/art
           R2_ART_LISTING: ${{ runner.temp }}/r2-art.json
+          REPORT: ${{ runner.temp }}/report.txt
         run: node "$RUNNER_TEMP/deps/backup-nightly.mjs"
 
       - name: التشفير والرفع
@@ -93,7 +95,26 @@ jobs:
             aws s3 cp "$file" "s3://$BUCKET/db/monthly/f6een-$stamp.tar.gz.age" --only-show-errors
           fi
           aws s3 ls "s3://$BUCKET/db/daily/f6een-$stamp.tar.gz.age"
+          echo "الحجم: $(du -h "$file" | cut -f1)" >> "$RUNNER_TEMP/report.txt"
 
           if [ -d "$RUNNER_TEMP/art" ] && [ -n "$(ls -A "$RUNNER_TEMP/art")" ]; then
             aws s3 cp "$RUNNER_TEMP/art" "s3://$BUCKET/art/" --recursive --only-show-errors
           fi
+
+      - name: تيليغرام
+        if: always()
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$TG_TOKEN" ] || [ -z "$TG_CHAT" ]; then exit 0; fi
+          when=$(TZ=Asia/Kuwait date '+%Y-%m-%d %H:%M')
+          if [ "$STATUS" = "success" ]; then
+            text=$(printf '✅ نسخة فطين الاحتياطيّة اكتملت\n%s\n\n%s' "$when" "$(cat "$RUNNER_TEMP/report.txt" 2>/dev/null)")
+          else
+            text=$(printf '❌ فشلت نسخة فطين الاحتياطيّة\n%s\n\n%s' "$when" "$RUN_URL")
+          fi
+          curl -sS --fail -o /dev/null -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
+            --data-urlencode "chat_id=$TG_CHAT" --data-urlencode "text=$text"

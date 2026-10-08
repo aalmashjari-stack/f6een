@@ -18,7 +18,7 @@ import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import pg from 'pg'
 
-const { BACKUP_DB_URL, SUPABASE_URL, OUT_DIR, ART_DIR, R2_ART_LISTING } = process.env
+const { BACKUP_DB_URL, SUPABASE_URL, OUT_DIR, ART_DIR, R2_ART_LISTING, REPORT } = process.env
 for (const [k, v] of Object.entries({ BACKUP_DB_URL, SUPABASE_URL, OUT_DIR, ART_DIR, R2_ART_LISTING })) {
   if (!v) {
     console.error(`ينقص ${k}`)
@@ -74,5 +74,22 @@ for (const { name, size } of snap['storage.objects'] ?? []) {
   await pipeline(Readable.fromWeb(res.body), createWriteStream(dest))
   fetched++
 }
-console.log(`الصور: ${(snap['storage.objects'] ?? []).length} في الدلو، ${fetched} جديدة${failed ? `، وفشل ${failed}` : ''}`)
+const imagesLine = `الصور: ${(snap['storage.objects'] ?? []).length} في الدلو، ${fetched} جديدة${failed ? `، وفشل ${failed}` : ''}`
+console.log(imagesLine)
+
+/* سطور رسالة تيليغرام — أعدادٌ فقط، كسجلّ المهمّة. */
+if (REPORT) {
+  const n = (t) => (summary[t] ?? 0).toLocaleString('en-US')
+  writeFileSync(
+    REPORT,
+    [
+      `الحسابات: ${n('auth.users')}`,
+      `البنك: ${n('public.question_overrides')} سؤال`,
+      `المسوّدات: ${n('public.question_drafts')}`,
+      `الجلسات: ${n('public.sessions')}`,
+      imagesLine,
+      '',
+    ].join('\n'),
+  )
+}
 if (failed) process.exitCode = 1
