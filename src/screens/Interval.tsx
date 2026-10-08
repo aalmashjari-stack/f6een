@@ -51,6 +51,8 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
   }
   const tie = state.intervalNext === 'tiebreak'
   const stageNo = state.intervalNext === 'stage2-selection' ? '02' : state.intervalNext === 'stage3-play' ? '03' : '∞'
+  /* لون المرحلة يملأ الشاشة كلّها — بطاقة عنوانٍ تلفزيونيّة (DESIGN.md §8). */
+  const stageKey = state.intervalNext === 'stage2-selection' ? '2' : state.intervalNext === 'stage3-play' ? '3' : 'tie'
 
   const [held, setHeld] = useState(false)
   const timer = useRef<number | null>(null)
@@ -63,7 +65,7 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
   }
 
   return (
-    <div className="screen center-col">
+    <div className="screen center-col interval-screen" data-stage={stageKey}>
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
       <div className="grow center-all">
         <div className={'interval-card' + (tie ? ' tie' : '') + (held ? ' held' : '')}>

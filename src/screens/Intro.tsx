@@ -372,7 +372,7 @@ export function Intro({ onDone }: { onDone?: () => void }) {
         }
         .w-stage.tone-0 { --tone:#FFD966; --tone-soft:#FFF4CC; }
         .w-stage.tone-1 { --tone:#8FD9D6; --tone-soft:#E1F5F4; }
-        .w-stage.tone-2 { --tone:#FFB399; --tone-soft:#FFE6DC; }
+        .w-stage.tone-2 { --tone:var(--n-stage-3, #FFB399); --tone-soft:var(--n-stage-3-tint, #FFE6DC); }
         .w-stage-head {
           display:flex; align-items:stretch; width:100%; padding:0;
           font:inherit; color:var(--n-ink, #22201C); background:transparent; border:0; cursor:pointer; text-align:start;

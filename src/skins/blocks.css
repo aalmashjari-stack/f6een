@@ -57,6 +57,12 @@ html[data-skin='blocks'] {
   --n-b-tint: #7BD3D0;
   --n-b-line: #22201C;
 
+  /* لون المرحلة الثالثة — السلمونيّ الذي كان قيمةً متروكة في الصفحة الرئيسيّة
+     والإعداد (DESIGN.md §4، قرار §12.4). الأولى أصفر والثانية تركواز: لونا
+     الفريقين نفساهما. */
+  --n-stage-3: #FFB399;
+  --n-stage-3-tint: #FFE6DC;
+
   /* الحكم — كما في كلّ الهويّات: محجوزان */
   /* ‎#157A49‎ بدل ‎#1D9E5F‎: الأبيض عليه 3.44 فصار نحو 5:1 (التدقيق M11) */
   --n-good: #157A49;
@@ -721,4 +727,78 @@ html[data-skin='blocks'] body .screen .pick::before { display: none; }
 html[data-skin='blocks'] :focus-visible:not(input):not(textarea):not(select) {
   outline: 3px solid var(--n-brand) !important;
   outline-offset: 3px !important;
+}
+
+/* ─── بطاقة العنوان: الفاصل بين المراحل (DESIGN.md §8، §12.6) ──────────── */
+/* لحظة «وجاء دور…»: الشاشة كلّها بلون المرحلة المسطّح، واسمها بحروفٍ ضخمة
+   بيضاء بحدّ حبرٍ وظلٍّ صلب — من لغة الشعار نفسه — ثمّ سطر القاعدة بالحبر.
+   المحتوى نفسه لم يتغيّر، تغيّرت طريقة تقديمه. شريط النتيجة يبقى فوقها. */
+html[data-skin='blocks'] body:has(.interval-screen[data-stage='2']),
+html[data-skin='blocks'] body:has(.interval-screen[data-stage='2'])::before { background: var(--n-b-tint); }
+html[data-skin='blocks'] body:has(.interval-screen[data-stage='3']),
+html[data-skin='blocks'] body:has(.interval-screen[data-stage='3'])::before { background: var(--n-stage-3); }
+html[data-skin='blocks'] body:has(.interval-screen[data-stage='tie']),
+html[data-skin='blocks'] body:has(.interval-screen[data-stage='tie'])::before { background: var(--n-a-tint); }
+
+html[data-skin='blocks'] body .screen.interval-screen .interval-card,
+html[data-skin='blocks'] body .screen.interval-screen .interval-card.tie {
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  padding: 0;
+  gap: clamp(10px, 2.4dvh, 26px);
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+html[data-skin='blocks'] body .screen.interval-screen .il-stage-no { display: none; }
+html[data-skin='blocks'] body .screen.interval-screen .il-live {
+  position: static;
+  align-self: center;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--n-surface);
+  box-shadow: 0 0 0 2px var(--n-ink);
+  color: var(--n-ink);
+  font-size: clamp(12px, 1.3vw, 15px);
+}
+html[data-skin='blocks'] body .screen.interval-screen .il-eyebrow {
+  background: var(--n-ink);
+  color: #fff;
+  box-shadow: none;
+  font-size: clamp(14px, min(1.8vw, 3dvh), 22px);
+}
+html[data-skin='blocks'] body .screen.interval-screen .il-title,
+html[data-skin='blocks'] body .screen.interval-screen .interval-card.tie .il-title {
+  color: #fff;
+  font-size: clamp(54px, min(12vw, 21dvh), 210px);
+  /* أذيال Baloo عميقة («ي» الديربي) فتلامس سطر القاعدة تحتها بسطرٍ أضيق */
+  line-height: 1.3;
+  letter-spacing: 0;
+  -webkit-text-stroke: .045em var(--n-ink);
+  paint-order: stroke fill;
+  text-shadow: .05em .06em 0 var(--n-ink);
+  transform: rotate(-2deg);
+}
+html[data-skin='blocks'] body .screen.interval-screen .il-rule {
+  max-width: 40ch;
+  color: var(--n-ink);
+  font-size: clamp(17px, min(2.4vw, 4.6dvh), 32px);
+  font-weight: 800;
+}
+/* الزرّ أبيض على لون المرحلة — البرتقاليّ يذوب في السلمونيّ والأصفر. */
+html[data-skin='blocks'] body .screen.interval-screen .action,
+html[data-skin='blocks'] body .screen.interval-screen .action:hover:not(:disabled),
+html[data-skin='blocks'] body .screen.interval-screen .action.held:disabled {
+  background: var(--n-surface);
+  color: var(--n-ink);
+}
+@media (max-height: 480px) {
+  html[data-skin='blocks'] body .screen.interval-screen .il-title,
+  html[data-skin='blocks'] body .screen.interval-screen .interval-card.tie .il-title {
+    font-size: clamp(36px, 17dvh, 80px);
+    transform: none;
+  }
+  html[data-skin='blocks'] body .screen.interval-screen .il-rule { font-size: clamp(13px, 4dvh, 18px); }
+  html[data-skin='blocks'] body .screen.interval-screen .il-eyebrow { font-size: 11px; }
 }
