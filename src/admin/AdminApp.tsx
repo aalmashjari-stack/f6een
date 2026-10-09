@@ -21,6 +21,7 @@ import { isImageUrl } from '../game/celebs'
 import { shippedImage } from '../game/shippedImage'
 import { Insights } from './Insights'
 import { Backups } from './Backups'
+import { Audit } from './Audit'
 import type { Plan } from '../lib/importQuestions'
 import { buildPlan, questionsToCsv, readTable } from '../lib/importQuestions'
 import type { Question } from '../game/types'
@@ -192,6 +193,7 @@ type Tab =
   | 'uploads'
   | 'insights'
   | 'backups'
+  | 'audit'
 
 /**
  * الألسنة مرتّبةٌ بالعمل لا بتاريخ إضافتها: **المحتوى أوّلاً** (الأسئلة
@@ -209,6 +211,8 @@ const TABS: [Tab, string, boolean][] = [
   ['categories', 'الفئات', false],
   ['uploads', 'الصور المرفوعة', false],
   ['reports', 'البلاغات', false],
+  /* اقتراحات تدقيق ٩ أكتوبر ٢٠٢٦ — يُزال اللسان وملفّه حين تنتهي. */
+  ['audit', 'التدقيق', false],
   /* للمدير العامّ: فيها حساباتٌ وبريدُ أكثرهم لعباً (`admin_insights` تردّ غيرَه). */
   ['insights', 'الإحصائيات', true],
   ['users', 'الحسابات', true],
@@ -298,6 +302,7 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       {tab === 'uploads' && <Uploads />}
       {tab === 'insights' && <Insights />}
       {tab === 'backups' && <Backups />}
+      {tab === 'audit' && <Audit />}
     </div>
   )
 }
