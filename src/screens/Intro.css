@@ -1,0 +1,312 @@
+/*
+  أنماط Intro — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+/* ممرٌّ يُمرَّر رأسياً بلوحين، كلٌّ منهما بملء الشاشة ويستقرّ عندها.
+   البادئة "body .screen" ضرورية لا زينة: theme.css يضبط عليها
+   overflow:hidden بوزن (0,2,0)، و".intro" وحدها (0,1,0) تخسر أمامه —
+   وهذا ما يفعله الإعداد بـ"body .screen.setup". */
+body .screen.intro {
+  overflow-y:auto;
+  scroll-snap-type:y mandatory;
+  scroll-behavior:smooth;
+  /* ارتفاعٌ صريح لا flex:1 وحده: نسبةُ اللوح (min-height:100%) لا
+     تُحسب إلا على ارتفاعٍ محدَّد، وبدونها يتكدّس اللوحان صفحةً واحدة
+     على الشاشة الطويلة — زرّ «تسجيل الدخول» وتحته عنوانُه مباشرة
+     (قِيس على 402×874: اللوح 476px لا 834). */
+  height:100%;
+}
+/* التوسيط بهامشٍ تلقائيّ لا بـjustify-content:center: حين يطول اللوح
+   عن الشاشة (سفاري الأفقيّ، 292 بكسلاً) يقصّ التوسيطُ الفلكسيّ أوّلَه
+   فيختفي الشعار فوق الحافّة ولا يبلغه تمرير. والهامش التلقائيّ يوسّط
+   حين يتّسع المكان ويبدأ من الأعلى حين يضيق. */
+.intro-pane {
+  min-height:100%;
+  scroll-snap-align:start;
+  display:flex; flex-direction:column; justify-content:flex-start;
+  gap:clamp(10px,2.2dvh,26px);
+  padding:clamp(12px,3dvh,32px) clamp(14px,4vw,48px);
+  position:relative;
+}
+
+.intro-pane > :first-child { margin-top:auto; }
+.intro-pane > :last-child { margin-bottom:auto; }
+.signin { justify-content:center; text-align:center; }
+.signin-title { margin:0; font-size:clamp(20px,3.6vw,36px); font-weight:800; color:var(--n-brand); }
+.signin-sub {
+  margin:0; color:var(--n-ink-2); font-weight:600;
+  font-size:clamp(12px,1.7vw,18px);
+}
+.signin-methods {
+  display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px);
+  max-width:480px; width:100%; margin-inline:auto;
+}
+.method {
+  font:inherit; font-weight:800; cursor:pointer;
+  border-radius:var(--n-r2);
+  padding:clamp(10px,1.8dvh,16px) clamp(14px,2.6vw,24px);
+  font-size:clamp(13px,1.9vw,19px);
+  border:0; box-shadow:var(--n-e1);
+  background:var(--n-surface); color:var(--n-ink);
+  transition:transform .15s var(--ease-spring), border-color .2s ease;
+}
+.method.google { display:flex; align-items:center; justify-content:center; gap:.5em; }
+.g-logo { width:1.3em; height:1.3em; flex:none; }
+.method:active { transform:scale(.98); }
+.method:not(:disabled):hover { background:var(--n-surface-2); box-shadow:var(--n-e2); }
+.method:disabled {
+  background:rgba(23,23,31,.05); color:var(--n-ink-3);
+  box-shadow:none; cursor:not-allowed;
+}
+.method.go-now { background:var(--n-ink); color:#fff; box-shadow:var(--n-e2); }
+.method.go-now:not(:disabled):hover { background:#26262F; box-shadow:var(--n-e3); }
+.signin-note {
+  margin:0; color:var(--n-ink-3); font-weight:700;
+  font-size:clamp(11px,1.5vw,15px);
+}
+.signin-err {
+  margin:0; color:var(--n-bad); font-weight:700;
+  font-size:clamp(12px,1.6vw,16px);
+}
+
+/* ─── التطبيق: الرأس ─── مستطيل الإعداد الأبيض نفسه بظلّه الناعم (علي ١
+   أكتوبر ٢٠٢٦: «الخلفيّة البيضاء لا تغيّرها، الصورة مثال») — الشعار
+   يميناً و«تسجيل الدخول» برتقاليّاً في الطرف الآخر مكانَ ☰. لاصقٌ في
+   الأعلى: الممرّ يستقرّ على لوحيه (scroll-snap)، ورأسٌ لا يلصق يُمرَّر
+   من فوقه فلا يُرى (قِيس في المحاكي). */
+.welcome-bar {
+  position:sticky; top:0; z-index:5; flex:none;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin:0 16px; padding:12px 4px;
+  /* بلا كونتينر: على الخلفيّة نفسها (علي ١ أكتوبر ٢٠٢٦: «شيل كونتينر
+     البانر»). لونُها لا شفافيّة: لاصقٌ يمرّ تحته المحتوى عند التمرير. */
+  background:var(--n-bg, #F6F5F2);
+  border-bottom:1.5px solid rgba(34,32,28,.14); /* خطٌّ رماديّ خفيف بين الشعار والكونتينر (علي ١ أكتوبر ٢٠٢٦) */
+}
+.welcome-logo { font-size:clamp(33px,9vw,38px); }
+.welcome-login {
+  display:flex; align-items:center; gap:8px; height:40px;
+  font:inherit; font-weight:800; font-size:15px; cursor:pointer;
+  padding:0 16px; border:0; border-radius:999px;
+  background:var(--n-brand, #E8542F); color:#fff;
+}
+.welcome-login svg { width:19px; height:19px; display:block; }
+.welcome-login:active { transform:scale(.97); }
+/* الرأسُ لاصقٌ فوق الكتلة، فالتمرير إلى عنصرٍ يحسب ارتفاعه. */        /* الكتلة أطول من الشاشة: الاستقرار الإجباريّ على اللوحين يعيق تمريرها. */
+body .screen.intro.native { scroll-snap-type:none; }
+/* صفحتان لا لوحان: التعريف وحده، أو الدخول وحده بعد الضغطة. */
+body .screen.intro.native:not(.signin-open) .intro-pane.signin,
+body .screen.intro.native.signin-open .intro-pane:not(.signin) { display:none; }
+.welcome-back {
+  height:40px; padding:0 18px; border:0; border-radius:999px; cursor:pointer;
+  font:inherit; font-weight:800; font-size:15px;
+  background:var(--n-bg, #F6F5F2); color:var(--n-ink, #22201C);
+}
+/* والكتلة تبدأ تحت الرأس لا في منتصف ما بقي. */
+/* الكتلة تملأ ما بقي تحت الرأس إلى أسفل الشاشة، بلا فراغٍ في آخرها
+   (علي ١ أكتوبر ٢٠٢٦: «خلّها كاملة»). 96 = الرأس وهامشه. */
+body .screen.intro.native .intro-pane:first-of-type {
+  padding-top:16px; padding-bottom:16px; min-height:calc(100% - 96px);
+  /* لا ينكمش تحت محتواه: الشاشة عمودٌ مرن، فكان اللوح يقصر عن الكتلة
+     فتفيض عنه بلا حشوةٍ تحتها. */
+  flex:none;
+}
+/* ‏1 0 auto لا 1: overflow:hidden (لرسوم الفئات خلفها) يُسقط حدّها الأدنى،
+   فكانت تنكمش إلى ارتفاع الشاشة وتقصّ زرّ التسجيل حين يطول المحتوى
+   (قِيس على 1440×900: الفيديو 720 عرضاً). */
+body .screen.intro.native .welcome-box { flex:1 0 auto; justify-content:space-evenly; }
+/* صفحة الدخول بهيئة صفحة التعريف (علي: «ضبّط صفحة تسجيل الدخول»):
+   الكتلة البيضاء نفسها بظلّها الأسود، تملأ ما تحت الرأس، والأزرار
+   في وسطها. */
+body .screen.intro.native .intro-pane.signin {
+  min-height:calc(100% - 32px);
+  margin:16px; padding:28px 18px;
+  background:var(--n-surface, #fff); border-radius:22px;
+  box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ كبطاقة «إنشاء حساب» */
+  justify-content:center; gap:14px;
+  /* لا ينكمش تحت محتواه — العلّة نفسها في الكتلة أدناه: overflow:hidden
+     (لرسوم الفئات) يُسقط حدّه الأدنى، فكان يُحشر في ارتفاع الشاشة
+     ويقصّ الشعار من أعلى و«أول مرة؟» و«رجوع» من أسفل بلا تمرير
+     (قِيس ٥ أكتوبر ٢٠٢٦ على 667×375 و844×390 و932×430). */
+  flex:none;
+}
+body .screen.intro.native .intro-pane.signin > :first-child,
+body .screen.intro.native .intro-pane.signin > :last-child { margin-block:0; }
+body .screen.intro.native .signin-logo { font-size:clamp(72px,22vw,96px); margin:0 auto 6px; }
+/* «تسجيل الدخول» والجملة تحتها سقطتا في التطبيق: الشعار والأزرار تكفي (علي ١ أكتوبر ٢٠٢٦). */
+body .screen.intro.native .signin-title,
+body .screen.intro.native .signin-sub { visibility:hidden; } /* مكانهما باقٍ: الشعار في موضعه كما كان (علي: «ارفع الشعار نفس ما كان») */
+.signin-first {
+  margin-top:4px; padding:6px; border:0; background:none; cursor:pointer;
+  font:inherit; font-weight:700; font-size:16px; color:var(--n-ink-2, #57524A);
+}
+.signin-first u { color:var(--n-brand, #E8542F); text-underline-offset:4px; }
+body .screen.intro.native .signin .welcome-back { align-self:center; margin-top:8px; }
+body .screen.intro.native .signin-sub { font-size:16px; margin-bottom:10px; }
+body .screen.intro.native .signin-methods { gap:12px; }
+body .screen.intro.native .method { font-size:17px; padding:15px 18px; }
+
+/* ─── كتلة التعريف ─── بيضاء كالرأس، والمراحل
+   كبسولات الإعداد نفسها (رقمٌ في لسانٍ ملوّن، والاسم، وi تفتح الشرح). */
+.welcome-box {
+  display:flex; flex-direction:column; gap:14px;
+  margin-top:0; padding:22px 16px 20px;
+  /* أبيض بظلّ الرأس الناعم؛ جُرّب قبله الخوخيّ ثمّ الفيروزيّ الفاتح. */
+  background:var(--n-surface, #fff); border-radius:22px;
+  box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ وظلٌّ صلب كبطاقة «إنشاء حساب» (علي ١ أكتوبر ٢٠٢٦) */
+  text-align:center;
+}
+/* لمسةٌ خفيفة جدّاً خلف الكتلة: رسوم الفئات شبكةً مائلة كافتتاحيّة فيديو
+   الشرح (علي ١ أكتوبر ٢٠٢٦: «مثل صور الفئات بس خفيييفة»). صورةٌ واحدة
+   مجمَّعة من assets/categories لا تسع عشرة. والمحتوى فوقها. */
+.welcome-box,
+body .screen.intro.native .intro-pane.signin { position:relative; isolation:isolate; overflow:hidden; }
+/* وفي صفحة الدخول كذلك (علي ١ أكتوبر ٢٠٢٦: «سوّها في صفحة تسجيل الدخول»). */
+.welcome-box::before,
+body .screen.intro.native .intro-pane.signin::before {
+  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--welcome-cats) center / cover no-repeat;
+  opacity:var(--cats-alpha);
+}
+.welcome-name {
+  margin:0; font-family:system-ui, -apple-system, sans-serif; font-weight:800;
+  font-size:44px; line-height:1.1; color:var(--n-ink, #22201C);
+}
+/* رأس الكتلة بعد سقوط «فطين» المكتوبة (علي: «نسّق الجملة»): «لعبة
+   ثقافية اجتماعية» عنواناً بالحبر، وما بعدها سطرٌ أهدأ تحته. */
+.welcome-line {
+  display:flex; flex-direction:column; gap:6px;
+  margin:4px 0 8px; font-family:system-ui, -apple-system, sans-serif;
+}
+.welcome-what { font-weight:800; font-size:24px; line-height:1.3; color:var(--n-ink, #22201C); }
+.welcome-why {
+  font-weight:600; font-size:16px; line-height:1.6; color:var(--n-ink-2, #57524A);
+  text-wrap:balance;
+}
+.welcome-stages { display:flex; flex-direction:column; gap:10px; margin-top:6px; text-align:start; }
+.w-stage {
+  overflow:hidden; border-radius:18px; background:var(--n-surface, #fff);
+  box-shadow:0 0 0 2.5px var(--n-ink, #22201C); /* بلا ظلّ ملوّن (علي ١ أكتوبر ٢٠٢٦) */
+}
+.w-stage.tone-0 { --tone:#FFD966; --tone-soft:#FFF4CC; }
+.w-stage.tone-1 { --tone:#8FD9D6; --tone-soft:#E1F5F4; }
+.w-stage.tone-2 { --tone:#FFB399; --tone-soft:#FFE6DC; }
+.w-stage-head {
+  display:flex; align-items:stretch; width:100%; padding:0;
+  font:inherit; color:var(--n-ink, #22201C); background:transparent; border:0; cursor:pointer; text-align:start;
+}
+.w-stage-no {
+  flex:none; width:50px; min-height:50px; display:grid; place-items:center;
+  background:var(--tone); border-inline-end:2.5px solid var(--n-ink, #22201C);
+  font-weight:800; font-size:21px;
+}
+.w-stage-name { flex:1; margin:0; align-self:center; padding-inline:14px; font-size:17px; font-weight:800; }
+.w-stage-info {
+  flex:none; align-self:center; margin-inline-end:14px; width:26px; height:26px; border-radius:50%;
+  display:grid; place-items:center; background:var(--tone-soft);
+  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+  font-family:'Cairo', serif; font-style:italic; font-weight:800; font-size:15px;
+}
+.w-stage.open .w-stage-info { background:var(--n-ink, #22201C); color:#fff; }
+.w-stage-desc {
+  margin:0 12px 12px; padding:10px 12px; border-radius:12px; background:var(--tone-soft);
+  text-align:center; font-weight:600; font-size:14px; line-height:1.6; color:var(--n-ink, #22201C);
+}
+.welcome-video-line {
+  margin:16px 0 0; font-family:system-ui, -apple-system, sans-serif; font-weight:600;
+  font-size:17px; color:var(--n-ink, #22201C);
+}
+.welcome-box .xi-wrap { margin:0; }
+.welcome-cta {
+  margin-top:6px; height:52px; border:0; border-radius:999px; cursor:pointer;
+  font:inherit; font-weight:800; font-size:17px;
+  background:var(--n-brand, #E8542F); color:#fff;
+  box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 4px 5px 0 var(--n-ink, #22201C);
+}
+.welcome-cta:active { transform:translate(2px,3px); box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 1px 1px 0 var(--n-ink, #22201C); }
+
+/* الجوال الأفقيّ قصير (ارتفاعه ٤٤٠px): الحشو والفجوات تنكمش. */
+@media (max-height:460px) {
+  .intro-pane { gap:clamp(6px,1.2dvh,12px); padding-block:clamp(8px,1.4dvh,14px); }
+}
+
+/* ─── العرض (الموقع والآيباد) ─── عمودٌ بعرض كونتينر الإعداد (1140)
+   والرأسُ بعرضه، والخطّ والأزرار بمقاس الشاشة لا بأرقام الجوال (علي ١
+   أكتوبر ٢٠٢٦: بعرض 720 وبمقاسات الجوال «صغيرة جدّاً»). والمراحل صفٌّ
+   واحد كبطاقات الإعداد في الموقع. */
+@media (min-width:641px), (orientation: landscape) {
+  body .screen.intro.native { --col:min(calc(100% - 48px), 1140px); }
+  /* الرأس بعرض الصفحة كي يغطّي ما يمرّ تحته وهو لاصق (بعرض العمود
+     كانت حافّتا الكتلة تطلّان بجانبه)، والخطّ الرماديّ بعرض العمود. */
+  .welcome-bar {
+    margin:0; padding:clamp(14px,3.4dvh,40px) calc((100% - var(--col)) / 2) clamp(12px,2dvh,20px);
+    border-bottom:0;
+    background:
+      linear-gradient(rgba(34,32,28,.14), rgba(34,32,28,.14)) bottom center / var(--col) 1.5px no-repeat,
+      var(--n-bg, #F6F5F2);
+  }
+  .welcome-logo { font-size:clamp(40px,3.9vw,64px); }
+  .welcome-login { height:clamp(44px,3.6vw,54px); padding:0 clamp(18px,1.8vw,28px); font-size:clamp(15px,1.25vw,19px); }
+  .welcome-login svg { width:1.25em; height:1.25em; }
+  /* اللاصق يقف تحت حشوة الشاشة العليا فيطلّ المحتوى فوقه: الحشوة في الرأس. */
+  /* بوزن html[data-skin]: قاعدة «body .screen:not(.setup):not(.end)…» في
+     السمات تزن أربعة أصناف فتغلب ثلاثة. */
+  html[data-skin] body .screen.intro.native { padding-top:0; }
+  html[data-skin] body .screen.intro.native.signin-open { padding-top:clamp(14px,3.4dvh,40px); }
+  body .screen.intro.native .intro-pane:first-of-type { padding-block:clamp(24px,4dvh,48px) 40px; }
+  body .screen.intro.native .intro-pane:first-of-type { width:var(--col); margin-inline:auto; padding-inline:0; }
+
+  .welcome-box { gap:clamp(14px,2.2dvh,24px); padding:clamp(26px,4.4dvh,56px) clamp(20px,3.2vw,56px) clamp(24px,4dvh,48px); border-radius:clamp(22px,2vw,32px); }
+  .welcome-line { gap:clamp(6px,1dvh,12px); margin-bottom:clamp(8px,1.6dvh,20px); }
+  .welcome-what { font-size:clamp(26px,2.9vw,46px); }
+  .welcome-why { font-size:clamp(16px,1.5vw,23px); }
+  .welcome-stages { display:grid; grid-template-columns:repeat(3, 1fr); align-items:start; gap:clamp(10px,1.4vw,22px); }
+  .w-stage-no { width:clamp(50px,4.2vw,64px); min-height:clamp(50px,4.2vw,64px); font-size:clamp(21px,1.9vw,28px); }
+  .w-stage-name { font-size:clamp(16px,1.45vw,22px); padding-inline:clamp(10px,1.2vw,18px); }
+  .w-stage-info { width:clamp(26px,2.2vw,32px); height:clamp(26px,2.2vw,32px); font-size:clamp(15px,1.25vw,18px); }
+  .w-stage-desc { font-size:clamp(14px,1.15vw,17px); }
+  .welcome-video-line { margin-top:clamp(16px,3dvh,36px); font-size:clamp(17px,1.5vw,22px); }
+  /* الفيديو بعرضه في الإعداد (55vw)، متوسّطاً. */
+  .welcome-box .xi-wrap { margin-inline:auto; }
+  .welcome-cta {
+    align-self:center; width:min(100%, 560px); height:clamp(52px,4.4vw,66px);
+    margin-top:clamp(8px,2dvh,24px); font-size:clamp(17px,1.5vw,22px);
+  }
+
+  /* صفحة الدخول: كتلةٌ أضيق من التعريف (أزرارها عمودٌ واحد) وبمقاسٍ أكبر. */
+  body .screen.intro.native .intro-pane.signin {
+    width:min(calc(100% - 48px), 760px); margin-inline:auto;
+    padding:clamp(36px,6dvh,72px) clamp(18px,6vw,72px);
+  }
+  body .screen.intro.native .signin-logo { font-size:clamp(96px,9vw,140px); }
+  body .screen.intro.native .signin-methods { max-width:520px; gap:clamp(12px,1.8dvh,18px); }
+  body .screen.intro.native .method { font-size:clamp(17px,1.4vw,21px); padding:clamp(15px,2.2dvh,20px) 18px; }
+  .signin-first { font-size:clamp(16px,1.3vw,19px); }
+  .welcome-back { height:clamp(40px,3.4vw,48px); font-size:clamp(15px,1.2vw,18px); }
+  .welcome-cta, .welcome-login, .w-stage-head, .welcome-back, .signin-first { cursor:pointer; }
+}
+/* الجوال الأفقيّ: صفحة الدخول تسع الشاشة بلا تمرير. الشعار أصغر، والعنوان
+   والجملة المخفيّان (visibility) يُسقطان من التدفّق — كانا يحجزان
+   مكانهما فيدفعان «أول مرة؟» تحت الحافّة. */
+@media (max-height:460px) {
+  body .screen.intro.native .intro-pane.signin { padding:14px 18px; gap:8px; }
+  body .screen.intro.native .signin-logo { font-size:56px; margin-bottom:0; }
+  body .screen.intro.native .signin-title,
+  body .screen.intro.native .signin-sub { display:none; }
+  body .screen.intro.native .signin-methods { gap:8px; }
+  body .screen.intro.native .method { padding:9px 18px; font-size:16px; }
+  .signin-first { margin-top:0; padding:2px; font-size:15px; }
+  body .screen.intro.native .signin .welcome-back { margin-top:0; height:34px; }
+}
+/* الآيباد الطوليّ والنوافذ الضيّقة: ثلاثُ بطاقاتٍ في صفٍّ تخنق الأسماء. */
+@media (max-width:760px) {
+  .welcome-stages { display:flex; }
+}
+/* إلّا الجوال الأفقيّ القصير: المراحل عموداً تدفع زرّ التسجيل تحت
+   الحافّة (416px على 667×375)، والعرض هناك يسع صفّاً. */
+@media (orientation: landscape) and (max-height:460px) {
+  .welcome-stages { display:grid; }
+  .w-stage-name { padding-inline:8px; font-size:15px; }
+  .w-stage-no { width:40px; min-height:40px; font-size:18px; }
+  .w-stage-info { margin-inline-end:8px; }
+}

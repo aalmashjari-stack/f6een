@@ -1,0 +1,194 @@
+/*
+  أنماط Stage1Reveal — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+/* ===== بطاقة الكشف: السؤال والإجابة معاً ===== */
+.rv-card {
+  /* تنكمش مع الشاشة بدل أن تصمد بمقاس محتواها: في سؤال الصورة كانت
+     الصورةُ داخلها تدفع بطاقتَي «من أصاب؟» خارج الشاشة. */
+  position:relative; overflow:hidden; flex:0 1 auto; min-height:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(8px,1.6dvh,16px);
+  padding:clamp(14px,3.2dvh,36px) clamp(24px,5vw,64px);
+  border-radius:clamp(24px, 5dvh, 52px);
+  border:1px solid var(--gold);
+  background:linear-gradient(165deg, var(--surface-2), var(--surface) 60%);
+  box-shadow:var(--lift), var(--glow-gold);
+  animation:pop-in .45s var(--ease-spring) both, rv-glow 1.1s ease-out both;
+}
+/* السؤال باهت ومنكمش لكنه حاضر — المجلس ينسى ما سُئل لحظةَ ظهور الإجابة.
+   درجتا الهبوط الإضافيتان (.long/.xlong) نفس عتبات QuestionText.tsx:
+   سؤال «من أنا؟» الطويل يفيض على هذه البطاقة الأصغر بالمقاس الثابت
+   نفسه الذي كان يفيض به على بطاقة السؤال الحيّ قبل أن تُبنى تلك. */
+.rv-q {
+  color:var(--text-2); font-weight:600; text-align:center;
+  font-size:clamp(14px, min(2vw, 2.8dvh), 22px); line-height:1.4;
+}
+.rv-q.long  { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); }
+.rv-q.xlong { font-size:clamp(11px, min(1.5vw, 2.1dvh), 15px); line-height:1.35; }
+.rv-rule { width:clamp(40px,6vw,72px); height:1px; background:rgba(255,189,89,.32); }
+/* البوستر يأخذ ما كان للسؤال والصورة معاً: لا نصَّ فوقه، فسقفه أعلى
+   من سقف صورة السؤال، ويبقى تحته العنوان و«هل أصاب؟» والزرّان. */
+.rv-photo.rv-poster { max-height:min(34dvh, 300px); }
+.rv-poster-title { flex:none; max-width:100%; min-width:0; }
+.rv-kind {
+  flex:none; padding:2px clamp(10px,1.4vw,16px); border-radius:999px;
+  border:2px solid var(--festival-ink); background:var(--festival-mint); color:var(--festival-ink);
+  font-weight:800; font-size:clamp(12px, min(1.6vw, 2.4dvh), 18px); line-height:1.5;
+  animation:pop-in .45s var(--ease-spring) both;
+}
+/* showtime.css يُخفي صورة الكشف تحت 620px لأنّ المجلس رآها كبيرةً في
+   شاشة السؤال قبل ثوانٍ — والملصقُ لم يُرَ قطّ، فيبقى مصغَّراً حتى
+   480px؛ وتحتها (جوالٌ أفقيّ) لا مكانَ له فيسقط كالصور. */
+@media (max-height:620px) { body .screen .rv-photo.rv-poster { display:block; max-height:22dvh; } }
+@media (max-height:480px) { body .screen .rv-photo.rv-poster { display:none; } }
+.rv-a {
+  color:var(--gold); font-weight:800; text-align:center;
+  font-size:clamp(28px, min(5.6vw, 9dvh), 60px); line-height:1.2;
+  overflow-wrap:anywhere;
+  animation:pop-in .5s var(--ease-spring) .1s both;
+}
+/* ذروة السؤال: توهّج يشتدّ ثم يهدأ، ولمعة ذهبية تمرّ مرة واحدة */
+@keyframes rv-glow {
+  0%   { box-shadow:var(--lift), 0 0 0 rgba(255,189,89,0); }
+  35%  { box-shadow:var(--lift), 0 0 90px rgba(255,189,89,.6); }
+  100% { box-shadow:var(--lift), var(--glow-gold); }
+}
+.rv-card::after {
+  content:''; position:absolute; top:0; bottom:0; width:40%;
+  background:linear-gradient(100deg, transparent, rgba(255,189,89,.28), transparent);
+  transform:skewX(-18deg); pointer-events:none;
+  animation:rv-sweep 1s ease-out .12s both;
+}
+@keyframes rv-sweep {
+  from { inset-inline-start:-50%; }
+  to   { inset-inline-start:120%; }
+}
+
+/* «من أجاب؟» سؤالٌ موجَّه إلى الحكم لا لافتةُ سياق، فيخرج من هيئة
+   eyebrow الصغيرة الخافتة: يكبر ويشتدّ لونه وينزل عن بطاقة الإجابة
+   مسافةً تفصله عنها (ملاحظتا علي ٥ سبتمبر ٢٠٢٦). */
+.rv-ask {
+  margin-block-start:clamp(18px,4.5dvh,46px);
+  font-size:clamp(17px,2.6vw,28px);
+  font-weight:900;
+  letter-spacing:0;
+  color:var(--cream);
+}
+
+/* ===== البطاقتان ===== */
+/* أرضية ارتفاع: على شاشة عريضة قصيرة كان الصفّ ينكمش إلى صفر فتخرج
+   البطاقتان من مكانهما وتركبان على «من أصاب؟». */
+.pick-cards {
+  /* center بعد أن ذهب زرّ «لا أحد أصاب» من تحت الصفّ (٣ سبتمبر ٢٠٢٦):
+     الصفّ يرث ارتفاعه فتُترك البطاقتان معلّقتين في أعلاه وتحتهما فراغ
+     ميّت. والحلقة التي فرضت stretch سابقاً لا تعود: سببها كان ارتفاعاً
+     مئوياً على .pick، وسقفُها اليوم بـvh لا بنسبة. */
+  display:flex; gap:clamp(12px,3vw,40px); align-items:center; justify-content:center;
+  flex:1 1 auto; min-height:clamp(78px, 20dvh, 220px);
+}
+/* البطاقتان حكمان لا فريقان، فتلبسان لغة تنقيط الديربي: الصحّ ذهبيّ
+   ممتلئ والغلط بإطار مرجانيّ. وتساوي البروز الذي فرضه SPEC كان لأنهما
+   كانتا فريقين — والفريق لا يُلوَّن قبل الحكم، أمّا الحكم فيُلوَّن. */
+.pick {
+  position:relative; overflow:hidden; isolation:isolate;
+  flex:1 1 0; min-height:0; max-width:min(38vw, 400px);
+  /* سقف الارتفاع: بلا هذا تتمدّد البطاقة على كل ما تبقّى من الشاشة
+     الطويلة (stretch يملأ الصفّ كاملاً)، فيسبح محتواها في فراغ
+     ويضيع تجاورُها مع الاسم. */
+  max-height:clamp(110px, 28dvh, 240px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(4px,1.2dvh,12px);
+  padding:clamp(10px,2.4dvh,26px) clamp(12px,2vw,28px);
+  border-radius:clamp(16px, 3dvh, 28px);
+  cursor:pointer; font-family:inherit;
+  background:linear-gradient(165deg, var(--surface-2), var(--surface) 68%);
+  border:2px solid var(--cream);
+  color:var(--cream);
+  box-shadow:var(--lift);
+  transition:transform .2s var(--ease-spring), box-shadow .25s ease;
+  animation:pop-in .45s var(--ease-spring) both;
+}
+.pick:first-child { animation-delay:.05s; }
+.pick:last-child  { animation-delay:.12s; }
+/* بريق علوي خفيف — ضوء المسرح يسقط على أعلى البطاقة فلا تبدو ورقة مسطّحة */
+.pick::before {
+  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:radial-gradient(120% 70% at 50% -12%, rgba(255,255,255,.13), transparent 62%);
+}
+.pick:active { transform:scale(.97); }
+.pick:focus-visible { outline:none; box-shadow:var(--lift), 0 0 0 4px rgba(255,189,89,.5); }
+@media (hover:hover) {
+  .pick:hover { transform:translateY(-6px); box-shadow:0 26px 54px rgba(0,0,0,.4), 0 0 46px rgba(245,239,227,.22); }
+}
+
+/* كل مقاس يأخذ أصغر نصيبيه من العرض والارتفاع — علاج .q-text نفسه:
+   بـ vw وحده يتضخّم الخط على شاشة عريضة قصيرة فيفيض على حدود البطاقة. */
+.pk-role {
+  font-size:clamp(11px, min(1.4vw, 2.4dvh), 15px); color:var(--text-2);
+  font-weight:700; letter-spacing:.06em; line-height:1.3;
+}
+.pk-name {
+  font-size:clamp(18px, min(3.4vw, 5.6dvh), 40px); font-weight:800; line-height:1.15;
+  text-align:center; max-width:100%; overflow-wrap:anywhere;
+}
+/* النتيجة قبل الضغطة وبعدها — الجديد وحده ذهبيّ */
+.pk-delta {
+  display:flex; align-items:center; gap:clamp(5px,.8vw,10px);
+  font-size:clamp(13px, min(2vw, 3.2dvh), 24px); font-weight:800; line-height:1.2;
+}
+.pk-from  { color:var(--text-3); }
+.pk-arrow { color:var(--text-3); font-weight:600; }
+.pk-to    { color:var(--gold); }
+
+/* البطاقتان فريقان لا حكمان، فتتساويان في البروز (SPEC ١٠) وتأخذ كلٌّ
+   لونَ فريقها كما في شريط النتيجة — فيربط الحكمُ الاسمَ بصاحبه بلمحة. */
+/* «أصاب / أخطأ» في «ولا كلمة»: لغة تنقيط الديربي — الصحّ ذهبيّ
+   والغلط مرجانيّ؛ وهيئة «البلوكات» تعيد تلوينهما في blocks.css. */
+.pick.pick-yes { border-color:var(--gold); }
+.pick.pick-yes .pk-to { color:var(--gold); }
+.pick.pick-no  { border-color:var(--coral); }
+.pick.pick-no  .pk-to { color:var(--text-3); }
+
+.pick-team.team-0 { border-color:var(--gold); }
+.pick-team.team-0 .pk-to { color:var(--gold); }
+.pick-team.team-1 { border-color:var(--cream); }
+.pick-team.team-1 .pk-to { color:var(--cream); }
+
+/* «لم يجب أحد» دون البطاقتين في البروز — لأنّه الأندر — لكنّه قرارٌ
+   يُضغط لا حاشية، فيكبر ويشتدّ حدُّه عمّا كان (ملاحظة علي). */
+.pick-none {
+  align-self:center; margin-top:clamp(10px,2.2dvh,22px);
+  padding:clamp(9px,1.8dvh,16px) clamp(26px,4.5vw,48px);
+  border-radius:999px; cursor:pointer; font-family:inherit;
+  font-size:clamp(14px,1.9vw,21px); font-weight:900;
+  background:transparent; border:2.5px solid var(--text-2); color:var(--cream);
+}
+.pick-none:active { transform:scale(.97); }
+.pick-none:focus-visible { outline:none; border-color:var(--gold); color:var(--cream); }
+@media (hover:hover) { .pick-none:hover { border-color:var(--cream); color:var(--cream); } }
+
+
+/* أضيق الشاشات: الحشوة وحدها هي ما يمكن التنازل عنه داخل البطاقة.
+   والأرضية الدنيا لصفّ البطاقتين تتنازل هي الأخرى أربعة بكسل — وهي
+   بالضبط ما كان يفيض به أطول سؤال «من أنا؟» رغم انكماشه إلى xlong. */
+@media (max-height:360px) {
+  /* أرضية ١١٠ في max-height الأصلي وُضعت لشاشة أطول؛ هنا هي القيد
+     الفعلي الذي يمنع .pick من التقلّص فعلاً — align-items:stretch
+     يملأ البطاقةَ حتى هذا السقف بصرف النظر عمّا وفّرته حشوةٌ أضيق. */
+  .pick { padding:4px 10px; gap:1px; max-height:76px; }
+  .rv-card { gap:2px; padding-block:5px; }
+  .rv-q.xlong { font-size:10px; }
+  /* flex-grow معطَّل هنا خصيصاً: عند التدفّق كان الصفّ يكبر إلى حجم
+     ثابت أكبر ممّا تحتاجه بطاقتاه — يتّضح فقط حين يضيق كل شيء حوله
+     ولا يبقى فائضٌ يمتصّه — فيدفع الزرّ تحته خارج الشاشة رغم أن كل
+     عنصر آخر انكمش. بلا نموّ، الصفّ يأخذ ارتفاع بطاقتيه فعلاً لا أكثر. */
+  .pick-cards { flex:0 1 auto; min-height:0; gap:8px; }
+  .eyebrow { line-height:1.15; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .rv-card, .rv-card::after, .rv-a, .pick { animation:none; }
+  .pick { transition:none; }
+  .pick:hover { transform:none; }
+}

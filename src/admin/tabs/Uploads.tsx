@@ -10,6 +10,7 @@ import {
 } from '../../lib/admin'
 import { listArt, deleteArt, type ArtFile } from '../../lib/uploads'
 import { useLoad } from '../shared'
+import uploadsCss from './Uploads.css?inline'
 
 /**
  * ملفّات دلو `art` وما يشير إلى كلٍّ منها.
@@ -133,9 +134,7 @@ export function Uploads() {
           </tbody>
         </table>
       </div>
-      <style>{`
-        .art-thumb { width:56px; height:38px; object-fit:cover; border-radius:8px; background:var(--n-surface-2); display:block; }
-      `}</style>
+      <style>{uploadsCss}</style>
     </>
   )
 }

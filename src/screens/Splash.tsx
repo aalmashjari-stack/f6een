@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
+import splashBootHoldCss from './Splash.BootHold.css?inline'
+import splashCss from './Splash.css?inline'
 
 /* مدّة الشعار. ثانيةٌ وسبعمئة: تكفي لتكتمل حركة الدخول ويستقرّ الشعار لحظةً
    قبل الانتقال، ولا تطول فتصير ضريبةً يدفعها الحكم في كل تشغيل. */
@@ -23,12 +25,7 @@ const SPLASH_MS = 1700
 export function BootHold() {
   return (
     <div className="boot-hold" aria-busy="true">
-      <style>{`
-        /* واللون بديلٌ صريح: المتغيّر --n-bg لا يُعرَّف إلا تحت
-           html[data-skin='neo']، فبلا البديل يكون السطح شفّافاً في الهويّة
-           الورقية — أي لا يحجب شيئاً. */
-        .boot-hold { position:fixed; inset:0; background:var(--n-bg, #F0EFF7); }
-      `}</style>
+      <style>{splashBootHoldCss}</style>
     </div>
   )
 }
@@ -56,46 +53,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
       <div className="splash-cats" aria-hidden="true" style={{ backgroundImage: `url(${welcomeCats})` }} />
       <BrandLogo className="splash-logo" />
 
-      <style>{`
-        /* الشاشة كلّها سطحُ الهيرو (علي ١٧ سبتمبر ٢٠٢٦: «الخلفيّة كاملة بيضاء
-           مع التدرّج اللونيّ، وسط الشعار»): أبيض بغسلة الهيرو القطريّة نفسها
-           بلونَي الفريقين — بلا حدٍّ ولا تذكرة — والشعار في الوسط. */
-        .splash {
-          /* fixed على الشاشة كلّها: ‎#root‎ يترك شريطَ الحالة وشريطَ المنزل
-             للأرضيّة القشديّة، فكانت الغسلةُ تقف دونهما بشريطين قشديّين. */
-          position:fixed; inset:0;
-          display:grid; place-items:center;
-          min-height:100%;
-          cursor:pointer;
-          background:
-            linear-gradient(to bottom left, rgba(255,206,60,.22), rgba(255,255,255,0) 52%, rgba(123,211,208,.18)),
-            var(--n-surface, #fff);
-        }
-        /* ورسوم الفئات خفيفةً جدّاً تحت الغسلة، كشاشتَي الدخول (علي ١ أكتوبر
-           ٢٠٢٦: «بنفس الأسلوب سوّها هني»). عنصرٌ لا ::before: صنف .screen
-           يشغل ::before بخطَّي الهويّة فيغلب. */
-        .splash { isolation:isolate; }
-        .splash-cats {
-          position:absolute; inset:0; z-index:-1; pointer-events:none;
-          background-position:center; background-size:cover; background-repeat:no-repeat;
-          opacity:var(--cats-alpha);
-        }
-        .splash > .splash-logo { grid-area:1 / 1; }
-        /* الشعار يكبر قليلاً ويستقرّ — لا دوران ولا قفز: هويّة تُقدَّم
-           لا حركة تُستعرض. */
-        .splash-logo {
-          font-size:clamp(104px, 27vw, 240px);
-          animation:splash-in .75s var(--ease-spring) both;
-        }
-        @keyframes splash-in {
-          from { opacity:0; transform:scale(.86); }
-          to   { opacity:1; transform:scale(1); }
-        }
-        /* من أطفأ الحركة في نظامه يرى الشعار ثابتاً — والمؤقّت كما هو. */
-        @media (prefers-reduced-motion:reduce) {
-          .splash-logo { animation:none; }
-        }
-      `}</style>
+      <style>{splashCss}</style>
     </div>
   )
 }

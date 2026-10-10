@@ -1,0 +1,47 @@
+/*
+  أنماط ReportPanel — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+/* رموز «نيو» صراحةً لا رموز المسرح (--gold و--surface): تلك تُترجَم
+   في نيو إلى حبرٍ داكن، فتصير اللوحة نصّاً فاتحاً على أبيض وزرّاً
+   أسود بنصٍّ بنّي. جُرِّب فبان. */
+.rp-veil {
+  position:fixed; inset:0; z-index:80;
+  display:flex; align-items:center; justify-content:center; padding:16px;
+  background:rgba(10,8,20,.5);
+}
+.rp {
+  display:flex; flex-direction:column; gap:8px;
+  width:min(760px, 100%); max-height:min(84dvh, 720px);
+  padding:16px; overflow:hidden;
+  background:var(--n-surface, #fff); color:var(--n-ink, #1A1626);
+  border-radius:16px; box-shadow:0 24px 60px rgba(0,0,0,.28);
+  text-align:start;
+}
+.rp-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.rp-head b { font-size:17px; font-weight:900; color:var(--n-ink, #1A1626); }
+.rp-x {
+  font:inherit; font-size:20px; font-weight:800; line-height:1; cursor:pointer;
+  width:32px; height:32px; border:0; border-radius:999px;
+  background:var(--n-surface-2, #F8F7FC); color:var(--n-ink-2, #5D5670);
+}
+.rp-sub { margin:0; font-size:13px; font-weight:700; color:var(--n-ink-3, #948CA8); }
+.rp-list {
+  list-style:none; margin:4px 0 0; padding:0; overflow:auto;
+  display:flex; flex-direction:column; gap:6px;
+}
+.rp-row {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:9px 11px; border-radius:10px; background:var(--n-surface-2, #F8F7FC);
+}
+.rp-q { font-size:14px; font-weight:700; line-height:1.5; color:var(--n-ink, #1A1626); }
+.rp-cat {
+  display:block; font-size:11px; font-weight:800; color:var(--n-ink-3, #948CA8);
+}
+.rp-btn {
+  flex:0 0 auto; font:inherit; font-weight:800; font-size:13px; cursor:pointer;
+  padding:7px 14px; border:0; border-radius:999px;
+  background:var(--n-brand, #7A3E9D); color:#fff;
+}
+.rp-btn.done { background:transparent; color:var(--n-ink-3, #948CA8);
+  box-shadow:inset 0 0 0 1px currentColor; cursor:default; }

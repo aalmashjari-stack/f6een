@@ -3,6 +3,7 @@ import { pickDerbyPair, type GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
+import stage2SelectionCss from './Stage2Selection.css?inline'
 
 /**
  * اختيار لاعبَي الديربي — الشاشة ٤. بلا زر، تنتقل تلقائياً.
@@ -118,77 +119,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
         </div>
       </div>
 
-      <style>{`
-        /* العرض الكامل شرط: بلا width تتقلّص الحاوية على محتواها فتضيق خانتا الاسمين
-           ويُقصّ الاسم الطويل مهما صغّرنا الخط. */
-        .vs-wrap {
-          display:flex; align-items:center; justify-content:center;
-          width:100%; gap:clamp(12px,3vw,48px);
-        }
-
-        /* خانة ثابتة العرض: بدونها يتراقص «ضد» يميناً وشمالاً مع كل اسم بطول مختلف. */
-        .vs-slot {
-          position:relative;
-          flex:1 1 0; min-width:0; display:flex; justify-content:center;
-          overflow:hidden;
-          /* الحشو يتبع حجم الاسم لا الحجم الموروث: القيمة السابقة .18em كانت
-             تُحسب على خطّ الجسم (~١٦px) فتخرج ثلاث بكسلات تحت اسمٍ ارتفاعه
-             تسعون، فيبتر الاقتصاصُ ذيلَ الحاء والجيم. والاقتصاص نفسه لازم
-             لبكرة الأسماء الهابطة، فيُوسَّع الحشو ولا يُلغى هو. */
-          padding-block:calc(var(--vs-size, 68px) * .22);
-        }
-
-        .vs-probe {
-          position:absolute; top:0; inset-inline-start:0;
-          visibility:hidden; pointer-events:none; white-space:nowrap;
-          font-size:clamp(30px,6vw,68px); font-weight:800;
-        }
-        .vs-player {
-          display:block; text-align:center; line-height:1.15;
-          /* شبكة أمان: اسم من كلمة واحدة أطول من الخانة حتى بعد بلوغ حدّ التصغير
-             يلتفّ بدل أن يُبتر. البتر يخفي حرفاً من اسم لاعب — والالتفاف لا يخفي شيئاً. */
-          overflow-wrap:anywhere;
-          /* البديل هو قيمة clamp نفسها المحسوبة في fit() أعلاه، لتُستخدم قبل أول قياس */
-          font-size:var(--vs-size, clamp(30px,6vw,68px));
-          font-weight:800; color:var(--cream);
-          animation:reel-step .16s ease-out;
-        }
-        /* الاسم يهبط من فوق كبكرة تدور */
-        @keyframes reel-step {
-          from { transform:translateY(-70%); opacity:.15; filter:blur(4px); }
-          to   { transform:none; opacity:1; filter:none; }
-        }
-        .vs-wrap.settled .vs-player {
-          color:var(--gold);
-          animation:slam .5s var(--ease-spring);
-          text-shadow:0 0 34px rgba(255,189,89,.5);
-        }
-        @keyframes slam {
-          0%   { transform:scale(1.5); opacity:.2; filter:blur(6px); }
-          60%  { transform:scale(.97); opacity:1; filter:none; }
-          100% { transform:scale(1.06); }
-        }
-
-        .vs { position:relative; display:grid; place-items:center; flex:none; }
-        .vs-word { color:var(--coral); font-weight:800; font-size:clamp(22px,3.4vw,40px); }
-        .vs-wrap.settled .vs-word { animation:clash .55s var(--ease-spring); }
-        @keyframes clash {
-          0%   { transform:scale(1); }
-          35%  { transform:scale(1.55); }
-          100% { transform:scale(1); }
-        }
-        /* حلقة تتمدّد وتتلاشى لحظة الاستقرار — إشارة «وقع الاختيار» */
-        .vs-ring {
-          position:absolute; width:2.2em; height:2.2em; border-radius:50%;
-          border:2px solid var(--coral); opacity:0; pointer-events:none;
-        }
-        .vs-wrap.settled .vs-ring { animation:ring-out .75s ease-out; }
-        @keyframes ring-out {
-          from { transform:scale(.5); opacity:.85; }
-          to   { transform:scale(3.4); opacity:0; }
-        }
-        @media (max-width:560px) { .vs-wrap { gap:12px; } }
-      `}</style>
+      <style>{stage2SelectionCss}</style>
     </div>
   )
 }

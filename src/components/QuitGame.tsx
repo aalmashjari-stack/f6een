@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import quitGameCss from './QuitGame.css?inline'
 
 /**
  * الخروج من جلسة قائمة.
@@ -45,66 +46,7 @@ export function QuitGame({ onQuit, charged = false }: { onQuit: () => void; char
         </button>
       </div>
 
-      <style>{`
-        /* الزاوية السفلى لا العليا: العليا يشغلها شريط النتيجة بعرض الشاشة
-           كاملاً، وبطاقةُ الفريق الأول تبدأ من حافّة البداية نفسها التي يقف
-           عليها هذا الزرّ — فكان يركب على «صاحب الدور» واسمِ الفريق (٢٧ بكسل
-           على الجوال الأفقي). ولا يُصلحها حجزُ فجوة في الشريط: نصّ الحالة
-           الثانية «تأكيد الإنهاء» أعرض من الأولى بضعفين، فيعبرها ثانيةً. */
-        /* والزاوية خارج مناطق النظام: ‎fixed‎ يتجاهل إزاحة ‎#root‎ للأمان،
-           فكان الزرّ في التطبيق يقف على شريط المنزل (٢١pt في العرض) الذي
-           يمسك اللمسَ لإيماءة النظام — ضغطاتٌ لا تصل (قِيس في المحاكي ١٦
-           سبتمبر ٢٠٢٦). وعلى الويب ‎env()‎ أصفار فلا يتحرّك بكسل. */
-        .quit-corner {
-          position:fixed;
-          inset-block-end:calc(env(safe-area-inset-bottom) + clamp(6px,1.2dvh,14px));
-          inset-inline-start:calc(env(safe-area-inset-right) + clamp(6px,1.2vw,16px));
-          z-index:50;
-          display:flex; flex-direction:column; align-items:flex-start;
-          gap:clamp(4px,.7dvh,7px);
-        }
-        /* **والأزرار العريضة تحجز الزاوية** (علي ٥ أكتوبر ٢٠٢٦، من تدقيق
-           التجربة): «ابدأ» في الفاصل و«ابدأ الآن» و✓/✗ في الحق ما تلحق تمتدّ
-           إلى الحافّة، فكان هذا الزرّ يركب على طرف ✓ (37×25 على الجوال
-           الأفقيّ) — وضغطةٌ هناك في أسرع لحظات اللعبة تسلّح «إنهاء» بدل
-           الإجابة. هامشٌ بعرض الزاوية على الجانبين لا على جانبه وحده كي يبقى
-           الزرّ متوسّطاً. والقاعدة هنا لا في الشاشات: تعيش ما عاش هذا الزرّ،
-           فلا تمسّ الإعداد ولا الختام. والهامش بعرض الحالة الثانية لا الأولى:
-           «تأكيد الإنهاء» ضعفُ «إنهاء»، وتراكبُه مع ✓ أخطر — ضغطةٌ هناك
-           تُنهي اللعبة. إزاحة الزاوية + عرض «تأكيد الإنهاء» + فجوة، مقيسةً
-           على 667 و844 و1180 و1440. */
-        html[data-skin] body .screen > .action:not(.compact),
-        html[data-skin] body .screen > .s3-verdicts {
-          margin-inline:calc(env(safe-area-inset-right) + clamp(80px, 11vw, 118px));
-        }
-        .quit-game {
-          font:inherit; font-weight:800; cursor:pointer;
-          font-size:clamp(10px,1.3vw,14px);
-          padding:clamp(4px,.8dvh,8px) clamp(8px,1.4vw,14px);
-          border:0; border-radius:999px;
-          background:var(--n-surface, #fff); color:var(--n-ink-3, #948CA8);
-          box-shadow:var(--n-e1, 0 1px 2px rgba(0,0,0,.08));
-          opacity:.55;
-          transition:opacity .2s ease, background .2s ease, color .2s ease;
-        }
-        .quit-game:hover { opacity:1; }
-        /* الحالة الثانية صريحة اللون: لا تُضغط سهواً وهي بلون الحياد. */
-        .quit-game.asking {
-          opacity:1;
-          background:var(--n-bad, #DC4033); color:#fff;
-        }
-        /* فوق الزرّ لا داخله: الزرّ حبّةٌ صغيرة، وتوسيعها بالنصّ يزحم الشاشة
-           أثناء اللعب — والتحذير لا يظهر إلا في اللحظة التي يُقرأ فيها.
-           وهو فوقه لأنّ الزرّ نزل إلى الأسفل، فلا مكان تحته. */
-        .quit-warn {
-          margin:0;
-          font-weight:800; font-size:clamp(9px,1.15vw,12px);
-          padding:clamp(3px,.6dvh,6px) clamp(7px,1.2vw,12px);
-          border-radius:999px;
-          background:var(--n-surface, #fff); color:var(--n-bad, #DC4033);
-          box-shadow:var(--n-e1, 0 1px 2px rgba(0,0,0,.08));
-        }
-      `}</style>
+      <style>{quitGameCss}</style>
     </>
   )
 }

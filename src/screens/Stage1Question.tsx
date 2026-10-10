@@ -6,6 +6,8 @@ import { Timer } from '../components/Timer'
 import { useCountdown } from '../components/useCountdown'
 import { QuestionView } from '../components/QuestionView'
 import { STAGE1_CHARADE_MS, isCharadesCategory } from '../game/charades'
+import stage1QuestionCharadeCss from './Stage1Question.charade.css?inline'
+import stage1QuestionCss from './Stage1Question.css?inline'
 
 /**
  * سؤال الجولة الجماعية.
@@ -52,30 +54,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           <div className="action-note">اضغط حين يقولها فريقه — أو حين ينتهي الوقت</div>
         </div>
 
-        <style>{`
-          .charade-acting {
-            flex:none; display:flex; flex-direction:column; align-items:center; gap:clamp(2px,.6dvh,6px);
-            text-align:center; margin-top:clamp(6px, 3dvh, 34px);
-          }
-          .charade-acting-team {
-            color:var(--gold); font-weight:800;
-            font-size:clamp(22px, min(3.6vw, 5.4dvh), 44px); line-height:1.2;
-          }
-          .charade-acting-note {
-            color:var(--text-2); font-weight:700;
-            font-size:clamp(14px, min(2vw, 3.2dvh), 26px); line-height:1.3;
-          }
-          .timer-stage {
-            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
-            min-height:0;
-          }
-          @media (max-height:480px) {
-            .charade-acting { margin-top:0; gap:0; }
-            .charade-acting-note { display:none; }
-            .timer-stage { min-height:clamp(46px, 17dvh, 120px); gap:6px; }
-            body .screen .timer-stage .ring-timer { flex:none; }
-          }
-        `}</style>
+        <style>{stage1QuestionCharadeCss}</style>
       </div>
     )
   }
@@ -119,95 +98,7 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
         <div className="action-note">اضغط بعد أن يجيب أحد الفريقين</div>
       </div>
 
-      <style>{`
-        /* بطاقة السؤال هنا وحدها لا تنمو مع المؤقّت (المؤقّت هو النامي في هذه
-           الشاشة)، فبلا سقفٍ يزحمه السؤالُ الطويل حين يلتفّ سطرين. السقف يمنح
-           QuestionText هدفاً رأسياً يهبط إليه، ويضمن للمؤقّت نصيبه ثابتاً مهما
-           طال السؤال. overflow مخبأ حارسٌ أخير لو بلغ الخطُّ أرضيّته. */
-        .q-box.s1q {
-          display:flex; align-items:center; justify-content:center;
-          /* flex:none حتى تحضن البطاقةُ محتواها ما دام دون السقف — بلا هذا
-             يقلّصها العمودُ تحت مقاس السؤال القصير فيهبط خطُّه بلا داعٍ. */
-          flex:none; min-height:0;
-          /* سقفٌ يحدّ حصّة السؤال من الشاشة فيبقى للمؤقّت نصيبه مهما طال: السؤال
-             القصير سطرٌ واحد دون السقف يبقى بمقاسه، والطويل يبلغ السقف فيهبط
-             خطُّه (QuestionText) ليسعه بدل أن يزحم المؤقّت تحته. */
-          max-height:clamp(110px, 24dvh, 200px);
-          padding-block:clamp(14px, 2.6dvh, 28px);
-          overflow:hidden;
-        }
-        /* فرجةٌ فوق البطاقة تفصلها عن شريط النتيجة (طلب علي ٦ سبتمبر ٢٠٢٦):
-           بعد حذف سطر الجولة صارت تلتصق به. مقيسةٌ بـvh فتتنازل على الشاشة
-           القصيرة، وما تأخذه تأخذه من فائض المؤقّت لا من أحد. */
-        .q-box.s1q:not(.s1q-photo),
-        .s1-question-body.photo { margin-top:clamp(6px, 3dvh, 34px); }
-        @media (max-height:480px) {
-          .q-box.s1q { max-height:clamp(84px, 34dvh, 170px); padding-block:clamp(8px, 2dvh, 18px); }
-          body .screen:has(.s1q-photo) .rd,
-          body .screen:has(.s1q-photo) .action-note { display:none; }
-          body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:4px; }
-          body .screen:has(.s1q-photo) .q-photo-wrap { gap:3px; }
-          body .screen:has(.s1q-photo) .q-prompt {
-            font-size:clamp(14px,4dvh,18px);
-            line-height:1.2;
-          }
-        }
-        /* سؤال الصورة يقلب الأولوية: البطاقة تنمو (الصورة هي البطل) بلا سقفٍ
-           يخنقها، والمؤقّت يتراجع تحتها (بلا grow، ومقاسه md). */
-        .q-box.s1q.s1q-photo {
-          flex:1 1 0; max-height:none; padding-block:clamp(10px, 2dvh, 20px);
-        }
-
-        /* display:contents يحفظ تخطيط سؤال النص القديم. في سؤال الصورة يتحول
-           الغلاف إلى صف: البطاقة تأخذ المساحة المرنة والمؤقّت يحتفظ بعرضه. */
-        .s1-question-body { display:contents; }
-        .s1-question-body.photo {
-          display:flex; flex:1 1 0; min-height:0;
-          align-items:stretch; justify-content:center;
-          gap:clamp(22px,3vw,42px);
-        }
-        /* القيمتان تُعادان في showtime.css بأولوية أعلى — وهناك شرحُ لماذا
-           تحتضن البطاقةُ الصورةَ بدل أن تتمدّد. تبقيان هنا متطابقتين معها
-           كي لا يضلّ من قرأ الملف وحده. */
-        .s1-question-body.photo .q-box.s1q-photo {
-          flex:0 1 auto; min-width:0; min-height:0;
-        }
-        .s1-question-body.photo .q-photo-wrap { height:100%; width:auto; min-width:0; }
-        .s1-question-body.photo .timer-stage {
-          flex:0 0 clamp(150px,19vw,230px);
-          align-self:center;
-          padding-block:0;
-        }
-
-        /* شاشة التلفاز القصيرة والعريضة (مثل ١٤٦١×٦٦٩): نقل المؤقّت إلى الجانب
-           يحلّ نصف المشكلة، وهذا الضغط الخفيف يعيد المساحة المحرّرة إلى الوجه. */
-        @media (max-height:800px) {
-          body .screen:has(.s1q-photo) {
-            padding-block:clamp(14px,2.2dvh,24px);
-            gap:clamp(10px,1.8dvh,16px);
-          }
-          body .screen:has(.s1q-photo) .q-box.s1q-photo { padding-block:8px; }
-          body .screen:has(.s1q-photo) .q-photo-wrap { gap:6px; }
-          body .screen:has(.s1q-photo) > .stack.gap-s { gap:6px; }
-          body .screen:has(.s1q-photo) .action.compact { padding-block:8px; }
-          body .screen:has(.s1q-photo) .action-note { line-height:1.25; }
-        }
-
-        .timer-stage {
-          display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
-          min-height:0;
-        }
-        /* أرضية للمؤقّت على الجوال الأفقي: بلا هذا ينكمش مكانه إلى ٢٠ بكسل
-           فيفيض الرقم فوق بطاقة السؤال والزر — انظر تعليق الحلقة في Timer.tsx. */
-        @media (max-height:480px) {
-          .timer-stage { min-height:clamp(46px, 17dvh, 120px); gap:6px; }
-          /* المؤقّت لا يتنازل عن ارتفاعه لغيره: رقمه مقيسٌ على بطاقته، فإن
-             سُحبت من تحته فاض الرقم عنها. */
-          body .screen .timer-stage .ring-timer { flex:none; }
-          .s1-question-body.photo { gap:clamp(12px,2vw,22px); }
-          .s1-question-body.photo .timer-stage { flex-basis:120px; }
-        }
-      `}</style>
+      <style>{stage1QuestionCss}</style>
     </div>
   )
 }

@@ -1,0 +1,34 @@
+/*
+  أنماط Stage1Charade — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+.charade-lead {
+  flex:none; display:flex; flex-direction:column; align-items:center; gap:clamp(2px,.6dvh,6px);
+  text-align:center; margin-top:clamp(4px,1.6dvh,18px);
+}
+.charade-team {
+  color:var(--gold); font-weight:800;
+  font-size:clamp(18px, min(3vw, 4.4dvh), 34px); line-height:1.2;
+}
+.charade-ask {
+  color:var(--text-2); font-weight:600;
+  font-size:clamp(13px, min(1.8vw, 2.8dvh), 22px); line-height:1.35;
+}
+/* الغلاف حاويةٌ تُقاس: الرمز مربّعٌ يأخذ أضيقَ بُعدَيها كاملاً —
+   لا سقفَ بالبكسل؛ على التلفزيون كلُّ سنتيمترٍ فيه مسافةُ مسحٍ إضافيّة. */
+.charade-qr-wrap {
+  flex:1; min-height:0; display:flex; align-items:center; justify-content:center;
+  container-type:size;
+  padding-block:clamp(2px,.8dvh,10px);
+}
+.charade-qr {
+  width:min(100cqw, 100cqh); height:min(100cqw, 100cqh);
+  display:block;
+  border-radius:clamp(8px,1.2dvh,14px);
+  box-shadow:var(--lift);
+}
+@media (max-height:480px) {
+  .charade-lead { margin-top:0; gap:0; }
+  .charade-ask { display:none; }
+  .charade-screen .action-note { display:none; }
+}

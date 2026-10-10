@@ -11,6 +11,8 @@ import {
 } from '../../lib/admin'
 import { useLoad } from '../shared'
 import { QThumb } from '../QuestionForm'
+import draftsEmptyCss from './Drafts.empty.css?inline'
+import draftsCss from './Drafts.css?inline'
 
 /**
  * اقتراحات أسئلة كتبها طريقٌ خارجيّ بمفتاحه، تنتظر قرار المدير.
@@ -252,7 +254,7 @@ export function Drafts() {
         {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
         {bar}
         <p className="a-muted">لا مسوّدات تنتظر. ما يصل من طريقٍ خارجيّ يظهر هنا قبل أن يدخل البنك.</p>
-        <style>{`.a-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px}`}</style>
+        <style>{draftsEmptyCss}</style>
       </div>
     )
 
@@ -394,20 +396,7 @@ export function Drafts() {
           ))}
         </tbody>
       </table>
-      <style>{`
-        /* الصفّ المستبعَد يبقى ظاهراً مشطوباً لا يختفي: المدير يرى ما أسقطه
-           فيتراجع بعينه إن أخطأ، والاختفاءُ يترك الشاشةَ بلا أثرٍ للقرار. */
-        .a-table.sub tr.out td { opacity:.45; text-decoration:line-through; }
-        .a-table.sub tr.out .tag { text-decoration:none; }
-        .drop-cell { white-space:nowrap; text-align:end; }
-        /* «٨٠ ← ٧٥»: المجموع ثمّ ما سيدخل البنك فعلاً عند الاعتماد. */
-        .will { color:var(--n-brand); font-weight:800; }
-
-        .a-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .a-table.sub { margin: 6px 0 10px; background: rgba(0,0,0,.03); }
-        .a-table.sub td { padding: 4px 8px; font-size: 13px; }
-        .tag.warn { margin-inline-start: 8px; background: #ffe6e0; color: #8a2c14; }
-      `}</style>
+      <style>{draftsCss}</style>
       {zoom && (
         <div className="pv-back" role="dialog" aria-modal="true" onClick={() => setZoom(null)}>
           <button
