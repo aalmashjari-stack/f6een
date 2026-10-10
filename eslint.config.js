@@ -20,6 +20,8 @@ export default tseslint.config(
       'node_modules',
       'design-system',
       '.design-sync',
+      '.ds-sync',
+      'ds-bundle',
       'reports',
       'tmp',
       'output',
