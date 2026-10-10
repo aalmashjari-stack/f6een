@@ -109,7 +109,9 @@ export function Backups() {
                   <td className="num">{n(r.tables?.['public.question_overrides'])}</td>
                   <td className="num">{n(r.images_new)}</td>
                   <td>
-                    {r.run_url ? (
+                    {/* الرابط يكتبه طرفٌ خارجيّ (مهمّة Actions)، فلا يُفتح إلّا إن كان رابط GitHub —
+                        `javascript:` هنا كان يجري بجلسة المدير الأعلى. */}
+                    {r.run_url?.startsWith('https://github.com/') ? (
                       <a href={r.run_url} target="_blank" rel="noreferrer">
                         فتح
                       </a>
