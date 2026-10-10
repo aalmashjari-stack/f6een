@@ -16,7 +16,9 @@ export function RoundBar({
 }) {
   return (
     <div className="rd center">
-      <span className="rd-mark" aria-hidden="true">◆</span>
+      <span className="rd-mark" aria-hidden="true">
+        ◆
+      </span>
       <span className="rd-title">{title}</span>
       <span className="rd-meta">
         {chips?.filter(Boolean).map((c, i) => (

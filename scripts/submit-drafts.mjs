@@ -37,7 +37,10 @@ function readEnv(path) {
     if (!t || t.startsWith('#')) continue
     const i = t.indexOf('=')
     if (i < 0) continue
-    out[t.slice(0, i).trim()] = t.slice(i + 1).trim().replace(/^["']|["']$/g, '')
+    out[t.slice(0, i).trim()] = t
+      .slice(i + 1)
+      .trim()
+      .replace(/^["']|["']$/g, '')
   }
   return out
 }
@@ -45,20 +48,34 @@ function readEnv(path) {
 /** قارئ CSV يحترم الاقتباس والفواصل داخله — نفس ما يكتبه تصدير اللوحة. */
 function parseCsv(text) {
   const rows = []
-  let row = [], cell = '', quoted = false
-  const src = text.replace(/^﻿/, '')
+  let row = [],
+    cell = '',
+    quoted = false
+  const src = text.replace(/^\uFEFF/, '')
   for (let i = 0; i < src.length; i++) {
     const c = src[i]
     if (quoted) {
       if (c === '"') {
-        if (src[i + 1] === '"') { cell += '"'; i++ } else quoted = false
+        if (src[i + 1] === '"') {
+          cell += '"'
+          i++
+        } else quoted = false
       } else cell += c
     } else if (c === '"') quoted = true
-    else if (c === ',') { row.push(cell); cell = '' }
-    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = '' }
-    else if (c !== '\r') cell += c
+    else if (c === ',') {
+      row.push(cell)
+      cell = ''
+    } else if (c === '\n') {
+      row.push(cell)
+      rows.push(row)
+      row = []
+      cell = ''
+    } else if (c !== '\r') cell += c
   }
-  if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
+  if (cell !== '' || row.length) {
+    row.push(cell)
+    rows.push(row)
+  }
   return rows.filter((r) => r.some((x) => x.trim() !== ''))
 }
 
@@ -86,8 +103,14 @@ if (!key) {
 const table = parseCsv(readFileSync(resolve(file), 'utf8'))
 const head = table[0].map((h) => h.trim())
 const at = (name) => head.indexOf(name)
-const iCat = at('التصنيف'), iLvl = at('المستوى'), iQ = at('السؤال'), iA = at('الإجابة')
-const iTopic = at('الموضوع'), iId = at('المعرّف'), iImg = at('الصورة'), iFam = at('العائلة')
+const iCat = at('التصنيف'),
+  iLvl = at('المستوى'),
+  iQ = at('السؤال'),
+  iA = at('الإجابة')
+const iTopic = at('الموضوع'),
+  iId = at('المعرّف'),
+  iImg = at('الصورة'),
+  iFam = at('العائلة')
 
 if ([iCat, iLvl, iQ, iA].some((i) => i < 0)) {
   console.error('ينقص الملفّ عمود من: التصنيف · المستوى · السؤال · الإجابة')

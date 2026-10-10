@@ -148,7 +148,9 @@ export function Questions() {
           added ? `محوُ ${added} سؤالاً مضافاً نهائياً` : '',
           banked ? `محوُ ${banked} سؤالاً من البنك نهائياً` : '',
           edited ? `إعادةُ ${edited} سؤالاً من البنك إلى أصله` : '',
-        ].filter(Boolean).join(' و')
+        ]
+          .filter(Boolean)
+          .join(' و')
     if (!window.confirm(`${what}. متأكّد؟`)) return
 
     setMsg(null)
@@ -219,8 +221,7 @@ export function Questions() {
 
   /** رجوعٌ آمن: الأسئلة تعود من ملفّ التطبيق، وصفوفُ القاعدة تبقى مكانها. */
   async function revert() {
-    if (!window.confirm('يعود مرجع الأسئلة إلى ملفّ التطبيق. ما حذفتَه من البنك يظهر ثانيةً. متأكّد؟'))
-      return
+    if (!window.confirm('يعود مرجع الأسئلة إلى ملفّ التطبيق. ما حذفتَه من البنك يظهر ثانيةً. متأكّد؟')) return
     setMsg(null)
     try {
       await setBankMode(false)
@@ -237,9 +238,7 @@ export function Questions() {
 
   /* فئات البنك ثمّ المضافة: النموذج يجب أن يعرض فئةً أُنشئت للتوّ وهي بعد
      فارغة — وإلّا لم يكن لإنشائها معنى. */
-  const categories = [
-    ...new Set([...(bank ?? []).map((b) => b.category), ...(extra ?? [])]),
-  ]
+  const categories = [...new Set([...(bank ?? []).map((b) => b.category), ...(extra ?? [])])]
 
   return (
     <>
@@ -292,11 +291,7 @@ export function Questions() {
             </option>
           ))}
         </select>
-        <select
-          className="a-in"
-          value={source}
-          onChange={(e) => setSource(e.target.value as Source | '')}
-        >
+        <select className="a-in" value={source} onChange={(e) => setSource(e.target.value as Source | '')}>
           <option value="">الكلّ</option>
           <option value="bank">البنك</option>
           <option value="edited">معدَّل</option>
@@ -317,11 +312,7 @@ export function Questions() {
             التحديد وحده — أخفيتُه لئلّا يكون إغراءً بضغطةٍ لا رجعة فيها،
             فصار الاختفاءُ نفسه يُقرأ «الميزة غير موجودة». والتعطيل حارسٌ
             يكفي. */}
-        <button
-          className="a-btn danger"
-          onClick={removePicked}
-          disabled={picked.size === 0 || wiping > 0}
-        >
+        <button className="a-btn danger" onClick={removePicked} disabled={picked.size === 0 || wiping > 0}>
           {wiping > 0 ? `يُحذف… ${wiping}` : `حذف المحدَّد (${picked.size})`}
         </button>
       </div>

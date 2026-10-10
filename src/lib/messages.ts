@@ -37,10 +37,7 @@ export async function fetchMessages(limit = 200): Promise<AdminMessage[]> {
   }))
 }
 
-export async function setMessageStatus(
-  id: string,
-  status: AdminMessage['status'],
-): Promise<void> {
+export async function setMessageStatus(id: string, status: AdminMessage['status']): Promise<void> {
   const { error } = await supabase.rpc('admin_set_message_status', {
     p_id: id,
     p_status: status,

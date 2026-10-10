@@ -221,7 +221,13 @@ describe('طبقة التعديل والإضافة', () => {
 describe('صورٌ غائبة عن الإصدار', () => {
   const NEW = 'فئة مصوّرة تجريبيّة'
   const row = (id: string, level: Level, image: string) => ({
-    id, category: NEW, level, topic: '', question: 'ما هذا؟', answer: `جواب ${id}`, image,
+    id,
+    category: NEW,
+    level,
+    topic: '',
+    question: 'ما هذا؟',
+    answer: `جواب ${id}`,
+    image,
   })
 
   afterEach(() => {
@@ -240,7 +246,11 @@ describe('صورٌ غائبة عن الإصدار', () => {
       row('ADM9902', 'سهل', 'pic-club-arsenal'),
       row('ADM9903', 'سهل', 'https://example.com/a.jpg'),
     ])
-    expect(poolByCatLevel(NEW, 'سهل').map((q) => q.id).sort()).toEqual(['ADM9902', 'ADM9903'])
+    expect(
+      poolByCatLevel(NEW, 'سهل')
+        .map((q) => q.id)
+        .sort(),
+    ).toEqual(['ADM9902', 'ADM9903'])
   })
 
   it('فئةٌ كلُّ صورها غائبة لا تدخل الإعداد', () => {
@@ -310,7 +320,14 @@ describe('الفئات المضافة', () => {
   it('المستبعَدة تخرج من مخزون الديربي والحق ما تلحق أيضاً', () => {
     setExtraCategories([NEW])
     setQuestionOverlay([
-      { id: 'ADM9300', category: NEW, level: 'متوسط', topic: '', question: 'سؤال ديربي مستبعد', answer: 'إجابة' },
+      {
+        id: 'ADM9300',
+        category: NEW,
+        level: 'متوسط',
+        topic: '',
+        question: 'سؤال ديربي مستبعد',
+        answer: 'إجابة',
+      },
     ])
     setDerbyCategories([NEW])
     expect(poolDerby().some((q) => q.category === NEW)).toBe(true)
@@ -340,7 +357,6 @@ describe('الفئات المضافة', () => {
     expect(playableCategories()).toEqual(CATEGORIES)
   })
 })
-
 
 /**
  * حارس انحدار لعطلٍ وقع فعلاً وبلّغ عنه علي: فئةٌ أُضيفت من اللوحة لا تظهر
@@ -442,13 +458,7 @@ describe('مرجع الأسئلة: القاعدة أم الملفّ', () => {
   })
 
   it('الموضوع المصرَّح به يعبر مع الصفّ فيبقى حارسُ التكرار عاملاً', () => {
-    setQuestionOverlay(
-      [
-        row('DB1', 'سهل', { family: 'عواصم' }),
-        row('DB2', 'سهل', { family: 'عواصم' }),
-      ],
-      'db',
-    )
+    setQuestionOverlay([row('DB1', 'سهل', { family: 'عواصم' }), row('DB2', 'سهل', { family: 'عواصم' })], 'db')
     const [a, b] = allQuestions()
     expect(familiesOf(a)).toEqual(familiesOf(b))
     expect(familiesOf(a)).toContain('موضوع:عواصم')

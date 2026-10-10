@@ -22,14 +22,13 @@ function cacheHeaders() {
   const hashed = /\/assets\/.+-[A-Za-z0-9_-]{8,}\.[a-z0-9]+$/
   const set = (req: { url?: string }, res: { setHeader(k: string, v: string): void }) => {
     const path = (req.url ?? '').split('?')[0]
-    res.setHeader(
-      'Cache-Control',
-      hashed.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache',
-    )
+    res.setHeader('Cache-Control', hashed.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache')
   }
   return {
     name: 'f6een-cache-headers',
-    configurePreviewServer(server: { middlewares: { use(fn: (req: never, res: never, next: () => void) => void): void } }) {
+    configurePreviewServer(server: {
+      middlewares: { use(fn: (req: never, res: never, next: () => void) => void): void }
+    }) {
       server.middlewares.use((req, res, next) => {
         set(req, res)
         next()

@@ -52,11 +52,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
   }, [onDone])
 
   return (
-    <div
-      className="screen splash"
-      onClick={onDone}
-      role="presentation"
-    >
+    <div className="screen splash" onClick={onDone} role="presentation">
       <div className="splash-cats" aria-hidden="true" style={{ backgroundImage: `url(${welcomeCats})` }} />
       <BrandLogo className="splash-logo" />
 

@@ -106,7 +106,9 @@ export function ZoomablePhoto({ src, className }: { src: string; className: stri
           }
         }}
       />
-      <span className="photo-tap-hint" onClick={open}>اضغط الصورة لتكبيرها</span>
+      <span className="photo-tap-hint" onClick={open}>
+        اضغط الصورة لتكبيرها
+      </span>
 
       {/* بوّابة إلى body: ‏.screen يفرض سياقَ تكديسٍ خاصاً به
           (`isolation:isolate` في showtime.css)، فأيّ z-index داخله يُقاس

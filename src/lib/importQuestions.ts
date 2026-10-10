@@ -54,7 +54,7 @@ export interface Plan {
 
 /** فواصل الأسطر ثلاثة أشكال، والاقتباس يحمي الفواصل داخل النصّ (RFC 4180). */
 export function parseCsv(text: string): string[][] {
-  const clean = text.replace(/^﻿/, '')
+  const clean = text.replace(/^\uFEFF/, '')
   const rows: string[][] = []
   let row: string[] = []
   let cell = ''
@@ -122,9 +122,7 @@ export function parseXlsx(buf: ArrayBuffer): string[][] {
   if (!sheetName) throw new Error('الملفّ ليس ورقة إكسل صالحة')
 
   const shared = files['xl/sharedStrings.xml']
-    ? [...strFromU8(files['xl/sharedStrings.xml']).matchAll(/<si>([\s\S]*?)<\/si>/g)].map((m) =>
-        textOf(m[1]),
-      )
+    ? [...strFromU8(files['xl/sharedStrings.xml']).matchAll(/<si>([\s\S]*?)<\/si>/g)].map((m) => textOf(m[1]))
     : []
 
   const sheet = strFromU8(files[sheetName])
@@ -196,7 +194,13 @@ export function questionsToCsv(
   const esc = (v: string | null | undefined) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
   const head = ['المعرّف', 'التصنيف', 'المستوى', 'الموضوع', 'السؤال', 'الإجابة', 'صورة الإجابة']
   const body = rows.map((r) => [
-    r.id, r.category, r.level, r.topic ?? '', r.question, r.answer, r.answerImage ?? '',
+    r.id,
+    r.category,
+    r.level,
+    r.topic ?? '',
+    r.question,
+    r.answer,
+    r.answerImage ?? '',
   ])
   return '\ufeff' + [head, ...body].map((r) => r.map(esc).join(',')).join('\r\n')
 }
@@ -244,10 +248,7 @@ export interface KnownQuestion {
  * وتُرفع صورتها أوّلاً، ثمّ يأتي ملفّها. فخطأٌ مطبعيّ في اسم فئة لا يخلق
  * فئةً شبحاً لا صورة لها ولا تدخل العجلة.
  */
-export function buildPlan(
-  table: string[][],
-  ctx: { categories: string[]; existing: KnownQuestion[] },
-): Plan {
+export function buildPlan(table: string[][], ctx: { categories: string[]; existing: KnownQuestion[] }): Plan {
   const rows: ImportRow[] = []
   const rejected: Rejected[] = []
 

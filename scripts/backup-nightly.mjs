@@ -49,7 +49,10 @@ for (const [table, rows] of Object.entries(snap)) {
   summary[table] = rows.length
   console.log(`  ${table.padEnd(32)} ${rows.length}`)
 }
-writeFileSync(resolve(OUT_DIR, '_summary.json'), JSON.stringify({ at: new Date().toISOString(), tables: summary }, null, 2))
+writeFileSync(
+  resolve(OUT_DIR, '_summary.json'),
+  JSON.stringify({ at: new Date().toISOString(), tables: summary }, null, 2),
+)
 
 /* الصور: ما ليس في R2 بالحجم نفسه. */
 const listing = JSON.parse(readFileSync(R2_ART_LISTING, 'utf8') || '[]') ?? []
@@ -64,7 +67,9 @@ for (const { name, size } of snap['storage.objects'] ?? []) {
   if (inR2.get(name) === Number(size)) continue
   const dest = resolve(artDir, name)
   if (!dest.startsWith(artDir + '/')) continue
-  const res = await fetch(`${base}/storage/v1/object/public/art/${name.split('/').map(encodeURIComponent).join('/')}`)
+  const res = await fetch(
+    `${base}/storage/v1/object/public/art/${name.split('/').map(encodeURIComponent).join('/')}`,
+  )
   if (!res.ok || !res.body) {
     failed++
     console.error(`  ✗ صورة (${res.status})`)
@@ -81,7 +86,11 @@ console.log(imagesLine)
 if (RUN_JSON) {
   writeFileSync(
     RUN_JSON,
-    JSON.stringify({ tables: summary, images_total: (snap['storage.objects'] ?? []).length, images_new: fetched }),
+    JSON.stringify({
+      tables: summary,
+      images_total: (snap['storage.objects'] ?? []).length,
+      images_new: fetched,
+    }),
   )
 }
 

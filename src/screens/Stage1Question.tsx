@@ -30,7 +30,11 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
   if (charade) {
     return (
       <div className="screen">
-        <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
+        <ScoreBar
+          onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+          teams={state.teams}
+          turnTeam={owner}
+        />
 
         <div className="charade-acting">
           <span className="charade-acting-team">{state.teams[owner].name}</span>
@@ -86,7 +90,11 @@ export function Stage1Question({ state, dispatch }: { state: GameState; dispatch
           النقاطُ منطوقةً في شاشة الكشف («من أجاب؟ — 30 نقطة»).
           يبقى السؤالُ والمؤقّتُ وحدَهما. والمكانُ المحرَّر يبقى فارغاً:
           لا حجمَ كبر ولا خطَّ تمدّد. */}
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
+      <ScoreBar
+        onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+        teams={state.teams}
+        turnTeam={owner}
+      />
 
       <div className={'s1-question-body' + (q.image ? ' photo' : '')}>
         {/* في سؤال الصورة يتجاور السؤال والمؤقّت أفقياً حتى يبقى الوجه كبيراً

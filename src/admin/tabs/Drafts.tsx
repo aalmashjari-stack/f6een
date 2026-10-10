@@ -100,7 +100,9 @@ export function Drafts() {
   const approvePicked = async () => {
     setBusy(true)
     setMsg(null)
-    let added = 0, skipped = 0, done = 0
+    let added = 0,
+      skipped = 0,
+      done = 0
     const held: string[] = []
     try {
       for (const id of picked) {
@@ -130,7 +132,8 @@ export function Drafts() {
       /* ما اعتُمد قبل الفشل اعتُمد فعلاً؛ فالرسالة تقوله ولا تخفيه. */
       setMsg({
         ok: false,
-        text: `${e instanceof Error ? e.message : 'تعذّر الاعتماد'}` + (done ? ` — بعد اعتماد ${done} دفعة` : ''),
+        text:
+          `${e instanceof Error ? e.message : 'تعذّر الاعتماد'}` + (done ? ` — بعد اعتماد ${done} دفعة` : ''),
       })
       reload()
     } finally {
@@ -181,7 +184,10 @@ export function Drafts() {
   }
 
   const decide = async (b: DraftBatch, approve: boolean) => {
-    if (!approve && !window.confirm(`رفضُ دفعة «${b.categories}» (${b.pending ?? b.n} مسوّدة)؟ لا رجعة فيه من اللوحة.`))
+    if (
+      !approve &&
+      !window.confirm(`رفضُ دفعة «${b.categories}» (${b.pending ?? b.n} مسوّدة)؟ لا رجعة فيه من اللوحة.`)
+    )
       return
     setBusy(true)
     setMsg(null)
@@ -336,47 +342,48 @@ export function Drafts() {
                                مرفوضاً من قراءةٍ سابقة. */
                             const out = dropped.has(r.id) || r.status === 'rejected'
                             return (
-                            <tr key={r.id} className={out ? 'out' : ''}>
-                              <td className="a-muted">{r.level}</td>
-                              {/* الصورتان كما في لسان الأسئلة: صورةُ السؤال بجانبه
+                              <tr key={r.id} className={out ? 'out' : ''}>
+                                <td className="a-muted">{r.level}</td>
+                                {/* الصورتان كما في لسان الأسئلة: صورةُ السؤال بجانبه
                                   وصورةُ الإجابة بجانبها — القرارُ يُتّخذ عليهما. */}
-                              <td>
-                                {r.image ? (
-                                  <span className="q-thumb-wrap">
-                                    <QThumb image={r.image} label={r.answer} onZoom={setZoom} />
-                                    <span>{r.question}</span>
-                                  </span>
-                                ) : (
-                                  r.question
-                                )}
-                              </td>
-                              <td>
-                                {r.answer_image ? (
-                                  <span className="q-thumb-wrap">
-                                    <QThumb image={r.answer_image} label={r.answer} onZoom={setZoom} />
+                                <td>
+                                  {r.image ? (
+                                    <span className="q-thumb-wrap">
+                                      <QThumb image={r.image} label={r.answer} onZoom={setZoom} />
+                                      <span>{r.question}</span>
+                                    </span>
+                                  ) : (
+                                    r.question
+                                  )}
+                                </td>
+                                <td>
+                                  {r.answer_image ? (
+                                    <span className="q-thumb-wrap">
+                                      <QThumb image={r.answer_image} label={r.answer} onZoom={setZoom} />
+                                      <b>{r.answer}</b>
+                                    </span>
+                                  ) : (
                                     <b>{r.answer}</b>
-                                  </span>
-                                ) : (
-                                  <b>{r.answer}</b>
-                                )}
-                              </td>
-                              <td className="drop-cell">
-                                {out ? (
-                                  <span className="tag">مستبعَد</span>
-                                ) : (
-                                  b.status === 'pending' && (
-                                    <button
-                                      className="a-btn danger"
-                                      onClick={() => drop(r)}
-                                      title="لا يدخل البنك عند اعتماد الدفعة"
-                                    >
-                                      استبعد
-                                    </button>
-                                  )
-                                )}
-                              </td>
-                            </tr>
-                          )})}
+                                  )}
+                                </td>
+                                <td className="drop-cell">
+                                  {out ? (
+                                    <span className="tag">مستبعَد</span>
+                                  ) : (
+                                    b.status === 'pending' && (
+                                      <button
+                                        className="a-btn danger"
+                                        onClick={() => drop(r)}
+                                        title="لا يدخل البنك عند اعتماد الدفعة"
+                                      >
+                                        استبعد
+                                      </button>
+                                    )
+                                  )}
+                                </td>
+                              </tr>
+                            )
+                          })}
                         </tbody>
                       </table>
                     )}

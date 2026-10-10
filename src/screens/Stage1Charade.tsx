@@ -25,7 +25,11 @@ export function Stage1Charade({ state, dispatch }: { state: GameState; dispatch:
 
   return (
     <div className="screen charade-screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
+      <ScoreBar
+        onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+        teams={state.teams}
+        turnTeam={owner}
+      />
 
       <div className="charade-lead">
         <span className="charade-team">{state.teams[owner].name}</span>
@@ -37,7 +41,10 @@ export function Stage1Charade({ state, dispatch }: { state: GameState; dispatch:
       </div>
 
       <div className="stack gap-s">
-        <button className="action compact" onClick={() => dispatch({ t: 'S1_CHARADE_START', at: Date.now() })}>
+        <button
+          className="action compact"
+          onClick={() => dispatch({ t: 'S1_CHARADE_START', at: Date.now() })}
+        >
           ابدأ التمثيل
         </button>
         <div className="action-note">اضغط حين يقول الممثّل: مستعدّ</div>

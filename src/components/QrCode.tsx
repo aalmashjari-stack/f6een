@@ -20,8 +20,7 @@ export function QrCode({ value, className }: { value: string; className?: string
     const n = qr.getModuleCount()
     let d = ''
     for (let r = 0; r < n; r++)
-      for (let c = 0; c < n; c++)
-        if (qr.isDark(r, c)) d += `M${c + QUIET} ${r + QUIET}h1v1h-1z`
+      for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c + QUIET} ${r + QUIET}h1v1h-1z`
     return { size: n + QUIET * 2, path: d }
   }, [value])
 

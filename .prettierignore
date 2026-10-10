@@ -1,0 +1,16 @@
+# الأنماط تُكتب مكثّفةً عمداً (القاعدة في سطرٍ واحد)؛ Prettier يفرد كلّ خاصّيّةٍ في سطر
+# فيضاعف الملفّات أضعافاً بلا فائدة. وما سواها ناتجٌ أو بيانات.
+*.css
+*.html
+*.json
+*.md
+dist/
+android/
+ios/
+data/
+assets/
+public/
+reports/
+supabase/
+design-system/
+.design-sync/

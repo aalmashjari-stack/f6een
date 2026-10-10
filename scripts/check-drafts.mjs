@@ -81,15 +81,19 @@ const stripHonorifics = (s) => HONORIFICS.reduce((t, re) => t.replace(re, ' '), 
 
 /** كلماتٌ لا تدلّ على شيء حين تُقارن الإجاباتُ بالأسئلة. */
 const STOP = new Set(
-  ('من ما في اي أي على عن الى إلى هو هي التي الذي كم هل عام سنة اسم كان بين مع بعد قبل عند لا و ثم أول اول ذلك هذا هذه كل بلا نفس'
-    .split(' ')),
+  'من ما في اي أي على عن الى إلى هو هي التي الذي كم هل عام سنة اسم كان بين مع بعد قبل عند لا و ثم أول اول ذلك هذا هذه كل بلا نفس'.split(
+    ' ',
+  ),
 )
 /**
  * وصيغُ الأدب تُطرح هنا أيضاً: كانت «رضي الله عنه» في إجابتي تتقاطع مع
  * «رضي الله عنه» في سؤالٍ قائم فيُقرأ ذلك «صياغةً مقلوبة» — ثلاثةٌ وخمسون
  * إنذاراً كاذباً في دفعة الصحابة، كلُّها بهذا السبب.
  */
-const words = (s) => norm(stripHonorifics(s)).split(' ').filter((w) => w.length > 3 && !STOP.has(w))
+const words = (s) =>
+  norm(stripHonorifics(s))
+    .split(' ')
+    .filter((w) => w.length > 3 && !STOP.has(w))
 /** مفتاح الإجابة للمقارنة: بلا صيغ أدبٍ ولا تشكيل. */
 const akey = (s) => norm(stripHonorifics(s))
 /** العائلة: أوّل أربع كلمات — نفس اشتقاق المحرّك في `bank.ts`. */
@@ -98,20 +102,34 @@ const family = (q) => norm(q).split(' ').slice(0, 4).join(' ')
 /* ── قارئ CSV يحترم الاقتباس (نفس قارئ submit-drafts) ── */
 function parseCsv(text) {
   const rows = []
-  let row = [], cell = '', quoted = false
-  const src = text.replace(/^﻿/, '')
+  let row = [],
+    cell = '',
+    quoted = false
+  const src = text.replace(/^\uFEFF/, '')
   for (let i = 0; i < src.length; i++) {
     const c = src[i]
     if (quoted) {
       if (c === '"') {
-        if (src[i + 1] === '"') { cell += '"'; i++ } else quoted = false
+        if (src[i + 1] === '"') {
+          cell += '"'
+          i++
+        } else quoted = false
       } else cell += c
     } else if (c === '"') quoted = true
-    else if (c === ',') { row.push(cell); cell = '' }
-    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = '' }
-    else if (c !== '\r') cell += c
+    else if (c === ',') {
+      row.push(cell)
+      cell = ''
+    } else if (c === '\n') {
+      row.push(cell)
+      rows.push(row)
+      row = []
+      cell = ''
+    } else if (c !== '\r') cell += c
   }
-  if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
+  if (cell !== '' || row.length) {
+    row.push(cell)
+    rows.push(row)
+  }
   return rows.filter((r) => r.some((x) => x.trim() !== ''))
 }
 
@@ -121,14 +139,16 @@ if (!file) {
   process.exit(1)
 }
 
-const root = resolve(import.meta.dirname, '..')
 /* البنك من القاعدة الحيّة إن أمكن — انظر `lib/bank.mjs`. */
 const { rows: bank, source: bankSource } = await loadBank()
 
 const table = parseCsv(readFileSync(resolve(file), 'utf8'))
 const head = table[0].map((h) => h.trim())
 const at = (n) => head.indexOf(n)
-const iCat = at('التصنيف'), iLvl = at('المستوى'), iQ = at('السؤال'), iA = at('الإجابة')
+const iCat = at('التصنيف'),
+  iLvl = at('المستوى'),
+  iQ = at('السؤال'),
+  iA = at('الإجابة')
 const iImg = at('الصورة')
 if ([iCat, iLvl, iQ, iA].some((i) => i < 0)) {
   console.error('ينقص عمود من: التصنيف · المستوى · السؤال · الإجابة')

@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { reducer } from './reducer'
-import { ALL_QUESTIONS, DERBY_LEVELS, familyOf, playableCategories, setDerbyCategories, setQuestionOverlay } from './bank'
+import {
+  ALL_QUESTIONS,
+  DERBY_LEVELS,
+  familyOf,
+  playableCategories,
+  setDerbyCategories,
+  setQuestionOverlay,
+} from './bank'
 import {
   SCORE_FIX_STEP,
   STAGE1_CATEGORIES,
@@ -221,7 +228,6 @@ describe('الحق ما تلحق — انتهاء الوقت لا يكرّر ا�
   })
 })
 
-
 /**
  * حرّاس المرحلة: الفعل الذي يصل خارج شاشته لا يُنفَّذ — مؤقّتُ تشويقٍ يطلق
  * اختياراً بعد أن ذهبت الشاشة، أو ضغطةٌ مزدوجة تحكم على سؤالٍ لم يُكشف.
@@ -250,7 +256,10 @@ describe('حرّاس المرحلة', () => {
      (تصحيحٌ يفكّ التعادل يُنهي اللعبة)، فالحالة المصنوعة هنا متعادلة. */
   const tiedAtTiebreak = () => {
     const s = driveToStage3()
-    const teams = [{ ...s.teams[0], score: 40 }, { ...s.teams[1], score: 40 }] as typeof s.teams
+    const teams = [
+      { ...s.teams[0], score: 40 },
+      { ...s.teams[1], score: 40 },
+    ] as typeof s.teams
     return { ...s, teams, phase: 'tiebreak' as const }
   }
 
@@ -620,7 +629,10 @@ describe('تصحيح الحكم', () => {
   /* فاصلُ التعادل كان يقرّر وجهته لحظةَ دخوله: تصحيحٌ على شاشته يفكّ
      التعادل ثمّ «تابع» يفتح السؤال الحاسم بين فريقين غير متعادلين. */
   it('تصحيحٌ يفكّ التعادل في فاصله يذهب إلى الختام لا إلى الحسم', () => {
-    let s = step({ ...fresh(), phase: 'interval', intervalNext: 'tiebreak' }, { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP })
+    let s = step(
+      { ...fresh(), phase: 'interval', intervalNext: 'tiebreak' },
+      { t: 'ADJUST', team: 0, delta: SCORE_FIX_STEP },
+    )
     s = step(s, { t: 'INTERVAL_CONTINUE' })
     expect(s.phase).toBe('endgame')
 

@@ -42,8 +42,12 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
             <div className="s3r-eyebrow">الحق ما تلحق</div>
             <div className="s3r-team">دور {team.name}</div>
             <div className="s3-ready-rules">
-              <span><b className="tabular">{STAGE3_TIMER_MS / 1000}</b> ثانية دون توقف</span>
-              <span><b className="tabular">{`+${STAGE3_POINTS}`}</b> لكل إجابة صحيحة</span>
+              <span>
+                <b className="tabular">{STAGE3_TIMER_MS / 1000}</b> ثانية دون توقف
+              </span>
+              <span>
+                <b className="tabular">{`+${STAGE3_POINTS}`}</b> لكل إجابة صحيحة
+              </span>
             </div>
           </div>
         </div>
@@ -60,7 +64,11 @@ function Stage3Turn({ state, dispatch }: { state: GameState; dispatch: (a: Actio
       {/* صاحبُ الدور يضيء كبسولتَه بدل أن يُكتب اسمه في قرص الوسط: القرصُ صار
           شعاراً (٦ سبتمبر ٢٠٢٦)، والوسمُ كان يحمل «الحق ما تلحق · فلان» —
           وهو الموضعُ الوحيد الذي يقول لمن الساعةُ تجري في هذه الشاشة. */}
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={state.s3Team} />
+      <ScoreBar
+        onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+        teams={state.teams}
+        turnTeam={state.s3Team}
+      />
 
       <Timer remainingMs={left} totalMs={STAGE3_TIMER_MS} coral />
 

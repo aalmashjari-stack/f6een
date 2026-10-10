@@ -49,8 +49,15 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="xv-veil" onClick={onClose}>
-      <div className="xv-panel" role="dialog" aria-label="فيديو شرح اللعبة" onClick={(e) => e.stopPropagation()}>
-        <button className="xv-x" onClick={onClose} aria-label="إغلاق">✕</button>
+      <div
+        className="xv-panel"
+        role="dialog"
+        aria-label="فيديو شرح اللعبة"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="xv-x" onClick={onClose} aria-label="إغلاق">
+          ✕
+        </button>
         <div className="xv-frame">
           <video ref={video} src={SRC} autoPlay controls playsInline />
         </div>
@@ -94,15 +101,17 @@ export function ExplainerInline() {
   return (
     <div className="xi-wrap">
       <div className="xi-tv">
-      <div className="xv-frame xi-frame">
-        {playing ? (
-          <PlayingVideo />
-        ) : (
-          <button className="xi-poster" onClick={() => setPlaying(true)} aria-label="شغّل فيديو شرح اللعبة">
-            <span className="xi-play" aria-hidden="true">▶</span>
-          </button>
-        )}
-      </div>
+        <div className="xv-frame xi-frame">
+          {playing ? (
+            <PlayingVideo />
+          ) : (
+            <button className="xi-poster" onClick={() => setPlaying(true)} aria-label="شغّل فيديو شرح اللعبة">
+              <span className="xi-play" aria-hidden="true">
+                ▶
+              </span>
+            </button>
+          )}
+        </div>
       </div>
 
       <style>{`

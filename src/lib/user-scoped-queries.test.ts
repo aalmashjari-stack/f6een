@@ -40,10 +40,7 @@ vi.mock('./supabase', () => ({
   supabase: {
     from: (table: string) => {
       lastTable = table
-      const rows =
-        table === 'profiles'
-          ? { games_balance: 3, created_at: '2026-01-01T00:00:00Z' }
-          : []
+      const rows = table === 'profiles' ? { games_balance: 3, created_at: '2026-01-01T00:00:00Z' } : []
       const { chain, eqs } = makeChain(rows)
       lastEqs = eqs
       return chain

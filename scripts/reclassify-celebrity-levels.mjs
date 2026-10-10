@@ -124,7 +124,8 @@ if (unknown.length || overlap.length || easy.size !== 50 || medium.size !== 50) 
 for (const question of bank.questions) {
   question.level = easy.has(question.answer) ? 'سهل' : medium.has(question.answer) ? 'متوسط' : 'صعب'
 }
-bank._note = 'بنك مكمّل لفئة مشاهير. image هو اسم ملف الصورة دون الامتداد، ويُحل في src/game/celebs.ts. صعوبة الصور مراجعة يدوية لجمهور عربي/خليجي حسب شهرة الوجه: 50 سهل، 50 متوسط، 50 صعب.'
+bank._note =
+  'بنك مكمّل لفئة مشاهير. image هو اسم ملف الصورة دون الامتداد، ويُحل في src/game/celebs.ts. صعوبة الصور مراجعة يدوية لجمهور عربي/خليجي حسب شهرة الوجه: 50 سهل، 50 متوسط، 50 صعب.'
 
 await writeFile(bankPath, `${JSON.stringify(bank, null, 2)}\n`)
 console.log('أُعيد تصنيف 150 شخصية: 50 سهل، 50 متوسط، 50 صعب')

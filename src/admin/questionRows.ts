@@ -66,8 +66,7 @@ export function merge(
       : { q: base, source: 'bank' as const, deletable: false }
   })
   for (const e of edits) {
-    if (e.origin === 'new')
-      out.push({ q: toQuestion(e), source: 'added', origin: 'new', deletable: true })
+    if (e.origin === 'new') out.push({ q: toQuestion(e), source: 'added', origin: 'new', deletable: true })
   }
   return out
 }

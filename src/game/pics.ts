@@ -26,7 +26,10 @@ const modules = import.meta.glob('../../assets/pics/pic-*.jpg', {
 
 const PIC_IMAGES: Record<string, string> = Object.fromEntries(
   Object.entries(modules).map(([path, url]) => [
-    path.split('/').pop()!.replace(/\.[^.]+$/, ''),
+    path
+      .split('/')
+      .pop()!
+      .replace(/\.[^.]+$/, ''),
     url,
   ]),
 )

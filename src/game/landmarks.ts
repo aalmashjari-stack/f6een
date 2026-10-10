@@ -21,7 +21,10 @@ const modules = import.meta.glob('../../assets/landmarks/landmark-*.jpg', {
 
 const LANDMARK_IMAGES: Record<string, string> = Object.fromEntries(
   Object.entries(modules).map(([path, url]) => [
-    path.split('/').pop()!.replace(/\.[^.]+$/, ''),
+    path
+      .split('/')
+      .pop()!
+      .replace(/\.[^.]+$/, ''),
     url,
   ]),
 )

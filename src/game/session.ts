@@ -30,14 +30,14 @@ export const STAGE1_QUESTIONS = STAGE1_CATEGORIES * STAGE1_LEVELS.length
    وعشرين سؤالاً يوفّر ستّ دقائق، فيدخل الصفّ الرابع بلا أن تطول الجلسة. */
 export const STAGE1_CONSULT_MS = 45_000 * TIME_SCALE
 export const STAGE1_LEVEL_POINTS: Record<Level, number> = {
-  'سهل': 10,
-  'متوسط': 20,
-  'صعب': 30,
+  سهل: 10,
+  متوسط: 20,
+  صعب: 30,
   /* خمسون لا أربعون (قرار علي ٩ سبتمبر ٢٠٢٦): «لكي يحسّ المتسابق بأنّه قام
      بعملٍ كبير». وهي خمسةُ أضعاف السهل، ومضاعفُ عشرةٍ كبقيّة القيم فتبلغها
      خطوةُ التصحيح. وقيمتُها الفعليّة في الجلسة `50 × نسبة الإجابة` لا
      خمسون — فإن نَدَرت الإجابة لم تُخلّ بتوازن المراحل. */
-  'تعجيزي': 50,
+  تعجيزي: 50,
 }
 export const STAGE2_TIMER_MS = 30_000 * TIME_SCALE
 export const STAGE2_CORRECT = 20
@@ -69,7 +69,7 @@ export function cellKey(category: string, level: Level): string {
 
 /** صاحب الدور في الجولة الجماعية: البادئ يلعب 0/2/4، والآخر 1/3/5. */
 export function stage1Owner(index: number, startingTeam: TeamId): TeamId {
-  return (index % 2 === 0 ? startingTeam : (1 - startingTeam)) as TeamId
+  return (index % 2 === 0 ? startingTeam : 1 - startingTeam) as TeamId
 }
 
 /** فئة على لوح الجولة الجماعية، ومَن اختارها — اللوح يقول لكل فريق أين اختياره. */
@@ -233,9 +233,7 @@ export function largestTeamSize(players: [string[], string[]]): number {
  * غيره — يحجز آخر سؤالٍ في خليّةٍ ضيّقة، فتخرج الفئةُ من الصالحة والاختيارُ
  * قائم. وبين الرسم والضغط دقائق: أسماءُ اللاعبين والقرعة واختيار الستّ.
  */
-export type NotReady =
-  | { kind: 'categories'; names: string[] }
-  | { kind: 'count'; picked: number }
+export type NotReady = { kind: 'categories'; names: string[] } | { kind: 'count'; picked: number }
 
 /** رسالةٌ عربيّة لكلّ سبب — الشاشة تعرضها كما هي. */
 export function notReadyMessage(r: NotReady): string {
@@ -255,8 +253,7 @@ export function notReadyMessage(r: NotReady): string {
  * فلم يبقَ إلّا ما لا مخرج منه: فئةٌ خرجت من الصالحة بعد أن اختيرت.
  */
 export function sessionNotReady(input: SetupInput): NotReady | null {
-  if (input.categories.length !== STAGE1_CATEGORIES)
-    return { kind: 'count', picked: input.categories.length }
+  if (input.categories.length !== STAGE1_CATEGORIES) return { kind: 'count', picked: input.categories.length }
 
   const ok = new Set(playableCategories())
   const gone = input.categories.filter((c) => !ok.has(c))
@@ -389,7 +386,11 @@ export function isStoredState(x: unknown): x is StoredState {
       typeof team.name === 'string' &&
       Array.isArray(team.players) &&
       team.players.every(
-        (p) => !!p && typeof p === 'object' && typeof (p as Player).id === 'string' && typeof (p as Player).name === 'string',
+        (p) =>
+          !!p &&
+          typeof p === 'object' &&
+          typeof (p as Player).id === 'string' &&
+          typeof (p as Player).name === 'string',
       ) &&
       typeof team.score === 'number'
     )
@@ -433,7 +434,7 @@ export function isStoredState(x: unknown): x is StoredState {
     num('s2Rounds') &&
     num('s2Index') &&
     arr('s2Rem') &&
-    (s.s2Pairs === undefined || ((s.s2Pairs as unknown[]).every(pair))) &&
+    (s.s2Pairs === undefined || (s.s2Pairs as unknown[]).every(pair)) &&
     arr('s2Marks') &&
     teamId(s.s3Team) &&
     arr('s3Queue') &&
@@ -555,7 +556,9 @@ export function pickDerbyPair(
   state: Pick<GameState, 's2Rem' | 's2Pairs'>,
   rng: () => number = Math.random,
 ): [number, number] {
-  const all: [number, number][] = state.s2Rem[0].flatMap((a) => state.s2Rem[1].map((b): [number, number] => [a, b]))
+  const all: [number, number][] = state.s2Rem[0].flatMap((a) =>
+    state.s2Rem[1].map((b): [number, number] => [a, b]),
+  )
   const seen = new Set(state.s2Pairs.map(([a, b]) => `${a}:${b}`))
   const fresh = all.filter(([a, b]) => !seen.has(`${a}:${b}`))
   const from = fresh.length > 0 ? fresh : all

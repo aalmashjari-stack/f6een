@@ -55,7 +55,8 @@ function audio(): { ctx: AudioContext; master: GainNode } | null {
   if (typeof window === 'undefined') return null
   if (!ctx) {
     const Ctor: typeof AudioContext | undefined =
-      window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     if (!Ctor) return null // متصفح بلا Web Audio: اللعبة تعمل صامتة، لا تنكسر
     ctx = new Ctor()
     master = ctx.createGain()
@@ -153,7 +154,13 @@ export function play(name: SfxName) {
     case 'win': {
       const notes = [523.25, 659.25, 783.99, 1046.5]
       notes.forEach((f, i) =>
-        tone({ freq: f, dur: i === notes.length - 1 ? 0.9 : 0.2, type: 'triangle', gain: 0.42, at: i * 0.12 }),
+        tone({
+          freq: f,
+          dur: i === notes.length - 1 ? 0.9 : 0.2,
+          type: 'triangle',
+          gain: 0.42,
+          at: i * 0.12,
+        }),
       )
       break
     }

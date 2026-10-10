@@ -57,8 +57,8 @@ export function ResetPassword({ onDone, failed = false }: { onDone: () => void; 
         <div className="su-card su-done">
           <h1 className="su-title">الرابط لم يعد صالحاً</h1>
           <p className="su-sub">
-            رابط الاستعادة يُفتح مرّة واحدة وتنتهي صلاحيتُه بسرعة. اطلب رابطاً
-            جديداً وافتحه على الجهاز نفسه الذي طلبته منه.
+            رابط الاستعادة يُفتح مرّة واحدة وتنتهي صلاحيتُه بسرعة. اطلب رابطاً جديداً وافتحه على الجهاز نفسه
+            الذي طلبته منه.
           </p>
           <button className="su-submit" onClick={onDone}>
             اطلب رابطاً جديداً
@@ -85,7 +85,7 @@ export function ResetPassword({ onDone, failed = false }: { onDone: () => void; 
 
   return (
     <div className="screen su">
-        <style>{AUTH_CSS}</style>
+      <style>{AUTH_CSS}</style>
       <form className="su-card" onSubmit={submit} noValidate>
         <h1 className="su-title">كلمة مرور جديدة</h1>
         <p className="su-sub">اكتبها مرّتين، ولا نطلب القديمة.</p>

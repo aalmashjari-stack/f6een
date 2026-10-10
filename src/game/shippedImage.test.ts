@@ -14,13 +14,17 @@ import { shippedImage } from './shippedImage'
  * صورةٍ بعينها.
  */
 const FOLDERS = {
-  'المشاهير': import.meta.glob('../../assets/celebrities/celeb-*.jpg'),
-  'المعالم': import.meta.glob('../../assets/landmarks/landmark-*.jpg'),
+  المشاهير: import.meta.glob('../../assets/celebrities/celeb-*.jpg'),
+  المعالم: import.meta.glob('../../assets/landmarks/landmark-*.jpg'),
   'الزمن الجميل': import.meta.glob('../../assets/zaman/zaman-*.jpg'),
   'صور الفئات': import.meta.glob('../../assets/pics/pic-*.jpg'),
 }
 
-const keyOf = (path: string) => path.split('/').pop()!.replace(/\.[^.]+$/, '')
+const keyOf = (path: string) =>
+  path
+    .split('/')
+    .pop()!
+    .replace(/\.[^.]+$/, '')
 
 describe('shippedImage', () => {
   for (const [name, mods] of Object.entries(FOLDERS)) {

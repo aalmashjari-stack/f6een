@@ -53,7 +53,6 @@ export default function AdminApp() {
   return <Dashboard session={session} superAdmin={role.superAdmin} />
 }
 
-
 function Gate() {
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
@@ -114,8 +113,7 @@ function NotAdmin({ email }: { email: string }) {
       <div className="a-gate-card">
         <h1>لا صلاحية</h1>
         <p className="a-note">
-          هذا الحساب ({email}) ليس مديراً. الصلاحية يمنحها المديرُ العامّ من لسان
-          «الحسابات» في هذه اللوحة.
+          هذا الحساب ({email}) ليس مديراً. الصلاحية يمنحها المديرُ العامّ من لسان «الحسابات» في هذه اللوحة.
         </p>
         <button className="a-btn" onClick={() => signOut()}>
           الخروج
@@ -124,7 +122,6 @@ function NotAdmin({ email }: { email: string }) {
     </div>
   )
 }
-
 
 type Tab =
   | 'users'
@@ -212,25 +209,21 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       {/* البطاقات حساباتٌ ورصيد، فهي للمدير العامّ — و`admin_stats` تردّ
           المحرّرَ بـ`not_super` على أيّ حال. */}
       {superAdmin && (
-      <div className="a-tiles">
-        <Tile n={stats?.users} label="حساب" />
-        <Tile n={stats?.sessions} label="جلسة" />
-        <Tile n={stats?.played_today} label="اليوم" />
-        <Tile n={stats?.open} label="مفتوحة" />
-        <Tile n={stats?.finished} label="مكتملة" />
-        <Tile n={stats?.abandoned} label="منسحبة" />
-        <Tile n={stats?.balance} label="رصيد قائم" />
-        <Tile n={stats?.redemptions} label="إضافة هدية" />
-      </div>
+        <div className="a-tiles">
+          <Tile n={stats?.users} label="حساب" />
+          <Tile n={stats?.sessions} label="جلسة" />
+          <Tile n={stats?.played_today} label="اليوم" />
+          <Tile n={stats?.open} label="مفتوحة" />
+          <Tile n={stats?.finished} label="مكتملة" />
+          <Tile n={stats?.abandoned} label="منسحبة" />
+          <Tile n={stats?.balance} label="رصيد قائم" />
+          <Tile n={stats?.redemptions} label="إضافة هدية" />
+        </div>
       )}
 
       <nav className="a-tabs">
         {tabs.map(([id, label]) => (
-          <button
-            key={id}
-            className={'a-tab' + (tab === id ? ' on' : '')}
-            onClick={() => setTab(id)}
-          >
+          <button key={id} className={'a-tab' + (tab === id ? ' on' : '')} onClick={() => setTab(id)}>
             {label}
           </button>
         ))}

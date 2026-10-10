@@ -29,10 +29,18 @@ const memory = new Map<Team['id'], { score: number; t: number }>()
 function Adjust({ onAdjust }: { onAdjust: (delta: number) => void }) {
   return (
     <span className="pts-adj">
-      <button type="button" aria-label={`زيادة ${SCORE_FIX_STEP} نقاط`} onClick={() => onAdjust(SCORE_FIX_STEP)}>
+      <button
+        type="button"
+        aria-label={`زيادة ${SCORE_FIX_STEP} نقاط`}
+        onClick={() => onAdjust(SCORE_FIX_STEP)}
+      >
         +
       </button>
-      <button type="button" aria-label={`إنقاص ${SCORE_FIX_STEP} نقاط`} onClick={() => onAdjust(-SCORE_FIX_STEP)}>
+      <button
+        type="button"
+        aria-label={`إنقاص ${SCORE_FIX_STEP} نقاط`}
+        onClick={() => onAdjust(-SCORE_FIX_STEP)}
+      >
         −
       </button>
     </span>
@@ -57,9 +65,7 @@ function TeamCapsule({
   })
 
   const shown = useCountUp(team.score, 650, from)
-  const [delta, setDelta] = useState<number | null>(() =>
-    from !== team.score ? team.score - from : null,
-  )
+  const [delta, setDelta] = useState<number | null>(() => (from !== team.score ? team.score - from : null))
 
   /* المهلة لحالة إعادة البناء وحدها (ذاكرةٌ من شاشةٍ سابقة قد تكون قديمة).
      أمّا التغيّر والمكوّن حيّ — تصحيحُ الحكم على شاشة الكشف — فيُرقَّق دائماً:
@@ -84,7 +90,15 @@ function TeamCapsule({
   const kicker = turn ? 'صاحب الدور' : `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`
 
   return (
-    <div className={'team team-' + team.id + (lead ? ' lead' : '') + (turn ? ' turn' : '') + (delta !== null ? ' bump' : '')}>
+    <div
+      className={
+        'team team-' +
+        team.id +
+        (lead ? ' lead' : '') +
+        (turn ? ' turn' : '') +
+        (delta !== null ? ' bump' : '')
+      }
+    >
       {/* الكِكر يقول «صاحب الدور» حين يكون الدور له، وإلّا فترتيبُه. ويسقط
           حين يطابق اسمَ الفريق — الاسم الافتراضي هو «الفريق الأول/الثاني»
           نفسه، فيُكتب مرّتين في كبسولة واحدة بلا فائدة. */}

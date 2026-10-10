@@ -22,8 +22,34 @@ export function isLettersCategory(category: string): boolean {
 
 /** الأبجديّة كما تُعرض على البلاطة — ثمانيةٌ وعشرون حرفاً بترتيبها. */
 export const ALPHABET = [
-  'ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص',
-  'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي',
+  'ا',
+  'ب',
+  'ت',
+  'ث',
+  'ج',
+  'ح',
+  'خ',
+  'د',
+  'ذ',
+  'ر',
+  'ز',
+  'س',
+  'ش',
+  'ص',
+  'ض',
+  'ط',
+  'ظ',
+  'ع',
+  'غ',
+  'ف',
+  'ق',
+  'ك',
+  'ل',
+  'م',
+  'ن',
+  'ه',
+  'و',
+  'ي',
 ] as const
 
 export type Letter = (typeof ALPHABET)[number]
@@ -46,7 +72,10 @@ const MARKS = /[ً-ٰٟـ]/g
  * و`check-drafts` يردّه قبل أن يصل إلى الفئة.
  */
 export function firstLetter(answer: string): Letter | null {
-  const s = answer.replace(/\([^)]*\)/g, ' ').replace(MARKS, '').trim()
+  const s = answer
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(MARKS, '')
+    .trim()
   /* أوّل كلمةٍ فيها حرفٌ عربيّ — تُتجاوز علامات الاقتباس والشرطات قبلها. */
   const found = s.split(/\s+/).find((w) => /[ء-ي]/.test(w))
   if (!found) return null
@@ -54,6 +83,9 @@ export function firstLetter(answer: string): Letter | null {
   /* «ال» تسقط حين يبقى بعدها حرفان فأكثر — وقبل تطبيع الهمزة: «ألمانيا»
      و«إلياس» و«ألم» ليست معرَّفةً وإن بدت كذلك بعد التطبيع. */
   if (/^[اٱ]ل/.test(word) && word.length >= 4) word = word.slice(2)
-  const c = word[0]?.replace(/[أإآٱ]/, 'ا').replace('ى', 'ي').replace('ة', 'ه')
+  const c = word[0]
+    ?.replace(/[أإآٱ]/, 'ا')
+    .replace('ى', 'ي')
+    .replace('ة', 'ه')
   return c !== undefined && LETTER_SET.has(c) ? (c as Letter) : null
 }

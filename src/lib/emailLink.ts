@@ -17,10 +17,7 @@
  *
  * والشيفرة تقبل الشكلين: القديمُ يبقى عاملاً لمن في بريده رسالةٌ سابقة.
  */
-export type RecoveryLink =
-  | { kind: 'none' }
-  | { kind: 'token'; tokenHash: string }
-  | { kind: 'session' }
+export type RecoveryLink = { kind: 'none' } | { kind: 'token'; tokenHash: string } | { kind: 'session' }
 
 /**
  * ما الذي جاء به اللاعب؟ يُقرأ من عنوان **الإقلاع** لا من العنوان الحاليّ:

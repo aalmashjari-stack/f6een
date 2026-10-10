@@ -96,9 +96,7 @@ export function Reports() {
       {msg && <p className="a-err">{msg}</p>}
       {/* المحجوز لا يُسحب لأحد حتى يُراجَع — والصفّ يقول ذلك صراحةً كي لا
           يُترك الطابور بظنّ أنّ البلاغ مجرّد ملاحظة. */}
-      <p className="a-note">
-        السؤال المحجوز لا يظهر لأيّ لاعب. «يُسحب» يعيده، و«ملغى» يمنعه نهائياً.
-      </p>
+      <p className="a-note">السؤال المحجوز لا يظهر لأيّ لاعب. «يُسحب» يعيده، و«ملغى» يمنعه نهائياً.</p>
       <div className="a-card a-scroll">
         <table className="a-tbl">
           <thead>
@@ -119,7 +117,12 @@ export function Reports() {
               return (
                 <tr key={f.question_id}>
                   <td>
-                    <span className={'tag ' + (f.status === 'pending' ? 'open' : f.status === 'disabled' ? 'abandoned' : 'finished')}>
+                    <span
+                      className={
+                        'tag ' +
+                        (f.status === 'pending' ? 'open' : f.status === 'disabled' ? 'abandoned' : 'finished')
+                      }
+                    >
                       {FLAG_LABEL[f.status]}
                     </span>
                   </td>

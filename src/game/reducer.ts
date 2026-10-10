@@ -120,8 +120,12 @@ const burn = (s: GameState, q: Question): GameState => {
 }
 
 /** نتيجةُ السؤال كما حكم الحكم — انظر `QuestionResult`. */
-const record = (s: GameState, q: Question | null | undefined, st: QuestionResult['st'], r: QuestionResult['r']): GameState =>
-  q ? { ...s, results: { ...s.results, [q.id]: { st, r } } } : s
+const record = (
+  s: GameState,
+  q: Question | null | undefined,
+  st: QuestionResult['st'],
+  r: QuestionResult['r'],
+): GameState => (q ? { ...s, results: { ...s.results, [q.id]: { st, r } } } : s)
 
 /** كل نقطة تُسجَّل مرّتين: في مجموع الفريق، وفي عمود مرحلتها لشاشة الختام. */
 const addScore = (s: GameState, team: TeamId, delta: number, stage: StageKey): GameState => {
@@ -171,8 +175,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         return { ...next, timerEndsAt: null, phase: 'stage1-letter' }
       /* فئة «ولا كلمة»: رمزٌ يمسحه الممثّل قبل أن يبدأ شيء، والكلمة لا تظهر
          على الشاشة الكبيرة حتى الكشف — انظر `charades.ts`. */
-      if (isCharadesCategory(action.category))
-        return { ...next, timerEndsAt: null, phase: 'stage1-charade' }
+      if (isCharadesCategory(action.category)) return { ...next, timerEndsAt: null, phase: 'stage1-charade' }
       return {
         ...next,
         timerEndsAt: action.at === undefined ? null : action.at + STAGE1_CONSULT_MS,
@@ -215,8 +218,7 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       /* النقاط لمن أجاب لا لصاحب الدور (قرار علي ٥ سبتمبر ٢٠٢٦): الحكم يختار
          الفريق من اسمه، و`null` تعني أنّ أحداً لم يُصب. */
       let s = record(state, state.currentQuestion, 1, action.team !== null ? 'c' : 'n')
-      if (action.team !== null)
-        s = addScore(s, action.team, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
+      if (action.team !== null) s = addScore(s, action.team, STAGE1_LEVEL_POINTS[state.s1Cell.level], 's1')
 
       const nextIndex = s.s1Index + 1
       const rest = {
@@ -297,7 +299,12 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
       const sel = state.s2Sel
       // تطبيق النقاط والإحصاء
       const marks = state.s2Marks
-      let s = record(state, state.currentQuestion, 2, marks.includes('صح') ? 'c' : marks.includes('غلط') ? 'w' : 'n')
+      let s = record(
+        state,
+        state.currentQuestion,
+        2,
+        marks.includes('صح') ? 'c' : marks.includes('غلط') ? 'w' : 'n',
+      )
       const correctByPlayer = { ...s.correctByPlayer }
       const wrongByPlayer = { ...s.wrongByPlayer }
       for (const who of [0, 1] as const) {
@@ -317,7 +324,14 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
 
       const nextIndex = s.s2Index + 1
       if (nextIndex < s.s2Rounds) {
-        return { ...s, s2Index: nextIndex, s2Sel: null, currentCategory: null, currentQuestion: null, phase: 'stage2-selection' }
+        return {
+          ...s,
+          s2Index: nextIndex,
+          s2Sel: null,
+          currentCategory: null,
+          currentQuestion: null,
+          phase: 'stage2-selection',
+        }
       }
       // انتهى الديربي → فاصل ثم الحق ما تلحق
       return {

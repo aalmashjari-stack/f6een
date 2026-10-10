@@ -25,7 +25,7 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
-import { resolve, join } from 'node:path'
+import { resolve } from 'node:path'
 
 const [targetsPath, outDir = 'assets/pics', prefix = 'pic'] = process.argv.slice(2)
 if (!targetsPath) {
@@ -39,7 +39,8 @@ const WIDTH = 1100
    بالنسبة — علمُ عُمان في كومنز بها وحدها. ورخصُ البرمجيّات المتساهلة
    (Apache وMIT وMPL) تحمل بعضَ أيقونات الشعارات (طائر تويتر، فايرفوكس،
    غيت هب) وتُجيز التوزيع التجاريّ بالنسبة — أمّا GPL فتبقى مردودة. */
-const OK_LICENCE = /^(public domain|pd|cc0|no restrictions|cc by(-sa)? ?\d(\.\d)?|cc-by(-sa)?-\d(\.\d)?|attribution|ogl|apache|mit\b|mpl|bsd)/i
+const OK_LICENCE =
+  /^(public domain|pd|cc0|no restrictions|cc by(-sa)? ?\d(\.\d)?|cc-by(-sa)?-\d(\.\d)?|attribution|ogl|apache|mit\b|mpl|bsd)/i
 const BAD_LICENCE = /(-nc|-nd|\bnc\b|\bnd\b|fair use|non-free|gfdl 1\.2 only)/i
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -57,7 +58,11 @@ async function api(host, params) {
 /** صورةُ المقالة الرئيسة — اسمُ ملفٍّ في كومنز، أو null. */
 async function pageImage(title, lang) {
   const j = await api(`${lang}.wikipedia.org`, {
-    action: 'query', prop: 'pageimages', piprop: 'name', titles: title, redirects: 1,
+    action: 'query',
+    prop: 'pageimages',
+    piprop: 'name',
+    titles: title,
+    redirects: 1,
   })
   const page = Object.values(j.query?.pages ?? {})[0]
   return page?.pageimage ? `File:${page.pageimage}` : null
@@ -66,19 +71,27 @@ async function pageImage(title, lang) {
 /** معلومات الملفّ: الرابط المصغَّر والرخصة والمؤلّف. */
 async function imageInfo(file) {
   const j = await api('commons.wikimedia.org', {
-    action: 'query', prop: 'imageinfo', titles: file,
-    iiprop: 'url|extmetadata|size|mime', iiurlwidth: String(WIDTH),
+    action: 'query',
+    prop: 'imageinfo',
+    titles: file,
+    iiprop: 'url|extmetadata|size|mime',
+    iiurlwidth: String(WIDTH),
   })
   const page = Object.values(j.query?.pages ?? {})[0]
   const info = page?.imageinfo?.[0]
   if (!info) return null
   const m = info.extmetadata ?? {}
-  const strip = (s) => String(s ?? '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+  const strip = (s) =>
+    String(s ?? '')
+      .replace(/<[^>]*>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
   return {
     title: page.title,
     thumb: info.thumburl ?? info.url,
     mime: info.mime,
-    width: info.width, height: info.height,
+    width: info.width,
+    height: info.height,
     licence: strip(m.LicenseShortName?.value),
     licenceUrl: strip(m.LicenseUrl?.value),
     artist: strip(m.Artist?.value),
@@ -96,41 +109,77 @@ const byKey = new Map(attribution.map((a) => [a.key, a]))
 const report = []
 for (const t of targets) {
   const dest = resolve(outDir, `${prefix}-${t.key}.jpg`)
-  if (existsSync(dest) && !t.force) { report.push(`= ${t.key}: موجود`); continue }
+  if (existsSync(dest) && !t.force) {
+    report.push(`= ${t.key}: موجود`)
+    continue
+  }
   try {
-    const file = t.file ? (t.file.startsWith('File:') ? t.file : `File:${t.file}`) : await pageImage(t.wiki, t.lang ?? 'en')
-    if (!file) { report.push(`✗ ${t.key}: لا صورة رئيسة لمقالة «${t.wiki}»`); continue }
+    const file = t.file
+      ? t.file.startsWith('File:')
+        ? t.file
+        : `File:${t.file}`
+      : await pageImage(t.wiki, t.lang ?? 'en')
+    if (!file) {
+      report.push(`✗ ${t.key}: لا صورة رئيسة لمقالة «${t.wiki}»`)
+      continue
+    }
     const info = await imageInfo(file)
-    if (!info) { report.push(`✗ ${t.key}: لا معلومات لـ${file}`); continue }
+    if (!info) {
+      report.push(`✗ ${t.key}: لا معلومات لـ${file}`)
+      continue
+    }
     /* SVG (الأعلام والشعارات كلُّها في كومنز متّجهات) يُقبل عبر نسخته
        النقطيّة: `iiurlwidth` يعيد PNG مرسوماً بالعرض المطلوب في `thumburl`،
        وأبعادُ الأصل أبعادٌ اسميّة فلا يُحكم بها على الصغر. */
     const svg = info.mime === 'image/svg+xml'
-    if (!svg && !/^image\/(jpeg|png)$/.test(info.mime)) { report.push(`✗ ${t.key}: نوعٌ غير مقبول ${info.mime} — ${file}`); continue }
-    if (BAD_LICENCE.test(info.licence) || !OK_LICENCE.test(info.licence)) {
-      report.push(`✗ ${t.key}: رخصةٌ مرفوضة «${info.licence}» — ${file}`); continue
+    if (!svg && !/^image\/(jpeg|png)$/.test(info.mime)) {
+      report.push(`✗ ${t.key}: نوعٌ غير مقبول ${info.mime} — ${file}`)
+      continue
     }
-    if (!svg && Math.max(info.width, info.height) < (t.min ?? 600)) { report.push(`✗ ${t.key}: صغيرة ${info.width}×${info.height} — ${file}`); continue }
+    if (BAD_LICENCE.test(info.licence) || !OK_LICENCE.test(info.licence)) {
+      report.push(`✗ ${t.key}: رخصةٌ مرفوضة «${info.licence}» — ${file}`)
+      continue
+    }
+    if (!svg && Math.max(info.width, info.height) < (t.min ?? 600)) {
+      report.push(`✗ ${t.key}: صغيرة ${info.width}×${info.height} — ${file}`)
+      continue
+    }
 
     const res = await fetch(info.thumb, { headers: { 'User-Agent': UA } })
-    if (!res.ok) { report.push(`✗ ${t.key}: فشل التنزيل ${res.status}`); continue }
+    if (!res.ok) {
+      report.push(`✗ ${t.key}: فشل التنزيل ${res.status}`)
+      continue
+    }
     const tmp = dest + '.tmp'
     writeFileSync(tmp, Buffer.from(await res.arrayBuffer()))
     if (svg) {
       /* نقطيّةُ SVG تأتي PNG بخلفيّةٍ شفّافة، و`sips` يجعلها سوداء في JPEG —
          فتُبسَط على أبيض بـPillow، وبجودةٍ أعلى لأنّ حوافّ الأعلام والشعارات
          حادّة والمساحات مسطّحة. */
-      execFileSync('python3', ['-c', `
+      execFileSync(
+        'python3',
+        [
+          '-c',
+          `
 import sys
 from PIL import Image
 im = Image.open(sys.argv[1]).convert('RGBA')
 bg = Image.new('RGB', im.size, (255, 255, 255))
 bg.paste(im, mask=im.split()[3])
 bg.save(sys.argv[2], 'JPEG', quality=90, optimize=True)
-`, tmp, dest], { stdio: 'ignore' })
+`,
+          tmp,
+          dest,
+        ],
+        { stdio: 'ignore' },
+      )
     } else {
       /* تصغيرٌ وتحويلٌ إلى JPEG بجودة 82، وأكبر بُعدٍ 1100. */
-      execFileSync('sips', ['-s', 'format', 'jpeg', '-s', 'formatOptions', '82', '-Z', String(WIDTH), tmp, '--out', dest], { stdio: 'ignore' })
+      execFileSync(
+        'sips',
+        ['-s', 'format', 'jpeg', '-s', 'formatOptions', '82', '-Z', String(WIDTH), tmp, '--out', dest],
+        { stdio: 'ignore' },
+      )
     }
     unlinkSync(tmp)
 

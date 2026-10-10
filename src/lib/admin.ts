@@ -535,12 +535,7 @@ export async function listExtraCategories(): Promise<string[]> {
 }
 
 /** نبذة الفئة وسؤالها المثال — النصّ الفارغ يُحفظ `null` فتسقط علامة (i). */
-export async function saveCategoryInfo(
-  name: string,
-  brief: string,
-  q: string,
-  a: string,
-): Promise<void> {
+export async function saveCategoryInfo(name: string, brief: string, q: string, a: string): Promise<void> {
   const { error } = await supabase.rpc('admin_set_category_info', {
     p_name: name,
     p_brief: brief,

@@ -168,12 +168,7 @@ export function QuestionForm({
 
         <div className="a-field">
           <label htmlFor="q-ans">الإجابة</label>
-          <input
-            id="q-ans"
-            className="a-in"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-          />
+          <input id="q-ans" className="a-in" value={answer} onChange={(e) => setAnswer(e.target.value)} />
         </div>
 
         <div className="a-field">
@@ -232,7 +227,6 @@ export function QuestionForm({
           </button>
         </div>
       </form>
-
     </div>
   )
 }

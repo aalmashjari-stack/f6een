@@ -30,7 +30,12 @@ const PHASES: Record<string, string> = {
   endgame: 'الختام',
 }
 
-const STAGES: Record<number, string> = { 1: 'الجولة الجماعية', 2: 'الديربي', 3: 'الحق ما تلحق', 4: 'سؤال الحسم' }
+const STAGES: Record<number, string> = {
+  1: 'الجولة الجماعية',
+  2: 'الديربي',
+  3: 'الحق ما تلحق',
+  4: 'سؤال الحسم',
+}
 
 const WEEKDAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
 const pct = (part: number, whole: number) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : '—')
@@ -66,7 +71,11 @@ export function Insights() {
     <div className={'ins' + (loading ? ' busy' : '')}>
       <div className="a-bar">
         <label className="ins-toggle">
-          <input type="checkbox" checked={excludeAdmins} onChange={(e) => setExcludeAdmins(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={excludeAdmins}
+            onChange={(e) => setExcludeAdmins(e.target.checked)}
+          />
           استبعد حسابات الإدارة
         </label>
         <button className="a-btn" onClick={() => load(excludeAdmins)} disabled={loading}>
@@ -107,7 +116,13 @@ export function Insights() {
 
       <div className="ins-grid">
         <Section title="حسب التصنيف">
-          <Bars rows={data.groups.map((x) => ({ label: x.name, value: x.picks, title: `${x.name}: ${x.picks} اختياراً` }))} />
+          <Bars
+            rows={data.groups.map((x) => ({
+              label: x.name,
+              value: x.picks,
+              title: `${x.name}: ${x.picks} اختياراً`,
+            }))}
+          />
         </Section>
 
         <Section title="لم يخترها أحد" note="فئاتٌ قابلة للّعب لم تدخل أيّ لوح.">
@@ -126,7 +141,10 @@ export function Insights() {
       </div>
 
       <div className="ins-grid">
-        <Section title="الأكثر ظهوراً على الشاشة" note="في المراحل كلّها — الديربي والحق ما تلحق تسحبان من غير الستّ.">
+        <Section
+          title="الأكثر ظهوراً على الشاشة"
+          note="في المراحل كلّها — الديربي والحق ما تلحق تسحبان من غير الستّ."
+        >
           <Bars
             rows={data.shown_by_category
               .slice(0, 12)
@@ -149,7 +167,9 @@ export function Insights() {
         <Columns
           values={data.by_day.map((d) => d.n)}
           titles={data.by_day.map((d) => `${day(d.day)}: ${d.n} جلسة، ${d.finished} مكتملة`)}
-          ticks={data.by_day.map((d, i) => (i % 5 === 0 || i === data.by_day.length - 1 ? day(d.day).slice(5) : ''))}
+          ticks={data.by_day.map((d, i) =>
+            i % 5 === 0 || i === data.by_day.length - 1 ? day(d.day).slice(5) : '',
+          )}
         />
       </Section>
 
@@ -164,7 +184,11 @@ export function Insights() {
 
         <Section title="حسب اليوم">
           <Bars
-            rows={data.by_weekday.map((n, i) => ({ label: WEEKDAYS[i], value: n, title: `${WEEKDAYS[i]}: ${n} جلسة` }))}
+            rows={data.by_weekday.map((n, i) => ({
+              label: WEEKDAYS[i],
+              value: n,
+              title: `${WEEKDAYS[i]}: ${n} جلسة`,
+            }))}
             keepOrder
           />
         </Section>
@@ -175,7 +199,11 @@ export function Insights() {
           <Stat n={g.avg_players} label="لاعباً في اللعبة" sub="متوسّط الفريقين معاً" />
           <Stat n={g.avg_winner} label="نقاط الفائز" sub={`والخاسر ${num(g.avg_loser)}`} />
           <Stat n={g.avg_margin} label="فارق النقاط" sub="متوسّط" />
-          <Stat n={g.decided > 0 ? Math.round((g.starter_wins / g.decided) * 100) : null} label="% فوز البادئ" sub={`${g.starter_wins} من ${g.decided}`} />
+          <Stat
+            n={g.decided > 0 ? Math.round((g.starter_wins / g.decided) * 100) : null}
+            label="% فوز البادئ"
+            sub={`${g.starter_wins} من ${g.decided}`}
+          />
           <Stat n={g.tiebreaks} label="احتاجت سؤال حسم" sub={pct(g.tiebreaks, g.measured)} />
           <Stat
             n={s3Total > 0 ? Math.round((g.s3_correct / s3Total) * 100) : null}
@@ -201,7 +229,9 @@ export function Insights() {
           </div>
           <div>
             <h4 className="ins-h4">حجم الفريقين</h4>
-            <Bars rows={g.team_sizes.map((t) => ({ label: t.size, value: t.n, title: `${t.size}: ${t.n} جلسة` }))} />
+            <Bars
+              rows={g.team_sizes.map((t) => ({ label: t.size, value: t.n, title: `${t.size}: ${t.n} جلسة` }))}
+            />
           </div>
         </div>
       </Section>
@@ -251,8 +281,8 @@ function Results({ r }: { r: Data['results'] }) {
     return (
       <Section title="نتائج الأسئلة">
         <p className="a-note">
-          تبدأ من الجلسات التي تُلعب من اليوم: كلُّ سؤالٍ يُحكم عليه تُحفظ نتيجته، وتظهر هنا نسبةُ الإصابة لكلّ مرحلة
-          ومستوى وفئة، والأسئلةُ الأصعب، وما يبدو في غير مستواه.
+          تبدأ من الجلسات التي تُلعب من اليوم: كلُّ سؤالٍ يُحكم عليه تُحفظ نتيجته، وتظهر هنا نسبةُ الإصابة
+          لكلّ مرحلة ومستوى وفئة، والأسئلةُ الأصعب، وما يبدو في غير مستواه.
         </p>
       </Section>
     )
@@ -307,15 +337,24 @@ function Results({ r }: { r: Data['results'] }) {
         </div>
       </Section>
 
-      <Section title="الأسئلة الأصعب" note="عُرض كلٌّ منها مرّتين على الأقلّ وأُصيب في النصف أو أقلّ، الأقلّ إصابةً أوّلاً.">
+      <Section
+        title="الأسئلة الأصعب"
+        note="عُرض كلٌّ منها مرّتين على الأقلّ وأُصيب في النصف أو أقلّ، الأقلّ إصابةً أوّلاً."
+      >
         <QuestionList list={r.hardest} empty="لا سؤال عُرض مرّتين بعد." />
       </Section>
 
       <div className="ins-grid">
-        <Section title="«سهل» يُخطئه أكثرهم" note="في اللوح، عُرض 3 مرّات على الأقلّ وأُصيب في الثلث أو أقلّ.">
+        <Section
+          title="«سهل» يُخطئه أكثرهم"
+          note="في اللوح، عُرض 3 مرّات على الأقلّ وأُصيب في الثلث أو أقلّ."
+        >
           <QuestionList list={r.too_hard} first empty="لا شيء بعد." />
         </Section>
-        <Section title="«صعب» أو «تعجيزي» يُصيبه أكثرهم" note="في اللوح، عُرض 3 مرّات على الأقلّ وأُصيب في 80% أو أكثر.">
+        <Section
+          title="«صعب» أو «تعجيزي» يُصيبه أكثرهم"
+          note="في اللوح، عُرض 3 مرّات على الأقلّ وأُصيب في 80% أو أكثر."
+        >
           <QuestionList list={r.too_easy} first empty="لا شيء بعد." />
         </Section>
       </div>
@@ -324,7 +363,15 @@ function Results({ r }: { r: Data['results'] }) {
 }
 
 /** `first`: العدّ من الجولة الجماعية وحدها (`n1`/`c1`) لا من المراحل كلّها. */
-function QuestionList({ list, empty, first = false }: { list: ResultQuestion[]; empty: string; first?: boolean }) {
+function QuestionList({
+  list,
+  empty,
+  first = false,
+}: {
+  list: ResultQuestion[]
+  empty: string
+  first?: boolean
+}) {
   if (list.length === 0) return <p className="a-note">{empty}</p>
   return (
     <div className="ins-qs">

@@ -20,10 +20,11 @@ import { useLoad } from '../shared'
  * أصلاً — هنا ما رُفع من اللوحة وحده.
  */
 export function Uploads() {
-  const { data: files, err, reload } = useLoad<ArtFile[]>(async () => [
-    ...(await listArt('questions')),
-    ...(await listArt('categories')),
-  ])
+  const {
+    data: files,
+    err,
+    reload,
+  } = useLoad<ArtFile[]>(async () => [...(await listArt('questions')), ...(await listArt('categories'))])
   const { data: edits, err: editsErr } = useLoad<AdminQuestionEdit[]>(listQuestionEdits)
   const { data: cats, err: catsErr } = useLoad<CategoryRow[]>(listCategoryRows)
   /* المسوّدات المعلَّقة تستعمل الدلو نفسه (حارسُ `agent_submit_drafts` لا
@@ -87,8 +88,8 @@ export function Uploads() {
   return (
     <>
       <p className="a-note">
-        {files.length} ملفّاً في التخزين، منها {orphans} لا يستعمله سؤالٌ ولا فئة.
-        الصور المشحونة مع التطبيق ليست هنا.
+        {files.length} ملفّاً في التخزين، منها {orphans} لا يستعمله سؤالٌ ولا فئة. الصور المشحونة مع التطبيق
+        ليست هنا.
       </p>
       {msg && <p className={msg.ok ? 'a-ok' : 'a-err'}>{msg.text}</p>}
       <div className="a-scroll">

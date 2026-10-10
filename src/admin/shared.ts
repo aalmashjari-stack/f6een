@@ -41,7 +41,6 @@ export function wholeNumber(raw: string): number | null {
   return Number(t)
 }
 
-
 /**
  * البنك يُحمَّل عند فتح لسان البلاغات وحده — استيراد ديناميكيّ.
  *

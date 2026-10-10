@@ -109,7 +109,8 @@ describe('جلسات متتابعة بذاكرة دائمة — حتى ما بع
       expect(new Set(fams).size, `الجلسة ${n}: قالبان من عائلة واحدة`).toBe(fams.length)
 
       /* الذاكرة تراكميّة: كلّ ما عُرض دخلها، ولم يسقط منها شيء. */
-      for (const id of before) expect(state.usedQuestionIds.has(id), `الجلسة ${n}: سقط ${id} من الذاكرة`).toBe(true)
+      for (const id of before)
+        expect(state.usedQuestionIds.has(id), `الجلسة ${n}: سقط ${id} من الذاكرة`).toBe(true)
       for (const id of ids) expect(state.usedQuestionIds.has(id), `الجلسة ${n}: لم يُحرق ${id}`).toBe(true)
 
       if (firstRecycle === null && ids.some((id) => before.has(id))) firstRecycle = n

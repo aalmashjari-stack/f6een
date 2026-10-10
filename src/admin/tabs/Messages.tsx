@@ -55,19 +55,29 @@ export function Messages() {
                     يمدّ الجدول بعرض أطول رسالة. */}
                 <td style={{ whiteSpace: 'pre-wrap', minWidth: '22rem' }}>{m.body}</td>
                 <td>
-                  <span className={'tag' + (m.status === 'new' ? ' open' : m.status === 'done' ? ' finished' : '')}>
+                  <span
+                    className={
+                      'tag' + (m.status === 'new' ? ' open' : m.status === 'done' ? ' finished' : '')
+                    }
+                  >
                     {m.status === 'new' ? 'جديدة' : m.status === 'read' ? 'مقروءة' : 'منتهية'}
                   </span>
                 </td>
                 <td>
                   <div className="a-acts">
                     {m.status !== 'read' && (
-                      <button className="a-btn" onClick={() => mark(m, 'read')}>مقروءة</button>
+                      <button className="a-btn" onClick={() => mark(m, 'read')}>
+                        مقروءة
+                      </button>
                     )}
                     {m.status !== 'done' && (
-                      <button className="a-btn go" onClick={() => mark(m, 'done')}>منتهية</button>
+                      <button className="a-btn go" onClick={() => mark(m, 'done')}>
+                        منتهية
+                      </button>
                     )}
-                    <a className="a-btn" href={`mailto:${encodeURIComponent(m.email)}`}>ردّ</a>
+                    <a className="a-btn" href={`mailto:${encodeURIComponent(m.email)}`}>
+                      ردّ
+                    </a>
                   </div>
                 </td>
               </tr>

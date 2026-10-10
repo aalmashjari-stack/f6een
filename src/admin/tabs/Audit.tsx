@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  listFlags,
-  listQuestionEdits,
-  saveQuestion,
-  setFlag,
-  type AdminQuestionEdit,
-} from '../../lib/admin'
+import { listFlags, listQuestionEdits, saveQuestion, setFlag, type AdminQuestionEdit } from '../../lib/admin'
 import { isImageUrl } from '../../game/celebs'
 import { shippedImage } from '../../game/shippedImage'
 import { LEVELS } from '../../game/levels'
@@ -158,7 +152,10 @@ export function Audit() {
     return items.map((it, i) => ({ it, i, st: statusOf(it, i) }))
   }, [items, live, statusOf])
 
-  const byStatus = useMemo(() => (rows ?? []).filter((r) => status === 'all' || r.st === status), [rows, status])
+  const byStatus = useMemo(
+    () => (rows ?? []).filter((r) => status === 'all' || r.st === status),
+    [rows, status],
+  )
 
   const typeCounts = useMemo(() => {
     const m = new Map<string, number>()
@@ -176,12 +173,19 @@ export function Audit() {
           (!level || r.it.l === level) &&
           (!n || r.it.id === n || r.it.q.includes(n) || r.it.a.includes(n)),
       )
-      .sort((a, b) => a.it.c.localeCompare(b.it.c, 'ar') || LEVELS.indexOf(a.it.l as Level) - LEVELS.indexOf(b.it.l as Level))
+      .sort(
+        (a, b) =>
+          a.it.c.localeCompare(b.it.c, 'ar') ||
+          LEVELS.indexOf(a.it.l as Level) - LEVELS.indexOf(b.it.l as Level),
+      )
   }, [byStatus, type, cat, level, needle])
 
   useEffect(() => setLimit(PAGE), [status, type, cat, level, needle])
 
-  const cats = useMemo(() => [...new Set((items ?? []).map((it) => it.c))].sort((a, b) => a.localeCompare(b, 'ar')), [items])
+  const cats = useMemo(
+    () => [...new Set((items ?? []).map((it) => it.c))].sort((a, b) => a.localeCompare(b, 'ar')),
+    [items],
+  )
 
   const done = (rows ?? []).filter((r) => r.st !== 'pending').length
 
@@ -228,7 +232,12 @@ export function Audit() {
   async function applyShownLevels() {
     const todo = shown.filter((r) => r.st === 'pending' && r.it.to && (r.it.t === 'down' || r.it.t === 'up'))
     if (todo.length === 0) return
-    if (!window.confirm(`تغيير مستوى ${todo.length} سؤالاً معروضاً. ما يُنزل خليّته تحت ${FLOOR} يُترك. متأكّد؟`)) return
+    if (
+      !window.confirm(
+        `تغيير مستوى ${todo.length} سؤالاً معروضاً. ما يُنزل خليّته تحت ${FLOOR} يُترك. متأكّد؟`,
+      )
+    )
+      return
     const count = new Map(cells)
     let applied = 0
     let held = 0
@@ -359,7 +368,8 @@ export function Audit() {
                 <div className="audit-why">{it.why}</div>
                 {rel && (
                   <div className="audit-why">
-                    السؤال المرتبط <span className="num">{rel.question_id}</span>: {rel.question} — <b>{rel.answer}</b>
+                    السؤال المرتبط <span className="num">{rel.question_id}</span>: {rel.question} —{' '}
+                    <b>{rel.answer}</b>
                   </div>
                 )}
               </div>
@@ -410,7 +420,11 @@ export function Audit() {
                     className="a-btn danger"
                     disabled={busy !== null}
                     onClick={() =>
-                      act(key, () => setFlag(it.id, 'disabled', `تدقيق 9 أكتوبر: ${it.why}`.slice(0, 300)), `حُجب ${it.id}`)
+                      act(
+                        key,
+                        () => setFlag(it.id, 'disabled', `تدقيق 9 أكتوبر: ${it.why}`.slice(0, 300)),
+                        `حُجب ${it.id}`,
+                      )
                     }
                   >
                     حجب
@@ -472,7 +486,11 @@ function EditBox({
             <option key={x}>{x}</option>
           ))}
         </select>
-        <button className="a-btn go" disabled={busy || !q.trim() || !a.trim()} onClick={() => onSave(q, a, l)}>
+        <button
+          className="a-btn go"
+          disabled={busy || !q.trim() || !a.trim()}
+          onClick={() => onSave(q, a, l)}
+        >
           حفظ
         </button>
         <button className="a-btn" onClick={onCancel}>

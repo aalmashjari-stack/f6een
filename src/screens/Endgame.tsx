@@ -91,91 +91,94 @@ export function Endgame({
           أضعاف ارتفاع الشاشة. الشاشة عريضة والجداول ضيّقة، فالعرض هو
           المتوفّر — وهذا وحده يردّ الختام إلى لقطة واحدة. */}
       <div className="es-grid">
-      {/* عمودٌ يجمع جدولَ النقاط وعدَّ «الحق ما تلحق» تحته: بثلاث كتلٍ
+        {/* عمودٌ يجمع جدولَ النقاط وعدَّ «الحق ما تلحق» تحته: بثلاث كتلٍ
           متجاورة كانت كتلةُ سطرين تقف بجانب كتلةِ ثمانية، فيبقى تحتها
           ثلثُ الشاشة فارغاً وتتدرّج الحوافّ. بعمودين تستوي الكفّتان:
           خمسةُ أسطرٍ وسطران يميناً، وثمانيةٌ يساراً. */}
-      <div className="es-col">
-      {/* ——— من أين جاءت النقاط ———
+        <div className="es-col">
+          {/* ——— من أين جاءت النقاط ———
           السؤال الأول بعد «مين فاز» هو «وين خسرنا». الجدول يجيب عنه بثلاثة أسطر:
           كل مرحلة وما كسبه فيها كل فريق. الأرقام هنا تُجمع فتساوي النتيجة النهائية،
           فلا يحتاج القارئ أن يصدّق شيئاً لا يستطيع التحقّق منه بنفسه. */}
-      <div className="es-block">
-        <div className="es-title">من أين جاءت النقاط</div>
-        <div className="es-table">
-          <div className="es-row head">
-            <span className="tabular">{state.teams[0].name}</span>
-            <span className="es-label">المرحلة</span>
-            <span className="tabular">{state.teams[1].name}</span>
-          </div>
-          {rows.map((r) => (
-            <div key={r.key} className="es-row">
-              <span className={'es-num tabular' + (r.v[0] > r.v[1] ? ' up' : '')}>{signed(r.v[0])}</span>
-              <span className="es-label">{r.label}</span>
-              <span className={'es-num tabular' + (r.v[1] > r.v[0] ? ' up' : '')}>{signed(r.v[1])}</span>
+          <div className="es-block">
+            <div className="es-title">من أين جاءت النقاط</div>
+            <div className="es-table">
+              <div className="es-row head">
+                <span className="tabular">{state.teams[0].name}</span>
+                <span className="es-label">المرحلة</span>
+                <span className="tabular">{state.teams[1].name}</span>
+              </div>
+              {rows.map((r) => (
+                <div key={r.key} className="es-row">
+                  <span className={'es-num tabular' + (r.v[0] > r.v[1] ? ' up' : '')}>{signed(r.v[0])}</span>
+                  <span className="es-label">{r.label}</span>
+                  <span className={'es-num tabular' + (r.v[1] > r.v[0] ? ' up' : '')}>{signed(r.v[1])}</span>
+                </div>
+              ))}
+              <div className="es-row total">
+                <span className="es-num tabular">{state.teams[0].score}</span>
+                <span className="es-label">المجموع</span>
+                <span className="es-num tabular">{state.teams[1].score}</span>
+              </div>
             </div>
-          ))}
-          <div className="es-row total">
-            <span className="es-num tabular">{state.teams[0].score}</span>
-            <span className="es-label">المجموع</span>
-            <span className="es-num tabular">{state.teams[1].score}</span>
           </div>
-        </div>
-      </div>
 
-      {/* الحق ما تلحق تستهلك أكثر من نصف أسئلة الجلسة، ومع ذلك لا يبقى منها على
+          {/* الحق ما تلحق تستهلك أكثر من نصف أسئلة الجلسة، ومع ذلك لا يبقى منها على
           الشاشة إلا رقم النقاط. هذه الثلاثة تعيد للفريق صورة دوره: كم لحق وكم فات. */}
-      {s3Any && (
+          {s3Any && (
+            <div className="es-block">
+              <div className="es-title">الحق ما تلحق · عدد الأسئلة</div>
+              <div className="es-table">
+                {[0, 1].map((ti) => (
+                  <div key={ti} className="es-row s3">
+                    <span className="es-label strong">{state.teams[ti].name}</span>
+                    <span className="es-chips">
+                      <span className="chip ok">
+                        <span className="tabular">{state.s3Counts.correct[ti]}</span> صحيحة
+                      </span>
+                      <span className="chip no">
+                        <span className="tabular">{state.s3Counts.wrong[ti]}</span> خاطئة
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* اللاعب لا يُنقَّط بمفرده إلا في الديربي — والعنوان يقول ذلك صراحةً حتى لا
+          يُقرأ صفرٌ أمام اسم لاعب اجتهد في المرحلتين الأخريين على أنه حكم عليه. */}
         <div className="es-block">
-          <div className="es-title">الحق ما تلحق · عدد الأسئلة</div>
+          <div className="es-title">الديربي · لاعباً لاعباً</div>
           <div className="es-table">
-            {[0, 1].map((ti) => (
-              <div key={ti} className="es-row s3">
-                <span className="es-label strong">{state.teams[ti].name}</span>
+            {stats.map((s, i) => (
+              <div
+                key={s.player.id}
+                className="es-row player"
+                style={{ animationDelay: `${0.5 + i * 0.05}s` }}
+              >
+                <span className="sr-who">
+                  <span className="sr-name">{s.player.name}</span>
+                  <span className="sr-team">{state.teams[s.teamId].name}</span>
+                </span>
+                {/* رمز بدل كلمة في سطر اللاعب وحده: اثنا عشر سطراً في عمودين،
+                  و«صح»/«غلط» مكتوبتين تسرقان من الاسم عرضه حتى يُقصّ. اللون
+                  يحمل المعنى نفسه (ذهبي/مرجاني)، والعنوان فوق الجدول يفسّره. */}
                 <span className="es-chips">
-                  <span className="chip ok">
-                    <span className="tabular">{state.s3Counts.correct[ti]}</span> صحيحة
+                  <span className="chip ok" title="إجابات صحيحة">
+                    <span aria-hidden="true">✓</span>
+                    <span className="tabular">{s.correct}</span>
                   </span>
-                  <span className="chip no">
-                    <span className="tabular">{state.s3Counts.wrong[ti]}</span> خاطئة
+                  <span className="chip no" title="إجابات خاطئة">
+                    <span aria-hidden="true">✗</span>
+                    <span className="tabular">{s.wrong}</span>
                   </span>
                 </span>
               </div>
             ))}
           </div>
         </div>
-      )}
-      </div>
-
-      {/* اللاعب لا يُنقَّط بمفرده إلا في الديربي — والعنوان يقول ذلك صراحةً حتى لا
-          يُقرأ صفرٌ أمام اسم لاعب اجتهد في المرحلتين الأخريين على أنه حكم عليه. */}
-      <div className="es-block">
-        <div className="es-title">الديربي · لاعباً لاعباً</div>
-        <div className="es-table">
-          {stats.map((s, i) => (
-            <div key={s.player.id} className="es-row player" style={{ animationDelay: `${0.5 + i * 0.05}s` }}>
-              <span className="sr-who">
-                <span className="sr-name">{s.player.name}</span>
-                <span className="sr-team">{state.teams[s.teamId].name}</span>
-              </span>
-              {/* رمز بدل كلمة في سطر اللاعب وحده: اثنا عشر سطراً في عمودين،
-                  و«صح»/«غلط» مكتوبتين تسرقان من الاسم عرضه حتى يُقصّ. اللون
-                  يحمل المعنى نفسه (ذهبي/مرجاني)، والعنوان فوق الجدول يفسّره. */}
-              <span className="es-chips">
-                <span className="chip ok" title="إجابات صحيحة">
-                  <span aria-hidden="true">✓</span>
-                  <span className="tabular">{s.correct}</span>
-                </span>
-                <span className="chip no" title="إجابات خاطئة">
-                  <span aria-hidden="true">✗</span>
-                  <span className="tabular">{s.wrong}</span>
-                </span>
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       </div>
 
       <button className="action" onClick={() => dispatch({ t: 'NEW_GAME' })}>
@@ -195,9 +198,7 @@ export function Endgame({
         )}
       </div>
 
-      {reportOpen && (
-        <ReportPanel state={state} dispatch={dispatch} onClose={() => setReportOpen(false)} />
-      )}
+      {reportOpen && <ReportPanel state={state} dispatch={dispatch} onClose={() => setReportOpen(false)} />}
 
       <style>{`
         /* لا تمرير — الختام يُقرأ في لقطة واحدة كبقية الشاشات. */
@@ -386,12 +387,7 @@ function ReportPanel({
 
   return (
     <div className="rp-veil" onClick={onClose}>
-      <div
-        className="rp"
-        role="dialog"
-        aria-label="بلّغ عن سؤال"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="rp" role="dialog" aria-label="بلّغ عن سؤال" onClick={(e) => e.stopPropagation()}>
         <header className="rp-head">
           <b>بلّغ عن سؤال</b>
           <button className="rp-x" onClick={onClose} aria-label="إغلاق">

@@ -61,14 +61,32 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
+      <ScoreBar
+        onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+        teams={state.teams}
+        turnTeam={owner}
+      />
 
       <div className="rv-card">
         {q.image ? (
-          <img className="rv-photo" src={celebSrc(q.image)} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+          <img
+            className="rv-photo"
+            src={celebSrc(q.image)}
+            alt=""
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
         ) : charade ? (
           poster ? (
-            <img className="rv-photo rv-poster" src={poster} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+            <img
+              className="rv-photo rv-poster"
+              src={poster}
+              alt=""
+              onError={(e) => {
+                e.currentTarget.style.display = 'none'
+              }}
+            />
           ) : (
             <div className="rv-q">الكلمة كانت</div>
           )
@@ -113,7 +131,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
             <span className="pk-name">أصاب</span>
             <span className="pk-delta">
               <span className="pk-from tabular">{ownerPick.from}</span>
-              <span className="pk-arrow" aria-hidden="true">←</span>
+              <span className="pk-arrow" aria-hidden="true">
+                ←
+              </span>
               <span className="pk-to tabular">{ownerPick.to}</span>
             </span>
           </button>
@@ -121,7 +141,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
             <span className="pk-name">أخطأ</span>
             <span className="pk-delta">
               <span className="pk-from tabular">{ownerPick.from}</span>
-              <span className="pk-arrow" aria-hidden="true">←</span>
+              <span className="pk-arrow" aria-hidden="true">
+                ←
+              </span>
               <span className="pk-to tabular">{ownerPick.from}</span>
             </span>
           </button>
@@ -137,7 +159,9 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
               <span className="pk-name">{label}</span>
               <span className="pk-delta">
                 <span className="pk-from tabular">{from}</span>
-                <span className="pk-arrow" aria-hidden="true">←</span>
+                <span className="pk-arrow" aria-hidden="true">
+                  ←
+                </span>
                 <span className="pk-to tabular">{to}</span>
               </span>
             </button>

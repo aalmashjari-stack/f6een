@@ -306,8 +306,8 @@ export function Categories() {
       {/* الصورة المرفوعة تُجلب من الشبكة بخلاف المشحونة — أوّل عرضٍ لها
           يحتاج اتّصالاً، ثمّ يخزّنها المتصفّح. */}
       <p className="a-note">
-        الصورة المفضّلة بنسبة 3:2 وعرض 1024 بكسلاً. والمرفوعة تحتاج اتّصالاً في أوّل عرض، بخلاف
-        الصور المشحونة مع التطبيق.
+        الصورة المفضّلة بنسبة 3:2 وعرض 1024 بكسلاً. والمرفوعة تحتاج اتّصالاً في أوّل عرض، بخلاف الصور المشحونة
+        مع التطبيق.
       </p>
 
       <div className="a-card a-scroll">
@@ -344,171 +344,167 @@ export function Categories() {
                         (أربعة أرقامٍ تحت ثلاثة عناوين، ٩ سبتمبر ٢٠٢٦). */}
                     <th colSpan={99} scope="colgroup">
                       {r.group ?? 'بلا مظلّة'}
-                      <span className="grp-n">
-                        {ordered.filter((x) => x.group === r.group).length} فئة
-                      </span>
+                      <span className="grp-n">{ordered.filter((x) => x.group === r.group).length} فئة</span>
                     </th>
                   </tr>
                 )}
-              <tr>
-                <td className="ord-cell">
-                  {/* السهمان داخل التصنيف وحده: عنوانُ القسم حدٌّ لا يُعبَر —
+                <tr>
+                  <td className="ord-cell">
+                    {/* السهمان داخل التصنيف وحده: عنوانُ القسم حدٌّ لا يُعبَر —
                       النقلُ بين التصنيفات من عمود «التصنيف». */}
-                  <button
-                    className="a-btn slim"
-                    aria-label={`رفع ${r.cat}`}
-                    onClick={() => moveCat(r.cat, -1)}
-                    disabled={i === 0 || ordered[i - 1].group !== r.group}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    className="a-btn slim"
-                    aria-label={`خفض ${r.cat}`}
-                    onClick={() => moveCat(r.cat, 1)}
-                    disabled={i === ordered.length - 1 || ordered[i + 1].group !== r.group}
-                  >
-                    ↓
-                  </button>
-                </td>
-                <td>
-                  <ArtCell
-                    src={r.uploaded ?? r.shipped}
-                    uploaded={r.uploaded !== null}
-                    onPick={(f) => art_(r.cat, f)}
-                    onClear={() => art_(r.cat, null)}
-                  />
-                </td>
-                <td>
-                  <b>{r.cat}</b>
-                  {/* قلمُ التسمية بجانب الاسم لا في عمود الأفعال: يُضغط دائماً،
-                      والمشحونة تقول سببها. */}
-                  <button
-                    className="a-btn slim rename"
-                    title="إعادة تسمية"
-                    aria-label={`إعادة تسمية ${r.cat}`}
-                    onClick={() => rename(r.cat)}
-                  >
-                    ✎
-                  </button>
-                </td>
-                <td>
-                  {/* قائمةٌ لا حقلٌ يُكتب: تصنيفٌ بخطأ مطبعيّ يصير مظلّةً
-                      ثانية بفئةٍ واحدة — نفس علّة الفئة في رفع الملفّ. */}
-                  <select
-                    className="a-in slim"
-                    value={r.group ?? ''}
-                    onChange={(e) => moveToGroup(r.cat, e.target.value || null)}
-                  >
-                    <option value="">— بلا تصنيف —</option>
-                    {(groups ?? []).map((g) => (
-                      <option key={g.name} value={g.name}>
-                        {g.name}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <span className={'tag' + (r.added ? ' open' : '')}>
-                    {r.added ? 'مضافة' : 'البنك'}
-                  </span>
-                </td>
-                {r.counts.map((n, i) => (
-                  <td
-                    key={i}
-                    /* الخليّة الرقيقة تُرى قبل أن تُردّ: تحت عشرين يمنع
-                       القاعدةُ النقلَ منها والحذفَ فيها. */
-                    className={'num' + (n === 0 ? ' muted' : n < CELL_FLOOR ? ' thin' : '')}
-                    title={n > 0 && n < CELL_FLOOR ? `تحت الحدّ — ينقصها ${CELL_FLOOR - n}` : ''}
-                  >
-                    {n}
+                    <button
+                      className="a-btn slim"
+                      aria-label={`رفع ${r.cat}`}
+                      onClick={() => moveCat(r.cat, -1)}
+                      disabled={i === 0 || ordered[i - 1].group !== r.group}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      className="a-btn slim"
+                      aria-label={`خفض ${r.cat}`}
+                      onClick={() => moveCat(r.cat, 1)}
+                      disabled={i === ordered.length - 1 || ordered[i + 1].group !== r.group}
+                    >
+                      ↓
+                    </button>
                   </td>
-                ))}
-                <td>
-                  {r.hidden ? (
-                    /* المستبعَدة تُقال قبل الاكتمال: هي التي تمنعها من اللوح
+                  <td>
+                    <ArtCell
+                      src={r.uploaded ?? r.shipped}
+                      uploaded={r.uploaded !== null}
+                      onPick={(f) => art_(r.cat, f)}
+                      onClear={() => art_(r.cat, null)}
+                    />
+                  </td>
+                  <td>
+                    <b>{r.cat}</b>
+                    {/* قلمُ التسمية بجانب الاسم لا في عمود الأفعال: يُضغط دائماً،
+                      والمشحونة تقول سببها. */}
+                    <button
+                      className="a-btn slim rename"
+                      title="إعادة تسمية"
+                      aria-label={`إعادة تسمية ${r.cat}`}
+                      onClick={() => rename(r.cat)}
+                    >
+                      ✎
+                    </button>
+                  </td>
+                  <td>
+                    {/* قائمةٌ لا حقلٌ يُكتب: تصنيفٌ بخطأ مطبعيّ يصير مظلّةً
+                      ثانية بفئةٍ واحدة — نفس علّة الفئة في رفع الملفّ. */}
+                    <select
+                      className="a-in slim"
+                      value={r.group ?? ''}
+                      onChange={(e) => moveToGroup(r.cat, e.target.value || null)}
+                    >
+                      <option value="">— بلا تصنيف —</option>
+                      {(groups ?? []).map((g) => (
+                        <option key={g.name} value={g.name}>
+                          {g.name}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <span className={'tag' + (r.added ? ' open' : '')}>{r.added ? 'مضافة' : 'البنك'}</span>
+                  </td>
+                  {r.counts.map((n, i) => (
+                    <td
+                      key={i}
+                      /* الخليّة الرقيقة تُرى قبل أن تُردّ: تحت عشرين يمنع
+                       القاعدةُ النقلَ منها والحذفَ فيها. */
+                      className={'num' + (n === 0 ? ' muted' : n < CELL_FLOOR ? ' thin' : '')}
+                      title={n > 0 && n < CELL_FLOOR ? `تحت الحدّ — ينقصها ${CELL_FLOOR - n}` : ''}
+                    >
+                      {n}
+                    </td>
+                  ))}
+                  <td>
+                    {r.hidden ? (
+                      /* المستبعَدة تُقال قبل الاكتمال: هي التي تمنعها من اللوح
                        الآن مهما اكتملت. */
-                    <span className="tag abandoned">مستبعَدة مؤقّتاً</span>
-                  ) : r.missing.length === 0 ? (
-                    r.thin.length === 0 ? (
-                      <span className="tag finished">نعم</span>
-                    ) : (
-                      /* تدخل اللوح فعلاً — الشرط سؤالٌ واحد لا عشرون — لكنّ
+                      <span className="tag abandoned">مستبعَدة مؤقّتاً</span>
+                    ) : r.missing.length === 0 ? (
+                      r.thin.length === 0 ? (
+                        <span className="tag finished">نعم</span>
+                      ) : (
+                        /* تدخل اللوح فعلاً — الشرط سؤالٌ واحد لا عشرون — لكنّ
                          خليّتها الرقيقة تمنع التعديل عليها، فتُقال. */
-                      <span className="tag open">نعم · {r.thin.join(' و')} تحت الحدّ</span>
-                    )
-                  ) : (
-                    <span className="tag abandoned">ينقصها {r.missing.join(' و')}</span>
-                  )}
-                </td>
-                <td className="a-actions">
-                  {/* استبعادٌ لا حذف: علمٌ على الفئة يُرفع بالزرّ نفسه،
+                        <span className="tag open">نعم · {r.thin.join(' و')} تحت الحدّ</span>
+                      )
+                    ) : (
+                      <span className="tag abandoned">ينقصها {r.missing.join(' و')}</span>
+                    )}
+                  </td>
+                  <td className="a-actions">
+                    {/* استبعادٌ لا حذف: علمٌ على الفئة يُرفع بالزرّ نفسه،
                       وأسئلتُها لا تُمسّ — طلب علي ١٩ سبتمبر ٢٠٢٦. لكلّ
                       فئةٍ، مشحونةً كانت أو مضافة. */}
-                  <button
-                    className={'a-btn' + (infoOpen === r.cat ? ' on' : '')}
-                    onClick={() => openInfo(r.cat, r.info)}
-                    title={r.info.brief ? 'تحرير النبذة' : 'لا نبذة — لا علامة (i) على البطاقة'}
-                  >
-                    {r.info.brief ? 'النبذة' : 'النبذة ＋'}
-                  </button>
-                  <button className="a-btn" onClick={() => hide(r.cat, !r.hidden)}>
-                    {r.hidden ? 'إعادة إلى اللوح' : 'استبعاد من اللوح'}
-                  </button>
-                  {r.added && (
-                    /* **يُضغط دائماً، ويقول سببَه عند الرفض.** كان معطَّلاً
+                    <button
+                      className={'a-btn' + (infoOpen === r.cat ? ' on' : '')}
+                      onClick={() => openInfo(r.cat, r.info)}
+                      title={r.info.brief ? 'تحرير النبذة' : 'لا نبذة — لا علامة (i) على البطاقة'}
+                    >
+                      {r.info.brief ? 'النبذة' : 'النبذة ＋'}
+                    </button>
+                    <button className="a-btn" onClick={() => hide(r.cat, !r.hidden)}>
+                      {r.hidden ? 'إعادة إلى اللوح' : 'استبعاد من اللوح'}
+                    </button>
+                    {r.added && (
+                      /* **يُضغط دائماً، ويقول سببَه عند الرفض.** كان معطَّلاً
                        والسببُ في تلميحٍ لا يظهر إلّا بالتحويم — فقرأه علي
                        «الزرّ لا يعمل»، وهي ثالث مرّة يخدعه فيها زرٌّ رماديّ
                        (خانةُ التحديد وزرُّ الحذف قبله). الرفضُ المشروح أوضح
                        من التعطيل الصامت. */
-                    <button className="a-btn danger" onClick={() => remove(r.cat, r.total)}>
-                      حذف
-                    </button>
-                  )}
-                </td>
-              </tr>
-              {infoOpen === r.cat && (
-                <tr className="info-row">
-                  <td colSpan={99}>
-                    <div className="info-ed">
-                      <label>
-                        <span>النبذة</span>
-                        <textarea
-                          className="a-in"
-                          rows={2}
-                          value={infoDraft.brief}
-                          onChange={(e) => setInfoDraft({ ...infoDraft, brief: e.target.value })}
-                          placeholder="فارغة = لا علامة (i) على البطاقة"
-                        />
-                      </label>
-                      <label>
-                        <span>السؤال المثال — لا يُلعب</span>
-                        <input
-                          className="a-in"
-                          value={infoDraft.q}
-                          onChange={(e) => setInfoDraft({ ...infoDraft, q: e.target.value })}
-                        />
-                      </label>
-                      <label>
-                        <span>جوابه — فارغ في فئات الصور</span>
-                        <input
-                          className="a-in"
-                          value={infoDraft.a}
-                          onChange={(e) => setInfoDraft({ ...infoDraft, a: e.target.value })}
-                        />
-                      </label>
-                      <div className="info-ed-actions">
-                        <button className="a-btn go" onClick={() => saveInfo(r.cat)}>
-                          حفظ
-                        </button>
-                        <button className="a-btn" onClick={() => setInfoOpen(null)}>
-                          إلغاء
-                        </button>
-                      </div>
-                    </div>
+                      <button className="a-btn danger" onClick={() => remove(r.cat, r.total)}>
+                        حذف
+                      </button>
+                    )}
                   </td>
                 </tr>
-              )}
+                {infoOpen === r.cat && (
+                  <tr className="info-row">
+                    <td colSpan={99}>
+                      <div className="info-ed">
+                        <label>
+                          <span>النبذة</span>
+                          <textarea
+                            className="a-in"
+                            rows={2}
+                            value={infoDraft.brief}
+                            onChange={(e) => setInfoDraft({ ...infoDraft, brief: e.target.value })}
+                            placeholder="فارغة = لا علامة (i) على البطاقة"
+                          />
+                        </label>
+                        <label>
+                          <span>السؤال المثال — لا يُلعب</span>
+                          <input
+                            className="a-in"
+                            value={infoDraft.q}
+                            onChange={(e) => setInfoDraft({ ...infoDraft, q: e.target.value })}
+                          />
+                        </label>
+                        <label>
+                          <span>جوابه — فارغ في فئات الصور</span>
+                          <input
+                            className="a-in"
+                            value={infoDraft.a}
+                            onChange={(e) => setInfoDraft({ ...infoDraft, a: e.target.value })}
+                          />
+                        </label>
+                        <div className="info-ed-actions">
+                          <button className="a-btn go" onClick={() => saveInfo(r.cat)}>
+                            حفظ
+                          </button>
+                          <button className="a-btn" onClick={() => setInfoOpen(null)}>
+                            إلغاء
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </Fragment>
             ))}
           </tbody>
@@ -565,8 +561,8 @@ function GroupsBar({
       <div className="gb-head">
         <b>التصنيفات</b>
         <span className="a-note gb-note">
-          مظلّاتٌ تجمع الفئات في شاشة الإعداد — لا تُلعب ولا يُسحب منها، وترتيبُها هنا هو ترتيبُ
-          عناوينها هناك.
+          مظلّاتٌ تجمع الفئات في شاشة الإعداد — لا تُلعب ولا يُسحب منها، وترتيبُها هنا هو ترتيبُ عناوينها
+          هناك.
         </span>
       </div>
 
@@ -602,11 +598,7 @@ function GroupsBar({
               <button className="a-btn" onClick={() => move(i, -1)} disabled={i === 0}>
                 ↑
               </button>
-              <button
-                className="a-btn"
-                onClick={() => move(i, 1)}
-                disabled={i === groups.length - 1}
-              >
+              <button className="a-btn" onClick={() => move(i, 1)} disabled={i === groups.length - 1}>
                 ↓
               </button>
               <button className="a-btn" onClick={() => rename(g)}>

@@ -29,12 +29,7 @@ import {
 import type { ServerSession } from './lib/games'
 import { pushUsedIds, syncUsedIds, touchUsedIds } from './lib/usedQuestions'
 import { applyCachedBlocked, flushPendingReports, reportQuestion, syncBlocked } from './lib/questionFlags'
-import {
-  applyCachedCategories,
-  applyCachedOverlay,
-  syncCategories,
-  syncOverlay,
-} from './lib/questionOverlay'
+import { applyCachedCategories, applyCachedOverlay, syncCategories, syncOverlay } from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
 import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
 import { QuitGame } from './components/QuitGame'
@@ -550,11 +545,7 @@ export default function App() {
   }
 
   if (!splashDone || session === undefined || !booted) {
-    return isNativeApp ? (
-      <Splash onDone={leaveSplash} />
-    ) : (
-      <BootHold />
-    )
+    return isNativeApp ? <Splash onDone={leaveSplash} /> : <BootHold />
   }
 
   /* التعريف يُعرض لمن لا جلسة له. وحين يكون الدخول موقوفاً يمرّ منه بزرّ
@@ -623,7 +614,9 @@ export default function App() {
   return (
     <>
       {/* شاشةُ اللعب تحت شبكة أمان: خطأٌ في الرسم يُعرض بزرّين بدل جذرٍ فارغ. */}
-      <CrashScreen onNewGame={quit} charged={sessionId !== null}>{screen}</CrashScreen>
+      <CrashScreen onNewGame={quit} charged={sessionId !== null}>
+        {screen}
+      </CrashScreen>
       {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
       {state.phase !== 'endgame' && <QuitGame onQuit={quit} charged={sessionId !== null} />}
     </>

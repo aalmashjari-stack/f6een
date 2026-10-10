@@ -84,20 +84,14 @@ export function ImportDialog({
         </header>
 
         <p className="a-note" style={{ padding: 0 }}>
-          أعمدة الملفّ أربعة: <b>التصنيف · المستوى · السؤال · الإجابة</b>. والفئة يجب أن تكون
-          موجودة — تُضاف من لسان «الفئات» أوّلاً.
+          أعمدة الملفّ أربعة: <b>التصنيف · المستوى · السؤال · الإجابة</b>. والفئة يجب أن تكون موجودة — تُضاف
+          من لسان «الفئات» أوّلاً.
         </p>
 
         <div className="a-bar">
           <label className="a-btn go" style={{ cursor: 'pointer' }}>
             اختر ملفّاً (xlsx أو csv)
-            <input
-              type="file"
-              accept=".xlsx,.csv"
-              onChange={pick}
-              hidden
-              disabled={busy}
-            />
+            <input type="file" accept=".xlsx,.csv" onChange={pick} hidden disabled={busy} />
           </label>
           {/* نموذجٌ بأعمدته الصحيحة أقصرُ من شرحها: يُفتح في إكسل ويُملأ.
               وعلامة ترتيب البايتات في أوّله تجعل إكسل يقرأ العربية صحيحة. */}
@@ -106,8 +100,8 @@ export function ImportDialog({
           </button>
           {plan && (
             <span className="muted">
-              <b className="num">{plan.added}</b> إضافة · <b className="num">{plan.updated}</b>{' '}
-              تعديل · <b className="num">{plan.rejected.length}</b> مردود
+              <b className="num">{plan.added}</b> إضافة · <b className="num">{plan.updated}</b> تعديل ·{' '}
+              <b className="num">{plan.rejected.length}</b> مردود
             </span>
           )}
         </div>
@@ -144,11 +138,7 @@ export function ImportDialog({
         )}
 
         <div className="a-bar" style={{ marginBlockEnd: 0 }}>
-          <button
-            className="a-btn go"
-            disabled={busy || !plan || plan.rows.length === 0}
-            onClick={upload}
-          >
+          <button className="a-btn go" disabled={busy || !plan || plan.rows.length === 0} onClick={upload}>
             {busy ? `… ${done}/${plan?.rows.length ?? 0}` : `ارفع ${plan?.rows.length ?? 0}`}
           </button>
           <button className="a-btn" disabled={busy} onClick={onClose}>
