@@ -56,3 +56,7 @@ supabase/.temp/
 
 # نسخ القاعدة الاحتياطيّة (npm run db:backup) — فيها رسائلُ اللاعبين وبريدهم.
 backups/
+
+# مادّة خام على جهاز علي — لا تُلزم المستودع (أُخرجت منه ١٠ أكتوبر ٢٠٢٦).
+/celebrities-images*.zip
+/Bou3aazooz_*.png
