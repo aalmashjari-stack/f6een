@@ -11,7 +11,24 @@ import tseslint from 'typescript-eslint'
   والأخطاء الشائعة في JS التي لا يراها المترجم.
 */
 export default tseslint.config(
-  { ignores: ['dist', 'android', 'ios', 'node_modules', 'design-system', '.design-sync', 'reports', 'tmp'] },
+  /* و«اسم 2.tsx» نسخُ iCloud المكرّرة: متجاهَلةٌ في git لكنّها على القرص، ولا تُفحص. */
+  {
+    ignores: [
+      'dist',
+      'android',
+      'ios',
+      'node_modules',
+      'design-system',
+      '.design-sync',
+      'reports',
+      'tmp',
+      'output',
+      'outputs',
+      'backups',
+      '**/* [0-9].*',
+      '**/* [0-9][0-9].*',
+    ],
+  },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
