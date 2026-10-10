@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { signInWithEmail, signInWithGoogle, signOut, useSession } from '../lib/auth'
 import { type AdminStats, fetchStats, isAdmin, isSuper } from '../lib/admin'
@@ -222,10 +222,14 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       )}
 
       <nav className="a-tabs">
-        {tabs.map(([id, label]) => (
-          <button key={id} className={'a-tab' + (tab === id ? ' on' : '')} onClick={() => setTab(id)}>
-            {label}
-          </button>
+        {/* فاصلٌ رفيع بين ألسنة المحتوى وألسنة الإدارة: صفٌّ واحد يُقرأ مجموعتين. */}
+        {tabs.map(([id, label, sup], i) => (
+          <Fragment key={id}>
+            {sup && !tabs[i - 1]?.[2] && <span className="a-tab-sep" aria-hidden="true" />}
+            <button className={'a-tab' + (tab === id ? ' on' : '')} onClick={() => setTab(id)}>
+              {label}
+            </button>
+          </Fragment>
         ))}
       </nav>
 

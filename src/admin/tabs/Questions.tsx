@@ -248,7 +248,7 @@ export function Questions() {
         {live === true ? (
           <>
             <span className="tag open">مرجع الأسئلة: القاعدة</span>
-            <button className="a-btn" onClick={revert}>
+            <button className="a-btn small" onClick={revert}>
               أعِد المرجع إلى ملفّ التطبيق
             </button>
           </>
