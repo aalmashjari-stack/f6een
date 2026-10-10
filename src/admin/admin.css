@@ -433,3 +433,44 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .audit-edit textarea { font: inherit; font-size: 14px; line-height: 1.7; width: 100%; resize: vertical; }
 .audit-ans { flex: 1 1 200px; }
 .audit-more { display: block; margin: 14px auto; }
+
+/* ─── تخفيف الزحمة (١٠ أكتوبر ٢٠٢٦، علي: «زحمة») ───
+   الكتل نفسها بحلقة الحبر — ما تغيّر عددُ الصفوف قبل أوّل سطرٍ من العمل:
+   البطاقات الثماني شريطٌ واحد بدل صفّين من المربّعات، والألسنة الاثنا عشر
+   صفٌّ واحد بدل ثلاثة، والرأس سطرٌ في الجوال، وأزرار الجداول أصغر. */
+.a-wrap > .a-tiles {
+  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  /* حشوةٌ تُبقي الظلّ الصلب ظاهراً — التمرير يقصّ ما يخرج من الصندوق */
+  padding: 2px 3px 6px; margin-inline: -3px;
+}
+.a-wrap > .a-tiles::-webkit-scrollbar { display: none; }
+.a-wrap > .a-tiles .a-tile {
+  flex: 1 0 auto; display: flex; align-items: baseline; gap: 6px;
+  padding: 6px 12px; border-radius: 12px; white-space: nowrap;
+}
+.a-wrap > .a-tiles .a-tile b { display: inline; font-size: 16px; }
+.a-wrap > .a-tiles .a-tile span { font-size: 12px; }
+
+.a-tabs {
+  flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+  gap: 5px; padding: 3px; margin: 12px -3px 12px;
+}
+.a-tabs::-webkit-scrollbar { display: none; }
+.a-tab { flex: none; padding: 6px 13px; font-size: 13px; box-shadow: 0 0 0 1.5px var(--n-ink); }
+.a-tab-sep { flex: none; width: 1.5px; margin: 5px 4px; background: rgba(34, 32, 28, .22); }
+
+.a-btn.small, .a-tbl .a-btn { padding: 4px 11px; font-size: 12px; }
+
+@media (max-width: 640px) {
+  .a-wrap > .a-top { flex-direction: row; align-items: center; flex-wrap: nowrap; }
+  .a-wrap > .a-top .a-who { display: flex; gap: 6px; }
+  /* البريد معروفٌ لصاحبه؛ الشارة تكفي لتقول أيّ دور. */
+  .a-wrap > .a-top .a-mail { display: none; }
+  .a-wrap > .a-top .a-btn { padding: 5px 10px; font-size: 12px; }
+  .a-title { font-size: 20px; }
+  /* البحث سطرٌ كامل، والقوائم تتقاسم ما تحته بدل أن تأخذ كلٌّ سطراً */
+  .a-bar > input.a-in { flex: 1 1 100%; }
+  .a-bar > select.a-in { flex: 1 1 calc(33% - 8px); min-width: 0; }
+  .a-bar > .a-btn { padding: 6px 11px; font-size: 12px; }
+}
+
