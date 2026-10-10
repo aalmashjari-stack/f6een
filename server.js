@@ -122,7 +122,8 @@ async function inlineScriptHashes() {
   return [...hashes].join(' ')
 }
 
-const SCRIPT_SRC = `script-src 'self' https://static.cloudflareinsights.com ${await inlineScriptHashes()}`.trim()
+const SCRIPT_SRC =
+  `script-src 'self' https://static.cloudflareinsights.com ${await inlineScriptHashes()}`.trim()
 
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',

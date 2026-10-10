@@ -24,20 +24,34 @@ import { resolve } from 'node:path'
 
 function parseCsv(text) {
   const rows = []
-  let row = [], cell = '', quoted = false
-  const src = text.replace(/^﻿/, '')
+  let row = [],
+    cell = '',
+    quoted = false
+  const src = text.replace(/^\uFEFF/, '')
   for (let i = 0; i < src.length; i++) {
     const c = src[i]
     if (quoted) {
       if (c === '"') {
-        if (src[i + 1] === '"') { cell += '"'; i++ } else quoted = false
+        if (src[i + 1] === '"') {
+          cell += '"'
+          i++
+        } else quoted = false
       } else cell += c
     } else if (c === '"') quoted = true
-    else if (c === ',') { row.push(cell); cell = '' }
-    else if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = '' }
-    else if (c !== '\r') cell += c
+    else if (c === ',') {
+      row.push(cell)
+      cell = ''
+    } else if (c === '\n') {
+      row.push(cell)
+      rows.push(row)
+      row = []
+      cell = ''
+    } else if (c !== '\r') cell += c
   }
-  if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
+  if (cell !== '' || row.length) {
+    row.push(cell)
+    rows.push(row)
+  }
   return rows.filter((r) => r.some((x) => x.trim() !== ''))
 }
 
@@ -50,8 +64,12 @@ if (!exportPath || !mapPath || !category) {
 const table = parseCsv(readFileSync(resolve(exportPath), 'utf8'))
 const head = table[0].map((h) => h.trim())
 const col = (n) => head.indexOf(n)
-const iId = col('المعرّف'), iCat = col('التصنيف'), iLvl = col('المستوى')
-const iTopic = col('الموضوع'), iQ = col('السؤال'), iA = col('الإجابة')
+const iId = col('المعرّف'),
+  iCat = col('التصنيف'),
+  iLvl = col('المستوى')
+const iTopic = col('الموضوع'),
+  iQ = col('السؤال'),
+  iA = col('الإجابة')
 if ([iId, iCat, iLvl, iQ, iA].some((i) => i < 0)) {
   console.error('تصدير اللوحة ينقصه عمود: المعرّف · التصنيف · المستوى · السؤال · الإجابة')
   process.exit(1)
@@ -66,27 +84,41 @@ for (const [key, next] of Object.entries(map)) {
   byOldAnswer.set(old, { key, next })
 }
 
-const out = [], skipped = [], seen = new Set()
+const out = [],
+  skipped = [],
+  seen = new Set()
 let inCategory = 0
 for (let i = 1; i < table.length; i++) {
   const r = table[i]
-  if ((r[iCat] ?? '').trim() !== category) continue   // الفئة شرط، لا يخرج منه البحث
+  if ((r[iCat] ?? '').trim() !== category) continue // الفئة شرط، لا يخرج منه البحث
   inCategory++
   const id = (r[iId] ?? '').trim()
   const old = (r[iA] ?? '').trim()
   const hit = byOldAnswer.get(old)
   if (!id || !hit) continue
-  if (old === hit.next) continue          // معدَّلٌ سابقاً
-  if (seen.has(hit.key)) { skipped.push(`${hit.key}: أكثر من صفّ بالإجابة نفسها`); continue }
+  if (old === hit.next) continue // معدَّلٌ سابقاً
+  if (seen.has(hit.key)) {
+    skipped.push(`${hit.key}: أكثر من صفّ بالإجابة نفسها`)
+    continue
+  }
   seen.add(hit.key)
-  out.push([id, (r[iCat] ?? '').trim(), (r[iLvl] ?? '').trim(),
-            iTopic >= 0 ? (r[iTopic] ?? '').trim() : '', (r[iQ] ?? '').trim(), hit.next])
+  out.push([
+    id,
+    (r[iCat] ?? '').trim(),
+    (r[iLvl] ?? '').trim(),
+    iTopic >= 0 ? (r[iTopic] ?? '').trim() : '',
+    (r[iQ] ?? '').trim(),
+    hit.next,
+  ])
 }
 
 const missed = [...byOldAnswer.values()].filter((v) => !seen.has(v.key)).map((v) => v.key)
 const esc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"'
-const csv = '﻿' + [['المعرّف','التصنيف','المستوى','الموضوع','السؤال','الإجابة'], ...out]
-  .map((r) => r.map(esc).join(',')).join('\r\n')
+const csv =
+  '﻿' +
+  [['المعرّف', 'التصنيف', 'المستوى', 'الموضوع', 'السؤال', 'الإجابة'], ...out]
+    .map((r) => r.map(esc).join(','))
+    .join('\r\n')
 writeFileSync(resolve(outPath), csv)
 
 console.log(`صفوف الفئة «${category}» في التصدير: ${inCategory}`)

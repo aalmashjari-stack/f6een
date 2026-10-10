@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { BOARD_LEVELS } from './levels'
-import { CHARADE_KINDS, CHARADE_PAGE_PATH, charadePageOrigin, charadeUrl, decodeCharade, encodeCharade } from './charades'
+import {
+  CHARADE_KINDS,
+  CHARADE_PAGE_PATH,
+  charadePageOrigin,
+  charadeUrl,
+  decodeCharade,
+  encodeCharade,
+} from './charades'
 
 /**
  * ترميز كلمة «ولا كلمة» في الرابط — يُفكّ كما رُمّز، وقصيرٌ بما يكفي ليُمسح
@@ -45,12 +52,26 @@ describe('ترميز ولا كلمة', () => {
 
   it('النوع والملصق يصلان مع الكلمة — والرابطُ المرفوع لا يُحمل، والمفتاحُ من غير البادئة يُردّ كما هو', () => {
     for (const kind of CHARADE_KINDS) {
-      const got = decodeCharade('#' + encodeCharade('صعب', 'على هامان يا فرعون', { kind, image: 'pic-kilma-ala-haman' }))
+      const got = decodeCharade(
+        '#' + encodeCharade('صعب', 'على هامان يا فرعون', { kind, image: 'pic-kilma-ala-haman' }),
+      )
       expect(got).toEqual({ level: 'صعب', text: 'على هامان يا فرعون', kind, image: 'pic-kilma-ala-haman' })
     }
-    expect(decodeCharade('#' + encodeCharade('سهل', 'طاح الفاس بالراس', { kind: 'مثل' }))).toEqual({ level: 'سهل', text: 'طاح الفاس بالراس', kind: 'مثل' })
-    expect(decodeCharade('#' + encodeCharade('سهل', 'باب الحارة', { kind: 'موضوع آخر', image: 'https://x.test/p.jpg' }))).toEqual({ level: 'سهل', text: 'باب الحارة' })
-    expect(decodeCharade('#' + encodeCharade('سهل', 'باب الحارة', { image: 'zaman-bab' }))).toEqual({ level: 'سهل', text: 'باب الحارة', image: 'zaman-bab' })
+    expect(decodeCharade('#' + encodeCharade('سهل', 'طاح الفاس بالراس', { kind: 'مثل' }))).toEqual({
+      level: 'سهل',
+      text: 'طاح الفاس بالراس',
+      kind: 'مثل',
+    })
+    expect(
+      decodeCharade(
+        '#' + encodeCharade('سهل', 'باب الحارة', { kind: 'موضوع آخر', image: 'https://x.test/p.jpg' }),
+      ),
+    ).toEqual({ level: 'سهل', text: 'باب الحارة' })
+    expect(decodeCharade('#' + encodeCharade('سهل', 'باب الحارة', { image: 'zaman-bab' }))).toEqual({
+      level: 'سهل',
+      text: 'باب الحارة',
+      image: 'zaman-bab',
+    })
   })
 
   /* «”» (U+201D) تُكتب ‎1e 20 1d‎ وآخرُها بايتُ الفاصل — فكان يُقرأ فاصلاً

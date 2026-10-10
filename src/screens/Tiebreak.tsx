@@ -30,7 +30,10 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
   return (
     <div className="screen">
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
-      <RoundBar title="سؤال حاسم" chips={[state.currentCategory && displayName(state.currentCategory), q.level]} />
+      <RoundBar
+        title="سؤال حاسم"
+        chips={[state.currentCategory && displayName(state.currentCategory), q.level]}
+      />
 
       <div className="q-box grow center-all">
         <div className="s3-inner">
@@ -55,7 +58,11 @@ export function Tiebreak({ state, dispatch }: { state: GameState; dispatch: (a: 
         <div className="stack gap-s">
           <div className="tb-picks">
             {[0, 1].map((ti) => (
-              <button key={ti} className="tb" onClick={() => dispatch({ t: 'TIEBREAK_PICK', team: ti as TeamId })}>
+              <button
+                key={ti}
+                className="tb"
+                onClick={() => dispatch({ t: 'TIEBREAK_PICK', team: ti as TeamId })}
+              >
                 أصاب {state.teams[ti].name}
               </button>
             ))}

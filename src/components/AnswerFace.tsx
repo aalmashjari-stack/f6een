@@ -28,7 +28,14 @@ export function AnswerFace({ q, children }: { q: Question; children: ReactNode }
   if (!src) return <>{children}</>
   return (
     <div className="rv-answer-row">
-      <img className="rv-face" src={src} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+      <img
+        className="rv-face"
+        src={src}
+        alt=""
+        onError={(e) => {
+          e.currentTarget.style.display = 'none'
+        }}
+      />
       {children}
     </div>
   )

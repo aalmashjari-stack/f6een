@@ -28,7 +28,7 @@ import { LETTERS_CATEGORY } from '../game/letters'
 export const CATEGORY_ART: Record<string, string> = {
   'جغرافيا ومعالم': geography,
   'تاريخ وحضارات': history,
-  'إسلامي': religion,
+  إسلامي: religion,
   'علوم واختراعات': science,
   'طب وصحة': medicine,
   'أحياء وفلك': biologyAstronomy,
@@ -36,10 +36,10 @@ export const CATEGORY_ART: Record<string, string> = {
   'تقنية ومنوعات': techMisc,
   'رياضة عامة': sportsNumbers,
   // الفئات الثلاث المضافة في ٧ أغسطس ٢٠٢٦ — صورها من علي بنسبة ٣:٢ أصلاً فلا تُقصّ
-  'الكويت': kuwait,
+  الكويت: kuwait,
   'سينما ودراما': cinemaDrama,
   'من أنا؟': whoAmI,
-  'مشاهير': celebrities,
+  مشاهير: celebrities,
   // أُضيفت في ٢٣ أغسطس ٢٠٢٦ مع فئة الأمثال والألغاز — ٣:٢ أصلاً فلا تُقصّ
   'أمثال وألغاز': proverbsRiddles,
   // «حروف» (١٣ سبتمبر ٢٠٢٦) — بلاطاتٌ بألوان الهويّة، مرسومة لا مصوَّرة؛ ٣:٢

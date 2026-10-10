@@ -75,7 +75,10 @@ function cleanName(rawName) {
 
 function searchTerms(rawName) {
   const cleaned = cleanName(rawName)
-  const withoutParentheses = cleaned.replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim()
+  const withoutParentheses = cleaned
+    .replace(/\s*\([^)]*\)\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
   const terms = [cleaned, withoutParentheses]
   for (const match of rawName.matchAll(/\(([^)]+)\)/g)) {
     if (!/إرث|السابق|مستمر/.test(match[1])) terms.push(match[1].trim())
@@ -134,59 +137,69 @@ function imageInfoFromPage(page) {
 }
 
 async function searchWikipedia(term, host = 'ar.wikipedia.org') {
-  const payload = await fetchJson(apiUrl(host, {
-    action: 'query',
-    generator: 'search',
-    gsrsearch: term,
-    gsrnamespace: '0',
-    gsrlimit: '5',
-    prop: 'pageimages|pageprops',
-    piprop: 'thumbnail|name',
-    pithumbsize: '960',
-    format: 'json',
-    origin: '*',
-  }))
+  const payload = await fetchJson(
+    apiUrl(host, {
+      action: 'query',
+      generator: 'search',
+      gsrsearch: term,
+      gsrnamespace: '0',
+      gsrlimit: '5',
+      prop: 'pageimages|pageprops',
+      piprop: 'thumbnail|name',
+      pithumbsize: '960',
+      format: 'json',
+      origin: '*',
+    }),
+  )
   const pages = Object.values(payload.query?.pages || {}).sort((a, b) => a.index - b.index)
   return pages.find((page) => page.pageimage && page.pageprops?.wikibase_item) || null
 }
 
 async function exactWikipediaPage(term, host) {
-  const payload = await fetchJson(apiUrl(host, {
-    action: 'query',
-    titles: term,
-    redirects: '1',
-    prop: 'pageimages|pageprops',
-    piprop: 'thumbnail|name',
-    pithumbsize: '960',
-    format: 'json',
-    origin: '*',
-  }))
-  return Object.values(payload.query?.pages || {}).find(
-    (page) => page.pageimage && page.pageprops?.wikibase_item && page.missing === undefined,
-  ) || null
+  const payload = await fetchJson(
+    apiUrl(host, {
+      action: 'query',
+      titles: term,
+      redirects: '1',
+      prop: 'pageimages|pageprops',
+      piprop: 'thumbnail|name',
+      pithumbsize: '960',
+      format: 'json',
+      origin: '*',
+    }),
+  )
+  return (
+    Object.values(payload.query?.pages || {}).find(
+      (page) => page.pageimage && page.pageprops?.wikibase_item && page.missing === undefined,
+    ) || null
+  )
 }
 
 async function searchWikidata(term) {
-  const search = await fetchJson(apiUrl('www.wikidata.org', {
-    action: 'wbsearchentities',
-    search: term,
-    language: 'ar',
-    uselang: 'ar',
-    type: 'item',
-    limit: '6',
-    format: 'json',
-    origin: '*',
-  }))
+  const search = await fetchJson(
+    apiUrl('www.wikidata.org', {
+      action: 'wbsearchentities',
+      search: term,
+      language: 'ar',
+      uselang: 'ar',
+      type: 'item',
+      limit: '6',
+      format: 'json',
+      origin: '*',
+    }),
+  )
   const ids = (search.search || []).map((item) => item.id)
   if (!ids.length) return null
-  const entities = await fetchJson(apiUrl('www.wikidata.org', {
-    action: 'wbgetentities',
-    ids: ids.join('|'),
-    props: 'claims|labels|descriptions',
-    languages: 'ar|en',
-    format: 'json',
-    origin: '*',
-  }))
+  const entities = await fetchJson(
+    apiUrl('www.wikidata.org', {
+      action: 'wbgetentities',
+      ids: ids.join('|'),
+      props: 'claims|labels|descriptions',
+      languages: 'ar|en',
+      format: 'json',
+      origin: '*',
+    }),
+  )
   for (const id of ids) {
     const entity = entities.entities?.[id]
     const isHuman = entity?.claims?.P31?.some((claim) => claim.mainsnak?.datavalue?.value?.id === 'Q5')
@@ -203,14 +216,16 @@ async function searchWikidata(term) {
 }
 
 async function exactWikidataImage(id) {
-  const payload = await fetchJson(apiUrl('www.wikidata.org', {
-    action: 'wbgetentities',
-    ids: id,
-    props: 'claims|labels',
-    languages: 'ar|en',
-    format: 'json',
-    origin: '*',
-  }))
+  const payload = await fetchJson(
+    apiUrl('www.wikidata.org', {
+      action: 'wbgetentities',
+      ids: id,
+      props: 'claims|labels',
+      languages: 'ar|en',
+      format: 'json',
+      origin: '*',
+    }),
+  )
   const entity = payload.entities?.[id]
   const filename = entity?.claims?.P18?.[0]?.mainsnak?.datavalue?.value
   if (!filename) return null
@@ -226,31 +241,38 @@ async function exactWikidataImage(id) {
 
 async function commonsImageInfo(fileTitle) {
   const title = fileTitle.startsWith('File:') ? fileTitle : `File:${fileTitle}`
-  const payload = await fetchJson(apiUrl('commons.wikimedia.org', {
-    action: 'query',
-    titles: title,
-    prop: 'imageinfo',
-    iiprop: 'url|extmetadata|mime|size',
-    iiurlwidth: '640',
-    format: 'json',
-    origin: '*',
-  }))
+  const payload = await fetchJson(
+    apiUrl('commons.wikimedia.org', {
+      action: 'query',
+      titles: title,
+      prop: 'imageinfo',
+      iiprop: 'url|extmetadata|mime|size',
+      iiurlwidth: '640',
+      format: 'json',
+      origin: '*',
+    }),
+  )
   return imageInfoFromPage(Object.values(payload.query?.pages || {})[0])
 }
 
 async function bulkPrefetch(people) {
   const foundPages = new Map()
   for (const group of chunks(people, 40)) {
-    const terms = group.map((person) => ({ person, term: searchTerms(person.rawName)[1] || searchTerms(person.rawName)[0] }))
-    const payload = await fetchJson(apiUrl('ar.wikipedia.org', {
-      action: 'query',
-      titles: terms.map(({ term }) => term).join('|'),
-      redirects: '1',
-      prop: 'pageimages|pageprops',
-      piprop: 'name',
-      format: 'json',
-      origin: '*',
+    const terms = group.map((person) => ({
+      person,
+      term: searchTerms(person.rawName)[1] || searchTerms(person.rawName)[0],
     }))
+    const payload = await fetchJson(
+      apiUrl('ar.wikipedia.org', {
+        action: 'query',
+        titles: terms.map(({ term }) => term).join('|'),
+        redirects: '1',
+        prop: 'pageimages|pageprops',
+        piprop: 'name',
+        format: 'json',
+        origin: '*',
+      }),
+    )
     const aliases = new Map()
     for (const row of payload.query?.normalized || []) aliases.set(row.from, row.to)
     for (const row of payload.query?.redirects || []) aliases.set(row.from, row.to)
@@ -270,15 +292,17 @@ async function bulkPrefetch(people) {
   const files = [...new Set([...foundPages.values()].map((page) => page.pageimage))]
   const infoByFile = new Map()
   for (const group of chunks(files, 40)) {
-    const payload = await fetchJson(apiUrl('commons.wikimedia.org', {
-      action: 'query',
-      titles: group.map((title) => title.startsWith('File:') ? title : `File:${title}`).join('|'),
-      prop: 'imageinfo',
-      iiprop: 'url|extmetadata|mime|size',
-      iiurlwidth: '640',
-      format: 'json',
-      origin: '*',
-    }))
+    const payload = await fetchJson(
+      apiUrl('commons.wikimedia.org', {
+        action: 'query',
+        titles: group.map((title) => (title.startsWith('File:') ? title : `File:${title}`)).join('|'),
+        prop: 'imageinfo',
+        iiprop: 'url|extmetadata|mime|size',
+        iiurlwidth: '640',
+        format: 'json',
+        origin: '*',
+      }),
+    )
     for (const page of Object.values(payload.query?.pages || {})) {
       const info = imageInfoFromPage(page)
       if (info) infoByFile.set(page.title.replace(/^File:/, '').replaceAll('_', ' '), info)
@@ -308,11 +332,18 @@ async function findImage(person, prefetched) {
   if (wikidataId) return exactWikidataImage(wikidataId)
   const englishAlias = englishAliases.get(person.index)
   if (englishAlias) {
-    const page = await exactWikipediaPage(englishAlias, 'en.wikipedia.org')
-      || await searchWikipedia(englishAlias, 'en.wikipedia.org')
+    const page =
+      (await exactWikipediaPage(englishAlias, 'en.wikipedia.org')) ||
+      (await searchWikipedia(englishAlias, 'en.wikipedia.org'))
     if (page) {
       const image = await commonsImageInfo(page.pageimage)
-      if (image) return { ...image, matchedTitle: page.title, wikidataId: page.pageprops.wikibase_item, searchTerm: englishAlias }
+      if (image)
+        return {
+          ...image,
+          matchedTitle: page.title,
+          wikidataId: page.pageprops.wikibase_item,
+          searchTerm: englishAlias,
+        }
     }
   }
   if (prefetched.has(person.index)) return prefetched.get(person.index)
@@ -320,14 +351,26 @@ async function findImage(person, prefetched) {
     const page = await searchWikipedia(term)
     if (page) {
       const image = await commonsImageInfo(page.pageimage)
-      if (image) return { ...image, matchedTitle: page.title, wikidataId: page.pageprops.wikibase_item, searchTerm: term }
+      if (image)
+        return {
+          ...image,
+          matchedTitle: page.title,
+          wikidataId: page.pageprops.wikibase_item,
+          searchTerm: term,
+        }
     }
   }
   for (const term of searchTerms(person.rawName)) {
     const entity = await searchWikidata(term)
     if (entity) {
       const image = await commonsImageInfo(entity.pageimage)
-      if (image) return { ...image, matchedTitle: entity.title, wikidataId: entity.pageprops.wikibase_item, searchTerm: term }
+      if (image)
+        return {
+          ...image,
+          matchedTitle: entity.title,
+          wikidataId: entity.pageprops.wikibase_item,
+          searchTerm: term,
+        }
     }
   }
   return null
@@ -341,19 +384,44 @@ async function download(url, path, attempts = 6) {
   proxyUrl.searchParams.set('w', '640')
   proxyUrl.searchParams.set('output', 'jpg')
   proxyUrl.searchParams.set('q', '90')
-  await execFileAsync('/usr/bin/curl', [
-    '-L', '--fail', '--silent', '--show-error',
-    '--retry', String(attempts), '--retry-all-errors', '--retry-delay', '3',
-    '--user-agent', userAgent,
-    '--output', path,
-    proxyUrl.toString(),
-  ], { maxBuffer: 20 * 1024 * 1024 })
+  await execFileAsync(
+    '/usr/bin/curl',
+    [
+      '-L',
+      '--fail',
+      '--silent',
+      '--show-error',
+      '--retry',
+      String(attempts),
+      '--retry-all-errors',
+      '--retry-delay',
+      '3',
+      '--user-agent',
+      userAgent,
+      '--output',
+      path,
+      proxyUrl.toString(),
+    ],
+    { maxBuffer: 20 * 1024 * 1024 },
+  )
 }
 
 async function makeSquareJpeg(inputPath, outputPath, scratchDir) {
   const scaled = join(scratchDir, `${basename(outputPath)}.scaled.jpg`)
   const staged = join(scratchDir, `${basename(outputPath)}.final.jpg`)
-  await execFileAsync('/usr/bin/sips', ['-s', 'format', 'jpeg', '-s', 'formatOptions', '88', '-Z', '480', inputPath, '--out', scaled])
+  await execFileAsync('/usr/bin/sips', [
+    '-s',
+    'format',
+    'jpeg',
+    '-s',
+    'formatOptions',
+    '88',
+    '-Z',
+    '480',
+    inputPath,
+    '--out',
+    scaled,
+  ])
   await execFileAsync('/usr/bin/sips', ['-p', '480', '480', '--padColor', '0F2C42', scaled, '--out', staged])
   await rename(staged, outputPath)
   await rm(scaled, { force: true })
@@ -376,13 +444,25 @@ function parsePeople(text) {
 }
 
 async function rtfToText(path) {
-  const { stdout } = await execFileAsync('/usr/bin/textutil', ['-convert', 'txt', '-stdout', path], { maxBuffer: 20 * 1024 * 1024 })
+  const { stdout } = await execFileAsync('/usr/bin/textutil', ['-convert', 'txt', '-stdout', path], {
+    maxBuffer: 20 * 1024 * 1024,
+  })
   return stdout
 }
 
 async function saveManifest(results) {
   await writeFile(join(outputDir, 'manifest.json'), `${JSON.stringify(results, null, 2)}\n`)
-  const header = ['index', 'name', 'status', 'filename', 'matchedTitle', 'wikidataId', 'license', 'licenseUrl', 'descriptionUrl']
+  const header = [
+    'index',
+    'name',
+    'status',
+    'filename',
+    'matchedTitle',
+    'wikidataId',
+    'license',
+    'licenseUrl',
+    'descriptionUrl',
+  ]
   const quote = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`
   const rows = results.map((row) => header.map((key) => quote(row[key])).join(','))
   await writeFile(join(outputDir, 'manifest.csv'), `\uFEFF${header.join(',')}\n${rows.join('\n')}\n`)
@@ -397,7 +477,9 @@ const selected = people.filter((person) => person.index >= start).slice(0, limit
 let existing = []
 try {
   existing = JSON.parse(await readFile(join(outputDir, 'manifest.json'), 'utf8'))
-} catch {}
+} catch {
+  /* لا بيان سابق: أوّل تشغيل يبدأ من قائمةٍ فارغة. */
+}
 const byIndex = new Map(existing.map((row) => [row.index, row]))
 const pending = selected.filter((person) => byIndex.get(person.index)?.status !== 'ok')
 console.log(`مطابقة مجمّعة: ${pending.length} اسماً غير مكتمل`)

@@ -23,22 +23,109 @@ const extra = extraRaw as { categories: string[]; questions: Question[] }
  * أدوات توليد بنك المشاهير إلى اللعب في تحديث لاحق.
  */
 export const EXCLUDED_POLITICAL_CELEBRITY_IDS = new Set([
-  'X001', 'X002', 'X003', 'X004', 'X005', 'X006', 'X007', 'X008', 'X009', 'X010',
-  'X011', 'X012', 'X013', 'X014', 'X015', 'X016', 'X017', 'X018', 'X019', 'X020',
-  'X021', 'X022', 'X023', 'X024', 'X025', 'X026', 'X027', 'X028', 'X029', 'X030',
-  'X031', 'X032', 'X033', 'X034', 'X035', 'X036', 'X037', 'X038', 'X039', 'X040',
-  'X041', 'X042', 'X043', 'X047', 'X048', 'X049', 'X050',
+  'X001',
+  'X002',
+  'X003',
+  'X004',
+  'X005',
+  'X006',
+  'X007',
+  'X008',
+  'X009',
+  'X010',
+  'X011',
+  'X012',
+  'X013',
+  'X014',
+  'X015',
+  'X016',
+  'X017',
+  'X018',
+  'X019',
+  'X020',
+  'X021',
+  'X022',
+  'X023',
+  'X024',
+  'X025',
+  'X026',
+  'X027',
+  'X028',
+  'X029',
+  'X030',
+  'X031',
+  'X032',
+  'X033',
+  'X034',
+  'X035',
+  'X036',
+  'X037',
+  'X038',
+  'X039',
+  'X040',
+  'X041',
+  'X042',
+  'X043',
+  'X047',
+  'X048',
+  'X049',
+  'X050',
   // سياسيون وردوا داخل أقسام الأعمال والاقتصاد والعلوم في المصدر.
-  'X081', 'X098', 'X100', 'X102', 'X108', 'X126',
+  'X081',
+  'X098',
+  'X100',
+  'X102',
+  'X108',
+  'X126',
 ])
 
 /** أسماء شديدة الغموض على جمهور اللعبة العربي والخليجي، فلا تصلح لسؤال صورة ممتع. */
 export const EXCLUDED_OBSCURE_CELEBRITY_IDS = new Set([
-  'X060', 'X064', 'X065', 'X066', 'X067', 'X068', 'X069', 'X070', 'X072',
-  'X073', 'X074', 'X075', 'X079', 'X080', 'X083', 'X086', 'X087', 'X088',
-  'X091', 'X092', 'X093', 'X099', 'X101', 'X103', 'X105', 'X106', 'X107',
-  'X109', 'X110', 'X111', 'X112', 'X113', 'X117', 'X118', 'X119', 'X121',
-  'X122', 'X127', 'X128', 'X130', 'X131', 'X132', 'X135', 'X136', 'X138',
+  'X060',
+  'X064',
+  'X065',
+  'X066',
+  'X067',
+  'X068',
+  'X069',
+  'X070',
+  'X072',
+  'X073',
+  'X074',
+  'X075',
+  'X079',
+  'X080',
+  'X083',
+  'X086',
+  'X087',
+  'X088',
+  'X091',
+  'X092',
+  'X093',
+  'X099',
+  'X101',
+  'X103',
+  'X105',
+  'X106',
+  'X107',
+  'X109',
+  'X110',
+  'X111',
+  'X112',
+  'X113',
+  'X117',
+  'X118',
+  'X119',
+  'X121',
+  'X122',
+  'X127',
+  'X128',
+  'X130',
+  'X131',
+  'X132',
+  'X135',
+  'X136',
+  'X138',
   'X146',
 ])
 
@@ -51,9 +138,7 @@ export const CATEGORIES: string[] = [...bank.categories, ...extra.categories]
 export const ALL_QUESTIONS: Question[] = [
   ...bank.questions,
   ...extra.questions.filter(
-    (q) =>
-      !EXCLUDED_POLITICAL_CELEBRITY_IDS.has(q.id) &&
-      !EXCLUDED_OBSCURE_CELEBRITY_IDS.has(q.id),
+    (q) => !EXCLUDED_POLITICAL_CELEBRITY_IDS.has(q.id) && !EXCLUDED_OBSCURE_CELEBRITY_IDS.has(q.id),
   ),
 ]
 
@@ -297,9 +382,7 @@ const SHIPPED_IDS = new Set(ALL_QUESTIONS.map((q) => q.id))
  * المستبعَد هو **الجديد** لا **المصحَّح**.
  */
 export function poolShippedByLevels(levels: Level[]): Question[] {
-  return allowed(
-    levels.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => SHIPPED_IDS.has(q.id))),
-  )
+  return allowed(levels.flatMap((l) => (byLevel.get(l) ?? []).filter((q) => SHIPPED_IDS.has(q.id))))
 }
 
 /** مستويا الديربي — سهل ومتوسط، لا صعب ولا تعجيزي (SPEC ٥). */
@@ -318,8 +401,7 @@ export function poolDerby(fallbackLevels: Level[] = ['متوسط']): Question[] 
      سبتمبر ٢٠٢٦: «الفئات اللي أستبعدها ما راح تكون من فئات الديربي والحق
      ما تلحق» — يستبعد فئةً حتى تكتمل). الملاذ الأخير في `drawDerby` يبقى
      على البنك كلّه: سؤالٌ من فئةٍ مستبعَدة أهون من شاشةٍ بيضاء. */
-  if (derby_.size === 0)
-    return poolShippedByLevels(fallbackLevels).filter((q) => !hidden_.has(q.category))
+  if (derby_.size === 0) return poolShippedByLevels(fallbackLevels).filter((q) => !hidden_.has(q.category))
   return allowed(
     DERBY_LEVELS.flatMap((l) =>
       (byLevel.get(l) ?? []).filter((q) => derby_.has(q.category) && !hidden_.has(q.category)),

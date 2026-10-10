@@ -25,14 +25,23 @@ const PACKS = [
   { games: 10, price: '13.500', per: '1.350' },
 ]
 
-
-function Veil({ onClose, label, children }: { onClose: () => void; label: string; children: React.ReactNode }) {
+function Veil({
+  onClose,
+  label,
+  children,
+}: {
+  onClose: () => void
+  label: string
+  children: React.ReactNode
+}) {
   return (
     <div className="sp-veil" onClick={onClose}>
       <div className="sp-panel" role="dialog" aria-label={label} onClick={(e) => e.stopPropagation()}>
         <header className="sp-head">
           <h2 className="sp-title">{label}</h2>
-          <button className="sp-x" onClick={onClose} aria-label="إغلاق">✕</button>
+          <button className="sp-x" onClick={onClose} aria-label="إغلاق">
+            ✕
+          </button>
         </header>
         {children}
       </div>
@@ -213,14 +222,15 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
   return (
     <Veil onClose={onClose} label="شرح اللعبة">
       <p className="sp-note">
-        فريقان، شاشةٌ واحدة، وشخصٌ يشغّلها كحكم. <b>ثلاث مراحل</b> بالترتيب،
-        والنقاط تتراكم إلى الختام.
+        فريقان، شاشةٌ واحدة، وشخصٌ يشغّلها كحكم. <b>ثلاث مراحل</b> بالترتيب، والنقاط تتراكم إلى الختام.
       </p>
 
       <div className="sp-stages">
         {STAGES.map((st, i) => (
           <article key={st.name} className="sp-stage">
-            <span className="sp-sn" aria-hidden="true">{i + 1}</span>
+            <span className="sp-sn" aria-hidden="true">
+              {i + 1}
+            </span>
             <div className="sp-sbody">
               <h3 className="sp-sname">{st.name}</h3>
               <p className="sp-sdesc">{st.desc}</p>
@@ -276,8 +286,12 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
       <div className="sp-packs">
         {PACKS.map((p) => (
           <div key={p.games} className={'sp-pack' + (p.games === 5 ? ' hot' : '')}>
-            <span className="sp-count">{p.games === 1 ? 'لعبة واحدة' : p.games === 2 ? 'لعبتان' : `${p.games} ألعاب`}</span>
-            <span className="sp-price">{p.price} <small>د.ك</small></span>
+            <span className="sp-count">
+              {p.games === 1 ? 'لعبة واحدة' : p.games === 2 ? 'لعبتان' : `${p.games} ألعاب`}
+            </span>
+            <span className="sp-price">
+              {p.price} <small>د.ك</small>
+            </span>
             {p.per && <span className="sp-per">اللعبة بـ {p.per}</span>}
           </div>
         ))}
@@ -333,7 +347,9 @@ export function ContactPanel({ onClose, email }: { onClose: () => void; email?: 
       <Veil onClose={onClose} label="تواصل معنا">
         <p className="sp-done">وصلتنا رسالتك</p>
         <p className="sp-note">سنقرأها ونردّ عليك على بريدك.</p>
-        <button className="sp-send" onClick={onClose}>تمام</button>
+        <button className="sp-send" onClick={onClose}>
+          تمام
+        </button>
       </Veil>
     )
   }

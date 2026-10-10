@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { authErrorText, MIN_PASSWORD, requestPasswordReset, resendConfirmation, signInWithEmail, signUpWithEmail } from '../lib/auth'
+import {
+  authErrorText,
+  MIN_PASSWORD,
+  requestPasswordReset,
+  resendConfirmation,
+  signInWithEmail,
+  signUpWithEmail,
+} from '../lib/auth'
 import { AUTH_CSS } from './authStyles'
 
 /* رموز الاتصال — الخليج أوّلاً ثم الأكثر وروداً. الكويت الافتراضيّة. */
@@ -48,7 +55,13 @@ function ageFrom(birth: string): number | null {
  * والتحقّق كلّه قبل الإرسال برسائل عربيّة: تركُه للخادم يُرجع نصّاً
  * إنجليزيّاً في وجه لاعبٍ عربيّ.
  */
-export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void; initialMode?: 'signup' | 'signin' }) {
+export function SignUp({
+  onBack,
+  initialMode = 'signup',
+}: {
+  onBack: () => void
+  initialMode?: 'signup' | 'signin'
+}) {
   /* من أين جاء يحدّد الوضع الأوّل: «سجل دخولك عبر البريد» دخولٌ، و«أول مرة؟»
      تسجيل (علي ١ أكتوبر ٢٠٢٦). والتبديل بينهما باقٍ في الشاشة. */
   const [mode, setMode] = useState<'signup' | 'signin'>(initialMode)
@@ -130,7 +143,13 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
     try {
       if (signup) {
         const { needsEmailConfirmation } = await signUpWithEmail({
-          firstName, lastName, email, birthDate, dialCode, phone, password,
+          firstName,
+          lastName,
+          email,
+          birthDate,
+          dialCode,
+          phone,
+          password,
         })
         if (needsEmailConfirmation) setSent(true)
       } else {
@@ -150,10 +169,12 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
         <div className="su-card su-done">
           <h1 className="su-title">تحقّق من بريدك</h1>
           <p className="su-sub">
-            أرسلنا رسالة تأكيد إلى <b dir="ltr">{email.trim()}</b>. افتحها لتفعيل حسابك،
-            ثمّ ارجع وسجّل الدخول.
+            أرسلنا رسالة تأكيد إلى <b dir="ltr">{email.trim()}</b>. افتحها لتفعيل حسابك، ثمّ ارجع وسجّل
+            الدخول.
           </p>
-          <button className="su-submit" onClick={onBack}>رجوع</button>
+          <button className="su-submit" onClick={onBack}>
+            رجوع
+          </button>
         </div>
         <style>{AUTH_CSS}</style>
       </div>
@@ -165,22 +186,37 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
       <form className="su-card" onSubmit={submit} noValidate>
         <h1 className="su-title">{signup ? 'إنشاء حساب' : 'تسجيل الدخول'}</h1>
         <p className="su-sub">
-          {signup
-            ? 'بياناتك تبقى عندك — لا إعلانات ولا مشاركة'
-            : 'بحسابك الذي أنشأته بالبريد'}
+          {signup ? 'بياناتك تبقى عندك — لا إعلانات ولا مشاركة' : 'بحسابك الذي أنشأته بالبريد'}
         </p>
 
         {signup && (
           <div className="su-row">
-            <input className="su-in" placeholder="الاسم الأول" value={firstName}
-                   onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" />
-            <input className="su-in" placeholder="اسم العائلة (اختياري)" value={lastName}
-                   onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" />
+            <input
+              className="su-in"
+              placeholder="الاسم الأول"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              autoComplete="given-name"
+            />
+            <input
+              className="su-in"
+              placeholder="اسم العائلة (اختياري)"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              autoComplete="family-name"
+            />
           </div>
         )}
 
-        <input className="su-in" type="email" placeholder="البريد الإلكتروني" value={email}
-               onChange={(e) => setEmail(e.target.value)} autoComplete="email" dir="ltr" />
+        <input
+          className="su-in"
+          type="email"
+          placeholder="البريد الإلكتروني"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          dir="ltr"
+        />
 
         {signup && (
           <>
@@ -188,44 +224,79 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
             {/* سفاري iOS يرسمه فارغاً بلا عنوان وأعرض من أخواته: العنوان يُرسم فوقه
                 ما دام فارغاً، والعرض يُقيَّد (علي ١ أكتوبر ٢٠٢٦: «صلّح الخانة»). */}
             <label className="su-date">
-              <input className={'su-in' + (birthDate ? '' : ' empty')} type="date" value={birthDate}
-                     max={new Date().toISOString().slice(0, 10)}
-                     onChange={(e) => setBirthDate(e.target.value)} aria-label="تاريخ الميلاد (اختياري)" />
-              {!birthDate && <span className="su-date-ph" aria-hidden="true">تاريخ الميلاد (اختياري)</span>}
+              <input
+                className={'su-in' + (birthDate ? '' : ' empty')}
+                type="date"
+                value={birthDate}
+                max={new Date().toISOString().slice(0, 10)}
+                onChange={(e) => setBirthDate(e.target.value)}
+                aria-label="تاريخ الميلاد (اختياري)"
+              />
+              {!birthDate && (
+                <span className="su-date-ph" aria-hidden="true">
+                  تاريخ الميلاد (اختياري)
+                </span>
+              )}
             </label>
 
             <div className="su-row phone">
-              <select className="su-in" value={dialCode} aria-label="رمز الدولة"
-                      onChange={(e) => setDialCode(e.target.value)}>
+              <select
+                className="su-in"
+                value={dialCode}
+                aria-label="رمز الدولة"
+                onChange={(e) => setDialCode(e.target.value)}
+              >
                 {DIAL_CODES.map((d) => (
-                  <option key={d.code} value={d.code}>{d.name} ({d.code})</option>
+                  <option key={d.code} value={d.code}>
+                    {d.name} ({d.code})
+                  </option>
                 ))}
               </select>
-              <input className="su-in" type="tel" placeholder="رقم التليفون (اختياري)" value={phone}
-                     onChange={(e) => setPhone(e.target.value)} autoComplete="tel" dir="ltr" />
+              <input
+                className="su-in"
+                type="tel"
+                placeholder="رقم التليفون (اختياري)"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                autoComplete="tel"
+                dir="ltr"
+              />
             </div>
           </>
         )}
 
         <div className="su-pass">
-          <input className="su-in" type={showPass ? 'text' : 'password'} placeholder="كلمة المرور" value={password}
-                 onChange={(e) => setPassword(e.target.value)}
-                 autoComplete={signup ? 'new-password' : 'current-password'} dir="ltr" />
-          <button type="button" className="su-pass-eye" onClick={() => setShowPass((v) => !v)}
-                  aria-pressed={showPass}>
+          <input
+            className="su-in"
+            type={showPass ? 'text' : 'password'}
+            placeholder="كلمة المرور"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete={signup ? 'new-password' : 'current-password'}
+            dir="ltr"
+          />
+          <button
+            type="button"
+            className="su-pass-eye"
+            onClick={() => setShowPass((v) => !v)}
+            aria-pressed={showPass}
+          >
             {showPass ? 'إخفاء' : 'إظهار'}
           </button>
         </div>
 
         {signup && (
           <>
-
             {/* لا ذكر لـ«الشروط والأحكام»: لا وجود لها بعد، والإشارة إلى صفحة
                 غائبة وعدٌ لا يُوفى. تُضاف حين تُكتب. */}
             <label className="su-terms">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
               <span>
-                قرأت <a href="/privacy.html" target="_blank" rel="noopener">سياسة الخصوصية</a> وأوافق عليها
+                قرأت{' '}
+                <a href="/privacy.html" target="_blank" rel="noopener">
+                  سياسة الخصوصية
+                </a>{' '}
+                وأوافق عليها
               </span>
             </label>
           </>
@@ -253,11 +324,20 @@ export function SignUp({ onBack, initialMode = 'signup' }: { onBack: () => void;
         )}
 
         <div className="su-foot">
-          <button type="button" className="su-link"
-                  onClick={() => { setMode(signup ? 'signin' : 'signup'); setErr(null); setNote(null) }}>
+          <button
+            type="button"
+            className="su-link"
+            onClick={() => {
+              setMode(signup ? 'signin' : 'signup')
+              setErr(null)
+              setNote(null)
+            }}
+          >
             {signup ? 'لديك حساب؟ سجّل الدخول' : 'ليس لديك حساب؟ أنشئ واحداً'}
           </button>
-          <button type="button" className="su-link" onClick={onBack}>رجوع</button>
+          <button type="button" className="su-link" onClick={onBack}>
+            رجوع
+          </button>
         </div>
       </form>
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchBackups, type BackupRun } from '../lib/admin'
-import { stamp } from '../lib/date'
+import { fetchBackups, type BackupRun } from '../../lib/admin'
+import { stamp } from '../../lib/date'
 
 /**
  * لسان «النسخ الاحتياطي» — طلب علي ٩ أكتوبر ٢٠٢٦.

@@ -74,9 +74,7 @@ export function AccountMenu({
   const meta = (session.user.user_metadata ?? {}) as Record<string, unknown>
   const email = session.user.email ?? 'حساب مجهول'
   const name =
-    str(meta.full_name) ||
-    [str(meta.first_name), str(meta.last_name)].filter(Boolean).join(' ') ||
-    ''
+    str(meta.full_name) || [str(meta.first_name), str(meta.last_name)].filter(Boolean).join(' ') || ''
   const phone = str(meta.phone)
   const birth = str(meta.birth_date)
 
@@ -173,12 +171,7 @@ export function AccountMenu({
     <>
       {open && (
         <div className="acct-veil" onClick={onClose}>
-          <div
-            className="acct-panel"
-            role="dialog"
-            aria-label="حسابي"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="acct-panel" role="dialog" aria-label="حسابي" onClick={(e) => e.stopPropagation()}>
             <header className="acct-head">
               <h2 className="acct-title">حسابي</h2>
               <button className="acct-x" onClick={onClose} aria-label="إغلاق">
@@ -227,9 +220,7 @@ export function AccountMenu({
               </section>
 
               <section className="acct-sec">
-                <h3 className="acct-h3">
-                  ألعابي{games && games.length > 0 ? ` · ${games.length}` : ''}
-                </h3>
+                <h3 className="acct-h3">ألعابي{games && games.length > 0 ? ` · ${games.length}` : ''}</h3>
                 {loadErr && games === null && <p className="acct-note">—</p>}
                 {!loadErr && games === null && <p className="acct-note">…</p>}
                 {!loadErr && games !== null && games.length === 0 && (
@@ -279,9 +270,7 @@ export function AccountMenu({
               </button>
 
               {confirming && (
-                <p className="acct-warn">
-                  يُحذف الحساب ورصيده وسجلّ الأسئلة التي ظهرت لك وألعابك. لا رجوع.
-                </p>
+                <p className="acct-warn">يُحذف الحساب ورصيده وسجلّ الأسئلة التي ظهرت لك وألعابك. لا رجوع.</p>
               )}
               {err && <p className="acct-err">{err}</p>}
             </footer>

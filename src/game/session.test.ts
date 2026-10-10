@@ -15,7 +15,10 @@ import { playableCategories, poolByCatLevel, poolShippedByLevels, setBlockedQues
 const BOARD = playableCategories().slice(0, STAGE1_CATEGORIES)
 const INPUT = {
   teamNames: ['النحل', 'الصقور'] as [string, string],
-  players: [['علي', 'سارة'], ['خالد', 'منى']] as [string[], string[]],
+  players: [
+    ['علي', 'سارة'],
+    ['خالد', 'منى'],
+  ] as [string[], string[]],
   startingTeam: 0 as const,
   categories: BOARD,
 }
@@ -116,12 +119,23 @@ describe('isStoredState — ما يحتاجه الطور', () => {
   it('يردّ طور السؤال بلا سؤال أو بلا خليّة', () => {
     const q = { id: 'E001', category: 'x', level: 'سهل', topic: '', question: 'س؟', answer: 'ج' }
     expect(isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: null })).toBe(false)
-    expect(isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: q, s1Cell: null })).toBe(false)
+    expect(isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: q, s1Cell: null })).toBe(
+      false,
+    )
     expect(
-      isStoredState({ ...base(), phase: 'stage1-question', currentQuestion: q, s1Cell: { category: 'x', level: 'سهل' } }),
+      isStoredState({
+        ...base(),
+        phase: 'stage1-question',
+        currentQuestion: q,
+        s1Cell: { category: 'x', level: 'سهل' },
+      }),
     ).toBe(true)
-    expect(isStoredState({ ...base(), phase: 'stage2-question', currentQuestion: q, s2Sel: null })).toBe(false)
-    expect(isStoredState({ ...base(), phase: 'stage2-question', currentQuestion: q, s2Sel: [0, 0] })).toBe(true)
+    expect(isStoredState({ ...base(), phase: 'stage2-question', currentQuestion: q, s2Sel: null })).toBe(
+      false,
+    )
+    expect(isStoredState({ ...base(), phase: 'stage2-question', currentQuestion: q, s2Sel: [0, 0] })).toBe(
+      true,
+    )
   })
 
   it('يردّ لاعباً بلا اسم وعموداً ناقصاً', () => {

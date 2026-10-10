@@ -36,7 +36,14 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
 
       {q.image ? (
-        <img className="reveal-photo" src={celebSrc(q.image)} alt="" onError={(e) => { e.currentTarget.style.display = 'none' }} />
+        <img
+          className="reveal-photo"
+          src={celebSrc(q.image)}
+          alt=""
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+          }}
+        />
       ) : (
         <div className={'reveal-q center fade' + questionSizeSuffix(q.question)}>{q.question}</div>
       )}
@@ -45,7 +52,9 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
         {/* الوجه يجاور الاسم — السؤال نصٌّ قائمٌ فوقهما، بخلاف `q.image`
             التي تحلّ محلّ النصّ. */}
         <AnswerFace q={q}>
-          <FitAnswer as="span" className="a-text">{q.answer}</FitAnswer>
+          <FitAnswer as="span" className="a-text">
+            {q.answer}
+          </FitAnswer>
         </AnswerFace>
       </div>
 

@@ -86,8 +86,7 @@ async function signInWithGoogleNative() {
   const rawNonce = crypto.randomUUID()
   const hashedNonce = await sha256Hex(rawNonce)
   const res = await SocialLogin.login({ provider: 'google', options: { nonce: hashedNonce } })
-  const idToken =
-    res.provider === 'google' && 'idToken' in res.result ? res.result.idToken : null
+  const idToken = res.provider === 'google' && 'idToken' in res.result ? res.result.idToken : null
   if (!idToken) throw new Error('لم يُرجِع غوغل رمزَ هويّة')
   const { error } = await supabase.auth.signInWithIdToken({
     provider: 'google',
@@ -102,7 +101,6 @@ async function sha256Hex(input: string) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
-
 
 /**
  * الخروج — ومن غوغل أيضاً في التطبيق.
@@ -188,8 +186,8 @@ export interface SignUpFields {
   firstName: string
   lastName: string
   email: string
-  birthDate: string   // YYYY-MM-DD
-  dialCode: string    // مثل +965
+  birthDate: string // YYYY-MM-DD
+  dialCode: string // مثل +965
   phone: string
   password: string
 }
@@ -255,7 +253,10 @@ const AUTH_ERRORS: [RegExp, string][] = [
   [/weak_password|password should be/i, `كلمة المرور ${MIN_PASSWORD} أحرف على الأقل`],
   [/same_password/i, 'كلمة السرّ الجديدة هي نفسها القديمة'],
   [/email_address_invalid|invalid email|unable to validate email/i, 'البريد غير صالح'],
-  [/rate_limit|rate limit|too many requests|for security purposes/i, 'محاولات كثيرة — انتظر دقيقة ثمّ أعد المحاولة'],
+  [
+    /rate_limit|rate limit|too many requests|for security purposes/i,
+    'محاولات كثيرة — انتظر دقيقة ثمّ أعد المحاولة',
+  ],
   [/otp_expired|token has expired|expired/i, 'انتهت صلاحيّة الرابط — اطلب رابطاً جديداً'],
   [/failed to fetch|network|timed out|load failed|aborted/i, 'تعذّر الاتّصال — تحقّق من اتصالك'],
 ]

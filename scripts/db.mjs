@@ -39,7 +39,10 @@ function readEnv(path) {
     if (!t || t.startsWith('#')) continue
     const i = t.indexOf('=')
     if (i < 0) continue
-    out[t.slice(0, i).trim()] = t.slice(i + 1).trim().replace(/^["']|["']$/g, '')
+    out[t.slice(0, i).trim()] = t
+      .slice(i + 1)
+      .trim()
+      .replace(/^["']|["']$/g, '')
   }
   return out
 }

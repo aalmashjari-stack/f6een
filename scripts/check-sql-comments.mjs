@@ -98,7 +98,9 @@ function scan(sql) {
 }
 
 let bad = 0
-const files = readdirSync(DIR).filter((f) => f.endsWith('.sql')).sort()
+const files = readdirSync(DIR)
+  .filter((f) => f.endsWith('.sql'))
+  .sort()
 
 for (const f of files) {
   const { depth, openedAt, notes } = scan(readFileSync(join(DIR, f), 'utf8'))

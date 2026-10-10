@@ -41,7 +41,8 @@ export const CHARADES_CATEGORY = 'ولا كلمة'
 export const CHARADE_KINDS = ['مسلسل', 'فيلم', 'مسرحية', 'أغنية', 'مثل'] as const
 export type CharadeKind = (typeof CHARADE_KINDS)[number]
 
-export const isCharadeKind = (topic: string): topic is CharadeKind => (CHARADE_KINDS as readonly string[]).includes(topic)
+export const isCharadeKind = (topic: string): topic is CharadeKind =>
+  (CHARADE_KINDS as readonly string[]).includes(topic)
 
 /** ما يحمله الرمز إلى هاتف الممثّل. */
 export interface Charade {
@@ -73,8 +74,12 @@ export const CHARADE_PAGE_PATH = '/k'
  * الأصليّ الأصلُ `capacitor://localhost` ولا يفتحه هاتفُ أحد. والمعاينةُ
  * المحلّية وحدها (localhost) تشير إلى نفسها كي تُقاس قبل النشر.
  */
-export function charadePageOrigin(origin: string = typeof location === 'undefined' ? '' : location.origin): string {
-  return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\]|192\.168\.|10\.)/.test(origin) ? origin : 'https://f6een.com'
+export function charadePageOrigin(
+  origin: string = typeof location === 'undefined' ? '' : location.origin,
+): string {
+  return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\]|192\.168\.|10\.)/.test(origin)
+    ? origin
+    : 'https://f6een.com'
 }
 
 /* ───────────────────────── الترميز ───────────────────────── */
@@ -103,7 +108,8 @@ function toBytes(text: string): number[] {
     const c = text.charCodeAt(i)
     if (c === 0x20) out.push(SPACE)
     else if (c >= 0x30 && c <= 0x39) out.push(0x60 + (c - 0x30))
-    else if (c >= 0x600 && c <= 0x6ff && c !== 0x620 && c !== 0x61d && c !== 0x61e && c !== 0x61f) out.push(c - 0x600)
+    else if (c >= 0x600 && c <= 0x6ff && c !== 0x620 && c !== 0x61d && c !== 0x61e && c !== 0x61f)
+      out.push(c - 0x600)
     else if (c <= 0xff) out.push(ESC1, c)
     else out.push(ESC2, c >> 8, c & 0xff)
   }
@@ -119,7 +125,8 @@ function fromBytes(bytes: number[]): string {
       if (n === undefined) break
       s += String.fromCharCode(n)
     } else if (b === ESC2) {
-      const hi = bytes[++i], lo = bytes[++i]
+      const hi = bytes[++i],
+        lo = bytes[++i]
       if (hi === undefined || lo === undefined) break
       s += String.fromCharCode((hi << 8) | lo)
     } else if (b === SPACE) s += ' '
@@ -139,7 +146,9 @@ const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
 function b64encode(bytes: number[]): string {
   let s = ''
   for (let i = 0; i < bytes.length; i += 3) {
-    const a = bytes[i], b = bytes[i + 1], c = bytes[i + 2]
+    const a = bytes[i],
+      b = bytes[i + 1],
+      c = bytes[i + 2]
     const n = (a << 16) | ((b ?? 0) << 8) | (c ?? 0)
     s += B64[(n >> 18) & 63] + B64[(n >> 12) & 63]
     if (b !== undefined) s += B64[(n >> 6) & 63]
@@ -150,7 +159,8 @@ function b64encode(bytes: number[]): string {
 
 function b64decode(s: string): number[] | null {
   const out: number[] = []
-  let buf = 0, bits = 0
+  let buf = 0,
+    bits = 0
   for (const ch of s) {
     const v = B64.indexOf(ch)
     if (v < 0) return null
@@ -174,7 +184,8 @@ const levelIndex = (level: Level) => BOARD_LEVELS.indexOf(level)
  * (لا تقع في اسم ملفّ) فيُحمل كاملاً.
  */
 const KILMA = 'pic-kilma-'
-const keyToBytes = (key: string) => [...(key.startsWith(KILMA) ? key.slice(KILMA.length) : '/' + key)].map((ch) => ch.charCodeAt(0) & 0xff)
+const keyToBytes = (key: string) =>
+  [...(key.startsWith(KILMA) ? key.slice(KILMA.length) : '/' + key)].map((ch) => ch.charCodeAt(0) & 0xff)
 const keyFromBytes = (bytes: number[]) => {
   const s = String.fromCharCode(...bytes)
   return s.startsWith('/') ? s.slice(1) : KILMA + s
@@ -189,7 +200,11 @@ const keyFromBytes = (bytes: number[]) => {
  *
  * والنوع بايتٌ واحد: صفرٌ لا نوع، وإلّا ترتيبُه في `CHARADE_KINDS` زائد واحد.
  */
-export function encodeCharade(level: Level, text: string, extra: { kind?: string; image?: string } = {}): string {
+export function encodeCharade(
+  level: Level,
+  text: string,
+  extra: { kind?: string; image?: string } = {},
+): string {
   const idx = Math.max(0, levelIndex(level))
   const kind = extra.kind && isCharadeKind(extra.kind) ? CHARADE_KINDS.indexOf(extra.kind) + 1 : 0
   const bytes = [idx, kind, ...toBytes(text.trim())]
@@ -236,6 +251,11 @@ export function decodeCharade(fragment: string): Charade | null {
 }
 
 /** الرابط الكامل الذي يُرسم في الرمز. */
-export function charadeUrl(level: Level, text: string, extra: { kind?: string; image?: string } = {}, origin?: string): string {
+export function charadeUrl(
+  level: Level,
+  text: string,
+  extra: { kind?: string; image?: string } = {},
+  origin?: string,
+): string {
   return charadePageOrigin(origin) + CHARADE_PAGE_PATH + '#' + encodeCharade(level, text, extra)
 }

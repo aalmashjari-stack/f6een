@@ -44,7 +44,10 @@ function readEnv(path) {
     if (!t || t.startsWith('#')) continue
     const i = t.indexOf('=')
     if (i < 0) continue
-    out[t.slice(0, i).trim()] = t.slice(i + 1).trim().replace(/^["']|["']$/g, '')
+    out[t.slice(0, i).trim()] = t
+      .slice(i + 1)
+      .trim()
+      .replace(/^["']|["']$/g, '')
   }
   return out
 }
@@ -107,7 +110,9 @@ try {
       const dest = resolve(artDir, name)
       if (!dest.startsWith(artDir + '/')) continue
       if (existsSync(dest) && size != null && statSync(dest).size === Number(size)) continue
-      const res = await fetch(`${apiUrl}/storage/v1/object/public/art/${name.split('/').map(encodeURIComponent).join('/')}`)
+      const res = await fetch(
+        `${apiUrl}/storage/v1/object/public/art/${name.split('/').map(encodeURIComponent).join('/')}`,
+      )
       if (!res.ok || !res.body) {
         failed++
         console.error(`  ✗ ${name} (${res.status})`)
@@ -117,7 +122,9 @@ try {
       await pipeline(Readable.fromWeb(res.body), createWriteStream(dest))
       fetched++
     }
-    console.log(`الصور: ${objects.length} في الدلو، نُزّل ${fetched} جديد${failed ? `، وفشل ${failed}` : ''} → backups/art/`)
+    console.log(
+      `الصور: ${objects.length} في الدلو، نُزّل ${fetched} جديد${failed ? `، وفشل ${failed}` : ''} → backups/art/`,
+    )
     if (failed) process.exitCode = 1
   }
 } catch (e) {

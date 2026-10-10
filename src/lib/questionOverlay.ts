@@ -211,9 +211,7 @@ function applyCats(rows: CatRow[]) {
   )
   /* والترتيب داخل التصنيف قبل الفئات كذلك — للسبب نفسه. */
   setCategoryOrder(
-    Object.fromEntries(
-      rows.filter((r) => typeof r.sort === 'number').map((r) => [r.name, r.sort as number]),
-    ),
+    Object.fromEntries(rows.filter((r) => typeof r.sort === 'number').map((r) => [r.name, r.sort as number])),
   )
   /* فئات الديربي قبل الفئات كذلك — للسبب نفسه. */
   setDerbyCategories(rows.filter((r) => r.derby).map((r) => r.name))
@@ -233,9 +231,7 @@ function applyCats(rows: CatRow[]) {
   /* الصفّ الذي لا يحمل إلّا صورةً بديلة لفئةٍ مشحونة لا يدخل قائمة الفئات —
      وإلّا ظهرت الفئة مرّتين. */
   setExtraCategories(rows.filter((r) => r.is_extra !== false).map((r) => r.name))
-  setCategoryArt(
-    Object.fromEntries(rows.filter((r) => r.art_url).map((r) => [r.name, r.art_url as string])),
-  )
+  setCategoryArt(Object.fromEntries(rows.filter((r) => r.art_url).map((r) => [r.name, r.art_url as string])))
 }
 
 export function applyCachedCategories() {

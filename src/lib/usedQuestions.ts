@@ -69,9 +69,7 @@ export async function touchUsedIds(userId: string, ids: string[]): Promise<void>
   if (ids.length === 0) return
   const used_at = new Date().toISOString()
   const rows = ids.map((question_id) => ({ user_id: userId, question_id, used_at }))
-  const { error } = await supabase
-    .from('used_questions')
-    .upsert(rows, { onConflict: 'user_id,question_id' })
+  const { error } = await supabase.from('used_questions').upsert(rows, { onConflict: 'user_id,question_id' })
   if (error) throw error
 }
 

@@ -19,7 +19,9 @@ const AUDIBLE_SECS = 5
  * تعيد الثلاثين ثانية، والعائدُ بعد الموعد يجد الصفر فيُنادى `onDone`.
  */
 const startingMs = (durationMs: number, endsAt?: number | null) =>
-  endsAt === undefined || endsAt === null ? durationMs : Math.max(0, Math.min(durationMs, endsAt - Date.now()))
+  endsAt === undefined || endsAt === null
+    ? durationMs
+    : Math.max(0, Math.min(durationMs, endsAt - Date.now()))
 
 export function useCountdown(
   durationMs: number,

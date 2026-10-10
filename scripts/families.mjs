@@ -43,7 +43,10 @@ function dbUrl() {
   if (!existsSync(p)) return null
   for (const line of readFileSync(p, 'utf8').split(/\r?\n/)) {
     if (line.startsWith('SUPABASE_DB_URL=')) {
-      const v = line.slice('SUPABASE_DB_URL='.length).trim().replace(/^["']|["']$/g, '')
+      const v = line
+        .slice('SUPABASE_DB_URL='.length)
+        .trim()
+        .replace(/^["']|["']$/g, '')
       return /^postgres(ql)?:\/\//.test(v) ? v : null
     }
   }
@@ -57,31 +60,63 @@ if (!url) {
 
 /* ── التطبيع ── */
 const HONORIFICS = [
-  /صلى الله عليه وسلم/g, /صلّى الله عليه وسلّم/g,
-  /رضي الله عن(?:ه|ها|هم|هما)/g, /علي(?:ه|ها|هم)\s?السلام/g,
+  /صلى الله عليه وسلم/g,
+  /صلّى الله عليه وسلّم/g,
+  /رضي الله عن(?:ه|ها|هم|هما)/g,
+  /علي(?:ه|ها|هم)\s?السلام/g,
 ]
 /** نصُّ الإجابة للعرض: بلا صيغ أدبٍ ولا ما بين قوسين. */
 const display = (s) =>
   HONORIFICS.reduce((t, re) => t.replace(re, ' '), String(s ?? ''))
-    .replace(/\s*\(.*?\)\s*/g, ' ').replace(/\s+/g, ' ').trim()
+    .replace(/\s*\(.*?\)\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 /** مفتاح المقارنة: نفس تطبيع `check-drafts` تقريباً. */
 const norm = (s) =>
   display(s)
     .replace(/[ً-ْٰـ]/g, '')
-    .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي')
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim()
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/ؤ/g, 'و')
+    .replace(/ئ/g, 'ي')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 
 const isNumber = (k) =>
   /^[\d\s.,%]+$/.test(k) ||
-  /^(واحد|اثنان|اثنتان|اثنا|اثنتا|ثلاث|اربع|خمس|ست|سبع|ثمان|تسع|عشر|احدي|عشرون|ثلاثون|اربعون|خمسون|ستون|سبعون|ثمانون|تسعون|مئه|الف|الواحد)/.test(k)
+  /^(واحد|اثنان|اثنتان|اثنا|اثنتا|ثلاث|اربع|خمس|ست|سبع|ثمان|تسع|عشر|احدي|عشرون|ثلاثون|اربعون|خمسون|ستون|سبعون|ثمانون|تسعون|مئه|الف|الواحد)/.test(
+    k,
+  )
 
 /** متجانساتٌ لفظاً لا معنىً — بمفتاح التطبيع. */
 const HOMONYMS = new Set([
-  'سالي', 'الثلث', 'الحجر', 'طيبه', 'الاسد', 'الخليه', 'الواو', 'ازرق', 'القطر',
-  'دانتي', 'الجمهوريه', 'البيض', 'المهر', 'الخشب', 'النبي', 'الغراب', 'المغرب',
-  'الكلب', 'التمر', 'رمضان', 'مكه',
+  'سالي',
+  'الثلث',
+  'الحجر',
+  'طيبه',
+  'الاسد',
+  'الخليه',
+  'الواو',
+  'ازرق',
+  'القطر',
+  'دانتي',
+  'الجمهوريه',
+  'البيض',
+  'المهر',
+  'الخشب',
+  'النبي',
+  'الغراب',
+  'المغرب',
+  'الكلب',
+  'التمر',
+  'رمضان',
+  'مكه',
   /* ٢٠ سبتمبر ٢٠٢٦: بربري توابل ودار أزياء، الأنف عظمة العود و«الأنف» العطّار، غيت شركة وGit. */
-  'بربري', 'الانف', 'غيت',
+  'بربري',
+  'الانف',
+  'غيت',
 ])
 
 const { default: pg } = await import('pg')
@@ -108,7 +143,10 @@ for (const [k, g] of groups) {
   if (g.length < 2) continue
   if (new Set(g.map((r) => `${r.category}|${r.level}`)).size < 2) continue
   const fams = [...new Set(g.map((r) => r.family).filter(Boolean))]
-  if (fams.length === 1 && g.every((r) => r.family)) { unified++; continue }
+  if (fams.length === 1 && g.every((r) => r.family)) {
+    unified++
+    continue
+  }
 
   const answerLike = fams.find((f) => norm(f) === k)
   const target = answerLike ?? (fams.length === 0 ? display(g[0].answer) : fams.length === 1 ? fams[0] : null)
@@ -122,12 +160,17 @@ for (const [k, g] of groups) {
   }
 }
 
-console.log(`\nمجموعات موحَّدة أصلاً: ${unified} · وسومٌ مقترحة: ${updates.length} · تُركت على عائلةٍ موضوعيّة: ${kept.length}`)
+console.log(
+  `\nمجموعات موحَّدة أصلاً: ${unified} · وسومٌ مقترحة: ${updates.length} · تُركت على عائلةٍ موضوعيّة: ${kept.length}`,
+)
 if (kept.length) console.log('  ' + [...new Set(kept.map((r) => `${r.id}(${r.family})`))].join(' · '))
 
 if (apply && updates.length) {
   for (const [id, f] of updates) {
-    await c.query('update public.question_overrides set family = $2, updated_at = now() where question_id = $1', [id, f])
+    await c.query(
+      'update public.question_overrides set family = $2, updated_at = now() where question_id = $1',
+      [id, f],
+    )
   }
   console.log(`\nكُتب ${updates.length} وسماً.`)
 } else if (updates.length) {

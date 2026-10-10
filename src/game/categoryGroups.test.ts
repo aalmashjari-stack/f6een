@@ -1,10 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import {
-  groupCategories,
-  groupOf,
-  setCategoryGroups,
-  setCategoryOrder,
-} from '../components/categoryGroups'
+import { groupCategories, groupOf, setCategoryGroups, setCategoryOrder } from '../components/categoryGroups'
 
 /**
  * تقسيم الفئات على تصنيفاتها — طبقةُ عرضٍ في شاشة الإعداد لا طبقةُ لعب.

@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { drawDerby, drawOne, drawStage3Queue, shuffle } from './draw'
-import { ALL_QUESTIONS, familiesOf, familyOf, poolByCatLevel, poolByLevels, poolDerby, poolShippedByLevels, setBlockedQuestionIds } from './bank'
+import {
+  ALL_QUESTIONS,
+  familiesOf,
+  familyOf,
+  poolByCatLevel,
+  poolByLevels,
+  poolDerby,
+  poolShippedByLevels,
+  setBlockedQuestionIds,
+} from './bank'
 import type { Level } from './types'
 
 const CAT = 'جغرافيا ومعالم'
@@ -52,7 +61,10 @@ describe('drawOne — الاستبعاد', () => {
     for (let i = 0; i < 40; i++) {
       const picked = drawOne(q.category, q.level, new Set(), new Set(), spent)
       if (picked.id === q.id) continue // تنازلٌ حين تضيق الخليّة — مسموح
-      expect(familiesOf(picked).some((f) => spent.has(f)), picked.id).toBe(false)
+      expect(
+        familiesOf(picked).some((f) => spent.has(f)),
+        picked.id,
+      ).toBe(false)
     }
   })
 
@@ -213,7 +225,9 @@ describe('drawStage3Queue', () => {
 
   it('بلا قالبين من عائلة واحدة — أسئلته تُعرض متتابعة في ثلاثين ثانية', () => {
     for (let i = 0; i < 50; i++) {
-      const fams = drawStage3Queue(40, new Set()).map(familyOf).filter((f): f is string => f !== null)
+      const fams = drawStage3Queue(40, new Set())
+        .map(familyOf)
+        .filter((f): f is string => f !== null)
       expect(new Set(fams).size).toBe(fams.length)
     }
   })

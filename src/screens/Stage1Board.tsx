@@ -70,10 +70,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
 
               {/* عددُ الصفوف من `STAGE1_LEVELS` لا من ثابتٍ في CSS: زيادةُ
                   مستوىً كانت تترك الشبكة على ثلاثة فيُقصّ الرابع. */}
-              <div
-                className="blevels"
-                style={{ '--rows': STAGE1_LEVELS.length } as React.CSSProperties}
-              >
+              <div className="blevels" style={{ '--rows': STAGE1_LEVELS.length } as React.CSSProperties}>
                 {STAGE1_LEVELS.map((level) => {
                   const played = state.s1Played.includes(cellKey(cat.name, level))
                   return (

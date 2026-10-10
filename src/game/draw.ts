@@ -40,9 +40,7 @@ export interface DrawGuards {
 const EMPTY: Set<string> = new Set()
 
 const eligible = (pool: Question[], g: DrawGuards): Question[] =>
-  pool.filter(
-    (q) => !g.excluded.has(q.id) && familiesOf(q).every((fam) => !g.spentFamilies.has(fam)),
-  )
+  pool.filter((q) => !g.excluded.has(q.id) && familiesOf(q).every((fam) => !g.spentFamilies.has(fam)))
 
 /**
  * يختار من مجموعة: جديدٌ عشوائيّ إن وُجد، وإلّا أقدمُ ما استُعمل منها.

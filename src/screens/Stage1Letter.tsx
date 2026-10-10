@@ -76,7 +76,11 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
 
   return (
     <div className="screen">
-      <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} turnTeam={owner} />
+      <ScoreBar
+        onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })}
+        teams={state.teams}
+        turnTeam={owner}
+      />
 
       <div className="letters-wrap grow">
         <div className={'letters-grid' + (landed ? ' landed' : '')} dir="rtl">
@@ -98,7 +102,9 @@ export function Stage1Letter({ state, dispatch }: { state: GameState; dispatch: 
 
       {/* سطرٌ واحد يقول للمجلس ما يجري — يُقرأ مرّةً في الجلسة ثمّ يُفهم من
           الحركة، فهو بحجم ملاحظة الحكم لا عنوان. */}
-      <div className="action-note letters-note">{landed ? 'الجواب يبدأ بحرف' : 'الحرف الأوّل من الجواب…'}</div>
+      <div className="action-note letters-note">
+        {landed ? 'الجواب يبدأ بحرف' : 'الحرف الأوّل من الجواب…'}
+      </div>
 
       <style>{`
         /* الغلاف حاويةٌ تُقاس: الشبكة تأخذ من ارتفاعه أو عرضه أيّهما أضيق

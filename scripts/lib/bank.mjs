@@ -30,7 +30,10 @@ function dbUrl() {
   if (!existsSync(p)) return null
   for (const line of readFileSync(p, 'utf8').split(/\r?\n/)) {
     if (line.startsWith('SUPABASE_DB_URL=')) {
-      const v = line.slice('SUPABASE_DB_URL='.length).trim().replace(/^["']|["']$/g, '')
+      const v = line
+        .slice('SUPABASE_DB_URL='.length)
+        .trim()
+        .replace(/^["']|["']$/g, '')
       return /^postgres(ql)?:\/\//.test(v) ? v : null
     }
   }
