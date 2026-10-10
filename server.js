@@ -10,7 +10,8 @@
  * فصار الخادمُ ملكَنا: عشرات الأسطر بلا تبعية، وسلوكُه مكتوبٌ لا مُكتشَف.
  */
 import { createServer } from 'node:http'
-import { readFile, stat } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { readFile, readdir, stat } from 'node:fs/promises'
 import { extname, join, normalize, resolve, sep } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, 'dist')
@@ -100,10 +101,31 @@ function safeDecode(urlPath) {
  * - لا كاميرا ولا ميكروفون ولا موقع: اللعبة لا تطلبها، فلا يطلبها شيءٌ باسمها.
  *   وقفلُ الشاشة (Wake Lock) يبقى مسموحاً — «إبقاء الشاشة مستيقظة» يحتاجه.
  */
+/**
+ * `script-src`: لا يجري في الصفحة إلّا سكربتٌ من الموقع نفسه — فنصٌّ محقون
+ * (`<script>` أو `<img onerror>` في سؤالٍ أو رسالة) لا يُنفَّذ ولو أفلت من
+ * React. والسكربت المضمَّن في `index.html` (سمة ما قبل الإقلاع) يُجاز ببصمته،
+ * تُحسب من `dist` عند الإقلاع لا بيد: تعديلُه لا يكسر الصفحة بصمت.
+ * الويب لا يحمّل سكربتاً من الخارج (غوغل يُفتح بإعادة توجيه، لا بسكربت).
+ */
+async function inlineScriptHashes() {
+  const hashes = new Set()
+  for (const name of await readdir(ROOT).catch(() => [])) {
+    if (!name.endsWith('.html')) continue
+    const html = await readFile(join(ROOT, name), 'utf8')
+    for (const [, code] of html.matchAll(/<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g)) {
+      hashes.add(`'sha256-${createHash('sha256').update(code).digest('base64')}'`)
+    }
+  }
+  return [...hashes].join(' ')
+}
+
+const SCRIPT_SRC = `script-src 'self' ${await inlineScriptHashes()}`.trim()
+
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
-  'Content-Security-Policy': "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'",
+  'Content-Security-Policy': `${SCRIPT_SRC}; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'`,
   'Strict-Transport-Security': 'max-age=31536000',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
