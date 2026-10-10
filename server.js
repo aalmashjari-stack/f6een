@@ -106,7 +106,9 @@ function safeDecode(urlPath) {
  * (`<script>` أو `<img onerror>` في سؤالٍ أو رسالة) لا يُنفَّذ ولو أفلت من
  * React. والسكربت المضمَّن في `index.html` (سمة ما قبل الإقلاع) يُجاز ببصمته،
  * تُحسب من `dist` عند الإقلاع لا بيد: تعديلُه لا يكسر الصفحة بصمت.
- * الويب لا يحمّل سكربتاً من الخارج (غوغل يُفتح بإعادة توجيه، لا بسكربت).
+ * الويب لا يحمّل سكربتاً من الخارج (غوغل يُفتح بإعادة توجيه، لا بسكربت)،
+ * إلّا مِقياسَ Cloudflare Web Analytics يحقنه Cloudflare نفسه في الصفحة —
+ * حُجب أوّلَ نشر (١٠ أكتوبر) فأُجيز باسمه.
  */
 async function inlineScriptHashes() {
   const hashes = new Set()
@@ -120,7 +122,7 @@ async function inlineScriptHashes() {
   return [...hashes].join(' ')
 }
 
-const SCRIPT_SRC = `script-src 'self' ${await inlineScriptHashes()}`.trim()
+const SCRIPT_SRC = `script-src 'self' https://static.cloudflareinsights.com ${await inlineScriptHashes()}`.trim()
 
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
