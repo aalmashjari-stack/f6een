@@ -1,0 +1,16 @@
+/*
+  أنماط الصورة حين يتعذّر تحميلها — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+.photo-failed {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:clamp(8px,1.6dvh,16px); min-height:clamp(120px,30dvh,320px); width:min(100%,560px);
+  align-self:center; border-radius:18px; padding:16px;
+  background:var(--n-surface-2, #F6F5F2); border:2px dashed var(--n-ink-3, #8A8578);
+}
+.photo-failed-text { font-weight:800; font-size:clamp(16px,min(2.4vw,3.6dvh),28px); color:var(--n-ink, #22201C); }
+.photo-failed-retry {
+  font:inherit; font-weight:800; cursor:pointer; border:0; border-radius:999px;
+  min-height:44px; padding:0 22px; font-size:clamp(15px,min(1.8vw,2.8dvh),20px);
+  background:var(--n-ink, #22201C); color:#fff;
+}

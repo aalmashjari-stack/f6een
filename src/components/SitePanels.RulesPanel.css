@@ -1,0 +1,33 @@
+/*
+  أنماط RulesPanel — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+.sp-video .xi-wrap { margin:0; width:100%; }
+.sp-stages { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
+.sp-stage {
+  display:flex; align-items:flex-start; gap:clamp(9px,1.6vw,15px);
+  padding:clamp(10px,1.8dvh,16px) clamp(11px,2vw,18px);
+  border-radius:16px;
+  background:var(--n-bg, #FFF8EE);
+  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+}
+.sp-sn {
+  flex:none;
+  display:grid; place-items:center;
+  width:clamp(26px,3.4vw,34px); height:clamp(26px,3.4vw,34px);
+  border-radius:50%;
+  background:var(--n-brand, #E8542F); color:#fff;
+  font-weight:900; font-size:clamp(13px,1.7vw,17px);
+}
+.sp-sbody { min-width:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; }
+.sp-sname { margin:0; font-size:clamp(15px,2vw,19px); font-weight:800; color:var(--n-ink, #22201C); }
+.sp-sdesc {
+  flex:1 0 100%; margin:0;
+  font-size:clamp(12px,1.5vw,15px); font-weight:600; line-height:1.65;
+  color:var(--n-ink-2, #57524A);
+}
+@media (max-height: 480px) {
+  .sp-stage { padding:7px 10px; gap:8px; }
+  .sp-sdesc { line-height:1.45; }
+  .sp-stages { gap:6px; }
+}

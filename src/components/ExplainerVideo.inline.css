@@ -1,0 +1,29 @@
+/*
+  أنماط فيديو الشرح في الصفحة — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+/* نحو 55٪ من عرض الشاشة في الوسط، على مثالٍ أرسله علي («خله بنفس الحجم»،
+   ٣٠ سبتمبر ٢٠٢٦) — وبعرض الصفحة في الضيّق، حيث 55٪ تصغر عن القراءة. */
+/* فسحةٌ فوقه وتحته (علي: «نزّل الفيديو، خل المساحة واسعة مو كل شي فوق بعض») */
+.xi-wrap { width:100%; margin-inline:auto; margin-block:clamp(36px,7dvh,72px) clamp(20px,4dvh,44px); }
+@media (min-width:900px) { .xi-wrap { width:min(100%, 55vw); } }
+/* إطارٌ أسود وحده (علي ٣٠ سبتمبر ٢٠٢٦: «شيل اطار التلفزيون وخله اطار
+   اسود بس») — بلا قاعدة ولا نقطة كاميرا ولا ظلّ على الأرضيّة. */
+.xi-tv {
+  padding:clamp(4px,.6vw,8px);
+  border-radius:clamp(12px,1.4vw,18px); background:#000;
+}
+.xi-tv .xv-frame { border-radius:clamp(8px,1vw,12px); box-shadow:none; }
+
+.xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
+/* زرّ التشغيل بلغة الكتل: دائرةٌ بلون العلامة بحدّ حبرٍ وظلٍّ صلب */
+.xi-play {
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:clamp(58px,9vw,84px); height:clamp(58px,9vw,84px); border-radius:50%;
+  display:grid; place-items:center; padding-inline-start:.12em;
+  font-size:clamp(24px,3.6vw,34px); color:#fff; background:var(--n-brand, #E8542F);
+  box-shadow:0 0 0 3px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
+  transition:transform .16s var(--ease-spring);
+}
+.xi-poster:hover .xi-play { transform:translate(-50%,-50%) scale(1.08); }
+.xi-poster:focus-visible { outline:3px solid var(--n-brand, #E8542F); outline-offset:3px; }

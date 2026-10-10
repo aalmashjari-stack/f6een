@@ -1,0 +1,36 @@
+/*
+  أنماط CategoryInfoPanel — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+.cip-brief {
+  margin:0; text-align:center;
+  font-size:clamp(15px,1.9vw,19px); font-weight:700; line-height:1.8;
+  color:var(--n-ink, #22201C);
+}
+.cip-sample {
+  display:flex; flex-direction:column; align-items:center; gap:clamp(8px,1.4dvh,12px);
+  padding:clamp(12px,2dvh,18px) clamp(14px,2.4vw,22px);
+  border-radius:16px;
+  background:var(--n-bg, #FFF8EE);
+  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+  text-align:center;
+}
+.cip-tag {
+  padding:2px 14px; border-radius:999px;
+  background:var(--n-ink, #22201C); color:#fff;
+  font-weight:800; font-size:clamp(12px,1.4vw,14px);
+}
+.cip-q { margin:0; font-weight:800; font-size:clamp(16px,2.1vw,21px); line-height:1.7; color:var(--n-ink, #22201C); }
+.cip-a {
+  margin:0; padding:4px 18px; border-radius:12px;
+  background:var(--n-a-tint, #FFCE3C); color:var(--n-ink, #22201C);
+  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+  font-weight:800; font-size:clamp(16px,2vw,20px);
+}
+.cip-reveal {
+  font:inherit; font-weight:800; font-size:clamp(14px,1.7vw,16px); cursor:pointer;
+  padding:8px 22px; border:0; border-radius:999px;
+  background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
+  box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+}
+.cip-reveal:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C); }

@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import frameCss from './ExplainerVideo.frame.css?inline'
+import explainerVideoCss from './ExplainerVideo.css?inline'
+import explainerInlineCss from './ExplainerVideo.inline.css?inline'
 
 /**
  * فيديو شرح اللعبة، بهيئتين (قرار علي ٢٩ سبتمبر ٢٠٢٦):
@@ -16,15 +19,6 @@ import { useEffect, useRef, useState } from 'react'
  * **من استبدله غيّر اسمه** — Cloudflare يُبقي القديم يوماً باسمه.
  */
 const SRC = '/explainer-v4.mp4'
-
-/** إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً. */
-const FRAME_CSS = `
-        .xv-frame {
-          aspect-ratio:16 / 9; border-radius:18px; overflow:hidden; background:#000;
-          box-shadow:0 0 0 3px var(--n-ink, #22201C), 7px 8px 0 var(--n-ink, #22201C);
-        }
-        .xv-frame video { display:block; width:100%; height:100%; background:#000; }
-`
 
 /**
  * تشغيلٌ من الشيفرة لحظة التركيب: WKWebView في التطبيق يتجاهل `autoPlay`
@@ -63,29 +57,7 @@ export function ExplainerVideo({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      <style>{`
-        .xv-veil {
-          position:fixed; inset:0; z-index:60;
-          display:flex; align-items:center; justify-content:center;
-          padding:clamp(12px,3dvh,40px) clamp(12px,3vw,40px);
-          background:rgba(20,16,10,.62);
-        }
-        /* الإطار بنسبة الفيديو ويتّسع لأكبر ما تسمح به الشاشة في الاتّجاهين */
-        .xv-panel {
-          position:relative;
-          width:min(1100px, 100%, calc((100dvh - 2 * clamp(12px,3dvh,40px) - 56px) * 16 / 9));
-          margin-top:52px; /* مكان ✕ فوقه */
-        }
-        ${FRAME_CSS}
-        .xv-x {
-          /* فوق الإطار من داخل حدّه: على حافّته كان يخرج من الشاشة في الجوال الطوليّ */
-          position:absolute; top:-52px; inset-inline-end:0; z-index:1;
-          font:inherit; font-weight:800; cursor:pointer;
-          width:40px; height:40px; border:0; border-radius:50%;
-          background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-          box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
-        }
-      `}</style>
+      <style>{frameCss + explainerVideoCss}</style>
     </div>
   )
 }
@@ -114,33 +86,7 @@ export function ExplainerInline() {
         </div>
       </div>
 
-      <style>{`
-        /* نحو 55٪ من عرض الشاشة في الوسط، على مثالٍ أرسله علي («خله بنفس الحجم»،
-           ٣٠ سبتمبر ٢٠٢٦) — وبعرض الصفحة في الضيّق، حيث 55٪ تصغر عن القراءة. */
-        /* فسحةٌ فوقه وتحته (علي: «نزّل الفيديو، خل المساحة واسعة مو كل شي فوق بعض») */
-        .xi-wrap { width:100%; margin-inline:auto; margin-block:clamp(36px,7dvh,72px) clamp(20px,4dvh,44px); }
-        @media (min-width:900px) { .xi-wrap { width:min(100%, 55vw); } }
-        /* إطارٌ أسود وحده (علي ٣٠ سبتمبر ٢٠٢٦: «شيل اطار التلفزيون وخله اطار
-           اسود بس») — بلا قاعدة ولا نقطة كاميرا ولا ظلّ على الأرضيّة. */
-        .xi-tv {
-          padding:clamp(4px,.6vw,8px);
-          border-radius:clamp(12px,1.4vw,18px); background:#000;
-        }
-        .xi-tv .xv-frame { border-radius:clamp(8px,1vw,12px); box-shadow:none; }
-        ${FRAME_CSS}
-        .xi-poster { all:unset; position:relative; display:block; width:100%; height:100%; cursor:pointer; }
-        /* زرّ التشغيل بلغة الكتل: دائرةٌ بلون العلامة بحدّ حبرٍ وظلٍّ صلب */
-        .xi-play {
-          position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-          width:clamp(58px,9vw,84px); height:clamp(58px,9vw,84px); border-radius:50%;
-          display:grid; place-items:center; padding-inline-start:.12em;
-          font-size:clamp(24px,3.6vw,34px); color:#fff; background:var(--n-brand, #E8542F);
-          box-shadow:0 0 0 3px var(--n-ink, #22201C), 5px 6px 0 var(--n-ink, #22201C);
-          transition:transform .16s var(--ease-spring);
-        }
-        .xi-poster:hover .xi-play { transform:translate(-50%,-50%) scale(1.08); }
-        .xi-poster:focus-visible { outline:3px solid var(--n-brand, #E8542F); outline-offset:3px; }
-      `}</style>
+      <style>{frameCss + explainerInlineCss}</style>
     </div>
   )
 }

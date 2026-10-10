@@ -1,0 +1,25 @@
+/*
+  أنماط نافذة فيديو الشرح — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+.xv-veil {
+  position:fixed; inset:0; z-index:60;
+  display:flex; align-items:center; justify-content:center;
+  padding:clamp(12px,3dvh,40px) clamp(12px,3vw,40px);
+  background:rgba(20,16,10,.62);
+}
+/* الإطار بنسبة الفيديو ويتّسع لأكبر ما تسمح به الشاشة في الاتّجاهين */
+.xv-panel {
+  position:relative;
+  width:min(1100px, 100%, calc((100dvh - 2 * clamp(12px,3dvh,40px) - 56px) * 16 / 9));
+  margin-top:52px; /* مكان ✕ فوقه */
+}
+
+.xv-x {
+  /* فوق الإطار من داخل حدّه: على حافّته كان يخرج من الشاشة في الجوال الطوليّ */
+  position:absolute; top:-52px; inset-inline-end:0; z-index:1;
+  font:inherit; font-weight:800; cursor:pointer;
+  width:40px; height:40px; border:0; border-radius:50%;
+  background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
+  box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+}

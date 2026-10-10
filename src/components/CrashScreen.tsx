@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import crashScreenCss from './CrashScreen.css?inline'
 
 /**
  * شبكةُ الأمان تحت شاشات اللعب.
@@ -72,14 +73,7 @@ export class CrashScreen extends Component<
             </div>
           </div>
         </div>
-        <style>{`
-          .crash-card { max-width: 640px; text-align: center; display: grid; gap: 18px; padding: 8px; }
-          .crash-title { font-size: clamp(28px, 5vw, 44px); font-weight: 800; }
-          .crash-text { font-size: clamp(16px, 2.4vw, 22px); margin: 0; opacity: .85; }
-          .crash-actions { display: grid; gap: 12px; }
-          .crash-warn { margin: 0; font-weight: 800; color: var(--n-bad, #DC4033); font-size: clamp(14px, 2vw, 18px); }
-          html[data-skin] .crash .action.ghost.asking { background: #fff; color: var(--n-bad, #DC4033); box-shadow: inset 0 0 0 3px var(--n-bad, #DC4033); }
-        `}</style>
+        <style>{crashScreenCss}</style>
       </div>
     )
   }

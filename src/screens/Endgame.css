@@ -1,0 +1,159 @@
+/*
+  أنماط Endgame — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+/* لا تمرير — الختام يُقرأ في لقطة واحدة كبقية الشاشات. */
+.end { overflow:hidden; align-items:center; text-align:center; }
+
+/* الكتل الثلاث صفّاً على العريض، وتنكسر إلى عمود على الضيّق.
+   align-items:start حتى لا يتمدّد الجدول القصير ليطاول الطويل. */
+.es-grid {
+  /* تأخذ ما تبقّى بعد الفائز والزرّ: بـ0 1 auto كانت تنكمش دون محتواها
+     فتفيض كتلُها من صندوقها وتركب على زرّ «لعبة جديدة». */
+  min-height:0; flex:1 1 auto;
+  /* قياسٌ مشترك مع بطاقة الفائز بدل الامتداد من حافّة إلى حافّة: على
+     شاشة ألفَي بكسل كانت الجداول تعبر ١٩٠٠ بكسلاً تحت بطاقةٍ عرضُها
+     ٧٦٠، فتُقرأ الشاشة كتلتين لا تجمعهما عين واحدة. */
+  width:min(100%, 1400px); margin-inline:auto;
+  display:grid; grid-template-columns:1fr;
+  gap:clamp(10px, 1.6vw, 26px);
+  /* الفائضُ الرأسي يُقسَم فوق الجداول وتحتها بدل أن يتكوّم كلّه فوق
+     زرّ «لعبة جديدة» — الكتل تعلو إلى وسط نصيبها فتقف الشاشة متّزنة. */
+  align-content:center;
+  align-items:start; justify-items:center;
+}
+/* عمودان متساويان: يمينُهما جدولُ النقاط وتحته عدُّ «الحق ما تلحق»،
+   ويسارُهما لاعبو الديربي. الترتيب من اليمين ترتيبُ اللعب. */
+@media (min-width:900px) {
+  .es-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+}
+.es-col {
+  display:flex; flex-direction:column; gap:clamp(10px,1.6dvh,20px);
+  width:100%; max-width:680px; min-width:0;
+}
+.brand img {
+  width:min(56%, 420px); height:auto; max-height:14dvh; object-fit:contain;
+  animation:brand-in .7s var(--ease-spring) both;
+}
+@keyframes brand-in {
+  from { opacity:0; transform:scale(.86) translateY(-10px); }
+  to   { opacity:1; transform:none; }
+}
+.winner {
+  display:flex; flex-direction:row; align-items:center; justify-content:center;
+  flex-wrap:nowrap; gap:clamp(12px,2.4vw,40px); flex:none;
+}
+/* البطاقة تتّسع للصفّ: نيو كانت تحدّها بسبعمئة وستّين لأنّها كانت
+   عمودية، والصفُّ فيها يلتفّ سطرين — فيعود العمودُ من حيث خرج. */
+html[data-skin] .screen.end .winner {
+  width:max-content; max-width:min(100%, 1180px);
+  flex-wrap:nowrap; gap:clamp(12px,2.4vw,40px);
+}
+/* الكِكر فوق الاسم في عمودٍ صغير داخل الصفّ — «الفائز» لا يُقرأ في سطرٍ
+   بجانب الاسم بل فوقه، وهو ما يجعل الاسمَ عنواناً لا كلمةً في جملة. */
+.w-copy { display:flex; flex-direction:column; align-items:center; gap:2px; min-width:0; }
+/* خطٌّ يفصل الاسم عن الرقم: بلا فاصلٍ يُقرآن سطراً واحداً متّصلاً. */
+.winner .final-score {
+  padding-inline-start:clamp(12px,2.4vw,40px);
+  border-inline-start:2px solid var(--border);
+  margin-top:0;
+}
+/* الشاشة الضيّقة ترجع بهما عمودين — الصفُّ يحتاج عرضاً. */
+@media (max-width:620px) {
+  .winner { flex-direction:column; gap:6px; }
+  .winner .final-score { padding-inline-start:0; border-inline-start:0; }
+}
+.w-eyebrow {
+  color:var(--text-2); font-weight:700; line-height:1.2;
+  font-size:clamp(12px,min(1.6vw,2dvh),18px);
+  animation:rise .5s ease-out .18s both;
+}
+/* أحجام الختام تأخذ أصغر نصيبَي العرض والارتفاع — نفس علّة .q-text:
+   بـvw وحده ينفخ الخط على شاشة عريضة ويدفع الجداول خارجها، والختام
+   أكثف الشاشات (حتى اثنا عشر لاعباً وأربعة أسطر مراحل). */
+/* اسم الفائز أكبر عنصر في الشاشة، لكنه يُقرأ لمحةً واحدة بينما الجداول
+   تحته تُقرأ وتُناقَش. سقفه هنا أقلّ من السابق (٦٤ بدل ٨٤) ونصيبه من
+   الارتفاع أقلّ (٦vh بدل ٧٫٤) — الفرق كلّه يذهب إلى الجداول. */
+.w-title {
+  color:var(--gold); font-weight:800; font-size:clamp(26px,min(5vw,6dvh),64px); line-height:1.05;
+  animation:winner-in .8s var(--ease-spring) .26s both;
+  text-shadow:0 0 46px rgba(255,189,89,.42);
+}
+/* اسم الفائز يدخل كبيراً ثم يستقرّ — أكبر عنصر في أهم لحظة */
+@keyframes winner-in {
+  0%   { opacity:0; transform:scale(1.5); filter:blur(9px); }
+  55%  { opacity:1; filter:none; }
+  100% { opacity:1; transform:none; filter:none; }
+}
+.final-score {
+  font-size:clamp(16px,min(2.6vw,3.2dvh),34px); font-weight:800; color:var(--cream); margin-top:clamp(1px,.5dvh,6px);
+  line-height:1.2;
+  animation:rise .5s ease-out .42s both;
+}
+@keyframes rise {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* لا تمرير داخلي: الصفحة كلها تُمرَّر حتى لا يُقتطع لاعب من القائمة (حتى ١٢ لاعباً). */
+.es-block { width:100%; max-width:680px; min-width:0; flex:none; display:flex; flex-direction:column; gap:8px; animation:rise .5s ease-out .5s both; }
+.es-title { color:var(--text-2); font-weight:700; font-size:clamp(11px,min(1.5vw,1.7dvh),17px); text-align:center; }
+.es-table { display:flex; flex-direction:column; gap:6px; width:100%; }
+/* من تسعة لاعبين فصاعداً ينقسم الجدول عمودين: اثنا عشر لاعباً في ستة
+   صفوف بدل اثني عشر — وهو أطول جدول في الشاشة. وكان الحدُّ سبعة، فلمّا
+   تساوت الأعمدةُ صار ثمانيةُ لاعبين (أربعة لكلّ فريق، وهي الحالة
+   الشائعة) ينقسمون فيهبط السطر إلى مئتَي بكسل ويُقصّ الاسم. */
+.es-table:has(.es-row.player:nth-child(9)) {
+  display:grid; grid-template-columns:1fr 1fr; gap:6px clamp(6px,.8vw,12px);
+}
+.es-row {
+  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+  padding:clamp(9px,1.4dvh,14px) clamp(12px,2vw,20px);
+}
+.es-label { color:var(--text-2); font-size:clamp(11px,min(1.6vw,1.9dvh),19px); font-weight:700; white-space:nowrap; line-height:1.35; }
+.es-label.strong { color:var(--cream); }
+.es-num { font-size:clamp(14px,min(2.1vw,2.5dvh),30px); font-weight:800; color:var(--text-2); line-height:1.25; }
+/* الأعلى في المرحلة وحده ذهبي — الفرق يُقرأ بلمحة بلا مقارنة رقمين */
+.es-num.up { color:var(--gold); }
+.es-row.head { background:transparent; border-color:transparent; padding-bottom:0; }
+.es-row.head span { color:var(--text-2); font-weight:700; font-size:clamp(10px,min(1.4vw,1.6dvh),17px); }
+.es-row.total { border-color:var(--gold); background:transparent; }
+.es-row.total .es-num { color:var(--gold); font-size:clamp(16px,min(2.5vw,2.9dvh),36px); }
+
+.es-row.s3, .es-row.player { grid-template-columns:minmax(0,1fr) auto; }
+.es-row.player { animation:rise .45s ease-out both; }
+/* الاسم والفريق متجاوران على خطّ الأساس بدل عمودين متباعدين: كان
+   اسمُ الفريق يطفو وحده في وسط السطر بفجوةٍ عن الاسم وأخرى عن
+   الرقاقتين، فيُقرأ السطر ثلاث جزرٍ لا سطراً واحداً. */
+.sr-who {
+  display:flex; align-items:baseline; gap:clamp(5px,.7vw,10px);
+  min-width:0; overflow:hidden;
+}
+/* سطر واحد لكل لاعب: العمود ضيّق (نصف الكتلة) والأسماء تطول، فبلا
+   هذا يلتفّ السطر إلى ثلاثة ويصير الجدول أطول من الشاشة وحده. */
+.sr-name {
+  font-weight:800; text-align:right; font-size:clamp(11px,min(1.5vw,1.8dvh),20px);
+  min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.35;
+}
+/* اسم الفريق يتقلّص هو أيضاً — عمود auto لا يتنازل من تلقائه، فيدفع
+   السطر خارج الكتلة أفقياً على الشاشة الأضيق. */
+.sr-team {
+  color:var(--text-3); font-size:clamp(9px,min(1.1vw,1.3dvh),14px);
+  white-space:nowrap; line-height:1.35;
+  min-width:0; overflow:hidden; text-overflow:ellipsis;
+}
+
+.es-chips { display:flex; gap:5px; flex-wrap:nowrap; justify-content:flex-end; }
+.chip {
+  display:inline-flex; align-items:center; gap:4px;
+  border:1px solid var(--border); border-radius:999px; padding:2px clamp(6px,.8vw,12px);
+  color:var(--text-2); font-size:clamp(9px,min(1.2vw,1.4dvh),15px); font-weight:700; white-space:nowrap;
+  line-height:1.4;
+}
+.chip .tabular { font-size:1.15em; font-weight:800; }
+.chip.ok { color:var(--gold); border-color:rgba(255,189,89,.45); }
+.chip.no { color:var(--coral); border-color:rgba(228,103,74,.45); }
+.foot { display:flex; align-items:center; gap:10px; color:var(--text-3); font-size:13px; }
+.foot-link { background:none; border:none; color:var(--text-2); font-family:inherit; font-size:13px; cursor:pointer; text-decoration:underline; }
+.report-note { max-width:560px; color:var(--text-2); font-size:13px; line-height:1.6; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 16px; }

@@ -24,6 +24,7 @@ import { useBank, useLoad } from '../shared'
 import { CELL_FLOOR, merge } from '../questionRows'
 import { LEVELS } from '../../game/levels'
 import { ArtCell } from '../QuestionForm'
+import categoriesGroupsBarCss from './Categories.GroupsBar.css?inline'
 
 /**
  * الفئات: المشحونة مع التطبيق والمضافة من هنا، ومعها ما ينقص كلَّ واحدة.
@@ -619,21 +620,7 @@ function GroupsBar({
         </ul>
       )}
 
-      <style>{`
-        .groups-bar { padding:14px 16px; margin-bottom:14px; }
-        .gb-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
-        .gb-note { margin:0; }
-        .gb-add { display:flex; gap:8px; margin:10px 0; max-width:520px; }
-        .gb-add .a-in { flex:1; }
-        .gb-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
-        .gb-list li {
-          display:flex; align-items:center; gap:8px;
-          padding:6px 10px; border-radius:10px; background:var(--n-surface-2);
-        }
-        .gb-name { font-weight:800; }
-        /* العدّاد يدفع الأزرار إلى الطرف فتصطفّ عمودياً مهما طالت الأسماء. */
-        .gb-count { margin-inline-end:auto; opacity:.7; font-size:13px; }
-      `}</style>
+      <style>{categoriesGroupsBarCss}</style>
     </div>
   )
 }

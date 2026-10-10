@@ -4,6 +4,7 @@ import type { Question } from '../game/types'
 import { saveQuestion } from '../lib/admin'
 import { type Row, resolveImage } from './questionRows'
 import { LEVELS } from '../game/levels'
+import questionFormArtCellCss from './QuestionForm.ArtCell.css?inline'
 
 /**
  * صورة السؤال في اللوحة: الرابط المرفوع يُعرض كما هو، والمفتاح المشحون
@@ -273,15 +274,7 @@ export function ArtCell({
           إزالة
         </button>
       )}
-      <style>{`
-        .art-cell { display:inline-flex; align-items:center; gap:6px; }
-        .art-thumb {
-          width:56px; height:38px; object-fit:cover; border-radius:8px;
-          background:var(--n-surface-2); display:block;
-        }
-        .art-thumb.empty { box-shadow:inset 0 0 0 1px var(--n-line); }
-        .art-pick { cursor:pointer; }
-      `}</style>
+      <style>{questionFormArtCellCss}</style>
     </span>
   )
 }

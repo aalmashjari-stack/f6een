@@ -1,0 +1,5 @@
+/*
+  أنماط Uploads — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
+  مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+*/
+.art-thumb { width:56px; height:38px; object-fit:cover; border-radius:8px; background:var(--n-surface-2); display:block; }

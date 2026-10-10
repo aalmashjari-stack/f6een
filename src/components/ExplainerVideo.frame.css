@@ -1,0 +1,9 @@
+/*
+  إطار المشغّل بلغة الكتل — للنافذة وللصفحة معاً، يُضاف قبل أنماط كلٍّ منهما.
+  (كان في وسط القالبين؛ لا قاعدةَ قبله تمسّ ‎.xv-frame‎ بالخصوصيّة نفسها، فالترتيب لا يغيّر شيئاً.)
+*/
+.xv-frame {
+  aspect-ratio:16 / 9; border-radius:18px; overflow:hidden; background:#000;
+  box-shadow:0 0 0 3px var(--n-ink, #22201C), 7px 8px 0 var(--n-ink, #22201C);
+}
+.xv-frame video { display:block; width:100%; height:100%; background:#000; }
