@@ -1,5 +1,6 @@
 import { unzipSync, strFromU8 } from 'fflate'
 import type { Level } from '../game/types'
+import { LEVELS } from '../game/levels'
 
 /**
  * قراءة ملفّ أسئلة (xlsx أو csv) وتحويله إلى خطّة رفع.
@@ -48,8 +49,6 @@ export interface Plan {
   added: number
   updated: number
 }
-
-const LEVELS: Level[] = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
 
 /* ============================== قراءة الملفّ ============================== */
 

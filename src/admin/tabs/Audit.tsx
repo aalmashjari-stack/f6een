@@ -5,9 +5,11 @@ import {
   saveQuestion,
   setFlag,
   type AdminQuestionEdit,
-} from '../lib/admin'
-import { isImageUrl } from '../game/celebs'
-import { shippedImage } from '../game/shippedImage'
+} from '../../lib/admin'
+import { isImageUrl } from '../../game/celebs'
+import { shippedImage } from '../../game/shippedImage'
+import { LEVELS } from '../../game/levels'
+import type { Level } from '../../game/types'
 
 /**
  * لسان «التدقيق» — طلب علي ٩ أكتوبر ٢٠٢٦: «حطّلي إيّاهم في تبويب جديد في
@@ -58,7 +60,6 @@ const TYPE: Record<string, string> = {
   wrong_category: 'فئة خاطئة',
 }
 
-const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
 /** حدُّ الخليّة في المعيار (القاعدة تحرس 20) — تحته تنبيهٌ لا منع. */
 const FLOOR = 30
 const PAGE = 50
@@ -175,7 +176,7 @@ export function Audit() {
           (!level || r.it.l === level) &&
           (!n || r.it.id === n || r.it.q.includes(n) || r.it.a.includes(n)),
       )
-      .sort((a, b) => a.it.c.localeCompare(b.it.c, 'ar') || LEVELS.indexOf(a.it.l) - LEVELS.indexOf(b.it.l))
+      .sort((a, b) => a.it.c.localeCompare(b.it.c, 'ar') || LEVELS.indexOf(a.it.l as Level) - LEVELS.indexOf(b.it.l as Level))
   }, [byStatus, type, cat, level, needle])
 
   useEffect(() => setLimit(PAGE), [status, type, cat, level, needle])

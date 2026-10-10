@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { fetchInsights, type Insights as Data, type ResultQuestion } from '../lib/admin'
-import { day, stamp } from '../lib/date'
+import { fetchInsights, type Insights as Data, type ResultQuestion } from '../../lib/admin'
+import { day, stamp } from '../../lib/date'
+import { LEVELS } from '../../game/levels'
 
 /**
  * لسان «الإحصائيات» — طلب علي ٢٣ سبتمبر ٢٠٢٦: «احصائيات فيها جميع انواع
@@ -32,8 +33,6 @@ const PHASES: Record<string, string> = {
 const STAGES: Record<number, string> = { 1: 'الجولة الجماعية', 2: 'الديربي', 3: 'الحق ما تلحق', 4: 'سؤال الحسم' }
 
 const WEEKDAYS = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
-const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
-
 const pct = (part: number, whole: number) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : '—')
 const num = (n: number | null | undefined) => (n === null || n === undefined ? '—' : String(n))
 
