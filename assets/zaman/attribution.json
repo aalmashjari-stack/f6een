@@ -43,10 +43,10 @@
   },
   {
     "key": "zaman-greenisland2",
-    "licence": "CC BY-SA 4.0",
-    "artist": "AMG KW",
-    "page": "File:The Dome in The Green Island.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AThe_Dome_in_The_Green_Island.jpg"
+    "licence": "غير مرخّصة — من الويب بقرار علي (الحقوق على مسؤوليته)، تدقيق ١١ أكتوبر ٢٠٢٦",
+    "artist": "غير مذكور",
+    "page": "https://sakan.co/blog/wp-content/uploads/2025/05/Green-Island-in-Kuwait.webp",
+    "source": "https://sakan.co/blog/wp-content/uploads/2025/05/Green-Island-in-Kuwait.webp"
   },
   {
     "key": "zaman-mini4wd",
@@ -92,10 +92,10 @@
   },
   {
     "key": "zaman-qualitystreet",
-    "licence": "CC BY-SA 4.0",
-    "artist": "Sebmelmoth",
-    "page": "File:Mackintosh's Quality Street Tin.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File%3AMackintosh's_Quality_Street_Tin.jpg"
+    "licence": "غير مرخّصة — من الويب بقرار علي (الحقوق على مسؤوليته)، تدقيق ١١ أكتوبر ٢٠٢٦",
+    "artist": "غير مذكور",
+    "page": "https://soldierandlady.co.uk/wp-content/uploads/2019/01/202.jpg",
+    "source": "https://soldierandlady.co.uk/wp-content/uploads/2019/01/202.jpg"
   },
   {
     "key": "zaman-startac",
@@ -124,5 +124,26 @@
     "artist": "Evan-Amos",
     "page": "File:Nintendo-Entertainment-System-NES-Zapper-Gray-R.jpg",
     "source": "https://commons.wikimedia.org/wiki/File%3ANintendo-Entertainment-System-NES-Zapper-Gray-R.jpg"
+  },
+  {
+    "key": "zaman-spintop",
+    "licence": "غير مرخّصة — من الويب بقرار علي (الحقوق على مسؤوليته)، تدقيق ١١ أكتوبر ٢٠٢٦",
+    "artist": "غير مذكور",
+    "page": "https://i.pinimg.com/originals/3b/82/db/3b82db3ea20a4adb6860c2c6e8ed3c03.jpg",
+    "source": "https://i.pinimg.com/originals/3b/82/db/3b82db3ea20a4adb6860c2c6e8ed3c03.jpg"
+  },
+  {
+    "key": "zaman-floppy",
+    "licence": "CC BY-SA 4.0",
+    "artist": "غير مذكور",
+    "page": "File:Floppy Disk HD.jpg",
+    "source": "commons: File:Floppy Disk HD.jpg (CC BY-SA 4.0)"
+  },
+  {
+    "key": "zaman-megadrive",
+    "licence": "Public domain",
+    "artist": "غير مذكور",
+    "page": "File:Sega-Mega-Drive-EU-Mk1-wController-FL.jpg",
+    "source": "commons: File:Sega-Mega-Drive-EU-Mk1-wController-FL.jpg (PD)"
   }
 ]
