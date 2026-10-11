@@ -259,6 +259,9 @@ export function Audit() {
     const count = new Map(cells)
     let applied = 0
     let held = 0
+    let failed = 0
+    let firstErr = ''
+    const full = new Set<string>()
     setBusy('bulk')
     setMsg(null)
     for (const r of todo) {
@@ -266,6 +269,7 @@ export function Audit() {
       const to = r.it.c + '|' + r.it.to
       if ((count.get(from) ?? 0) - 1 < FLOOR) {
         held++
+        full.add(from.replace('|', ' · ') + ` (${count.get(from) ?? 0})`)
         continue
       }
       try {
@@ -274,12 +278,16 @@ export function Audit() {
         count.set(to, (count.get(to) ?? 0) + 1)
         applied++
         setMsg(`طُبّق ${applied} من ${todo.length}…`)
-      } catch {
-        held++
+      } catch (e) {
+        failed++
+        firstErr ||= e instanceof Error ? e.message : String(e)
       }
     }
     setBusy(null)
-    setMsg(`طُبّق ${applied}، وتُرك ${held} لأنّ خليّته عند الحدّ أو رفضته القاعدة`)
+    const parts = [`طُبّق ${applied}`]
+    if (held) parts.push(`وتُرك ${held} لأنّ خليّته عند ${FLOOR}: ${[...full].join('، ')}`)
+    if (failed) parts.push(`ورفضت القاعدة ${failed}: ${firstErr}`)
+    setMsg(parts.join('، '))
     reload()
   }
 
