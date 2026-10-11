@@ -431,6 +431,7 @@ table.a-tbl-q { table-layout: fixed; width: max(100%, 860px); }
 .audit-acts { margin: 8px 0 0; }
 .audit-edit { display: flex; flex-direction: column; gap: 6px; margin-block-start: 8px; }
 .audit-edit textarea { font: inherit; font-size: 14px; line-height: 1.7; width: 100%; resize: vertical; }
+.audit-art-label { font-size: 13px; color: var(--n-ink-3); }
 .audit-ans { flex: 1 1 200px; }
 .audit-more { display: block; margin: 14px auto; }
 

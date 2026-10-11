@@ -4,6 +4,8 @@ import { isImageUrl } from '../../game/celebs'
 import { shippedImage } from '../../game/shippedImage'
 import { LEVELS } from '../../game/levels'
 import type { Level } from '../../game/types'
+import { uploadArt } from '../../lib/uploads'
+import { ArtCell } from '../QuestionForm'
 
 /**
  * لسان «التدقيق» — طلب علي ٩ أكتوبر ٢٠٢٦: «حطّلي إيّاهم في تبويب جديد في
@@ -335,7 +337,9 @@ export function Audit() {
       {shown.slice(0, limit).map(({ it, i, st }) => {
         const cur = live?.get(it.id)
         const rel = it.rel ? live?.get(it.rel) : undefined
-        const src = it.img ? imageSrc(it.img) : null
+        /* الصورة الحيّة لا صورة الملفّ: بعد تبديلها من «تعديل» تظهر الجديدة. */
+        const img = cur ? cur.image : it.img
+        const src = img ? imageSrc(img) : null
         const fromCount = cells.get(it.c + '|' + (cur?.level ?? it.l)) ?? 0
         const key = String(i)
         return (
@@ -380,7 +384,7 @@ export function Audit() {
                 cur={cur}
                 level={it.to}
                 onCancel={() => setEditing(null)}
-                onSave={(q, a, l) =>
+                onSave={(q, a, l, image, answerImage) =>
                   act(
                     key,
                     async () => {
@@ -391,8 +395,8 @@ export function Audit() {
                         topic: cur.topic,
                         question: q,
                         answer: a,
-                        image: cur.image,
-                        answerImage: cur.answer_image,
+                        image,
+                        answerImage,
                       })
                       setEditing(null)
                     },
@@ -470,15 +474,46 @@ function EditBox({
   cur: AdminQuestionEdit
   level?: string
   busy: boolean
-  onSave: (q: string, a: string, l: string) => void
+  onSave: (q: string, a: string, l: string, image: string | null, answerImage: string | null) => void
   onCancel: () => void
 }) {
   const [q, setQ] = useState(cur.question)
   const [a, setA] = useState(cur.answer)
   const [l, setL] = useState(level ?? cur.level)
+  const [image, setImage] = useState<string | null>(cur.image)
+  const [answerImage, setAnswerImage] = useState<string | null>(cur.answer_image)
+  const [err, setErr] = useState<string | null>(null)
+
+  /* خانتا الصورة نفسُ خانتَي نموذج «الأسئلة»: الرفع إلى الدلو، والحفظ مع النصّ. */
+  const pick = (set: (k: string) => void) => async (f: File) => {
+    setErr(null)
+    try {
+      set(await uploadArt(f, 'questions'))
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'تعذّر رفع الصورة')
+    }
+  }
+
   return (
     <div className="audit-edit">
       <textarea className="a-in" rows={3} value={q} onChange={(e) => setQ(e.target.value)} />
+      <div className="a-bar">
+        <span className="audit-art-label">الصورة</span>
+        <ArtCell
+          src={image ? imageSrc(image) : null}
+          uploaded={image !== null}
+          onPick={pick(setImage)}
+          onClear={() => setImage(null)}
+        />
+        <span className="audit-art-label">صورة الإجابة</span>
+        <ArtCell
+          src={answerImage ? imageSrc(answerImage) : null}
+          uploaded={answerImage !== null}
+          onPick={pick(setAnswerImage)}
+          onClear={() => setAnswerImage(null)}
+        />
+      </div>
+      {err && <p className="a-err">{err}</p>}
       <div className="a-bar">
         <input className="a-in audit-ans" value={a} onChange={(e) => setA(e.target.value)} />
         <select className="a-in" value={l} onChange={(e) => setL(e.target.value)}>
@@ -489,7 +524,7 @@ function EditBox({
         <button
           className="a-btn go"
           disabled={busy || !q.trim() || !a.trim()}
-          onClick={() => onSave(q, a, l)}
+          onClick={() => onSave(q, a, l, image, answerImage)}
         >
           حفظ
         </button>
