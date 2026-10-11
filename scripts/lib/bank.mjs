@@ -45,6 +45,18 @@ function dbUrl() {
  * الملفّ وحده ليس كفحصٍ قرأ القاعدة، والفرقُ يجب أن يُرى لا أن يُفترض.
  */
 export async function loadBank() {
+  /* نسخةٌ من `npm run db:backup` بدل القاعدة: لمن لا يُسمح له بقراءة الحيّ. */
+  const snap = process.env.F6EEN_BANK_SNAPSHOT
+  if (snap) {
+    const rows = JSON.parse(readFileSync(resolve(snap), 'utf8')).map((o) => ({
+      id: o.question_id,
+      category: o.category,
+      level: o.level,
+      question: o.question,
+      answer: o.answer,
+    }))
+    return { rows, source: `نسخة ${snap} (${rows.length} سؤالاً)` }
+  }
   const url = dbUrl()
   if (!url) return { rows: fileBank(), source: 'الملفّ (لا .env.db)' }
   try {
