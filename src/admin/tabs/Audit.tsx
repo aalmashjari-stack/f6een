@@ -57,6 +57,13 @@ const TYPE: Record<string, string> = {
   wrong_category: 'فئة خاطئة',
 }
 
+/**
+ * أنواعٌ أسقطها علي من اللسان كلّها — «اتركهم وشيلهم من التدقيق» (١١ أكتوبر
+ * عن «مكشوف في سؤال آخر»). تُخفى ولا تُحذف من الملفّ: «اترك» محفوظةٌ بترتيب
+ * الاقتراح في الملفّ، وحذفُ سطرٍ يُزيح كلَّ ما بعده إلى غير صاحبه.
+ */
+const DROPPED = new Set(['answer_in_other_question'])
+
 /** حدُّ الخليّة في المعيار (القاعدة تحرس 20) — تحته تنبيهٌ لا منع. */
 const FLOOR = 30
 const PAGE = 50
@@ -159,7 +166,7 @@ export function Audit() {
 
   const rows = useMemo(() => {
     if (!items || !live) return null
-    return items.map((it, i) => ({ it, i, st: statusOf(it, i) }))
+    return items.flatMap((it, i) => (DROPPED.has(it.t) ? [] : [{ it, i, st: statusOf(it, i) }]))
   }, [items, live, statusOf])
 
   const byStatus = useMemo(
