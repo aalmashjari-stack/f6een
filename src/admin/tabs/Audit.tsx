@@ -6,6 +6,7 @@ import { LEVELS } from '../../game/levels'
 import type { Level } from '../../game/types'
 import { uploadArt } from '../../lib/uploads'
 import { ArtCell } from '../QuestionForm'
+import BLURRED_IDS from './audit-blurred-2026-10-11.json'
 
 /**
  * لسان «التدقيق» — طلب علي ٩ أكتوبر ٢٠٢٦: «حطّلي إيّاهم في تبويب جديد في
@@ -86,6 +87,12 @@ function writeDismissed(s: Set<number>) {
   }
 }
 
+/**
+ * طُمست صورها في الحزمة ١١ أكتوبر (الجواب مطبوعٌ فيها) — المفتاح لم يتغيّر،
+ * فلا يرى اللسانُ التعديلَ في القاعدة، ويُعدّ «عُدّل» من هذه القائمة.
+ */
+const BLURRED = new Set<string>(BLURRED_IDS)
+
 function imageSrc(key: string): string | null {
   return isImageUrl(key) ? key : shippedImage(key)
 }
@@ -143,6 +150,7 @@ export function Audit() {
       if (!cur || disabled.has(it.id)) return 'blocked'
       if (it.to && cur.level === it.to) return 'applied'
       if (cur.question !== it.q || cur.answer !== it.a || cur.image !== (it.img ?? null)) return 'edited'
+      if (BLURRED.has(it.id)) return 'edited'
       if (dismissed.has(i)) return 'dismissed'
       return 'pending'
     },
