@@ -12,13 +12,13 @@ import explainerInlineCss from './ExplainerVideo.inline.css?inline'
  * - **التطبيق:** زرّ «شاهد الشرح» جنب «مراحل اللعبة» يفتح نافذة (`ExplainerVideo`).
  *
  * **الملفّ منّا لا من يوتيوب** (قرار علي ٣٠ سبتمبر ٢٠٢٦، للجودة): يوتيوب
- * يعيد الضغط ويبدأ بجودةٍ دنيا، والفيلم خطوطُ حبرٍ ونصوص. `public/explainer-v4.mp4`
+ * يعيد الضغط ويبدأ بجودةٍ دنيا، والفيلم خطوطُ حبرٍ ونصوص. `public/explainer-v5.mp4`
  * بـ1080p (H.264، CRF 24، نحو 12MB، faststart) — الموقع يخدمه من f6een.com
  * خلف Cloudflare، والتطبيق من حزمته بلا شبكة. ويوتيوب باقٍ للنشر لا للعرض.
- * المصدر في ~/Documents/f6een-explainer-video (film-v4.html: v3 بالخلفيّة الرماديّة).
+ * المصدر في ~/Documents/f6een-explainer-video (film-v4.html: v3 بالخلفيّة الرماديّة؛ v5 = v4 بلا بقايا قرعة الديربي).
  * **من استبدله غيّر اسمه** — Cloudflare يُبقي القديم يوماً باسمه.
  */
-const SRC = '/explainer-v4.mp4'
+const SRC = '/explainer-v5.mp4'
 
 /**
  * تشغيلٌ من الشيفرة لحظة التركيب: WKWebView في التطبيق يتجاهل `autoPlay`
