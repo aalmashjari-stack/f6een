@@ -311,6 +311,48 @@ html[data-skin='blocks'] .ring-timer.low .timer-progress > span { background: va
 html[data-skin='blocks'] .rv-a,
 html[data-skin='blocks'] .reveal-a .a-text,
 html[data-skin='blocks'] .s3-answer { color: var(--n-brand); font-weight: 800; }
+
+/* «ستارتان» (اعتمده علي ١٤ أكتوبر ٢٠٢٦، من Dual Wipe Reveal في 21st):
+   كتلتان برتقاليّة فصفراء تغطّيان الإجابة ثمّ تنسحبان في اتّجاهين
+   متعاكسين — تحلّان محلّ قفزة الإجابة ولمعة البطاقة. الحقُّ ما تلحق خارجها:
+   عدّاده يجري، ولا وقت فيه لستارة.
+   الستارتان بحجم الإجابة تماماً (inset 0) لا أوسع: الزائد يدخل scrollWidth
+   صندوقها فيظنّه useFitText فيضاً ويصغّر الخطّ. */
+html[data-skin='blocks'] .rv-card::after,
+html[data-skin='blocks'] .reveal-a::after { display: none; }
+html[data-skin='blocks'] .rv-a,
+html[data-skin='blocks'] .reveal-a .a-text { position: relative; animation: none; }
+html[data-skin='blocks'] .rv-a::before,
+html[data-skin='blocks'] .rv-a::after,
+html[data-skin='blocks'] .reveal-a .a-text::before,
+html[data-skin='blocks'] .reveal-a .a-text::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px var(--n-ink);
+  pointer-events: none;
+}
+html[data-skin='blocks'] .rv-a::before,
+html[data-skin='blocks'] .reveal-a .a-text::before {
+  background: var(--n-a-tint);
+  transform-origin: left center;
+  animation: curtain-off .5s cubic-bezier(.7, 0, .3, 1) .55s both;
+}
+html[data-skin='blocks'] .rv-a::after,
+html[data-skin='blocks'] .reveal-a .a-text::after {
+  background: var(--n-brand);
+  transform-origin: right center;
+  animation: curtain-off .5s cubic-bezier(.7, 0, .3, 1) .3s both;
+}
+@keyframes curtain-off { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+/* theme.css يُطفئ كلّ حركة هنا — والستارة بلا حركتها تبقى فوق الإجابة. */
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin='blocks'] .rv-a::before,
+  html[data-skin='blocks'] .rv-a::after,
+  html[data-skin='blocks'] .reveal-a .a-text::before,
+  html[data-skin='blocks'] .reveal-a .a-text::after { display: none; }
+}
 /* بطاقتا «من أصاب؟» بكتلتي الفريقين الكاملتين ونصٍّ حبريّ */
 html[data-skin='blocks'] .pick,
 html[data-skin='blocks'] .mark-cards .mcard { border-radius: var(--n-r3); box-shadow: var(--n-e1); }
