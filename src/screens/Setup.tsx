@@ -9,7 +9,6 @@ import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { BrandLogo } from '../components/BrandLogo'
-import welcomeCats from '../../assets/backgrounds/welcome-cats-tall.jpg'
 import { authErrorText, signOut } from '../lib/auth'
 import setupCss from './Setup.css?inline'
 const MIN = 2
@@ -265,7 +264,7 @@ export function Setup({
   }
 
   return (
-    <div className="screen setup" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
+    <div className="screen setup">
       {/* الرأس شريطٌ بدرجةٍ أدفأ من الأرضيّة (طلب علي، ١ سبتمبر ٢٠٢٦) —
           يحمل الشعارَ والقائمة: شراء الألعاب · حسابي · تواصل معنا. */}
       {/* التمرير على غلافٍ داخليّ لا على ‎.screen.setup‎ نفسها: القصّ
