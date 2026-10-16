@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { ALL_QUESTIONS } from './bank'
-import { celebImage, celebSrc, isImageUrl } from './celebs'
+import { celebSrc, isImageUrl } from './celebs'
+import { shippedImage } from './shippedImage'
 
 /**
  * صور المشاهير تُجمَّع بـ`import.meta.glob` لا باستيرادٍ مكتوب، فلا يكشف
@@ -15,7 +16,7 @@ describe('صور المشاهير', () => {
 
   it('كل مفتاح في البنك يقابله ملفٌّ مشحون', () => {
     expect(withImage.length).toBeGreaterThan(100)
-    const missing = withImage.filter((q) => celebImage(q.image!) === null)
+    const missing = withImage.filter((q) => shippedImage(q.image!) === null)
     expect(missing.map((q) => `${q.id}: ${q.image}`)).toEqual([])
   })
 
@@ -32,12 +33,12 @@ describe('صور المشاهير', () => {
     expect(isImageUrl(url)).toBe(true)
     expect(celebSrc(url)).toBe(url)
     /* ولا يُبحث عنه في الملفّات المشحونة — فليس مفتاحاً. */
-    expect(celebImage(url)).toBeNull()
+    expect(shippedImage(url)).toBeNull()
   })
 
   it('المفتاح المجهول يعطي صورةً مؤقّتة لا فراغاً', () => {
     expect(isImageUrl('celeb-999-nope')).toBe(false)
-    expect(celebImage('celeb-999-nope')).toBeNull()
+    expect(shippedImage('celeb-999-nope')).toBeNull()
     expect(celebSrc('celeb-999-nope')).toBe(celebSrc(undefined))
   })
 })

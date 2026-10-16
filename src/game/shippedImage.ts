@@ -1,19 +1,61 @@
 /**
- * حلُّ مفتاح الصورة المشحونة — **موضعٌ واحد لا موضعان**.
+ * صور الأسئلة المشحونة في التطبيق — **جدولٌ واحد لكلّ المجلّدات**.
  *
  * كانت السلسلة مكتوبةً مرّتين: في `celebSrc` لشاشة اللعب، وفي
  * `resolveImage` باللوحة. فكلّ مجلّد صورٍ جديد كان يحتاج إضافتين، وفي ٨
  * سبتمبر ٢٠٢٦ نُسيت الثانية مرّتين في يومٍ واحد: غابت صور المعالم عن
- * اللوحة وهي سليمة في اللعب، ثمّ غابت صور «الزمن الجميل» كذلك.
+ * اللوحة وهي سليمة في اللعب، ثمّ غابت صور «الزمن الجميل» كذلك. ثمّ صارت
+ * هنا، لكن بأربع وحداتٍ متطابقة (واحدةٌ لكلّ مجلّد) — فصارت جدولاً واحداً.
  *
- * **فمن أضاف مجلّداً رابعاً يضيفه هنا وحده**، ويناله الاثنان معاً.
+ * المفتاح في البنك (حقل `image`) هو اسم الملفّ بلا امتداد، ويُحلّ إلى ملفٍّ
+ * مُجمَّع بواسطة Vite. النمط ثابت وقت البناء، فيضمّ كلّ ما في المجلّد بلا
+ * قائمة استيراداتٍ يدويّة.
+ *
+ * - `assets/celebrities/celeb-*` — «من صاحب الصورة؟»: عموديّة أو مربّعة
+ *   واضحة الوجه.
+ * - `assets/landmarks/landmark-*` — المعالم: أفقيّةٌ يملأ المعلمُ إطارَها؛
+ *   المنظرُ العريض الذي يصير فيه المعلم نقطةً لا يُعرَف من آخر المجلس.
+ * - `assets/zaman/zaman-*` — «الزمن الجميل»: يملأ الشيءُ إطارَه.
+ * - `assets/pics/pic-*` — صورٌ **داخل** الفئات القائمة (طلب علي ١٢ سبتمبر
+ *   ٢٠٢٦)، والفئةُ في اسم المفتاح: `pic-anc-…` للحضارات، و`pic-seerah-…`
+ *   للسيرة، و`pic-wc-…` لكأس العالم. فمجلّدٌ لكلّ فئةٍ كان سيعني أحد عشر
+ *   مجلّداً.
+ *
+ * كلّها تُعرض داخل إطارها بلا قصّ. **ورخصةُ كلّ صورةٍ من كومنز مسجّلة** في
+ * `attribution.json` بمجلّدها، ومعها مؤلّفُها وصفحتُها — برخصٍ تسمح
+ * بالاستعمال التجاريّ (ملكيّة عامّة، أو CC0، أو CC BY وBY-SA). ومن حذف
+ * صورةً فليحذف سطرَها، ومن أضاف فليضف سطرَه — الملفّ هو ما يُثبت الحقّ.
+ *
+ * **ومن أضاف مجلّداً يضيفه هنا وحده** — ثمّ هجرةً تضيف بادئته إلى
+ * `public.is_art_ref` في القاعدة، وإلّا ردّ حارسُ المسوّدات الدفعةَ كلّها
+ * بـ`bad_image_url`. و`shippedImage.test.ts` يُسقط البناء حتى تتطابقا.
  */
-import { celebImage } from './celebs'
-import { landmarkImage } from './landmarks'
-import { zamanImage } from './zaman'
-import { picImage } from './pics'
+const modules = import.meta.glob(
+  [
+    '../../assets/celebrities/celeb-*.jpg',
+    '../../assets/landmarks/landmark-*.jpg',
+    '../../assets/zaman/zaman-*.jpg',
+    '../../assets/pics/pic-*.jpg',
+  ],
+  { eager: true, query: '?url', import: 'default' },
+) as Record<string, string>
+
+const SHIPPED_IMAGES: Record<string, string> = Object.fromEntries(
+  Object.entries(modules).map(([path, url]) => [
+    path
+      .split('/')
+      .pop()!
+      .replace(/\.[^.]+$/, ''),
+    url,
+  ]),
+)
 
 /** ملفُّ المفتاح في أيّ من مجلّدات الصور المشحونة، أو `null`. */
 export function shippedImage(key: string): string | null {
-  return celebImage(key) ?? landmarkImage(key) ?? zamanImage(key) ?? picImage(key)
+  return SHIPPED_IMAGES[key] ?? null
+}
+
+/** بادئات المفاتيح المشحونة (`celeb`، `pic`…) — يطابقها الاختبار بحارس القاعدة. */
+export function shippedPrefixes(): string[] {
+  return [...new Set(Object.keys(SHIPPED_IMAGES).map((k) => k.split('-')[0]))].sort()
 }
