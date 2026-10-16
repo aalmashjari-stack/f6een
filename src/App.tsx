@@ -55,6 +55,7 @@ import { Stage2Reveal } from './screens/Stage2Reveal'
 import { Stage3 } from './screens/Stage3'
 import { Tiebreak } from './screens/Tiebreak'
 import { Endgame } from './screens/Endgame'
+import { warmQuestionImages } from './lib/preloadImages'
 
 /* قائمة المحجوز المخزّنة تُطبَّق قبل أوّل سحب — عند تحميل الوحدة لا داخل
    أثر: `createSession` قد تُنادى في أوّل رسمة، وأثرٌ يجري بعدها يصل متأخّراً
@@ -196,6 +197,16 @@ export default function App() {
   useEffect(() => {
     saveSession(state, sessionId)
   }, [state, sessionId])
+
+  /* صورُ ما سيُعرض قريباً تُطلب قبل أن تُعرض — انظر `preloadImages`: صورةُ
+     إجابة السؤال القائم، والأسئلةُ الخمسة التالية في طابور «الحق ما تلحق»
+     (أسئلتُه متلاحقةٌ تحت ساعةٍ لا تتوقّف). */
+  const currentQuestion = state?.currentQuestion
+  const s3Queue = state?.s3Queue
+  const s3Pos = state?.s3Pos ?? 0
+  useEffect(() => {
+    warmQuestionImages([currentQuestion, ...(s3Queue?.slice(s3Pos, s3Pos + 5) ?? [])])
+  }, [currentQuestion, s3Queue, s3Pos])
 
   /* ذاكرة الأسئلة عبر الجلسات — سجلّ مستقلّ عن لقطة الاستئناف، ولا يُمحى بانتهاء اللعبة.
      مربوط بالمجموعة وحدها لا بالحالة كلها: وإلا أُعيدت كتابة مئات المعرّفات مع كل ضغطة. */
