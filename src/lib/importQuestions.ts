@@ -1,6 +1,7 @@
 import { unzipSync, strFromU8 } from 'fflate'
 import type { Level } from '../game/types'
 import { LEVELS } from '../game/levels'
+import { questionKey } from './questionKey'
 
 /**
  * قراءة ملفّ أسئلة (xlsx أو csv) وتحويله إلى خطّة رفع.
@@ -161,14 +162,8 @@ export async function readTable(file: File): Promise<string[][]> {
 
 /* ============================== بناء الخطّة ============================== */
 
-/** تطبيع عربي — نفس تطبيع المحرّك: به تُكشف الأسئلة المكرّرة رغم اختلاف الرسم. */
-const norm = (s: string) =>
-  s
-    .replace(/[ً-ْـ]/g, '')
-    .replace(/[أإآ]/g, 'ا')
-    .replace(/ة/g, 'ه')
-    .replace(/ى/g, 'ي')
-    .replace(/[^\p{L}\p{N}]/gu, '')
+/** تطبيعٌ عربيّ — به تُكشف الأسئلة المكرّرة رغم اختلاف الرسم، وهو نفسه حارسُ القاعدة. */
+const norm = questionKey
 
 /**
  * كتابةُ الأسئلة CSV — هنا لا في اللوحة، بجوار قارئها.
