@@ -36,6 +36,7 @@ import { loadBank } from './lib/bank.mjs'
 /* قاعدة الحرف من المحرّك نفسه لا نسخةٌ منها — Node يقرأ TS بلا ترجمة. */
 import { LETTERS_CATEGORY, firstLetter } from '../src/game/letters.ts'
 import { CHARADES_CATEGORY } from '../src/game/charades.ts'
+import { questionKey } from '../src/lib/questionKey.ts'
 
 const CELL_FLOOR = 20
 const LEVELS = ['سهل', 'متوسط', 'صعب', 'تعجيزي']
@@ -170,7 +171,8 @@ const block = (r, why) => blocking.push(`سطر ${r.line}: ${why}\n    ${r.quest
 const warn = (r, why) => warning.push(`سطر ${r.line}: ${why}\n    ${r.question} → ${r.answer}`)
 
 /* فهارس البنك */
-const bankByNorm = new Map(bank.map((q) => [norm(q.question), q]))
+/* التكرار الحرفيّ بمفتاح القاعدة نفسه (`norm_question`) — فما يردّه هذا تردّه هي. */
+const bankByNorm = new Map(bank.map((q) => [questionKey(q.question), q]))
 const bankByAnswer = new Map()
 for (const q of bank) {
   const k = akey(q.answer)
@@ -205,7 +207,7 @@ for (const r of rows) {
         وهو ما يفعله مستورِد اللوحة و`admin_approve_drafts` سواء. فدفعةُ
         ١٢ سبتمبر ٢٠٢٦ (24 وجهاً في «كأس العالم») رُدّت كلُّها هنا وكانت
         ستمرّ في القاعدة. */
-  const n = norm(r.question)
+  const n = questionKey(r.question)
   if (!r.image) {
     if (bankByNorm.has(n)) {
       block(r, `مكرّر حرفيّاً مع البنك (${bankByNorm.get(n).id})`)
