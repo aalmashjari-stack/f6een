@@ -156,6 +156,60 @@ html[data-skin='blocks'] .scorebar .team-1.lead.turn {
 html[data-skin='blocks'] .scorebar .team-0.turn .team-kicker,
 html[data-skin='blocks'] .scorebar .team-1.turn .team-kicker { color: var(--n-ink); font-weight: 800; }
 html[data-skin='blocks'] .scorebar .team.lead { box-shadow: var(--n-e2); }
+/* ملصق «صاحب الدور»: كتلة حبرٍ بنصٍّ أبيض تعلو حافّة الكبسولة من جهة الاسم،
+   مائلةٌ عكس ميل الكتلة. النهوض وحده كان أخفى من أن يُرى من آخر المجلس. */
+html[data-skin='blocks'] .scorebar .team { position: relative; }
+html[data-skin='blocks'] .scorebar .turn-badge {
+  position: absolute;
+  top: -15px;
+  inset-inline-start: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 13px 4px;
+  border-radius: 999px;
+  background: var(--n-ink);
+  color: #fff;
+  font-size: clamp(13px, 1.5vw, 18px);
+  font-weight: 800;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 rgba(34,32,28,.25);
+  transform: rotate(-3deg);
+  animation: turn-badge-in .45s var(--ease-spring) both;
+  pointer-events: none;
+}
+/* الفريق الثاني اسمُه في الطرف الآخر، فالملصق يتبعه. */
+html[data-skin='blocks'] .scorebar .team-1 .turn-badge {
+  inset-inline-start: auto;
+  inset-inline-end: 14px;
+  transform: rotate(3deg);
+}
+html[data-skin='blocks'] .scorebar .turn-badge::before {
+  content: '';
+  width: .5em;
+  height: .5em;
+  border-radius: 50%;
+  background: var(--n-a, #ffbd59);
+}
+html[data-skin='blocks'] .scorebar .team-1 .turn-badge::before { background: var(--n-b, #6fd3c8); }
+@keyframes turn-badge-in {
+  from { opacity: 0; scale: .6; }
+  to { opacity: 1; scale: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin='blocks'] .scorebar .turn-badge { animation: none; }
+}
+/* الجوال الأفقيّ: الشريط على سبعة بكسلات من حافّة الشاشة، فالملصق ينزل
+   إلى داخل الكبسولة أكثر ويصغر — وإلّا قصّته الحافّة. */
+@media (max-height: 480px) {
+  html[data-skin='blocks'] .scorebar .turn-badge {
+    top: -3px;
+    padding: 1px 8px 2px;
+    font-size: 11px;
+  }
+}
 /* الوسط: كتلة حبرٍ صغيرة مائلة بنصٍّ أبيض */
 html[data-skin='blocks'] .scorebar .mid {
   background: var(--n-ink);
