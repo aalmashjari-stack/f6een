@@ -22,7 +22,7 @@ import {
 import { uploadArt } from '../../lib/uploads'
 import { useBank, useLoad } from '../shared'
 import { CELL_FLOOR, merge } from '../questionRows'
-import { LEVELS } from '../../game/levels'
+import { BOARD_LEVELS, LEVELS } from '../../game/levels'
 import { ArtCell } from '../QuestionForm'
 import categoriesGroupsBarCss from './Categories.GroupsBar.css?inline'
 
@@ -75,7 +75,8 @@ export function Categories() {
         added: row?.is_extra !== false && byName.has(cat) && extraNames.includes(cat),
         uploaded: row?.art_url ?? null,
         shipped: art?.[cat] ?? null,
-        missing: LEVELS.filter((_, i) => counts[i] === 0),
+        /* الناقص ما يمنع اللعب: صفوف اللوح وحدها — «تعجيزي» خارجه منذ ١٧ أكتوبر. */
+        missing: LEVELS.filter((l, i) => counts[i] === 0 && BOARD_LEVELS.includes(l)),
         group: row?.group_name ?? null,
         /* مستبعَدة من اللوح مؤقّتاً — علمٌ يُرفع من الزرّ نفسه. */
         hidden: row?.hidden === true,
