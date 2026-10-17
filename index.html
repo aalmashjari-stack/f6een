@@ -28,6 +28,9 @@
            والسمة من هنا لا من React كي لا تومض البوّابة قبل الإقلاع —
            App.tsx يرفعها حين تبدأ لعبة. */
         document.documentElement.setAttribute('data-pregame', '')
+        /* الوضع الليليّ قبل أوّل رسم — وإلّا ومض النهار لحظةً (src/lib/theme.ts). */
+        if (localStorage.getItem('f6een.theme') === 'night')
+          document.documentElement.setAttribute('data-theme', 'night')
         if (window.Capacitor && window.Capacitor.isNativePlatform())
           document.documentElement.setAttribute('data-native', '')
       } catch (e) {}
