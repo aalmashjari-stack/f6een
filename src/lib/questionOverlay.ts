@@ -3,7 +3,7 @@ import { setDerbyCategories, setExtraCategories, setQuestionOverlay, setHiddenCa
 import { setCategoryArt } from '../components/categoryArt'
 import { setCategoryInfo } from '../components/categoryInfo'
 import { setCategoryGroups, setCategoryOrder } from '../components/categoryGroups'
-import { BOARD_LEVELS } from '../game/levels'
+import { LEVELS as ALL_LEVELS } from '../game/levels'
 import type { Level, Question } from '../game/types'
 
 /**
@@ -49,7 +49,7 @@ interface BankPayload {
  * و`playableCategories` تشترط الصفوف الأربعة، فرجعت **فارغة**: لا فئة
  * تظهر في الإعداد لا في الموقع ولا في التطبيق (بلاغ علي في اليوم نفسه).
  */
-const LEVELS: Level[] = BOARD_LEVELS
+const LEVELS: readonly Level[] = ALL_LEVELS
 
 /** صفٌّ من القاعدة إلى سؤال. الصفّ الفاسد يُطرح ولا يُسقط الطبقة كلّها. */
 function toQuestion(r: Row): Question | null {

@@ -2,7 +2,7 @@ import type { Level } from './types'
 /* بلاحقة `.ts` صراحةً: `scripts/check-drafts.mjs` يستورد هذه الوحدة في Node
    مباشرةً (تجريد الأنواع)، وNode لا يحلّ الاستيراد بلا لاحقة — ولا تُستورد
    هنا إلّا وحداتٌ بلا تبعيّاتٍ من المتصفّح. */
-import { BOARD_LEVELS } from './levels.ts'
+import { LEVELS } from './levels.ts'
 
 /**
  * فئة «ولا كلمة» — تمثيلٌ صامت، والكلمة في هاتف الممثّل وحده (قرار علي
@@ -174,8 +174,8 @@ function b64decode(s: string): number[] | null {
   return out
 }
 
-/** ترتيب المستوى في الرمز — رقمٌ واحد لا اسم؛ من `BOARD_LEVELS` لا من قائمةٍ ثانية. */
-const levelIndex = (level: Level) => BOARD_LEVELS.indexOf(level)
+/** ترتيب المستوى في الرمز — رقمٌ واحد لا اسم؛ من `LEVELS` لا من قائمةٍ ثانية. */
+const levelIndex = (level: Level) => LEVELS.indexOf(level)
 
 /**
  * مفتاحُ الملصق في الرمز: أحرفٌ لاتينيّة وأرقامٌ وشرطات، بايتٌ للحرف كما
@@ -234,7 +234,7 @@ export function decodeCharade(fragment: string): Charade | null {
   const raw = b64decode(f.slice(1))
   if (!raw || raw.length < 2) return null
   const bytes = veil(raw)
-  const level = BOARD_LEVELS[bytes[0]]
+  const level = LEVELS[bytes[0]]
   if (!level) return null
   if (fmt === 'a') {
     const text = fromBytes(bytes.slice(1))
