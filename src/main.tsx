@@ -7,6 +7,7 @@ import './theme.css'
 import './showtime.css'
 import './skins/neo.css'
 import './skins/blocks.css'
+import './skins/night.css'
 import App from './App'
 
 createRoot(document.getElementById('root')!).render(

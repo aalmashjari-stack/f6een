@@ -9,7 +9,7 @@
   padding:clamp(10px,1.8dvh,16px) clamp(11px,2vw,18px);
   border-radius:16px;
   background:var(--n-bg, #FFF8EE);
-  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+  box-shadow:0 0 0 2px var(--n-edge, #22201C);
 }
 .sp-sn {
   flex:none;

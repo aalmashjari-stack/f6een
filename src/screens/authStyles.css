@@ -68,7 +68,7 @@ body .screen.su { overflow-y:auto; }
   font:inherit; font-weight:800; cursor:pointer; border:0;
   border-radius:var(--n-r3,20px); padding:clamp(10px,1.8vh,15px);
   font-size:clamp(14px,2vw,19px);
-  background:var(--n-ink,#1A1626); color:#fff; box-shadow:var(--n-e2);
+  background:var(--n-edge,#1A1626); color:var(--n-on-ink, #fff); box-shadow:var(--n-e2);
 }
 .su-submit:disabled { background:rgba(23,23,31,.07); color:var(--n-ink-3,#948CA8); box-shadow:none; }
 .su-foot { display:flex; justify-content:space-between; gap:10px; }

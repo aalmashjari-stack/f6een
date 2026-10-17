@@ -12,25 +12,25 @@
   padding:clamp(12px,2dvh,18px) clamp(14px,2.4vw,22px);
   border-radius:16px;
   background:var(--n-bg, #FFF8EE);
-  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+  box-shadow:0 0 0 2px var(--n-edge, #22201C);
   text-align:center;
 }
 .cip-tag {
   padding:2px 14px; border-radius:999px;
-  background:var(--n-ink, #22201C); color:#fff;
+  background:var(--n-ink, #22201C); color:var(--n-on-ink, #fff);
   font-weight:800; font-size:clamp(12px,1.4vw,14px);
 }
 .cip-q { margin:0; font-weight:800; font-size:clamp(16px,2.1vw,21px); line-height:1.7; color:var(--n-ink, #22201C); }
 .cip-a {
   margin:0; padding:4px 18px; border-radius:12px;
   background:var(--n-a-tint, #FFCE3C); color:var(--n-ink, #22201C);
-  box-shadow:0 0 0 2px var(--n-ink, #22201C);
+  box-shadow:0 0 0 2px var(--n-edge, #22201C);
   font-weight:800; font-size:clamp(16px,2vw,20px);
 }
 .cip-reveal {
   font:inherit; font-weight:800; font-size:clamp(14px,1.7vw,16px); cursor:pointer;
   padding:8px 22px; border:0; border-radius:999px;
   background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-  box-shadow:0 0 0 2px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+  box-shadow:0 0 0 2px var(--n-edge, #22201C), 3px 4px 0 var(--n-edge, #22201C);
 }
-.cip-reveal:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-ink, #22201C); }
+.cip-reveal:active { transform:translate(2px,3px); box-shadow:0 0 0 2px var(--n-edge, #22201C); }

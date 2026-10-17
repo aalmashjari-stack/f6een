@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   فطين — الوضع الليليّ «ليل الغوص». اختاره علي في ١٧ أكتوبر ٢٠٢٦ من
+   ثلاث لوحات (ليل دافئ / ليل الغوص / حدود مضيئة).
+
+   البنية: طبقةٌ فوق blocks.css تُفعَّل بالسمة data-theme="night" على
+   <html> (src/lib/theme.ts، وindex.html قبل أوّل رسم كي لا يومض النهار).
+   المحدّد html[data-skin='blocks'][data-theme='night'] يزن (0,2,1) فيغلب
+   قواعد البلوكات بلا !important.
+
+   ما يبقى كما هو: الكتل المشبعة (الأصفر والتركواز والبرتقاليّ) وحدودها
+   الداكنة — الهويّة نفسها على أرضيّة الليل. وما ينقلب: الأرضيّة والأسطح
+   والنصّ عليها. لذلك الحبر صار رمزين في blocks.css: ‎--n-ink‎ نصٌّ على
+   سطح (ينقلب فاتحاً هنا)، و‎--n-edge‎ الحدّ والظلّ (يبقى داكناً).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── ١. الرموز ──────────────────────────────────────────────────────── */
+html[data-skin='blocks'][data-theme='night'] {
+  color-scheme: dark;
+
+  /* أزرق البحر الذي كان أرضيّة فطين الأولى (SPEC: ‎#0F2C42‎) أعمق درجةً */
+  --n-bg: #0F1E2C;
+  --n-surface: #183247;
+  --n-surface-2: #1F3B52;
+  --n-ink: #F2EEE6;
+  --n-ink-2: #B7C4CF;
+  --n-ink-3: #7F93A4;
+  --n-line: #2A4860;
+  --n-edge: #050D14;
+  /* النصّ على كتلة الحبر (زرّ الحكم، الوسط، القائمة المفتوحة…) */
+  --n-on-ink: #0F1E2C;
+
+  --n-brand-tint: #4A2A22;
+
+  /* النصّ الملوّن للفريقين على الأسطح الداكنة: فاتحان من لونَي الكتلتين */
+  --n-a: #FFCE3C;
+  --n-a-line: #050D14;
+  --n-b: #7BD3D0;
+  --n-b-line: #050D14;
+
+  --n-good: #4CC98A;
+  --n-good-tint: #173D2E;
+  --n-bad: #E04434;
+  --n-bad-tint: #47201E;
+
+  --spent: #132838;
+  --spent-text: #5F7486;
+}
+
+/* ─── ٢. الكتل المشبعة تبقى نهاريّة ─────────────────────────────────── */
+/* النصّ على الأصفر والتركواز والأبيض حبرٌ داكن كما في النهار: الحبرُ يُعاد
+   داكناً على الكتلة نفسها فيرثه كلّ ما بداخلها — بلا تتبّع كلّ قاعدة لون. */
+html[data-skin='blocks'][data-theme='night'] .scorebar .team,
+html[data-skin='blocks'][data-theme='night'] .pick.team-0,
+html[data-skin='blocks'][data-theme='night'] .pick.team-1,
+html[data-skin='blocks'][data-theme='night'] .mark-cards .mcard,
+html[data-skin='blocks'][data-theme='night'] .mark-cards .choice,
+html[data-skin='blocks'][data-theme='night'] body .screen .ltile[data-tone],
+html[data-skin='blocks'][data-theme='night'] body .screen .bunit,
+html[data-skin='blocks'][data-theme='night'] body .screen .bh-owner,
+html[data-skin='blocks'][data-theme='night'] .s3-ready.team-0,
+html[data-skin='blocks'][data-theme='night'] .s3-ready.team-1,
+html[data-skin='blocks'][data-theme='night'] .s3-ready-rules span,
+html[data-skin='blocks'][data-theme='night'] .screen.setup .team-card,
+html[data-skin='blocks'][data-theme='night'] .w-stage-no,
+html[data-skin='blocks'][data-theme='night'] .w-stage-info {
+  --n-ink: #22201C;
+  --n-ink-2: #57524A;
+  --n-ink-3: #8A8578;
+  --n-a: #9A6B00;
+  --n-b: #147370;
+  --n-surface: #FFFFFF;
+  --n-surface-2: #FFF3E0;
+  --n-line: #E8E0D0;
+  --n-on-ink: #FFFFFF;
+}
+
+/* ─── ٣. كتل الحبر تنقلب قشدةً ──────────────────────────────────────── */
+/* في النهار: زرّ الحكم والوسط وشارة الدور كتلُ حبرٍ بنصٍّ أبيض. الحبرُ
+   صار فاتحاً هنا فتصير كتلاً قشديّة، والنصّ عليها ‎--n-on-ink‎ الكحليّ.
+   والظلّ الباهت (حبرٌ شفّاف) لا يُرى على الليل فيصير حدّاً داكناً صلباً. */
+html[data-skin='blocks'][data-theme='night'] .action:not(.ghost):not(.coral):not(:disabled) {
+  box-shadow: 4px 5px 0 var(--n-edge);
+}
+html[data-skin='blocks'][data-theme='night'] .action:not(.ghost):not(.coral):hover:not(:disabled) {
+  background: #FFFFFF;
+  box-shadow: 5px 7px 0 var(--n-edge);
+}
+html[data-skin='blocks'][data-theme='night'] .action:active:not(:disabled) { box-shadow: 1px 1px 0 var(--n-edge); }
+html[data-skin='blocks'][data-theme='night'] .action.coral { box-shadow: 4px 5px 0 var(--n-edge); }
+
+/* مسار المؤقّت */
+html[data-skin='blocks'][data-theme='night'] .timer-progress { background: var(--n-surface-2); }
+
+/* أرقام مراحل صفحة الترحيب: لونها موروثٌ من رأس البطاقة (فاتحٌ هنا) لا
+   من رمز — فيُعاد حبراً داكناً صريحاً. ‏:where تُبقي وزنها صفراً فتغلبها
+   حالة «مفتوح» في Intro.css. */
+html[data-theme='night'] :where(.w-stage-no, .w-stage-info) { color: var(--n-ink); }

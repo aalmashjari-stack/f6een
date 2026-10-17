@@ -32,6 +32,7 @@ html[data-skin] {
   --n-surface: #FFFFFF;
   --n-surface-2: #F8F7FC;
   --n-ink: #1A1626;
+  --n-edge: var(--n-ink);
   --n-ink-2: #5D5670;
   --n-ink-3: #948CA8;
   --n-line: #E5E1F0;
@@ -263,7 +264,7 @@ html[data-skin] .rd-chip:nth-child(even) {
 }
 html[data-skin] .rd-chip.turn {
   background: var(--n-ink);
-  color: #fff;
+  color: var(--n-on-ink, #fff);
   transform: none;
 }
 
@@ -275,7 +276,7 @@ html[data-skin] .action {
   border: 0;
   border-radius: var(--n-r3);
   background: var(--n-ink);
-  color: #fff;
+  color: var(--n-on-ink, #fff);
   box-shadow: var(--n-e2);
   letter-spacing: -.005em;
   transition: transform .18s var(--ease-spring), box-shadow .18s ease, background .18s ease;
@@ -629,7 +630,7 @@ html[data-skin] body .screen .cat.cursor .cat-img { transform: scale(1.09); }
 /* الاستقرار: أعلى لحظة في الشاشة — حلقة حبرٍ سميكة وظلٌّ يرفعها عن أخواتها */
 html[data-skin] body .screen .cat.landed {
   background: var(--n-surface);
-  box-shadow: 0 0 0 4px var(--n-ink), 0 14px 34px rgba(26,22,38,.30);
+  box-shadow: 0 0 0 4px var(--n-edge), 0 14px 34px rgba(26,22,38,.30);
 }
 html[data-skin] body .screen .cat.landed .cat-img { transform: scale(1.12); }
 html[data-skin] body .screen .cat.landed .cat-name {
@@ -1050,7 +1051,7 @@ html[data-skin] .screen.setup .team-card:last-child .team-badge { background: va
 /* البادئ: حلقةُ حبرٍ حول البطاقة، فيبقى لون الفريق ظاهراً تحتها */
 html[data-skin] .screen.setup .team-card.starter {
   background: var(--n-surface);
-  box-shadow: 0 0 0 2px var(--n-ink), var(--n-e2);
+  box-shadow: 0 0 0 2px var(--n-edge), var(--n-e2);
 }
 html[data-skin] .screen.setup .team-name {
   color: var(--n-ink);
@@ -1069,7 +1070,7 @@ html[data-skin] .screen.setup .team-card.starter .player {
 html[data-skin] .screen.setup .player::placeholder { color: var(--n-ink-3); }
 html[data-skin] .screen.setup .player:focus {
   background: var(--n-surface);
-  box-shadow: 0 0 0 2px var(--n-ink);
+  box-shadow: 0 0 0 2px var(--n-edge);
   outline: none;
 }
 html[data-skin] .screen.setup .counter {
@@ -1290,7 +1291,7 @@ html[data-skin] body .screen .pick-team.team-0 .pk-to { color: var(--n-a); }
 html[data-skin] body .screen .pick-team.team-1 { border-color: var(--n-b); }
 html[data-skin] body .screen .pick-team.team-1 .pk-to { color: var(--n-b); }
 html[data-skin] body .screen .rv-ask { color: var(--n-ink); }
-html[data-skin] body .screen .pick-none { border-color: var(--n-ink); color: var(--n-ink); }
+html[data-skin] body .screen .pick-none { border-color: var(--n-edge); color: var(--n-ink); }
 
 /* تنبيهُ النقص: الرسالة تحت زرّ القرعة تحمرّ حين يُضغط الزرّ وشيءٌ ناقص
    (٥ سبتمبر ٢٠٢٦) — لونُ التنبيه في الهويّة لا مرجانيُّ الأساس. */
