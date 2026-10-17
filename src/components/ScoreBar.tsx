@@ -87,7 +87,7 @@ function TeamCapsule({
     return () => window.clearTimeout(t)
   }, [delta])
 
-  const kicker = `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`
+  const kicker = turn ? 'صاحب الدور' : `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`
 
   return (
     <div
@@ -99,13 +99,20 @@ function TeamCapsule({
         (delta !== null ? ' bump' : '')
       }
     >
-      {/* «صاحب الدور» ملصقٌ على حافّة الكبسولة لا سطرٌ رماديّ صغير فيها:
-          السطر لم يكن يُرى من آخر المجلس، ويسقط على الجوال. والكِكر ترتيبُ
-          الفريق، يغيب تحت الملصق، ويسقط حين يطابق اسمَه — الاسم الافتراضي هو «الفريق
-          الأول/الثاني» نفسه، فيُكتب مرّتين في كبسولة واحدة بلا فائدة. */}
-      {turn && <span className="turn-badge">صاحب الدور</span>}
+      {/* علامة ✓ على حافّة كبسولة صاحب الدور — تُرى من آخر المجلس حيث لا
+          يُقرأ سطرُ الكِكر الصغير، وتبقى على الجوال حيث يسقط. */}
+      {turn && (
+        <span className="turn-check" role="img" aria-label="صاحب الدور">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </span>
+      )}
+      {/* الكِكر يقول «صاحب الدور» حين يكون الدور له، وإلّا فترتيبُه. ويسقط
+          حين يطابق اسمَ الفريق — الاسم الافتراضي هو «الفريق الأول/الثاني»
+          نفسه، فيُكتب مرّتين في كبسولة واحدة بلا فائدة. */}
       <span className="team-copy">
-        {!turn && kicker !== team.name && <span className="team-kicker">{kicker}</span>}
+        {kicker !== team.name && <span className="team-kicker">{kicker}</span>}
         <span className="name">{team.name}</span>
       </span>
       <span className="pts-group">
