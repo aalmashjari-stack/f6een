@@ -21,5 +21,5 @@
   font:inherit; font-weight:800; cursor:pointer;
   width:40px; height:40px; border:0; border-radius:50%;
   background:var(--n-surface, #fff); color:var(--n-ink, #22201C);
-  box-shadow:0 0 0 2.5px var(--n-ink, #22201C), 3px 4px 0 var(--n-ink, #22201C);
+  box-shadow:0 0 0 2.5px var(--n-edge, #22201C), 3px 4px 0 var(--n-edge, #22201C);
 }
