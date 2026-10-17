@@ -65,6 +65,21 @@ export function setCategoryArt(map: Record<string, string>) {
   uploaded = map
 }
 
+/* تجربة محلّيّة (١٧ أكتوبر ٢٠٢٦، طلب علي): صور الفئات القديمة الملوّنة على
+   السيرفر المحلّيّ وحده. `dev-old-art.json` في جذر المستودع (روابط الدلو؛ حذفُه يعيد الحاليّة)، و
+   ‎`import.meta.env.DEV`‎ يُسقط هذا كلّه من البناء — فلا يمسّ الموقع ولا التطبيق.
+   «shipped» = الصورة المشحونة في الحزمة. */
+let devArt: Record<string, string> = {}
+if (import.meta.env.DEV) {
+  fetch('/dev-old-art.json')
+    .then((r) => (r.ok ? r.json() : {}))
+    .then((m: Record<string, string>) => {
+      devArt = m
+    })
+    .catch(() => {})
+}
+
 export function categoryArt(cat: string): string | undefined {
+  if (import.meta.env.DEV && devArt[cat]) return devArt[cat] === 'shipped' ? CATEGORY_ART[cat] : devArt[cat]
   return uploaded[cat] ?? CATEGORY_ART[cat]
 }

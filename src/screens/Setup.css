@@ -877,12 +877,28 @@ html[data-skin] body .screen.setup .setup-body {
      يفيض تحت حدّه الأبيض (قِيس في معاينةٍ محلّيّة: 816 من 1968). */
   flex:0 0 auto; height:auto; min-height:0; max-height:none;
   margin:16px 0 18px; padding:20px 14px 18px;
-  /* أبيض سادة (علي ١٧ أكتوبر ٢٠٢٦: «خلها بيض سادة») — كان فيه رسوم الفئات
-     خفيفةً كصفحة التسجيل منذ ١ أكتوبر. */
-  background:var(--n-surface, #fff);
+  /* بيجٌ أفتح من الأرضيّة (علي ١٧ أكتوبر ٢٠٢٦: «خلها بيج بدرجة افتح من الخلفية
+     الاساسية») — كان أبيض سادة قبلها بساعات، وفيه رسوم الفئات خفيفةً منذ ١ أكتوبر. */
+  background:var(--n-panel, var(--n-surface, #fff));
   border-radius:22px;
   box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
+  position:relative;
 }
+/* «أوراقٌ مكدّسة» خلف الكونتينر (علي ١٧ أكتوبر ٢٠٢٦، من Neo-Brutalist Kinetic
+   Deck في 21st): ورقتان بلونَي الفريقين مائلتان قليلاً. الميل صغيرٌ عمداً لأنّ
+   الكونتينر بطول الصفحة كلّها، وكلُّ ‎0.1deg‎ يُزيح طرفيه نحو 3px لكلّ ألف بكسل
+   من ارتفاعه. و‎z-index:-1‎ بلا سياق تكديس على الكونتينر نفسه = خلف خلفيّته
+   وفوق الأرضيّة. */
+html[data-skin] body .screen.setup .setup-body::before,
+html[data-skin] body .screen.setup .setup-body::after {
+  content:''; position:absolute; inset:0; z-index:-1;
+  border-radius:22px;
+  box-shadow:0 0 0 2.5px var(--n-edge, #22201C);
+  pointer-events:none;
+}
+/* مخفّفتان (علي ١٧ أكتوبر ٢٠٢٦: «خفف الالوان»): لونُ الفريق ممزوجاً بالأرضيّة. */
+html[data-skin] body .screen.setup .setup-body::before { background:color-mix(in srgb, var(--n-b-tint, #7BD3D0) 22%, var(--n-bg, #FFFBF4)); transform:rotate(.45deg); }
+html[data-skin] body .screen.setup .setup-body::after { background:color-mix(in srgb, var(--n-a-tint, #FFCE3C) 22%, var(--n-bg, #FFFBF4)); transform:rotate(-.3deg); }
 /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
 html[data-skin] body .screen.setup .cats-head { margin-top:8px; }
 html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:0; }
