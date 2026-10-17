@@ -1,4 +1,10 @@
-import type { GameState } from '../game/session'
+import {
+  STAGE2_CORRECT,
+  STAGE2_FINAL_CORRECT,
+  STAGE2_FINAL_WRONG,
+  STAGE2_WRONG,
+  type GameState,
+} from '../game/session'
 import type { Action } from '../game/reducer'
 import type { Mark, TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
@@ -12,7 +18,7 @@ import stage2RevealCss from './Stage2Reveal.css?inline'
 /**
  * تنقيط الديربي — الشاشة ٥.
  *
- * لكل لاعب مربعان صريحان: «إجابة صحيحة +20» و«إجابة خاطئة −10».
+ * لكل لاعب مربعان صريحان: «إجابة صحيحة +20» و«إجابة خاطئة −10» (وفي «بطل الديربي» +40 و−20).
  * الضغط على المربع المضيء نفسه يلغيه ويرجع اللاعب إلى الصمت (0) — وهو الحالة الابتدائية.
  * لاعب واحد على الأكثر يحمل علامة: تعليم أحدهما يُفرِّغ الآخر (القسم ٥).
  *
@@ -21,7 +27,6 @@ import stage2RevealCss from './Stage2Reveal.css?inline'
  * الخياران ظاهران معاً = ضغطة واحدة، ولا حاجة لحفظ ترتيب الدورة.
  */
 
-const PTS: Record<Exclude<Mark, 'صمت'>, string> = { صح: '+20', غلط: '−10' }
 const LABEL: Record<Exclude<Mark, 'صمت'>, string> = {
   صح: 'إجابة صحيحة',
   غلط: 'إجابة خاطئة',
@@ -31,6 +36,10 @@ export function Stage2Reveal({ state, dispatch }: { state: GameState; dispatch: 
   const q = state.currentQuestion!
   const sel = state.s2Sel!
   const nameOf = (team: TeamId) => state.teams[team].players[sel[team]]?.name ?? ''
+  /* النقاط من الثوابت لا مكتوبةً باليد — و«بطل الديربي» مضاعفة. */
+  const PTS: Record<Exclude<Mark, 'صمت'>, string> = state.s2Final
+    ? { صح: `+${STAGE2_FINAL_CORRECT}`, غلط: `−${-STAGE2_FINAL_WRONG}` }
+    : { صح: `+${STAGE2_CORRECT}`, غلط: `−${-STAGE2_WRONG}` }
 
   return (
     <div className="screen s2-reveal-screen">

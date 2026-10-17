@@ -83,7 +83,8 @@ function playSession(history: Set<string>): { shown: Question[]; state: GameStat
 
 /* ما يستهلكه الحق ما تلحق من مخزونه في الجلسة: ٢ × ١٤ وورقةُ انتهاء الدور. */
 const S3_SHOWN = S3_PER_TURN * 2 + 1
-const PER_SESSION = STAGE1_CATEGORIES * STAGE1_LEVELS.length + 4 + S3_SHOWN
+/* الديربي: أربع جولات و«بطل الديربي» (١٧ أكتوبر ٢٠٢٦). */
+const PER_SESSION = STAGE1_CATEGORIES * STAGE1_LEVELS.length + 4 + 1 + S3_SHOWN
 
 describe('جلسات متتابعة بذاكرة دائمة — حتى ما بعد نفاد البنك', () => {
   /* مخزون الحق ما تلحق أضيق المخازن، وهو ما يفرغ أوّلاً. عددُ الجلسات
