@@ -22,6 +22,9 @@ import draftsCss from './Drafts.css?inline'
  * يعتمد الدفعة ثمّ يصحّحه من شاشة الأسئلة كأيّ سؤالٍ مضاف — فالتصحيح هناك
  * موجودٌ ومختبَر، وتكرارُه هنا شاشةٌ ثانية بلا داعٍ.
  *
+ * **ونقلُ المستوى مسوّدةٌ أيضاً** (١٨ أكتوبر ٢٠٢٦): سؤالٌ قائم يُقترح له مستوى
+ * آخر، فيُعرض «متوسط ← صعب» بدل المستوى، ويغيّر الاعتمادُ مستواه وحده.
+ *
  * وفئةٌ لم تُنشأ بعد تُعرَض تحذيراً **قبل** الضغط لا خطأً بعده: الاعتماد
  * يُردّ من القاعدة (`unknown_category`)، والفئة لا تُنشأ من دفعة بقرار علي
  * في ٣١ أغسطس ٢٠٢٦.
@@ -103,6 +106,7 @@ export function Drafts() {
     setBusy(true)
     setMsg(null)
     let added = 0,
+      moved = 0,
       skipped = 0,
       done = 0
     const held: string[] = []
@@ -116,14 +120,14 @@ export function Drafts() {
         }
         const res = await approveDrafts(id)
         added += res.added
+        moved += res.moved
         skipped += res.skipped
         done++
       }
       setMsg({
         ok: true,
         text:
-          `اعتُمدت ${done} دفعة: أُضيف ${added}` +
-          (skipped ? ` وتُخطّي ${skipped} نصُّه موجود` : '') +
+          `اعتُمدت ${done} دفعة: ${approvedText(added, moved, skipped)}` +
           (held.length ? ` — وتُركت ${held.length} فئتُها غير موجودة (${held.join('، ')})` : '') +
           ' — تصل اللاعبين عند فتحهم اللعبة',
       })
@@ -199,8 +203,7 @@ export function Drafts() {
         setMsg({
           ok: true,
           text:
-            `اعتُمدت: أُضيف ${res.added}` +
-            (res.skipped ? ` وتُخطّي ${res.skipped} نصُّه موجود` : '') +
+            `اعتُمدت: ${approvedText(res.added, res.moved, res.skipped)}` +
             ' — تصل اللاعبين عند فتحهم اللعبة',
         })
       } else {
@@ -289,6 +292,11 @@ export function Drafts() {
                 <td className="a-muted">{stamp(b.created_at)}</td>
                 <td>
                   {b.categories}
+                  {b.moves ? (
+                    <span className="tag" title="أسئلة قائمة يتغيّر مستواها عند الاعتماد">
+                      نقل مستوى {b.moves === b.n ? '' : `(${b.moves})`}
+                    </span>
+                  ) : null}
                   {b.missing_category && (
                     <span className="tag warn" title="أنشئ الفئة من لسان الفئات قبل الاعتماد">
                       الفئة غير موجودة
@@ -345,7 +353,15 @@ export function Drafts() {
                             const out = dropped.has(r.id) || r.status === 'rejected'
                             return (
                               <tr key={r.id} className={out ? 'out' : ''}>
-                                <td className="a-muted">{r.level}</td>
+                                <td className="a-muted">
+                                  {r.move_of ? (
+                                    <span className="move-lvl" title={r.move_of}>
+                                      {r.from_level} ← <b>{r.level}</b>
+                                    </span>
+                                  ) : (
+                                    r.level
+                                  )}
+                                </td>
                                 {/* الصورتان كما في لسان الأسئلة: صورةُ السؤال بجانبه
                                   وصورةُ الإجابة بجانبها — القرارُ يُتّخذ عليهما. */}
                                 <td>
@@ -357,6 +373,7 @@ export function Drafts() {
                                   ) : (
                                     r.question
                                   )}
+                                  {r.note && <span className="draft-note">{r.note}</span>}
                                 </td>
                                 <td>
                                   {r.answer_image ? (
@@ -416,4 +433,13 @@ export function Drafts() {
       )}
     </div>
   )
+}
+
+/** حصيلةُ الاعتماد بكلماتها: ما أُضيف، وما نُقل مستواه، وما تُخطّي. */
+function approvedText(added: number, moved: number, skipped: number): string {
+  const parts = []
+  if (added || !moved) parts.push(`أُضيف ${added}`)
+  if (moved) parts.push(`نُقل مستوى ${moved}`)
+  if (skipped) parts.push(`تُخطّي ${skipped} (نصُّه موجود أو تغيّر مستواه)`)
+  return parts.join(' و')
 }
