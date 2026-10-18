@@ -14,3 +14,8 @@
 .a-table.sub { margin: 6px 0 10px; background: rgba(0,0,0,.03); }
 .a-table.sub td { padding: 4px 8px; font-size: 13px; }
 .tag.warn { margin-inline-start: 8px; background: #ffe6e0; color: #8a2c14; }
+/* نقلُ مستوى: «متوسط ← صعب» بدل المستوى، والمقترَح بارز (١٨ أكتوبر ٢٠٢٦). */
+.move-lvl { white-space:nowrap; }
+.move-lvl b { color:var(--n-brand); }
+/* سببُ الاقتراح تحت السؤال — يُقرأ قبل القرار ولا يزاحم النصّ. */
+.draft-note { display:block; margin-top:2px; font-size:.85em; color:var(--n-ink-3); }

@@ -8,6 +8,11 @@
  * الموضوع اختياراً. **ولا عمود معرّف**: المسوّدة اقتراحُ سؤالٍ جديد لا
  * تعديلُ قائم — والتعديل يبقى من اللوحة بيد المدير.
  *
+ * **ونقلُ مستوى سؤالٍ قائم** (١٨ أكتوبر ٢٠٢٦): عمود «نقل» يحمل معرّفه،
+ * و«المستوى» المقترح، ولا يلزم معهما غيرهما — القاعدة تنسخ النصّ والفئة من
+ * السؤال القائم، والاعتماد يغيّر مستواه وحده. و«ملاحظة» سطرٌ اختياريّ يُعرض
+ * للمدير تحت السؤال (سبب الاقتراح).
+ *
  * المفتاح من `.env.agent` (متجاهَل في git) في المتغيّر `F6EEN_AGENT_KEY`،
  * ورابطُ القاعدة ومفتاحُها العلنيّ من `.env` كبقيّة المشروع.
  *
@@ -110,10 +115,13 @@ const iCat = at('التصنيف'),
 const iTopic = at('الموضوع'),
   iId = at('المعرّف'),
   iImg = at('الصورة'),
-  iFam = at('العائلة')
+  iFam = at('العائلة'),
+  iMove = at('نقل'),
+  iNote = at('ملاحظة')
+const moveOf = (r) => (iMove >= 0 ? (r[iMove] ?? '').trim() : '')
 
-if ([iCat, iLvl, iQ, iA].some((i) => i < 0)) {
-  console.error('ينقص الملفّ عمود من: التصنيف · المستوى · السؤال · الإجابة')
+if (iLvl < 0 || (iMove < 0 && [iCat, iQ, iA].some((i) => i < 0))) {
+  console.error('ينقص الملفّ عمود من: التصنيف · المستوى · السؤال · الإجابة (أو «نقل» و«المستوى» للنقل)')
   process.exit(1)
 }
 if (iId >= 0 && table.slice(1).some((r) => (r[iId] ?? '').trim() !== '')) {
@@ -124,6 +132,16 @@ if (iId >= 0 && table.slice(1).some((r) => (r[iId] ?? '').trim() !== '')) {
 const rows = []
 for (let i = 1; i < table.length; i++) {
   const r = table[i]
+  const note = iNote >= 0 ? (r[iNote] ?? '').trim() : ''
+  if (moveOf(r)) {
+    const level = (r[iLvl] ?? '').trim()
+    if (!LEVELS.includes(level)) {
+      console.error(`سطر ${i + 1}: مستوى غير معروف «${level}»`)
+      process.exit(1)
+    }
+    rows.push({ move_of: moveOf(r), level, note, category: iCat >= 0 ? (r[iCat] ?? '').trim() : '' })
+    continue
+  }
   const row = {
     category: (r[iCat] ?? '').trim(),
     level: (r[iLvl] ?? '').trim(),
@@ -145,6 +163,7 @@ for (let i = 1; i < table.length; i++) {
      * فكانت كلُّ دفعةٍ تصل بلا عائلاتٍ مصرَّح بها.
      */
     family: iFam >= 0 ? (r[iFam] ?? '').trim() : '',
+    note,
   }
   if (!row.question && !row.answer && !row.category) continue
   if (!row.category || !row.question || !row.answer) {
@@ -158,9 +177,12 @@ for (let i = 1; i < table.length; i++) {
   rows.push(row)
 }
 
-const cats = [...new Set(rows.map((r) => r.category))]
+const cats = [...new Set(rows.map((r) => r.category).filter(Boolean))]
 const counts = LEVELS.map((l) => `${l} ${rows.filter((r) => r.level === l).length}`).join(' · ')
-console.log(`${rows.length} سؤالاً — ${cats.join('، ')} — ${counts}`)
+const moves = rows.filter((r) => r.move_of).length
+console.log(
+  `${rows.length} سؤالاً — ${cats.join('، ')} — ${counts}` + (moves ? ` — منها ${moves} نقل مستوى` : ''),
+)
 
 const res = await fetch(`${url}/rest/v1/rpc/agent_submit_drafts`, {
   method: 'POST',

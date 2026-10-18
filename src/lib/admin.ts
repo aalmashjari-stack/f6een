@@ -725,6 +725,8 @@ export interface DraftBatch {
   rejected?: number
   /** فئةٌ من فئات الدفعة لم تُنشأ بعد — الاعتماد يُردّ حتى تُنشأ. */
   missing_category: boolean
+  /** كم في الدفعة من «نقل مستوى» (١٨ أكتوبر ٢٠٢٦). قد يغيب: قاعدةٌ لم تُرقَّ. */
+  moves?: number
 }
 
 export interface DraftRow {
@@ -740,6 +742,12 @@ export interface DraftRow {
   answer_image?: string | null
   status: string
   question_id: string | null
+  /** **نقلُ مستوى** لا سؤالٌ جديد: معرّف السؤال القائم، ومستواه لحظةَ الإرسال.
+      الاعتماد يغيّر المستوى وحده، ولا ينقل إن تغيّر المستوى بعد الإرسال. */
+  move_of?: string | null
+  from_level?: Level | null
+  /** سطرٌ يشرح الاقتراح — لا يدخل البنك. */
+  note?: string | null
 }
 
 export async function listDraftBatches(): Promise<DraftBatch[]> {
@@ -754,11 +762,15 @@ export async function listDraftRows(batch: string): Promise<DraftRow[]> {
   return (data ?? []) as DraftRow[]
 }
 
-/** يعتمد الدفعة كلّها: تُضاف إلى البنك، وما تكرّر نصُّه يُتخطّى. */
-export async function approveDrafts(batch: string): Promise<{ added: number; skipped: number }> {
+/** يعتمد الدفعة كلّها: الجديد يُضاف إلى البنك وما تكرّر نصُّه يُتخطّى، ونقلُ
+    المستوى يُطبَّق ما بقي السؤال على مستواه وإلّا تُخطّي. */
+export async function approveDrafts(
+  batch: string,
+): Promise<{ added: number; moved: number; skipped: number }> {
   const { data, error } = await supabase.rpc('admin_approve_drafts', { p_batch: batch })
   if (error) throw new Error(translate(error.message))
-  return data as { added: number; skipped: number }
+  const r = data as { added: number; moved?: number; skipped: number }
+  return { ...r, moved: r.moved ?? 0 }
 }
 
 /**
