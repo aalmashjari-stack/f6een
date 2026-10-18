@@ -1,8 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { pickDerbyPair, type GameState } from '../game/session'
+import { pickChampions, pickDerbyPair, type GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import type { TeamId } from '../game/types'
 import { ScoreBar } from '../components/ScoreBar'
+import { Interval } from './Interval'
+import { STAGE2_FINAL_CORRECT, STAGE2_FINAL_WRONG } from '../game/session'
 import stage2SelectionCss from './Stage2Selection.css?inline'
 
 /**
@@ -14,9 +16,50 @@ import stage2SelectionCss from './Stage2Selection.css?inline'
  * دورُه في كلّ فريق خدمةً لشفافية الدورة — والدورةُ يحرسها المحرّك لا
  * الشاشة (s2Rem)، والاسمان هما موضوع الشاشة.
  */
+/**
+ * «بطل الديربي» يبدأ بتمهيدٍ قبل البكرة (طلب علي ١٧ أكتوبر ٢٠٢٦: «لازم يكون فيه شرح
+ * لسؤال بطل الديربي وحماس»): بطاقة الفاصل نفسها برقم ×2 ورقائق وصوت. والتمهيد حالةٌ
+ * في الشاشة لا في المحرّك: استئنافٌ بعده يعيده، ولا شيء يضيع.
+ *
+ * ‏⚠ النصوص مسوّدة تنتظر صياغة علي.
+ */
 export function Stage2Selection({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
+  const [intro, setIntro] = useState(state.s2Final)
+  if (intro)
+    return (
+      <Interval
+        state={state}
+        dispatch={dispatch}
+        override={{
+          stageNo: '×2',
+          hype: true,
+          onGo: () => setIntro(false),
+          info: {
+            eyebrow: 'الجولة الأخيرة في الديربي',
+            title: 'بطل الديربي',
+            /* صياغة علي (١٧ أكتوبر ٢٠٢٦). والأرقام في عنصرٍ يساريّ الاتّجاه: «+40» داخل
+               جملةٍ عربيّة تنقلب «40+» حتى بمحارف العزل (قيس باللقطة). */
+            rule: (
+              <>
+                يختار الكمبيوتر لاعباً عشوائياً من الذين اجابوا اجابات صحيحة من كل فريق، حط بالك ترا النقاط
+                دبل{' '}
+                <span dir="ltr" style={{ unicodeBidi: 'isolate', display: 'inline-block' }}>
+                  +{STAGE2_FINAL_CORRECT}/−{-STAGE2_FINAL_WRONG}
+                </span>
+              </>
+            ),
+            cta: 'ابدأ',
+          },
+        }}
+      />
+    )
+  return <Stage2Spin state={state} dispatch={dispatch} />
+}
+
+function Stage2Spin({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
   const timers = useRef<number[]>([])
-  const targetRef = useRef<[number, number]>(pickDerbyPair(state))
+  /* «بطل الديربي» يُختار ممّن أصابوا (`pickChampions`)، والجولات العاديّة من الدورة. */
+  const targetRef = useRef<[number, number]>(state.s2Final ? pickChampions(state) : pickDerbyPair(state))
   const [display, setDisplay] = useState<[number, number]>([0, 0])
   const [spin, setSpin] = useState(0)
   const [settled, setSettled] = useState(false)
@@ -94,6 +137,7 @@ export function Stage2Selection({ state, dispatch }: { state: GameState; dispatc
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
 
       <div className="grow center-all">
+        {state.s2Final && <span className="s2-final-chip">بطل الديربي</span>}
         <div
           className={'vs-wrap' + (settled ? ' settled' : '')}
           style={fontPx ? ({ ['--vs-size']: `${fontPx}px` } as React.CSSProperties) : undefined}

@@ -87,8 +87,6 @@ function TeamCapsule({
     return () => window.clearTimeout(t)
   }, [delta])
 
-  const kicker = turn ? 'صاحب الدور' : `الفريق ${team.id === 0 ? 'الأول' : 'الثاني'}`
-
   return (
     <div
       className={
@@ -100,7 +98,7 @@ function TeamCapsule({
       }
     >
       {/* علامة ✓ على حافّة كبسولة صاحب الدور — تُرى من آخر المجلس حيث لا
-          يُقرأ سطرُ الكِكر الصغير، وتبقى على الجوال حيث يسقط. */}
+          يُقرأ سطرٌ صغير، وهي إشارة الدور الوحيدة. */}
       {turn && (
         <span className="turn-check" role="img" aria-label="صاحب الدور">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -108,11 +106,9 @@ function TeamCapsule({
           </svg>
         </span>
       )}
-      {/* الكِكر يقول «صاحب الدور» حين يكون الدور له، وإلّا فترتيبُه. ويسقط
-          حين يطابق اسمَ الفريق — الاسم الافتراضي هو «الفريق الأول/الثاني»
-          نفسه، فيُكتب مرّتين في كبسولة واحدة بلا فائدة. */}
+      {/* الاسم وحده في وسط الكبسولة بلا سطرٍ فوقه — «صاحب الدور» و«الفريق
+          الثاني» شِيلا (طلب علي ١٧ أكتوبر)؛ والدور تقوله علامة ✓. */}
       <span className="team-copy">
-        {kicker !== team.name && <span className="team-kicker">{kicker}</span>}
         <span className="name">{team.name}</span>
       </span>
       <span className="pts-group">
@@ -152,11 +148,9 @@ export function ScoreBar({
         turn={turnTeam === 0}
         onAdjust={onAdjust && ((d) => onAdjust(0, d))}
       />
-      {/* قرص الوسط شعارٌ في كل شاشة (قرار علي ٦ سبتمبر ٢٠٢٦). كان يحمل وسماً
-          نصّياً في كتلةٍ سوداء — «جولة 2 / 4»، «فاصل التعادل» — فحلّ الشعارُ
-          محلَّها كلِّها: الناس تألفه بالتكرار، ولا يُبنى ذلك بظهورٍ واحد في
-          الافتتاح. ولا كتلةَ خلفه: الاسمُ مرسومٌ بحدّه وظلّه. */}
-      <div className="mid mid-brand">
+      {/* قرص الوسط فارغٌ بمقاس الشعار (طلب علي ١٧ أكتوبر): الشعار يُرسم
+          مخفيّاً ليحفظ عرضه، فيبقى الشريط كما كان والوسط فراغاً. */}
+      <div className="mid mid-brand" aria-hidden="true" style={{ visibility: 'hidden' }}>
         <BrandLogo className="mid-logo" />
       </div>
       <TeamCapsule

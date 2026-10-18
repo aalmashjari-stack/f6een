@@ -84,6 +84,16 @@ export function Endgame({
             </>
           )}
         </span>
+        {/* «بطل الديربي» بتاجه (طلب علي ١٧ أكتوبر ٢٠٢٦) — من أصاب سؤال الجولة الختاميّة. */}
+        {state.s2Champion && (
+          <span className="w-champ">
+            <span className="w-champ-label">بطل الديربي</span>
+            <span className="w-champ-name">
+              <span aria-hidden="true">👑</span>
+              {state.teams[state.s2Champion.team].players[state.s2Champion.player]?.name}
+            </span>
+          </span>
+        )}
         <div className="final-score">
           <span className="tabular">{s0}</span> — <span className="tabular">{s1}</span>
         </div>

@@ -1,18 +1,21 @@
-import { type CSSProperties, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react'
 import { STAGE3_POINTS, STAGE3_TIMER_MS } from '../game/session'
 import type { GameState } from '../game/session'
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
+import { Confetti } from '../components/Confetti'
+import { play } from '../audio/sfx'
 import intervalCss from './Interval.css?inline'
 
 /* القفز الفوري بعد «ابدأ» يبتر أهم سطر في الشاشة: المجموعة تكون في منتصف قراءة
    القاعدة حين تختفي. الوقفة تترك السطر ظاهراً لحظة أخيرة قبل الانتقال. */
 const HOLD_MS = 1400
 
-interface Next {
+export interface Next {
   eyebrow: string
   title: string
-  rule: string
+  /** نصٌّ أو عناصر — «بطل الديربي» يعزل «+40/−20» في عنصرٍ يساريّ الاتّجاه. */
+  rule: ReactNode
   cta: string
 }
 
@@ -43,16 +46,42 @@ const NEXT: Record<string, Next> = {
   },
 }
 
-export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: Action) => void }) {
-  const info: Next = NEXT[state.intervalNext] ?? {
-    eyebrow: 'المرحلة القادمة',
-    title: 'المرحلة التالية',
-    rule: '',
-    cta: 'ابدأ',
-  }
-  const tie = state.intervalNext === 'tiebreak'
+/**
+ * بطاقةٌ بغير وجهة المحرّك — «بطل الديربي» (١٧ أكتوبر ٢٠٢٦) يعرض تمهيده بهذه
+ * الشاشة نفسها قبل اختيار البطلين، وليس فاصلاً بين مرحلتين في المحرّك.
+ * `onGo` يحلّ محلّ `INTERVAL_CONTINUE`، و`hype` يطلق الرقائق والصوت عند الظهور.
+ */
+export interface IntervalOverride {
+  info: Next
+  stageNo: string
+  onGo: () => void
+  hype?: boolean
+}
+
+export function Interval({
+  state,
+  dispatch,
+  override,
+}: {
+  state: GameState
+  dispatch: (a: Action) => void
+  override?: IntervalOverride
+}) {
+  const info: Next = override?.info ??
+    NEXT[state.intervalNext] ?? {
+      eyebrow: 'المرحلة القادمة',
+      title: 'المرحلة التالية',
+      rule: '',
+      cta: 'ابدأ',
+    }
+  const tie = !override && state.intervalNext === 'tiebreak'
   const stageNo =
-    state.intervalNext === 'stage2-selection' ? '02' : state.intervalNext === 'stage3-play' ? '03' : '∞'
+    override?.stageNo ??
+    (state.intervalNext === 'stage2-selection' ? '02' : state.intervalNext === 'stage3-play' ? '03' : '∞')
+  const hype = !!override?.hype
+  useEffect(() => {
+    if (hype) play('win')
+  }, [hype])
 
   const [held, setHeld] = useState(false)
   const timer = useRef<number | null>(null)
@@ -66,7 +95,10 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
   const start = () => {
     if (held) return
     setHeld(true)
-    timer.current = window.setTimeout(() => dispatch({ t: 'INTERVAL_CONTINUE' }), HOLD_MS)
+    timer.current = window.setTimeout(
+      () => (override ? override.onGo() : dispatch({ t: 'INTERVAL_CONTINUE' })),
+      HOLD_MS,
+    )
   }
 
   return (
@@ -74,7 +106,9 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
     <div className="screen center-col" style={{ '--hold': `${HOLD_MS}ms` } as CSSProperties}>
       <ScoreBar onAdjust={(team, delta) => dispatch({ t: 'ADJUST', team, delta })} teams={state.teams} />
       <div className="grow center-all">
-        <div className={'interval-card' + (tie ? ' tie' : '') + (held ? ' held' : '')}>
+        <div
+          className={'interval-card' + (tie ? ' tie' : '') + (hype ? ' hype' : '') + (held ? ' held' : '')}
+        >
           <div className="il-stage-no tabular" aria-hidden="true">
             {stageNo}
           </div>
@@ -91,6 +125,7 @@ export function Interval({ state, dispatch }: { state: GameState; dispatch: (a: 
         <span className="hb-label">{info.cta}</span>
         <span className="hb-fill" aria-hidden="true" />
       </button>
+      {hype && <Confetti burstMs={2600} />}
       <style>{intervalCss}</style>
     </div>
   )

@@ -23,8 +23,7 @@ import { shippedImage } from '../game/shippedImage'
  * دائرةٌ رماديّة بجانب الإجابة تُقرأ عطباً؛ وغيابُها لا يُلاحَظ.
  */
 export function AnswerFace({ q, children }: { q: Question; children: ReactNode }) {
-  const key = q.answerImage
-  const src = key ? (isImageUrl(key) ? key : shippedImage(key)) : null
+  const src = answerFaceSrc(q)
   if (!src) return <>{children}</>
   return (
     <div className="rv-answer-row">
@@ -39,4 +38,11 @@ export function AnswerFace({ q, children }: { q: Question; children: ReactNode }
       {children}
     </div>
   )
+}
+
+/** مصدر وجه الإجابة أو null — لكشف الجولة الجماعية الذي يضع الوجه بجانب
+    البطاقة كلّها لا بجانب الاسم وحده. */
+export function answerFaceSrc(q: Question): string | null {
+  const key = q.answerImage
+  return key ? (isImageUrl(key) ? key : shippedImage(key)) : null
 }

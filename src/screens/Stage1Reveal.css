@@ -27,6 +27,44 @@
 .rv-q.long  { font-size:clamp(12px, min(1.7vw, 2.4dvh), 18px); }
 .rv-q.xlong { font-size:clamp(11px, min(1.5vw, 2.1dvh), 15px); line-height:1.35; }
 .rv-rule { width:clamp(40px,6vw,72px); height:1px; background:rgba(255,189,89,.32); }
+/* وجهُ الإجابة بارتفاع البطاقة في طرفها (طلب علي ١٨ أكتوبر ٢٠٢٦). الغلاف
+   شفّافٌ بلا وجه (contents) فلا يتغيّر شيءٌ في البطاقات الأخرى؛ ومع الوجه
+   يصير عموداً بجانبه والبطاقةُ صفّاً. القطر يُقاس من الشاشة لا من البطاقة:
+   البطاقة تأخذ ارتفاعها من محتواها، فوجهٌ بنسبتها حلقةٌ مفرغة. */
+.rv-card-body { display:contents; }
+/* النصّ في وسط البطاقة كما كان، والوجه ملاصقٌ له من يمينه لا على حافّتها
+   (لقطة علي الثانية: «مو نفس المكان»). ثلاثة أعمدة: الوسط بعرض النصّ،
+   والطرفان يتقاسمان الباقي بالتساوي فيبقى النصّ في المنتصف؛ والوجه في
+   الطرف الأيمن ملتصقٌ بنهايته (end = جهة النصّ في RTL). */
+.rv-card--face {
+  display:grid; grid-template-columns:1fr minmax(0, max-content) 1fr;
+  align-items:center;
+}
+/* فجوة الوجه عن النصّ — بأولويّة `body .screen .rv-card` في showtime التي
+   تضبط gap كلّه (والعمود معه) إلى 16–28، وطبقة neo للشاشة القصيرة فوقها. */
+body .screen .rv-card.rv-card--face,
+html[data-skin] body .screen .rv-card.rv-card--face { column-gap:clamp(20px, 4.5vw, 72px); }
+.rv-card--face .rv-card-body {
+  grid-column:2; min-width:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  row-gap:inherit;
+}
+.rv-face.rv-face-side {
+  grid-column:1; grid-row:1; justify-self:end;
+  /* أعلى قليلاً من المنتصف (طلب علي ١٨ أكتوبر ٢٠٢٦: «ارفع الدائرة شوي»).
+     بـtop لا transform: حركة pop-in تملك transform وتُبقيه بعد انتهائها. */
+  position:relative; top:calc(-1 * clamp(4px, 1.6dvh, 16px));
+  width:clamp(64px, min(15vw, 24dvh), 240px);
+  animation:pop-in .5s var(--ease-spring) .1s both;
+}
+/* الجوال الأفقيّ: حشوة البطاقة تضيق هناك (neo §16) فـ24dvh يفيض عنها
+   ببضع بكسلات ويُقصّ أسفله — قِيس على 874×381 و667×330. */
+@media (max-height:480px) {
+  body .screen .rv-face.rv-face-side { width:19dvh; }
+  /* الوجه يأخذ من عرض النصّ فيلتفّ السؤال الطويل سطرين؛ ما يُستردّ هو
+     الفراغ بين السؤال والإجابة (قِيس على 874×381). */
+  body .screen .rv-card--face .rv-card-body { row-gap:clamp(2px, 1.2dvh, 6px); }
+}
 /* البوستر يأخذ ما كان للسؤال والصورة معاً: لا نصَّ فوقه، فسقفه أعلى
    من سقف صورة السؤال، ويبقى تحته العنوان و«هل أصاب؟» والزرّان. */
 .rv-photo.rv-poster { max-height:min(34dvh, 300px); }
@@ -178,6 +216,8 @@
      يملأ البطاقةَ حتى هذا السقف بصرف النظر عمّا وفّرته حشوةٌ أضيق. */
   .pick { padding:4px 10px; gap:1px; max-height:76px; }
   .rv-card { gap:2px; padding-block:5px; }
+  /* حشوة 5px لا تتّسع لرفع الوجه — كان يلامس حافّة البطاقة على 667×330. */
+  .rv-face.rv-face-side { top:0; }
   .rv-q.xlong { font-size:10px; }
   /* flex-grow معطَّل هنا خصيصاً: عند التدفّق كان الصفّ يكبر إلى حجم
      ثابت أكبر ممّا تحتاجه بطاقتاه — يتّضح فقط حين يضيق كل شيء حوله
