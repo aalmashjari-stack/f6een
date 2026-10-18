@@ -34,6 +34,8 @@ html[data-skin='blocks'] {
   --n-bg: #FFFBF4;
   --n-surface: #FFFFFF;
   --n-surface-2: #FFF3E0;
+  /* حاوية الإعداد: بيجٌ أفتح درجةً من الأرضيّة ‎--n-bg‎ (علي ١٧ أكتوبر ٢٠٢٦) */
+  --n-panel: #FFFDF8;
   --n-ink: #22201C;
   --n-edge: #22201C;
   --n-ink-2: #57524A;
@@ -107,15 +109,15 @@ html[data-skin='blocks'] .screen.end .es-num {
 }
 
 /* ─── ٣. شريط النتيجة ────────────────────────────────────────────────── */
-/* بطاقتا الفريقين كتلتان بلونيهما الكاملين — لا صبغة باهتة. والميل
-   المتعاكس (‎-.6/+.6‎ درجة) توقيع الهويّة. */
+/* بطاقتا الفريقين كتلتان بلونيهما الكاملين — لا صبغة باهتة. */
 html[data-skin='blocks'] .scorebar .team {
   min-height: clamp(58px, 8.2dvh, 86px);
   border-radius: var(--n-r2);
   box-shadow: var(--n-e2);
 }
-html[data-skin='blocks'] .scorebar .team-0 { transform: rotate(-.6deg); }
-html[data-skin='blocks'] .scorebar .team-1 { transform: rotate(.6deg); }
+/* مستقيمتان بلا ميل (طلب علي ١٧ أكتوبر). */
+html[data-skin='blocks'] .scorebar .team-0,
+html[data-skin='blocks'] .scorebar .team-1 { transform: none; }
 /* المتقدّم لا يخلع كتلته: قاعدة lead الورقيّة تبيّضه بوزن (0,4,1) —
    ‏`body .screen .scorebar .team.lead` — وقاعدة الفريق في نيو أخفّ منها
    درجةً فتخسر. هنا الوزن يُطابَق (.team-0.lead تعطي 0,4,1 أيضاً) وترتيبُ
@@ -126,8 +128,21 @@ html[data-skin='blocks'] .scorebar .team-1.lead { background: var(--n-b-tint); }
 /* الاسم حبرٌ على الكتلة المشبعة — النصّ الملوّن على لونٍ مشبع لا يُقرأ */
 html[data-skin='blocks'] .scorebar .team .name,
 html[data-skin='blocks'] .scorebar .team.lead .name { color: var(--n-ink); font-weight: 800; }
-html[data-skin='blocks'] .scorebar .team-kicker,
-html[data-skin='blocks'] .scorebar .team.turn .team-kicker { color: rgba(34,32,28,.62); }
+/* الاسم وحده في وسط مساحته وبخطٍّ أكبر (طلب علي ١٧ أكتوبر). الوزن عالٍ
+   لأنّ قاعدة الخطّ في showtime.css وطبقة الجوال في neo.css أثقل من قاعدة
+   الكتل. */
+html[data-skin='blocks'] body .screen .scorebar .team .team-copy {
+  align-items: center;
+  text-align: center;
+}
+html[data-skin='blocks'] body .screen .scorebar .team .name {
+  max-width: 100%;
+  font-size: clamp(19px, 2.6vw, 34px);
+  line-height: 1.15;
+}
+@media (max-height: 480px), (max-width: 620px) {
+  html[data-skin='blocks'] body .screen .scorebar .team .name { font-size: 16px; }
+}
 /* زرّا التصحيح يتبعان القرص: أبيضُ بحدّ حبر، لا حدٌّ رماديّ رفيع. */
 html[data-skin='blocks'] .scorebar .pts-adj button {
   color: var(--n-ink);
@@ -145,17 +160,14 @@ html[data-skin='blocks'] .scorebar .team-0 .pts,
 html[data-skin='blocks'] .scorebar .team-0.lead .pts,
 html[data-skin='blocks'] .scorebar .team-1 .pts,
 html[data-skin='blocks'] .scorebar .team-1.lead .pts { color: var(--n-ink); }
-/* الدور: الكتلة تنهض — تستقيم من ميلها وترتفع بظلٍّ أبعد. إشارةٌ تُرى
-   من آخر المجلس بلا حلقةٍ رابعة تزاحم الحدّ والظلّ. */
+/* الدور: ظلٌّ أبعد وعلامة ✓ — بلا نهوض، فالكبسولتان على ارتفاعٍ واحد
+   (طلب علي ١٧ أكتوبر). */
 html[data-skin='blocks'] .scorebar .team-0.turn,
 html[data-skin='blocks'] .scorebar .team-1.turn,
 html[data-skin='blocks'] .scorebar .team-0.lead.turn,
 html[data-skin='blocks'] .scorebar .team-1.lead.turn {
-  transform: rotate(0deg) translateY(-2px);
   box-shadow: var(--n-e3);
 }
-html[data-skin='blocks'] .scorebar .team-0.turn .team-kicker,
-html[data-skin='blocks'] .scorebar .team-1.turn .team-kicker { color: var(--n-ink); font-weight: 800; }
 html[data-skin='blocks'] .scorebar .team.lead { box-shadow: var(--n-e2); }
 /* علامة ✓ لصاحب الدور: قرص حبرٍ بصحٍّ أبيض يعلو زاوية الكبسولة من جهة
    الاسم. النهوض وحده كان أخفى من أن يُرى من آخر المجلس. */
@@ -478,6 +490,27 @@ html[data-skin='blocks'] body .screen .bcell.played {
   box-shadow: 0 0 0 2px rgba(34,32,28,.18);
 }
 html[data-skin='blocks'] body .screen .bh-owner { box-shadow: 0 0 0 1.5px var(--n-edge); }
+/* «الرسمة تملأ الوحدة» (علي ١٧ أكتوبر ٢٠٢٦، الشكل ٢ من أربعة — «اعتمد هذا»): الرسمة هي
+   الوحدة كلّها، والنقاط شاراتٌ فاتحة فوقها على طرفها، واسمُ الفئة أسفلها. **والوحدة بنسبة
+   الرسمة ٣:٢** («مع الحفاظ على شكل الصور») فلا قصّ: عرضُها الأصغرُ من عرض الخليّة ومن
+   ١٫٥ × ارتفاعها، واللوحُ حاويةُ استعلام (‎cqw/cqh‎) لهذا الحساب: ستُّ وحداتٍ في ‎--cols‎
+   أعمدة فالصفوف ‎6 / --cols‎. */
+html[data-skin='blocks'] body .screen .s1-board { container-type: size; --g: clamp(9px, 1.4vw, 24px); gap: var(--g); }
+html[data-skin='blocks'] body .screen .bunit {
+  position: relative; display: block; padding: 0; overflow: hidden;
+  place-self: center;
+  width: min(calc((100cqw - (var(--cols) - 1) * var(--g)) / var(--cols)),
+             calc((100cqh - (6 / var(--cols) - 1) * var(--g)) / (6 / var(--cols)) * 1.5));
+  aspect-ratio: 3 / 2; height: auto;
+}
+html[data-skin='blocks'] body .screen .bhead { position: absolute; inset: 0; border-radius: inherit; box-shadow: none; }
+html[data-skin='blocks'] body .screen .bh-plate { align-items: flex-start; padding-inline: 14px; }
+html[data-skin='blocks'] body .screen .blevels {
+  position: absolute; top: 8%; bottom: 8%; inset-inline-end: 3%; width: 27%;
+  gap: clamp(4px, .9dvh, 9px);
+}
+html[data-skin='blocks'] body .screen .bcell { flex-direction: column; gap: 0; background: rgba(255,253,248,.94); }
+html[data-skin='blocks'] body .screen .bcell.played { background: rgba(255,251,244,.72); }
 
 /* ─── ٩ج. بلاطة الحروف (فئة «حروف») ──────────────────────────────────── */
 /* بلاطاتٌ مشبعة بحدّ حبرٍ وظلٍّ صلب — رسمةُ الفئة نفسها حيّةً على الشاشة:
@@ -613,8 +646,7 @@ html[data-skin='blocks'] .screen.setup .team-card:last-child .team-badge {
   font-weight: 800;
 }
 html[data-skin='blocks'] .screen.setup .team-card.starter {
-  transform: rotate(0deg) translateY(-2px);
-  box-shadow: var(--n-e3);
+  transform: none;
 }
 /* الحقول بيضاء على الكتلة الملوّنة */
 html[data-skin='blocks'] .screen.setup .player,
@@ -666,8 +698,6 @@ html[data-skin='blocks'] .screen.end .es-row > .es-num.up:last-child { color: va
   html[data-skin='blocks'] .screen.setup .team-card:last-child,
   html[data-skin='blocks'] .screen.end .winner,
   html[data-skin='blocks'] .screen.end .winner-stamp { transform: none; }
-  html[data-skin='blocks'] .scorebar .team-0.turn,
-  html[data-skin='blocks'] .scorebar .team-1.turn { transform: translateY(-1px); }
   html[data-skin='blocks'] .scorebar .team { box-shadow: 0 0 0 2px var(--n-edge), 2px 3px 0 var(--n-edge); }
   html[data-skin='blocks'] .q-box,
   html[data-skin='blocks'] .s3-q { box-shadow: 0 0 0 2px var(--n-edge), 4px 5px 0 var(--n-edge); }
@@ -784,4 +814,71 @@ html[data-skin] body .screen .scorebar .team .team-kicker {
 }
 html[data-skin] body .screen .bcell .bc-level {
   font-size: clamp(11px, min(1.3vw, 2.3dvh), 17px);
+}
+
+/* ─── «بطل الديربي» (علي ١٧ أكتوبر ٢٠٢٦) ─────────────────────────────── */
+/* شارة الجولة الختاميّة: كتلةٌ برتقاليّة مائلة بحدّ حبر — لغة ‎.rd-title‎ نفسها. */
+html[data-skin='blocks'] .s2-final-chip {
+  align-self: center;
+  display: inline-block;
+  margin-bottom: clamp(34px, 10dvh, 110px);
+  padding: 4px 22px 6px;
+  border-radius: 999px;
+  background: var(--n-brand);
+  color: #fff;
+  box-shadow: 0 0 0 2.5px var(--n-edge), 4px 4px 0 var(--n-edge);
+  transform: rotate(-1.5deg);
+  font-weight: 800;
+  font-size: clamp(26px, min(4.4vw, 7.5dvh), 62px);
+  line-height: 1.3;
+}
+/* في اختيار البطلين الشارة فوق الاسمين لا بجانبهما. */
+html[data-skin='blocks'] .grow.center-all:has(> .s2-final-chip) { flex-direction: column; }
+html[data-skin='blocks'] .s2-final-chip { white-space: nowrap; }
+html[data-skin='blocks'] .s2-final-chip.small {
+  align-self: center;
+  margin: 0;
+  padding: 1px 14px 3px;
+  font-size: clamp(14px, min(1.8vw, 3dvh), 24px);
+  box-shadow: 0 0 0 2px var(--n-edge), 3px 3px 0 var(--n-edge);
+}
+@media (max-height: 480px) {
+  html[data-skin='blocks'] .s2-final-chip { margin-bottom: 20px; font-size: 22px; }
+  html[data-skin='blocks'] .s2-final-chip.small { font-size: 12px; }
+}
+/* تمهيد «بطل الديربي»: بطاقة الفاصل نفسها بحماسٍ أعلى — ×2 أوضح من رقم المرحلة
+   الباهت، والعنوان يقفز مرّتين عند الظهور، والبطاقة تنبض نبضاً خفيفاً. */
+html[data-skin='blocks'] .interval-card.hype .il-stage-no { color: rgba(232,84,47,.32); }
+html[data-skin='blocks'] .interval-card.hype .il-title {
+  color: var(--n-brand);
+  animation: champ-pop .9s var(--ease-spring) both, champ-pop .5s .9s var(--ease-spring);
+}
+html[data-skin='blocks'] .interval-card.hype:not(.held) { animation: champ-pulse 1.6s ease-in-out 1s infinite; }
+@keyframes champ-pop {
+  0% { transform: scale(.6) rotate(-4deg); opacity: 0; }
+  60% { transform: scale(1.12) rotate(1.5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes champ-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--n-edge), 7px 8px 0 var(--n-edge); }
+  50% { box-shadow: 0 0 0 3px var(--n-edge), 7px 8px 0 var(--n-edge), 0 0 0 10px rgba(232,84,47,.18); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-skin='blocks'] .interval-card.hype .il-title,
+  html[data-skin='blocks'] .interval-card.hype { animation: none; }
+}
+/* «بطل الديربي» في بطاقة الختام: كِكرٌ فوق الاسم كـ«الفائز»، والتاج بجانب الاسم،
+   وخطٌّ يفصله عمّا قبله كما يفصل النتيجة. */
+html[data-skin='blocks'] .screen.end .w-champ {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding-inline-start: clamp(12px, 2.4vw, 40px);
+  border-inline-start: 2px solid var(--n-line);
+}
+html[data-skin='blocks'] .screen.end .w-champ-label { font-size: clamp(11px, 1.1vw, 15px); font-weight: 800; color: var(--n-ink-3); }
+html[data-skin='blocks'] .screen.end .w-champ-name {
+  display: inline-flex; align-items: center; gap: .3em;
+  font-size: clamp(18px, min(2.4vw, 4.4dvh), 34px); font-weight: 800; color: var(--n-ink); line-height: 1.2;
+}
+@media (max-width: 620px) {
+  html[data-skin='blocks'] .screen.end .w-champ { padding-inline-start: 0; border-inline-start: 0; }
 }

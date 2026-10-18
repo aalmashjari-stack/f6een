@@ -27,7 +27,13 @@ export function Stage2Question({ state, dispatch }: { state: GameState; dispatch
           <i className="who">{state.teams[0].name}</i>
           <b>{nameOf(0)}</b>
         </span>
-        <span className="vs">ضد</span>
+        {/* في «بطل الديربي» تحلّ الشارة محلّ «ضد» — لا سطراً زائداً: الشاشة
+            محسوبةٌ لتسع منظراً واحداً، وسطرٌ فوق البطاقة دفع الزرّ تحت الحافّة. */}
+        {state.s2Final ? (
+          <span className="s2-final-chip small">بطل الديربي</span>
+        ) : (
+          <span className="vs">ضد</span>
+        )}
         <span className="p left">
           <i className="who">{state.teams[1].name}</i>
           <b>{nameOf(1)}</b>

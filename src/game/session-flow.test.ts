@@ -15,6 +15,8 @@ import {
   STAGE1_LEVEL_POINTS,
   STAGE1_LEVELS,
   STAGE2_CORRECT,
+  STAGE2_FINAL_CORRECT,
+  STAGE2_FINAL_WRONG,
   STAGE2_TIMER_MS,
   STAGE2_WRONG,
   STAGE3_POINTS,
@@ -25,6 +27,7 @@ import {
   decodeState,
   encodeState,
   isStoredState,
+  pickChampions,
   pickDerbyPair,
   stage1Owner,
 } from './session'
@@ -455,7 +458,9 @@ describe('ثنائيّات الديربي', () => {
   const playDerby = (players: [string[], string[]]) => {
     let s = toDerby(players)
     const pairs: string[] = []
-    while (s.phase === 'stage2-selection') {
+    /* الجولات العاديّة وحدها: ثنائيّ «بطل الديربي» يُختار ممّن أصابوا
+       (`pickChampions`) فقد يعيد مواجهةً — وله اختباره أدناه. */
+    while (s.phase === 'stage2-selection' && !s.s2Final) {
       const sel = pickDerbyPair(s)
       s = step(s, { t: 'S2_SELECT', sel })
       pairs.push(sel.join(':'))
@@ -491,7 +496,7 @@ describe('ثنائيّات الديربي', () => {
       for (let n = 0; n < 200; n++) {
         let s = toDerby(players)
         const pairs: string[] = []
-        while (s.phase === 'stage2-selection') {
+        while (s.phase === 'stage2-selection' && !s.s2Final) {
           const before = s.s2Rem
           const sel = pickDerbyPair(s)
           expect(before[0]).toContain(sel[0])
@@ -522,6 +527,73 @@ describe('ثنائيّات الديربي', () => {
   it('١×١ (خارج ما يقبله الإعداد): لا مواجهة غيرُ الواحدة — يعود الاختيار على الدورة بلا سقوط', () => {
     const pairs = playDerby([['A'], ['B']])
     expect(pairs).toEqual(['0:0', '0:0', '0:0', '0:0'])
+  })
+
+  /* «بطل الديربي» (قرار علي ١٧ أكتوبر ٢٠٢٦): جولةٌ واحدة بعد العاديّة، بنقاطٍ
+     مضاعفة، ولاعبُها ممّن أصاب في الديربي — أو من الفريق كلّه إن لم يُصب منه أحد. */
+  it('«بطل الديربي»: جولةٌ واحدة بعد العاديّة، ونقاطها مضاعفة، ثمّ الفاصل', () => {
+    let s = toDerby([
+      ['A', 'B', 'C'],
+      ['D', 'E', 'F'],
+    ])
+    const rounds = s.s2Rounds
+    for (let k = 0; k < rounds; k++) {
+      s = step(s, { t: 'S2_SELECT', sel: pickDerbyPair(s) })
+      s = step(s, { t: 'S2_TO_REVEAL' })
+      /* الأوّل يصيب في كلّ جولة، والثاني لا يصيب أبداً. */
+      s = step(s, { t: 'S2_SET_MARK', who: 0, mark: 'صح' })
+      s = step(s, { t: 'S2_NEXT_ROUND' })
+    }
+    expect(s.phase).toBe('stage2-selection')
+    expect(s.s2Final).toBe(true)
+    const before = [s.teams[0].score, s.teams[1].score]
+    const sel = pickChampions(s)
+    const hit = s.teams[0].players
+      .map((_, i) => i)
+      .filter((i) => s.correctByPlayer[s.teams[0].players[i].id] > 0)
+    expect(hit).toContain(sel[0])
+    s = step(s, { t: 'S2_SELECT', sel })
+    s = step(s, { t: 'S2_TO_REVEAL' })
+    s = step(s, { t: 'S2_SET_MARK', who: 1, mark: 'صح' })
+    s = step(s, { t: 'S2_NEXT_ROUND' })
+    expect(s.teams[1].score - before[1]).toBe(STAGE2_FINAL_CORRECT)
+    expect(STAGE2_FINAL_CORRECT).toBe(2 * STAGE2_CORRECT)
+    expect(s.phase).toBe('interval')
+    expect(s.intervalNext).toBe('stage3-play')
+    expect(s.s2Final).toBe(false)
+    /* من أصاب سؤال البطل يُحفظ لتاج الختام. */
+    expect(s.s2Champion).toEqual({ team: 1, player: sel[1] })
+  })
+
+  it('«بطل الديربي»: الخطأ مضاعفٌ أيضاً، وفريقٌ لم يُصب منه أحد يُسحب من لاعبيه كلّهم', () => {
+    let s = toDerby([
+      ['A', 'B'],
+      ['C', 'D'],
+    ])
+    while (!s.s2Final) {
+      s = step(s, { t: 'S2_SELECT', sel: pickDerbyPair(s) })
+      s = step(s, { t: 'S2_TO_REVEAL' })
+      s = step(s, { t: 'S2_NEXT_ROUND' })
+    }
+    for (let n = 0; n < 50; n++) {
+      const sel = pickChampions(s)
+      expect([0, 1]).toContain(sel[0])
+      expect([0, 1]).toContain(sel[1])
+    }
+    const before = s.teams[0].score
+    s = step(s, { t: 'S2_SELECT', sel: pickChampions(s) })
+    s = step(s, { t: 'S2_TO_REVEAL' })
+    s = step(s, { t: 'S2_SET_MARK', who: 0, mark: 'غلط' })
+    s = step(s, { t: 'S2_NEXT_ROUND' })
+    expect(s.teams[0].score - before).toBe(STAGE2_FINAL_WRONG)
+    /* لم يُصبه أحد: لا بطل يُتوَّج في الختام. */
+    expect(s.s2Champion).toBeNull()
+  })
+
+  it('لقطةٌ محفوظة قبل «بطل الديربي» تُستأنف بلا جولةٍ ختاميّة جارية', () => {
+    const { s2Final: _drop, ...old } = encodeState(createSession(INPUT))
+    expect(isStoredState(old)).toBe(true)
+    expect(decodeState(old as Parameters<typeof decodeState>[0]).s2Final).toBe(false)
   })
 
   it('لقطةٌ محفوظة قبل ذاكرة المواجهات تُستأنف بلا مواجهات', () => {

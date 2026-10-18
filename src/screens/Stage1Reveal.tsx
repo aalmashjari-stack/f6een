@@ -5,7 +5,7 @@ import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
 import { questionSizeSuffix } from '../components/QuestionText'
 import { FitAnswer } from '../components/FitAnswer'
-import { AnswerFace } from '../components/AnswerFace'
+import { answerFaceSrc } from '../components/AnswerFace'
 import { celebSrc } from '../game/celebs'
 import { isCharadeKind, isCharadesCategory } from '../game/charades'
 import { shippedImage } from '../game/shippedImage'
@@ -59,6 +59,10 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
      `AnswerFace`: لا ملصقَ خيرٌ من إطارٍ فارغ. */
   const posterKey = charade ? q.answerImage : undefined
   const poster = posterKey ? (isImageUrl(posterKey) ? posterKey : shippedImage(posterKey)) : null
+  /* وجهُ الإجابة هنا بارتفاع البطاقة كلّها في طرفها (طلب علي ١٨ أكتوبر ٢٠٢٦،
+     دائرةٌ رسمها على لقطة): بجانب الاسم وحده كان بقطر سطرٍ واحد. وسؤالُ
+     الصورة والتمثيل لهما صورتهما فلا وجه. */
+  const face = !q.image && !charade ? answerFaceSrc(q) : null
 
   return (
     <div className="screen">
@@ -68,53 +72,61 @@ export function Stage1Reveal({ state, dispatch }: { state: GameState; dispatch: 
         turnTeam={owner}
       />
 
-      <div className="rv-card">
-        {q.image ? (
+      <div className={'rv-card' + (face ? ' rv-card--face' : '')}>
+        {face && (
           <img
-            className="rv-photo"
-            src={celebSrc(q.image)}
+            className="rv-face rv-face-side"
+            src={face}
             alt=""
             onError={(e) => {
               e.currentTarget.style.display = 'none'
             }}
           />
-        ) : charade ? (
-          poster ? (
+        )}
+        <div className="rv-card-body">
+          {q.image ? (
             <img
-              className="rv-photo rv-poster"
-              src={poster}
+              className="rv-photo"
+              src={celebSrc(q.image)}
               alt=""
               onError={(e) => {
                 e.currentTarget.style.display = 'none'
               }}
             />
+          ) : charade ? (
+            poster ? (
+              <img
+                className="rv-photo rv-poster"
+                src={poster}
+                alt=""
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
+            ) : (
+              <div className="rv-q">الكلمة كانت</div>
+            )
           ) : (
-            <div className="rv-q">الكلمة كانت</div>
-          )
-        ) : (
-          <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
-        )}
-        <span className="rv-rule" aria-hidden="true" />
-        {/* صورةُ الإجابة تجاور الاسمَ ولا تحلّ محلّ السؤال: السؤال هنا نصٌّ
-            قائم بنفسه، والوجهُ ثمرةُ الكشف. */}
-        {charade ? (
-          /* الغلافُ صندوقُ قياس `FitAnswer`: بلا غلافٍ يقيس نفسَه على البطاقة
+            <div className={'rv-q' + questionSizeSuffix(q.question)}>{q.question}</div>
+          )}
+          <span className="rv-rule" aria-hidden="true" />
+          {charade ? (
+            /* الغلافُ صندوقُ قياس `FitAnswer`: بلا غلافٍ يقيس نفسَه على البطاقة
              كلِّها، فيهبط إلى أرضيّته كلّما ضاقت البطاقة بالملصق — والملصقُ هو
              الذي ينكمش (flex 0 1 auto) لا العنوان. */
-          <>
-            {/* النوع فوق العنوان — كما يقرؤه الممثّل في هاتفه (طلب علي ٢٠
+            <>
+              {/* النوع فوق العنوان — كما يقرؤه الممثّل في هاتفه (طلب علي ٢٠
                 سبتمبر ٢٠٢٦): المجلس يعرف ما كان يُمثَّل لا اسمَه وحده. وخارجَ
                 صندوق `FitAnswer`: داخله يُحسب على العنوان فيهبط مقاسُه إلى النصف. */}
-            {isCharadeKind(q.topic) && <span className="rv-kind">{q.topic}</span>}
-            <div className="rv-poster-title">
-              <FitAnswer className="rv-a">{q.answer}</FitAnswer>
-            </div>
-          </>
-        ) : (
-          <AnswerFace q={q}>
+              {isCharadeKind(q.topic) && <span className="rv-kind">{q.topic}</span>}
+              <div className="rv-poster-title">
+                <FitAnswer className="rv-a">{q.answer}</FitAnswer>
+              </div>
+            </>
+          ) : (
             <FitAnswer className="rv-a">{q.answer}</FitAnswer>
-          </AnswerFace>
-        )}
+          )}
+        </div>
       </div>
 
       {/* حُذف شريط «قرار الحكم» في ٢٥ أغسطس ٢٠٢٦ بقرار علي: «مسوية زحمة

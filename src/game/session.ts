@@ -44,6 +44,10 @@ export const STAGE1_LEVEL_POINTS: Record<Level, number> = {
 export const STAGE2_TIMER_MS = 30_000 * TIME_SCALE
 export const STAGE2_CORRECT = 20
 export const STAGE2_WRONG = -10
+/* «بطل الديربي» (قرار علي ١٧ أكتوبر ٢٠٢٦): جولةٌ ختاميّة بعد الجولات العاديّة، لاعبٌ من
+   كلّ فريق يُختار عشوائيّاً ممّن أصابوا في الديربي، ونقاطها مضاعفة (+40 / −20). */
+export const STAGE2_FINAL_CORRECT = STAGE2_CORRECT * 2
+export const STAGE2_FINAL_WRONG = STAGE2_WRONG * 2
 /* خمسٌ وأربعون لا ثلاثون (قرار علي ١٥ سبتمبر ٢٠٢٦). الدور الواحد يستهلك
    نحو ١٥–٢١ سؤالاً بدل ١٠–١٤، فالطابور ستّون لا أربعون ليبقى كافياً دورين
    عاديّين قبل أن يلجأ المحرّك إلى التعبئة (انظر ensureS3Queue). */
@@ -132,6 +136,10 @@ export interface GameState {
    */
   s2Pairs: [number, number][]
   s2Marks: [Mark, Mark]
+  /** جولة «بطل الديربي» جارية — بعد الجولات العاديّة (‎s2Index === s2Rounds‎). */
+  s2Final: boolean
+  /** من أصاب سؤال «بطل الديربي» — يُعرض اسمه بتاجٍ في الختام. `null` إن لم يُصبه أحد. */
+  s2Champion: { team: TeamId; player: number } | null
 
   /* المرحلة ٣ */
   s3Team: TeamId
@@ -304,6 +312,8 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
     s2Sel: null,
     s2Pairs: [],
     s2Marks: ['صمت', 'صمت'],
+    s2Final: false,
+    s2Champion: null,
     s3Team: input.startingTeam,
     s3Queue,
     s3Pos: 0,
@@ -334,12 +344,18 @@ export function createSession(input: SetupInput, used: Set<string> = loadUsedIds
  * المستأنَفة على الجهاز عن المستأنَفة عليه من حساب آخر — والفرق لا يظهر إلا
  * بعد الاستئناف.
  */
-export type StoredState = Omit<GameState, 'usedQuestionIds' | 's2Pairs' | 'results'> & {
+export type StoredState = Omit<
+  GameState,
+  'usedQuestionIds' | 's2Pairs' | 'results' | 's2Final' | 's2Champion'
+> & {
   usedQuestionIds: string[]
   /** لقطةٌ سبقت ذاكرة المواجهات (٢١ سبتمبر ٢٠٢٦) تُستأنف بلا مواجهاتٍ سابقة. */
   s2Pairs?: [number, number][]
   /** ولقطةٌ سبقت حفظ النتائج (٢٣ سبتمبر ٢٠٢٦) تُستأنف بلا نتائج سابقة. */
   results?: Record<string, QuestionResult>
+  /** ولقطةٌ سبقت «بطل الديربي» (١٧ أكتوبر ٢٠٢٦) تُستأنف بلا جولةٍ ختاميّة جارية. */
+  s2Final?: boolean
+  s2Champion?: { team: TeamId; player: number } | null
 }
 
 export function encodeState(s: GameState): StoredState {
@@ -354,6 +370,8 @@ export function decodeState(s: StoredState): GameState {
     timerEndsAt: s.timerEndsAt ?? null,
     s2Pairs: s.s2Pairs ?? [],
     results: s.results ?? {},
+    s2Final: s.s2Final ?? false,
+    s2Champion: s.s2Champion ?? null,
   }
 }
 
@@ -452,6 +470,7 @@ export function isStoredState(x: unknown): x is StoredState {
     ['correct', 'wrong'].every((k) => pair(s3Counts?.[k])) &&
     arr('reportedQuestionIds') &&
     (s.results === undefined || obj('results')) &&
+    (s.s2Final === undefined || typeof s.s2Final === 'boolean') &&
     (s.timerEndsAt === undefined || s.timerEndsAt === null || num('timerEndsAt')) &&
     (s.s3Queue as unknown[]).every(question)
   )
@@ -565,6 +584,24 @@ export function pickDerbyPair(
   const fresh = all.filter(([a, b]) => !seen.has(`${a}:${b}`))
   const from = fresh.length > 0 ? fresh : all
   return from[Math.floor(rng() * from.length)]
+}
+
+/**
+ * ثنائيّ «بطل الديربي»: من كلّ فريق لاعبٌ عشوائيّ **ممّن أصابوا في الديربي**
+ * (‎correctByPlayer‎ — والديربي وحده يُنقّط لاعباً بعينه). وفريقٌ لم يُصب منه
+ * أحد يُسحب من لاعبيه كلّهم: الجولة لا تُلغى لفريقٍ ولا تُهدى لخصمه.
+ */
+export function pickChampions(
+  state: Pick<GameState, 'teams' | 'correctByPlayer'>,
+  rng: () => number = Math.random,
+): [number, number] {
+  const one = (t: TeamId) => {
+    const all = state.teams[t].players.map((_, i) => i)
+    const hit = all.filter((i) => (state.correctByPlayer[state.teams[t].players[i].id] ?? 0) > 0)
+    const from = hit.length > 0 ? hit : all
+    return from[Math.floor(rng() * from.length)]
+  }
+  return [one(0), one(1)]
 }
 
 export function leader(teams: [Team, Team]): TeamId | null {

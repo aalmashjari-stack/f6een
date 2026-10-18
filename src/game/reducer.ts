@@ -10,6 +10,8 @@ import {
   STAGE1_LEVEL_POINTS,
   STAGE1_QUESTIONS,
   STAGE2_CORRECT,
+  STAGE2_FINAL_CORRECT,
+  STAGE2_FINAL_WRONG,
   STAGE2_TIMER_MS,
   STAGE2_WRONG,
   STAGE3_POINTS,
@@ -313,10 +315,10 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         const playerIdx = sel[who]
         const player = s.teams[teamId].players[playerIdx]
         if (mark === 'صح') {
-          s = addScore(s, teamId, STAGE2_CORRECT, 's2')
+          s = addScore(s, teamId, s.s2Final ? STAGE2_FINAL_CORRECT : STAGE2_CORRECT, 's2')
           correctByPlayer[player.id] = (correctByPlayer[player.id] ?? 0) + 1
         } else if (mark === 'غلط') {
-          s = addScore(s, teamId, STAGE2_WRONG, 's2')
+          s = addScore(s, teamId, s.s2Final ? STAGE2_FINAL_WRONG : STAGE2_WRONG, 's2')
           wrongByPlayer[player.id] = (wrongByPlayer[player.id] ?? 0) + 1
         }
       }
@@ -333,9 +335,25 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
           phase: 'stage2-selection',
         }
       }
-      // انتهى الديربي → فاصل ثم الحق ما تلحق
+      /* انتهت الجولات العاديّة → «بطل الديربي» (قرار علي ١٧ أكتوبر ٢٠٢٦): جولةٌ
+         ختاميّة واحدة بنقاط مضاعفة، والثنائيّ يُختار في الشاشة بـ`pickChampions`. */
+      if (!s.s2Final) {
+        return {
+          ...s,
+          s2Index: nextIndex,
+          s2Sel: null,
+          s2Final: true,
+          currentCategory: null,
+          currentQuestion: null,
+          phase: 'stage2-selection',
+        }
+      }
+      // انتهى الديربي ببطله → فاصل ثم الحق ما تلحق. ومن أصاب سؤاله يُحفظ لتاج الختام.
+      const champ = ([0, 1] as const).find((w) => marks[w] === 'صح')
       return {
         ...s,
+        s2Final: false,
+        s2Champion: champ === undefined ? null : { team: champ, player: sel[champ] },
         s2Index: nextIndex,
         s2Sel: null,
         currentCategory: null,
