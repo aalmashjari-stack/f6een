@@ -14551,5 +14551,19 @@
     "artist": "النادي",
     "page": "Inter Miami CF",
     "source": "https://en.wikipedia.org/wiki/Inter_Miami_CF"
+  },
+  {
+    "key": "flag-lt",
+    "licence": "Public domain",
+    "artist": "Original: Jonas Basanavičius, Tadas Daugirdas and Antanas Žmuidzinavičius",
+    "page": "File:Flag of Lithuania.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Lithuania.svg"
+  },
+  {
+    "key": "flag-ec",
+    "licence": "Public domain",
+    "artist": "President of the Republic of Ecuador, first uploaded by Denelson83, modifications by Husunqu, Zscout370",
+    "page": "File:Flag of Ecuador.svg",
+    "source": "https://commons.wikimedia.org/wiki/File%3AFlag_of_Ecuador.svg"
   }
 ]
