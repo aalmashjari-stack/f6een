@@ -900,13 +900,14 @@ html[data-skin] body .screen.setup .setup-body::after {
 html[data-skin] body .screen.setup .setup-body::before { background:color-mix(in srgb, var(--n-b-tint, #7BD3D0) 22%, var(--n-bg, #FFFBF4)); transform:rotate(.45deg); }
 html[data-skin] body .screen.setup .setup-body::after { background:color-mix(in srgb, var(--n-a-tint, #FFCE3C) 22%, var(--n-bg, #FFFBF4)); transform:rotate(-.3deg); }
 /* على الجوال الطوليّ الكونتينر أطول من عرضه بخمس مرّات، فالميل يُخرج طرفَي
-   الورقتين نحو 7px أعلاه وأسفله حتى تلامسا حافّة الشاشة (قِيس على 375:
-   الحدّ عند 7px والهامش 16). فهنا إزاحةٌ ثابتة لا تكبر بالطول، والكونتينر
-   يدخل 3px حتى يقف حدُّ الورقتين على خطّ الرأس. */
+   الورقتين نحو 7px أعلاه وأسفله حتى تلامسا حافّة الشاشة (قِيس على 375).
+   وإزاحةٌ جانبيّة صغيرة لم تُصلحه: صار الحدّ خطَّين بشريطٍ ملوّن رفيع بينهما
+   («مو عاجبني الاطراف»). فهنا الورقتان أضيق من الكونتينر وتطلّان من تحته
+   وحده كرزمة أوراق، والجانبان حدٌّ واحد (اختيار علي ١٩ أكتوبر ٢٠٢٦). */
 @media (max-width:640px) and (orientation: portrait) {
-  html[data-skin] body .screen.setup .setup-body { width:auto; margin-inline:3px; }
-  html[data-skin] body .screen.setup .setup-body::before { transform:translate(3px, -5px); }
-  html[data-skin] body .screen.setup .setup-body::after { transform:translate(-3px, 5px); }
+  html[data-skin] body .screen.setup .setup-body { margin-bottom:34px; }
+  html[data-skin] body .screen.setup .setup-body::before { inset:0 22px; transform:translateY(22px); }
+  html[data-skin] body .screen.setup .setup-body::after { inset:0 11px; transform:translateY(11px); }
 }
 /* داخل الكونتينر الفجوة بين الفرق والفئات أضيق: كانت ≈100 بكسل فراغاً. */
 html[data-skin] body .screen.setup .cats-head { margin-top:8px; }
