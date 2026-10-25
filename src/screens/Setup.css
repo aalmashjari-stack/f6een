@@ -439,10 +439,9 @@ html[data-skin] body .screen.setup .video-cap .stage-no { font-size:clamp(16px,1
   display:flex; flex-direction:column; justify-content:flex-end;
   /* بطاقةٌ طوليّة كورق اللعب (طلب علي، ٣ سبتمبر ٢٠٢٦) — النسبة تحكم
      الارتفاع فلا يُخمَّن بـvh، وتصمد على كلّ عرض.
-     **والرسمات ٣:٢ عرضيّة** (SPEC §١١)، فـcover يقصّ جانبيها ويُبقي
-     نحو نصف العرض من الوسط. هذا ثمن الشكل الطوليّ ما لم تُستبدل
-     الرسمات بمصادر طوليّة. */
-  aspect-ratio:3 / 4;
+     **٢:٣ بنسبة الرسمات الطوليّة** (علي ٢٤ أكتوبر ٢٠٢٦) فتظهر كاملةً بلا
+     قصّ. وما بقي من الرسمات ٣:٢ العرضيّة يقصّ cover جانبيها. */
+  aspect-ratio:2 / 3;
   min-width:0;
   padding:0;
   font-family:inherit; cursor:pointer; text-align:center;
