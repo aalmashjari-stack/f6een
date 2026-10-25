@@ -101,6 +101,7 @@ const ART_V2: Record<string, string> = {
   شعارات: 'logos',
   'ديزني وبيكسار': 'disney',
   لوكيشن: 'location',
+  'أحياء وفلك': 'biology-astronomy',
 }
 
 for (const [cat, slug] of Object.entries(ART_V2)) {
