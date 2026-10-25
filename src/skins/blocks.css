@@ -511,6 +511,16 @@ html[data-skin='blocks'] body .screen .blevels {
 }
 html[data-skin='blocks'] body .screen .bcell { flex-direction: column; gap: 0; background: rgba(255,253,248,.94); }
 html[data-skin='blocks'] body .screen .bcell.played { background: rgba(255,251,244,.72); }
+/* صور الفئات ٢:٣ (علي ٢٤ أكتوبر ٢٠٢٦: «وحّد الصور ٢:٣ وشكلهم باللوح ٣:٢»): الصورة كاملةً بلا قصّ،
+   وتتوسّط ما يتركه عمود النقاط (يسارَ الوحدة في RTL، من ٣٪ إلى ٣٠٪): عرضُها ٤٤٫٤٪ ومركزُها ٦٥٪ ← ‎77%‎.
+   وصورةُ ٣:٢ تملأ كما كانت. وتحت الرسمة الشفّافة «الأشعّة» (علي ٢٥ أكتوبر): شمسٌ بيضاء وسماويّ خفيف
+   جدّاً، والوسط أبيض صافٍ خلف الرسمة. */
+html[data-skin='blocks'] {
+  --art-rays: radial-gradient(circle at 50% 50%, #FFFFFF 22%, transparent 70%),
+    repeating-conic-gradient(from 0deg at 50% 50%, #FFFFFF 0deg 9deg, #F1F7FC 9deg 18deg);
+}
+html[data-skin='blocks'] body .screen .bhead { background: var(--art) 77% center / contain no-repeat, var(--art-rays); }
+html[data-skin='blocks'] body .screen .cc-img { background: var(--art) center / cover no-repeat, var(--art-rays); }
 
 /* ─── ٩ج. بلاطة الحروف (فئة «حروف») ──────────────────────────────────── */
 /* بلاطاتٌ مشبعة بحدّ حبرٍ وظلٍّ صلب — رسمةُ الفئة نفسها حيّةً على الشاشة:
