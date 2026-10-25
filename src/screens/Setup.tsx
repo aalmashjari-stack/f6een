@@ -403,7 +403,7 @@ export function Setup({
                 </svg>
                 <span className="hnav-sound-label">{night ? 'الوضع النهاري' : 'الوضع الليلي'}</span>
               </button>
-              <button className="hnav hnav-logout" onClick={logout}>
+              <button className="hnav hnav-logout" onClick={logout} title="تسجيل الخروج">
                 تسجيل الخروج
               </button>
             </nav>

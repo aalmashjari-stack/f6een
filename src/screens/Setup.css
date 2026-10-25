@@ -868,6 +868,43 @@ html[data-skin] body .screen.setup .hero-nav .hnav-logout {
   :root[data-skin] body .screen.setup .hero-nav .hnav:not(.hnav-sound) { padding:0 8px; font-size:15px; }
   :root[data-skin] body .screen.setup .hero-nav .hnav-sep { margin-inline:2px; }
 }
+/* ─── القائمة في العرض: روابط بدوائر ملوّنة، والأدوات أيقونات (علي ٢٦ أكتوبر
+   ٢٠٢٦، الشكل «ج» من ثلاث عيّنات بعد «رتب القائمة») ───
+   كلّ رابطٍ أيقونتُه في دائرةٍ بلونٍ من الهويّة، والروابط بجانب الشعار.
+   الصوت والليليّ والخروج أيقوناتٌ بلا كلام في الطرف الآخر بجانب «رصيد
+   العابي»، والخروج أحمر. الدائرة صورة الأيقونة على خلفيّة اللون لا قناع —
+   القناع يقصّ الدائرة. وتبقى في النوافذ الضيّقة: الصفّ صار أقصر بلا كلمة الخروج. */
+@media (min-width:641px), (orientation: landscape) {
+  :root[data-skin] body .screen.setup .hero-nav { justify-content:flex-start; }
+  :root[data-skin] body .screen.setup .hero-nav .hnav-sep { display:none; }
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-account::before,
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-rules::before,
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-contact::before {
+    display:block; content:''; flex:none;
+    width:1.75em; height:1.75em; border-radius:999px;
+    background:var(--dot) var(--ic) center / 58% no-repeat;
+    -webkit-mask:none; mask:none;
+  }
+  :root[data-skin] body .screen.setup .hero-nav .hnav-account { --dot:var(--n-a-tint, #FFCE3C); }
+  :root[data-skin] body .screen.setup .hero-nav .hnav-rules { --dot:var(--n-b-tint, #7BD3D0); }
+  :root[data-skin] body .screen.setup .hero-nav .hnav-contact { --dot:#FFE3D6; }
+  /* الليليّ يحمل صنف الصوت أيضاً، فالدفع على الصوت وحده: على الاثنين كان
+     يقسم الفراغ بينهما فيبعد الصوت عن جارَيه. */
+  :root[data-skin] body .screen.setup .hero-nav .hnav-sound:not(.hnav-night) { margin-inline-start:auto; }
+  /* الأيقونات الثلاث متقاربة وقريبةٌ من «رصيد العابي» (علي: «خلهم قريبين من
+     بعض»): أزرارٌ أضيق، وفراغ الرأس بين الصفّ والرصيد يُستردّ إلا 10px. */
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-sound,
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-logout { width:clamp(34px,2.6vw,40px); }
+  :root[data-skin] body .screen.setup .hnav-balance { margin-inline-start:calc(10px - clamp(18px,2.4vw,40px)); }
+  /* الخروج أيقونةٌ وحدها بمقاس جارَيه؛ الكلمة تبقى اسمَه المقروء (font-size:0). */
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-logout {
+    padding:0; justify-content:center; font-size:0;
+    color:var(--n-bad, #CE2F1E);
+  }
+  :root[data-skin] body .screen.setup .hero-nav .hnav.hnav-logout::before {
+    display:block; width:clamp(21px,1.6vw,26px); height:clamp(21px,1.6vw,26px);
+  }
+}
 /* الإعداد داخل كونتينر كشاشة الدخول (علي ١ أكتوبر ٢٠٢٦): أبيض بحدّ
    حبرٍ وظلٍّ صلب، ورسوم الفئات تبقى على الخلفيّة حوله. وفي الموقع
    كذلك (علي ١ أكتوبر ٢٠٢٦: «الشكل واحد» — الإعداد في كونتينر). */
@@ -962,4 +999,36 @@ html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.9
     margin-top:20px; padding:10px 14px; bottom:12px;
   }
   html[data-skin] body .screen.setup .tray-slot { width:clamp(48px,4.2vw,76px); border-radius:12px; }
+}
+/* ─── بلا كونتينر: الأقسام على الأرضيّة (علي ٢٦ أكتوبر ٢٠٢٦، الاتّجاه «أ»
+   من ثلاث عيّنات: «تصميم يخليني استغني عن container») ───
+   في العرض (الموقع والآيباد): الصندوق والأوراق المكدّسة خلفه يسقطان، والأقسام
+   على القشدة مباشرةً. العنوان كبسولته نفسها بلسانها الملوّن، لكن في اليمين
+   (جُرّب رقمٌ في دائرة حبر: «شكله مو عاجبني»). وبين الأقسام خطٌّ رفيع وفسحةٌ واسعة — القرب يجمع
+   والفراغ يفصل، بلا حدٍّ يحيط بشيء. والجوال يبقى بكونتينره.
+   والمسافات وُسّعت بطلبه («وسع المسافات»): فوق العنوان الأوّل وتحت كلّ عنوان وبين الأقسام. */
+@media (min-width:641px), (orientation: landscape) {
+  :root[data-skin] body .screen.setup .setup-body {
+    padding:0 0 clamp(20px,3.4dvh,44px); background:none; box-shadow:none; border-radius:0;
+    margin-top:clamp(56px,9dvh,104px);
+  }
+  :root[data-skin] body .screen.setup .setup-body::before,
+  :root[data-skin] body .screen.setup .setup-body::after { content:none; }
+  :root[data-skin] body .screen.setup .setup-block + .setup-block,
+  :root[data-skin] body .screen.setup .setup-foot {
+    margin-top:clamp(56px,9.5dvh,108px); padding-top:clamp(56px,9.5dvh,108px);
+    border-top:1.5px solid rgba(34,32,28,.14);
+  }
+  :root[data-skin] body .screen.setup .setup-block > .title-cap-wrap,
+  :root[data-skin] body .screen.setup .cats-head .title-cap-wrap {
+    margin:0 0 clamp(36px,6dvh,60px); margin-inline:0; width:fit-content;
+  }
+  /* عنوان الفئات في اليمين كعنوان الفرق، والفسحة فوقه للخطّ الفاصل وحده. */
+  :root[data-skin] body .screen.setup .cats-head { justify-content:flex-start; margin:0 0 clamp(36px,6dvh,60px); }
+  :root[data-skin] body .screen.setup .cats-head .title-cap-wrap { margin:0; }
+  /* وروابط القائمة أبعد عن بعضها («بعد»)؛ الأيقونات الثلاث تبقى متقاربة. */
+  :root[data-skin] body .screen.setup .hero-nav { gap:clamp(12px,1.8vw,28px); }
+  :root[data-skin] body .screen.setup .hero-nav .hnav-sound,
+  :root[data-skin] body .screen.setup .hero-nav .hnav-logout { margin-inline-end:calc(5px - clamp(12px,1.8vw,28px)); }
+  :root[data-skin] body .screen.setup .hero-nav .hnav-logout { margin-inline-end:0; }
 }
