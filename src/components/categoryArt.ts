@@ -50,6 +50,64 @@ export const CATEGORY_ART: Record<string, string> = {
   'موضة وأزياء وماركات': fashion,
 }
 
+/* ===================== الجيل الثاني: شفّافة ٢:٣ فوق «الأشعّة» ===================== */
+/**
+ * علي ٢٥ أكتوبر ٢٠٢٦: «شيل الخلفية القشدية وبدلها بالخلفية الي اخترناها». الرسوم
+ * شفّافةٌ فتظهر تحتها `--art-rays` من blocks.css، وتعلو على الجيل الأوّل لفئاتها.
+ * والمرفوع من اللوحة يعلو عليها كما يعلو على أيّ مشحون — فهجرة
+ * `20261025130000_category_art_v2` تمسح المرفوع القديم لهذه الفئات وحدها.
+ */
+const V2 = import.meta.glob('../../assets/categories/v2/*.webp', {
+  eager: true,
+  import: 'default',
+}) as Record<string, string>
+
+const ART_V2: Record<string, string> = {
+  'تاريخ وحضارات': 'history',
+  'حضارات قديمة': 'ancient-civilizations',
+  'أدب وفنون': 'literature-arts',
+  'جغرافيا ومعالم': 'geography',
+  'لغة عربية': 'arabic-language',
+  'دوري أبطال أوروبا': 'champions-league',
+  إسلامي: 'religion',
+  'سينما ودراما': 'cinema-drama',
+  'السيرة النبوية': 'seerah',
+  'قصص الأنبياء': 'prophets-stories',
+  'الصحابة والتابعون': 'companions',
+  'من أنا؟': 'who-am-i',
+  مشاهير: 'celebrities',
+  'أغاني وطرب': 'songs',
+  أنمي: 'anime',
+  'الزمن الجميل': 'golden-era',
+  'ألعاب فيديو': 'video-games',
+  'القرآن الكريم': 'quran',
+  'الفقه والعبادات': 'fiqh',
+  'موضة وماركات': 'fashion',
+  'مكياج وعطور': 'beauty',
+  [LETTERS_CATEGORY]: 'letters',
+  أكلات: 'food',
+  'أمثال وألغاز': 'proverbs-riddles',
+  الكويت: 'kuwait',
+  'تقنية ومنوعات': 'tech-misc',
+  'شعارات أندية': 'club-logos',
+  'The Sopranos': 'sopranos',
+  'معلومات عامة': 'general-knowledge',
+  'علوم واختراعات': 'science',
+  'طب وصحة': 'medicine',
+  'أعلام دول': 'flags',
+  إيموجي: 'emoji',
+  سيارات: 'cars',
+  معالم: 'landmarks',
+  شعارات: 'logos',
+  'ديزني وبيكسار': 'disney',
+  لوكيشن: 'location',
+}
+
+for (const [cat, slug] of Object.entries(ART_V2)) {
+  const url = V2[`../../assets/categories/v2/${slug}.webp`]
+  if (url) CATEGORY_ART[cat] = url
+}
+
 /* ===================== الصور المرفوعة من اللوحة ===================== */
 /**
  * صورة فئة رفعها المدير — تعلو على المشحونة إن وُجدت، وتملأ فراغ الفئة
