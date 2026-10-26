@@ -102,6 +102,11 @@ const ART_V2: Record<string, string> = {
   'ديزني وبيكسار': 'disney',
   لوكيشن: 'location',
   'أحياء وفلك': 'biology-astronomy',
+  'كأس العالم': 'world-cup',
+  'الدوري الإنجليزي': 'premier-league',
+  'الدوري الإسباني': 'la-liga',
+  'الدوري الإيطالي': 'serie-a',
+  'الدوري الألماني': 'bundesliga',
 }
 
 for (const [cat, slug] of Object.entries(ART_V2)) {
