@@ -107,6 +107,7 @@ const ART_V2: Record<string, string> = {
   'الدوري الإسباني': 'la-liga',
   'الدوري الإيطالي': 'serie-a',
   'الدوري الألماني': 'bundesliga',
+  'رياضة عامة': 'general-sports',
 }
 
 for (const [cat, slug] of Object.entries(ART_V2)) {
