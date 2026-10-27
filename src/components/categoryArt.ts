@@ -108,6 +108,10 @@ const ART_V2: Record<string, string> = {
   'الدوري الإيطالي': 'serie-a',
   'الدوري الألماني': 'bundesliga',
   'رياضة عامة': 'general-sports',
+  'Game of thrones': 'game-of-thrones',
+  'Prison break': 'prison-break',
+  'Breaking bad': 'breaking-bad',
+  Dexter: 'dexter',
 }
 
 for (const [cat, slug] of Object.entries(ART_V2)) {
