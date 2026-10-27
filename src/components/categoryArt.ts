@@ -112,6 +112,7 @@ const ART_V2: Record<string, string> = {
   'Prison break': 'prison-break',
   'Breaking bad': 'breaking-bad',
   Dexter: 'dexter',
+  الأسطورة: 'ostora',
 }
 
 for (const [cat, slug] of Object.entries(ART_V2)) {
