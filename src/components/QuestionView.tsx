@@ -10,8 +10,12 @@ import { ZoomablePhoto } from './ZoomablePhoto'
  * إكمالُه لا الإجابة عنه. وحدها هذه تحتاج تلميحاً: بقيّة البنك أسئلةٌ تامّة
  * تنتهي بعلامة استفهام، والألغاز منها كذلك، فتدلّ على نفسها بلا معين.
  * القيمتان حصريّتان لهذه الفئة، فلا يتسرّب التلميح إلى سؤال آخر.
+ * لكنّ الموضوع وحده لا يكفي: ثلاثون لغزاً في البنك («ما الشيء الذي له أسنان
+ * ولا يعضّ؟») موسومةٌ «إكمال مثل» فكان التلميح يعلوها. والمثل المبتور ينتهي
+ * بـ«…» في كلّ صفّ (أو بثلاث نقاط من رفعٍ يدويّ)، فهي الشرط الثاني.
  */
 const PROVERB_TOPICS = new Set(['إكمال مثل', 'إكمال مثل تراثي'])
+const isProverb = (q: Question) => PROVERB_TOPICS.has(q.topic) && /(…|\.\.\.)$/.test(q.question.trim())
 
 /**
  * سؤالُ الصورة حين لا يحمل نصّاً — ملفّ رفعٍ قديم أو صفٌّ ناقص. لا يقع في
@@ -52,7 +56,7 @@ export function QuestionView({ q }: { q: Question }) {
   }
   return (
     <>
-      {PROVERB_TOPICS.has(q.topic) && <div className="q-hint">أكمل المثل</div>}
+      {isProverb(q) && <div className="q-hint">أكمل المثل</div>}
       {letter && (
         <div className="q-hint q-hint-letter">
           الحرف الأوّل <span className="q-letter">{letter}</span>
