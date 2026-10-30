@@ -138,7 +138,10 @@ body .screen .ring-timer{width:clamp(150px,19vw,230px);height:clamp(112px,15dvh,
 body .screen .ring-timer::before{display:none} body .screen .ring-timer svg{display:none}
 body .screen .ring-timer .secs{position:static;grid-row:1;color:var(--festival-purple)!important;font-size:clamp(42px,8dvh,82px);transform:none}
 body .screen .timer-progress{grid-row:2;width:100%;height:12px;display:block;overflow:hidden;border:3px solid var(--festival-ink);border-radius:999px;background:var(--festival-white)}
-body .screen .timer-progress>span{display:block;height:100%;transition:width .12s linear}
+/* بلا transition: useCountdown يكتب العرض في كلّ إطار، وانتقالُ .12s يُعاد
+   تشغيله مع كلّ كتابة فلا يتقدّم في WebKit — كان الشريط يبقى ممتلئاً على
+   الآيفون والتلفزيون والرقمُ ينزل (٣٠ أكتوبر ٢٠٢٦). */
+body .screen .timer-progress>span{display:block;height:100%}
 
 /* شاشة الإعداد */
 /* الارتفاع يتبع ارتفاع الشاشة لا عرضها: بـ20.3vw كان الشريط ٢٦٠px على
