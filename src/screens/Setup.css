@@ -1032,23 +1032,3 @@ html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.9
   :root[data-skin] body .screen.setup .hero-nav .hnav-logout { margin-inline-end:calc(5px - clamp(12px,1.8vw,28px)); }
   :root[data-skin] body .screen.setup .hero-nav .hnav-logout { margin-inline-end:0; }
 }
-
-/* ─── رأس الموقع «جزيرة بيضاء» (علي ١ نوفمبر ٢٠٢٦، من ثلاث هيئات في كتالوج
-   impeccable: «البساطة والأناقة») ───
-   الرأس بلوكٌ أبيض بحدّ الحبر وظلّه الصلب، بعرض كونتينر الإعداد تحته
-   وبزواياه، فيُقرأ أوّلَ كتلتين من نظامٍ واحد لا شريطاً فوقهما. الخطّ
-   الفاصل يسقط: الحدّ يكفي. الموقع وحده: التطبيق (data-native) والجوال
-   الطوليّ باقيان كما هما. */
-@media (min-width:641px), (orientation: landscape) {
-  :root[data-skin]:not([data-native]) body .screen.setup .hero {
-    margin-top:clamp(14px,2.4dvh,24px);
-    /* أعلى من أسفل: «ط» الشعار ترتفع فوق صندوقه، فبحشوةٍ متساوية كانت
-       تلامس الحدّ (قِيس على 1440). */
-    padding:clamp(18px,2.8dvh,26px) clamp(18px,2vw,30px) clamp(10px,1.6dvh,16px);
-    background:var(--n-surface, #fff);
-    border:0; border-radius:var(--n-r3, 22px);
-    box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C);
-  }
-  /* الرصيد على الأبيض: أرضيّة الصفحة القشديّة تفصله عن الجزيرة بلا ثقل. */
-  :root[data-skin]:not([data-native]) body .screen.setup .hnav-balance { background:var(--n-bg, #FFFBF4); }
-}
