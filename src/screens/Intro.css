@@ -132,14 +132,21 @@ body .screen.intro.native .intro-pane.signin::before {
      السمات تزن أربعة أصناف فتغلب ثلاثة. */
   html[data-skin] body .screen.intro.native.signin-open { padding-top:clamp(14px,3.4dvh,40px); }
 
-  /* صفحة الدخول: كتلةٌ أضيق من التعريف (أزرارها عمودٌ واحد) وبمقاسٍ أكبر. */
+  /* صفحة الدخول: كتلةٌ أضيق من التعريف (أزرارها عمودٌ واحد)، وتسع النافذة
+     كلّها بلا قصّ من أسفل (علي ٢ نوفمبر ٢٠٢٦: «ضبط صفحة تسجيل الدخول» —
+     كانت 627px على نافذته 510px). المقاسات تتبع الارتفاع (dvh) لا العرض. */
   body .screen.intro.native .intro-pane.signin {
-    width:min(calc(100% - 48px), 760px); margin-inline:auto;
-    padding:clamp(36px,6dvh,72px) clamp(18px,6vw,72px);
+    width:min(calc(100% - 48px), 760px); margin:auto;
+    min-height:0; gap:clamp(10px,1.8dvh,16px);
+    padding:clamp(24px,5dvh,64px) clamp(18px,6vw,72px);
   }
-  body .screen.intro.native .signin-logo { font-size:clamp(96px,9vw,140px); }
-  body .screen.intro.native .signin-methods { max-width:520px; gap:clamp(12px,1.8dvh,18px); }
-  body .screen.intro.native .method { font-size:clamp(17px,1.4vw,21px); padding:clamp(15px,2.2dvh,20px) 18px; }
+  /* العنوان والجملة المخفيّان كانا يحجزان مكانهما (visibility) فيتركان فراغاً
+     تحت الشعار — في العرض يُسقطان من التدفّق. */
+  body .screen.intro.native .signin-title,
+  body .screen.intro.native .signin-sub { display:none; }
+  body .screen.intro.native .signin-logo { font-size:clamp(72px,min(9vw,15dvh),140px); margin-bottom:clamp(8px,3dvh,28px); }
+  body .screen.intro.native .signin-methods { max-width:520px; gap:clamp(10px,1.6dvh,18px); }
+  body .screen.intro.native .method { font-size:clamp(16px,1.4vw,21px); padding:clamp(11px,1.9dvh,20px) 18px; }
   .signin-first { font-size:clamp(16px,1.3vw,19px); }
   .welcome-back { height:clamp(40px,3.4vw,48px); font-size:clamp(15px,1.2vw,18px); }
 }
