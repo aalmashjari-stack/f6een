@@ -35,7 +35,7 @@
   transition:background .2s ease, transform .15s ease;
 }
 .lp-login svg { width:1.2em; height:1.2em; }
-.lp-login:hover { background:#FFF4CC; }
+.lp-login:hover { background:var(--n-surface-2); }
 .lp-login:active { transform:translateY(1px); }
 
 /* ─── الافتتاحيّة ─── */
@@ -162,6 +162,8 @@
   .lp-sub { margin-inline:auto; }
   .lp-needs { justify-content:center; }
   .lp-stage { max-width:640px; width:100%; margin-inline:auto; }
+  /* الدخول في الضيّق: الأزرار وحدها — التلفزيون تحتها يدفعها عن العين. */
+  .lp-hero.is-signin .lp-stage { display:none; }
 }
 @media (max-width:560px) {
   .lp-bar { padding-block:14px 12px; }
@@ -174,4 +176,4 @@
 
 /* الشاشة نفسها: بلا حشوة — الصفحة تحمل هوامشها، وحشوة السمات كانت تُزيح الرأس.
    بوزن html[data-skin]: قاعدة «body .screen:not(.setup):not(.end)…» تزن أربعة أصناف. */
-html[data-skin] body .screen.intro.native:not(.signin-open) { padding:0; overflow-x:hidden; }
+html[data-skin] body .screen.intro.native { padding:0; overflow-x:hidden; }
