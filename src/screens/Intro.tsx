@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
-import { STAGES } from '../game/stages'
 import { authErrorText, knownAuthErrorText, signInWithGoogle } from '../lib/auth'
 import { SignUp } from './SignUp'
-import { ExplainerInline } from '../components/ExplainerVideo'
+import { IntroLanding } from './IntroLanding'
 import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 import introCss from './Intro.css?inline'
 
@@ -20,7 +19,7 @@ import introCss from './Intro.css?inline'
  * ألوانها من رموز «نيو» (--n-*) لا من theme.css: الهويّة ثُبِّتت في ٢٧ أغسطس
  * ٢٠٢٦، وشاشة جديدة تُبنى عليها مباشرةً لا تُبنى على القديم ثم تُصحَّح.
  *
- * الشرح مصدره `game/stages.ts` نفسه الذي يغذّي الإعداد، فأرقام التنقيط تتبع
+ * شرح المراحل في صفحة الهبوط (IntroLanding) مصدره `game/stages.ts` نفسه الذي يغذّي الإعداد، فأرقام التنقيط تتبع
  * ثوابت المحرّك ولا تُكتب هنا بيد.
  *
  * **غوغل يعمل فعلاً** عبر Supabase. وApple والبريد معطّلان بسببين مختلفين:
@@ -32,7 +31,6 @@ import introCss from './Intro.css?inline'
  * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
  */
 export function Intro({ onDone }: { onDone?: () => void }) {
-  const [openStage, setOpenStage] = useState<number | null>(null)
   /* قبل أيّ رجوعٍ مبكّر: خطّافٌ بعد `if (email) return` يُسقط الشاشة كلّها. */
   /* رجوعٌ فاشل من غوغل يفتح صفحة الدخول نفسها: سببه مكتوبٌ فيها. */
   const [signinPage, setSigninPage] = useState(
@@ -78,74 +76,9 @@ export function Intro({ onDone }: { onDone?: () => void }) {
 
   return (
     <div className={'screen intro native' + (signinPage ? ' signin-open' : '')}>
-      {/* رأسُ كتلةٍ بدل صفحة الدخول القديمة — الشعار و«تسجيل الدخول» (علي ١
-          أكتوبر ٢٠٢٦، على مثالٍ أرسله بألوان فطين؛ في التطبيق ثمّ الموقع). */}
-      {!signinPage && (
-        <header className="welcome-bar">
-          <BrandLogo className="welcome-logo" />
-          <button className="welcome-login" onClick={toSignin}>
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4" />
-              <path d="M3 12h11M10 8l4 4-4 4" />
-            </svg>
-            تسجيل الدخول
-          </button>
-        </header>
-      )}
-      {/* اللوح الأول — الشرح */}
-      <section className="intro-pane">
-        {/* كتلةٌ واحدة بنصّ الموقع، والمراحل كبسولاتٍ فوق بعض، ثمّ
-            الفيديو وزرّ التسجيل (علي ١ أكتوبر ٢٠٢٦). النصوص نصوصه. */}
-        <section className="welcome-box" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
-          {/* «فطين» المكتوبة سقطت (علي ١ أكتوبر ٢٠٢٦): الشعار في الرأس فوقها. */}
-          {/* الجملة نفسها حرفاً، مقسومةً عند معناها: ما هي، ثمّ ما تفعله. */}
-          <p className="welcome-line">
-            <span className="welcome-what">لعبة ثقافية اجتماعية</span>
-            <span className="welcome-why">هدفها تخلي جمعاتكم اونس و تتكون من 3 مراحل</span>
-          </p>
-          <div className="welcome-stages">
-            {STAGES.map((st, i) => {
-              const open = openStage === i
-              return (
-                <article key={st.name} className={'w-stage tone-' + i + (open ? ' open' : '')}>
-                  <button
-                    className="w-stage-head"
-                    onClick={() => setOpenStage(open ? null : i)}
-                    aria-expanded={open}
-                  >
-                    <span className="w-stage-no" aria-hidden="true">
-                      {i + 1}
-                    </span>
-                    <h2 className="w-stage-name">{st.name}</h2>
-                    <span className="w-stage-info" aria-label={open ? 'أخفِ الشرح' : 'اعرض الشرح'}>
-                      i
-                    </span>
-                  </button>
-                  {open && <p className="w-stage-desc">{st.desc}</p>}
-                </article>
-              )
-            })}
-          </div>
-          {/* زرّ التسجيل قبل الفيديو لا بعده (علي ٥ أكتوبر ٢٠٢٦، من تدقيق
-              التجربة): بعده كان تحت حافّة الشاشة في كلّ مقاسٍ أفقيّ — 996px
-              على 900 — فلا يرى الزائر «لعبة مجانية» إلّا إن مرّر. */}
-          <button className="welcome-cta" onClick={toSignin}>
-            سجل و احصل على لعبة مجانية
-          </button>
-          <p className="welcome-video-line">
-            <span aria-hidden="true">▶</span> شوف الفيديو عشان تفهم اللعبة
-          </p>
-          <ExplainerInline />
-        </section>
-      </section>
+      {/* صفحة الهبوط (علي ٢ نوفمبر ٢٠٢٦) بدل الرأس والكتلة الواحدة: أزرارها
+          كلّها تفتح صفحة الدخول. */}
+      {!signinPage && <IntroLanding onSignin={toSignin} />}
 
       {/* اللوح الثاني — الدخول */}
       <section className="intro-pane signin" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
