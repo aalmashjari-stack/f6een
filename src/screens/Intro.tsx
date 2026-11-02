@@ -1,9 +1,7 @@
 import { useState } from 'react'
-import { BrandLogo } from '../components/BrandLogo'
 import { authErrorText, knownAuthErrorText, signInWithGoogle } from '../lib/auth'
 import { SignUp } from './SignUp'
 import { IntroLanding } from './IntroLanding'
-import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 import introCss from './Intro.css?inline'
 
 /**
@@ -80,78 +78,75 @@ export function Intro({ onDone }: { onDone?: () => void }) {
           كلّها تفتح صفحة الدخول. */}
       {!signinPage && <IntroLanding onSignin={toSignin} />}
 
-      {/* اللوح الثاني — الدخول */}
-      <section className="intro-pane signin" style={{ ['--welcome-cats' as string]: `url(${welcomeCats})` }}>
-        {/* صفحة الدخول بلا رأس: الشعار كبيراً فوقها (علي ١ أكتوبر ٢٠٢٦). */}
-        <BrandLogo className="signin-logo" />
-        <h2 className="signin-title">تسجيل الدخول</h2>
-        <p className="signin-sub">حسابك يحفظ رصيدك، ولا يعيد عليك سؤالاً سمعته</p>
+      {/* صفحة الدخول بإطار الهبوط نفسه (علي ٢ نوفمبر ٢٠٢٦: «ضبط شكلها نفس الي
+          قبلها»): الشعار في الرأس و«رجوع» فيه، والتلفزيون كما هو. */}
+      {signinPage && (
+        <IntroLanding onBack={() => setSigninPage(false)}>
+          <h1 className="lp-title">تسجيل الدخول</h1>
+          <p className="lp-sub">حسابك يحفظ رصيدك، ولا يعيد عليك سؤالاً سمعته</p>
 
-        {onDone ? (
-          /* الدخول موقوف: زرٌّ واحد يمرّ منه، ولا تُعرض أزرار مزوّدين لا تعمل.
+          {onDone ? (
+            /* الدخول موقوف: زرٌّ واحد يمرّ منه، ولا تُعرض أزرار مزوّدين لا تعمل.
              زرٌّ يعد بما لا يفي أسوأ من زرٍّ غائب. */
-          <div className="signin-methods">
-            <button className="method go-now" onClick={onDone}>
-              ابدأ
-            </button>
-            <p className="signin-note">الدخول موقوف مؤقّتاً</p>
-          </div>
-        ) : (
-          <div className="signin-methods">
-            <button className="method apple" disabled title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد">
-              {/* «سجل دخولك عبر…» (علي ١ أكتوبر ٢٠٢٦). */}
-              سجل دخولك عبر Apple
-            </button>
+            <div className="signin-methods">
+              <button className="method go-now" onClick={onDone}>
+                ابدأ
+              </button>
+              <p className="signin-note">الدخول موقوف مؤقّتاً</p>
+            </div>
+          ) : (
+            <div className="signin-methods">
+              <button className="method apple" disabled title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد">
+                {/* «سجل دخولك عبر…» (علي ١ أكتوبر ٢٠٢٦). */}
+                سجل دخولك عبر Apple
+              </button>
 
-            <button className="method google" onClick={google} disabled={busy}>
-              {/* الشعار لا الكلمة (طلب علي ٢٧ سبتمبر ٢٠٢٦): حرف G بألوانه
+              <button className="method google" onClick={google} disabled={busy}>
+                {/* الشعار لا الكلمة (طلب علي ٢٧ سبتمبر ٢٠٢٦): حرف G بألوانه
                   الأربعة كما في إرشادات غوغل، والاسم في aria-label. */}
-              {busy ? (
-                'جارٍ التحويل…'
-              ) : (
-                <>
-                  سجل دخولك عبر
-                  <svg className="g-logo" viewBox="0 0 48 48" role="img" aria-label="Google">
-                    <path
-                      fill="#EA4335"
-                      d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-                    />
-                    <path
-                      fill="#4285F4"
-                      d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-                    />
-                  </svg>
-                </>
-              )}
-            </button>
+                {busy ? (
+                  'جارٍ التحويل…'
+                ) : (
+                  <>
+                    سجل دخولك عبر
+                    <svg className="g-logo" viewBox="0 0 48 48" role="img" aria-label="Google">
+                      <path
+                        fill="#EA4335"
+                        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                      />
+                      <path
+                        fill="#4285F4"
+                        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                      />
+                    </svg>
+                  </>
+                )}
+              </button>
 
-            <button className="method mail" onClick={() => setEmail('signin')}>
-              سجل دخولك عبر البريد
-            </button>
-          </div>
-        )}
+              <button className="method mail" onClick={() => setEmail('signin')}>
+                سجل دخولك عبر البريد
+              </button>
+            </div>
+          )}
 
-        {/* الأزرار «سجل دخولك»، فمن لا حساب له يجد طريقه تحتها. وغوغل
+          {/* الأزرار «سجل دخولك»، فمن لا حساب له يجد طريقه تحتها. وغوغل
             يُنشئ الحساب بأوّل دخول، فالتسجيل هنا للبريد. */}
-        {!onDone && (
-          <button className="signin-first" onClick={() => setEmail('signup')}>
-            أول مرة؟ <u>اضغط هنا للتسجيل</u>
-          </button>
-        )}
-        {err && <p className="signin-err">{err}</p>}
-        {/* والرجوع تحت الأزرار لا في رأسٍ سقط. */}
-        <button className="welcome-back" onClick={() => setSigninPage(false)}>
-          → رجوع
-        </button>
-      </section>
+          {!onDone && (
+            <button className="signin-first" onClick={() => setEmail('signup')}>
+              أول مرة؟ <u>اضغط هنا للتسجيل</u>
+            </button>
+          )}
+          {err && <p className="signin-err">{err}</p>}
+        </IntroLanding>
+      )}
 
       <style>{introCss}</style>
     </div>

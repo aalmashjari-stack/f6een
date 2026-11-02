@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
 import { categoryArt } from '../components/categoryArt'
 import css from './IntroLanding.css?inline'
@@ -11,6 +11,10 @@ import css from './IntroLanding.css?inline'
  * الي تحت»): العنوان والزرّ يميناً، والفيديو في تلفزيون يساراً. سقطت بعدها
  * المراحل والفئات والختام والروابط. النصوص نصوص علي من الشاشة السابقة.
  * والأزرار كلّها تفتح صفحة الدخول نفسها — لا طريق إلى اللعبة بلا حساب.
+ *
+ * وصفحة الدخول تلبس الإطار نفسه (علي: «ضبط شكلها نفس الي قبلها»): الرأس
+ * بـ«رجوع» مكان «تسجيل الدخول»، والتلفزيون كما هو، وفي العمود الأيمن ما
+ * يمرّره Intro (العنوان وأزرار المزوّدين) بدل نصّ الهبوط.
  */
 
 const SRC = '/explainer-v5.mp4'
@@ -32,6 +36,22 @@ function Arrow() {
   )
 }
 
+function BackIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  )
+}
+
 function LoginIcon() {
   return (
     <svg
@@ -49,7 +69,33 @@ function LoginIcon() {
   )
 }
 
-function Hero({ onSignin }: { onSignin: () => void }) {
+function LandingCopy({ onSignin }: { onSignin: () => void }) {
+  return (
+    <>
+      <h1 className="lp-title">لعبة ثقافية اجتماعية</h1>
+      <p className="lp-sub">هدفها تخلي جمعاتكم اونس و تتكون من 3 مراحل</p>
+      <button className="lp-cta" onClick={onSignin}>
+        سجل و احصل على لعبة مجانية
+        <Arrow />
+      </button>
+      <ul className="lp-needs" aria-label="كل الي تحتاجه عشان تلعب لعبتنا">
+        <li className="t0">فريقين</li>
+        <li className="t1">شاشة واحدة</li>
+        <li className="t2">حكم</li>
+      </ul>
+    </>
+  )
+}
+
+/* رسمتا فئتين تطلّان من حول التلفزيون — لكلّ صفحة اثنتان غير الأخريين
+   (علي ٢ نوفمبر ٢٠٢٦): السفلى طويلةٌ واقفة، والعليا مستديرة. */
+const STICKERS = {
+  landing: ['كأس العالم', 'الزمن الجميل'],
+  signin: ['أغاني وطرب', 'إيموجي'],
+} as const
+
+function Hero({ copy, signin }: { copy: ReactNode; signin: boolean }) {
+  const stickers = signin ? STICKERS.signin : STICKERS.landing
   const [playing, setPlaying] = useState(false)
   const v = useRef<HTMLVideoElement>(null)
   function play() {
@@ -62,20 +108,8 @@ function Hero({ onSignin }: { onSignin: () => void }) {
     void el.play()
   }
   return (
-    <section className="lp-hero">
-      <div className="lp-hero-copy">
-        <h1 className="lp-title">لعبة ثقافية اجتماعية</h1>
-        <p className="lp-sub">هدفها تخلي جمعاتكم اونس و تتكون من 3 مراحل</p>
-        <button className="lp-cta" onClick={onSignin}>
-          سجل و احصل على لعبة مجانية
-          <Arrow />
-        </button>
-        <ul className="lp-needs" aria-label="كل الي تحتاجه عشان تلعب لعبتنا">
-          <li className="t0">فريقين</li>
-          <li className="t1">شاشة واحدة</li>
-          <li className="t2">حكم</li>
-        </ul>
-      </div>
+    <section className={'lp-hero' + (signin ? ' is-signin' : '')}>
+      <div className="lp-hero-copy">{copy}</div>
 
       <div className="lp-stage">
         <figure className="lp-tv">
@@ -100,25 +134,40 @@ function Hero({ onSignin }: { onSignin: () => void }) {
             </button>
           )}
         </figure>
-        <img className="lp-sticker s1" src={categoryArt('كأس العالم')} alt="" />
-        <img className="lp-sticker s2" src={categoryArt('الزمن الجميل')} alt="" />
+        <img className="lp-sticker s1" src={categoryArt(stickers[0])} alt="" />
+        <img className="lp-sticker s2" src={categoryArt(stickers[1])} alt="" />
       </div>
     </section>
   )
 }
 
-export function IntroLanding({ onSignin }: { onSignin: () => void }) {
+type Props =
+  | { onSignin: () => void; onBack?: never; children?: never }
+  | { onBack: () => void; children: ReactNode; onSignin?: never }
+
+export function IntroLanding(props: Props) {
+  const signin = props.onBack !== undefined
   return (
     <div className="lp">
       <header className="lp-bar">
         <BrandLogo className="lp-logo" />
-        <button className="lp-login" onClick={onSignin}>
-          <LoginIcon />
-          تسجيل الدخول
-        </button>
+        {props.onBack ? (
+          <button className="lp-login" onClick={props.onBack}>
+            <BackIcon />
+            رجوع
+          </button>
+        ) : (
+          <button className="lp-login" onClick={props.onSignin}>
+            <LoginIcon />
+            تسجيل الدخول
+          </button>
+        )}
       </header>
       <main>
-        <Hero onSignin={onSignin} />
+        <Hero
+          signin={signin}
+          copy={props.onBack ? props.children : <LandingCopy onSignin={props.onSignin} />}
+        />
       </main>
       <style>{css}</style>
     </div>

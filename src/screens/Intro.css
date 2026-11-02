@@ -1,165 +1,47 @@
 /*
   أنماط Intro — تُحمَّل نصّاً (`?inline`) وتُحقن في <style> داخل المكوّن نفسه كما كانت
   مكتوبةً في JSX: لا تُطبَّق إلّا وهو معروض، وموضعُها بعد ملفّات السمات يحسم التعادل لصالحها.
+  الهبوط والدخول كلاهما في إطار IntroLanding وأنماطه؛ هنا الشاشة وأزرار المزوّدين.
 */
-/* ممرٌّ يُمرَّر رأسياً بلوحين، كلٌّ منهما بملء الشاشة ويستقرّ عندها.
-   البادئة "body .screen" ضرورية لا زينة: theme.css يضبط عليها
-   overflow:hidden بوزن (0,2,0)، و".intro" وحدها (0,1,0) تخسر أمامه —
-   وهذا ما يفعله الإعداد بـ"body .screen.setup". */
+/* البادئة "body .screen" ضرورية لا زينة: theme.css يضبط عليها overflow:hidden
+   بوزن (0,2,0)، و".intro" وحدها (0,1,0) تخسر أمامه — وهذا ما يفعله الإعداد
+   بـ"body .screen.setup". والارتفاع صريح كي تُحسب عليه نسب ما بداخلها. */
 body .screen.intro {
   overflow-y:auto;
-  scroll-snap-type:y mandatory;
   scroll-behavior:smooth;
-  /* ارتفاعٌ صريح لا flex:1 وحده: نسبةُ اللوح (min-height:100%) لا
-     تُحسب إلا على ارتفاعٍ محدَّد، وبدونها يتكدّس اللوحان صفحةً واحدة
-     على الشاشة الطويلة — زرّ «تسجيل الدخول» وتحته عنوانُه مباشرة
-     (قِيس على 402×874: اللوح 476px لا 834). */
   height:100%;
 }
-/* التوسيط بهامشٍ تلقائيّ لا بـjustify-content:center: حين يطول اللوح
-   عن الشاشة (سفاري الأفقيّ، 292 بكسلاً) يقصّ التوسيطُ الفلكسيّ أوّلَه
-   فيختفي الشعار فوق الحافّة ولا يبلغه تمرير. والهامش التلقائيّ يوسّط
-   حين يتّسع المكان ويبدأ من الأعلى حين يضيق. */
-.intro-pane {
-  min-height:100%;
-  scroll-snap-align:start;
-  display:flex; flex-direction:column; justify-content:flex-start;
-  gap:clamp(10px,2.2dvh,26px);
-  padding:clamp(12px,3dvh,32px) clamp(14px,4vw,48px);
-  position:relative;
-}
 
-.intro-pane > :first-child { margin-top:auto; }
-.intro-pane > :last-child { margin-bottom:auto; }
-.signin { justify-content:center; text-align:center; }
-.signin-title { margin:0; font-size:clamp(20px,3.6vw,36px); font-weight:800; color:var(--n-brand); }
-.signin-sub {
-  margin:0; color:var(--n-ink-2); font-weight:600;
-  font-size:clamp(12px,1.7vw,18px);
-}
+/* أزرار المزوّدين بلغة الهبوط: كبسولاتٌ بيضاء بحدّ حبرٍ وظلٍّ صلب، عمودٌ
+   بعرض العمود الأيمن. */
 .signin-methods {
-  display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px);
-  max-width:480px; width:100%; margin-inline:auto;
+  display:flex; flex-direction:column; gap:clamp(10px,1.6dvh,14px);
+  width:min(100%, 460px); margin-top:clamp(22px,3.6dvh,36px);
 }
 .method {
-  font:inherit; font-weight:800; cursor:pointer;
-  border-radius:var(--n-r2);
-  padding:clamp(10px,1.8dvh,16px) clamp(14px,2.6vw,24px);
-  font-size:clamp(13px,1.9vw,19px);
-  border:0; box-shadow:var(--n-e1);
+  display:flex; align-items:center; justify-content:center; gap:.5em;
+  min-height:clamp(50px,3.8vw,60px); padding:0 22px;
+  font:inherit; font-weight:800; font-size:clamp(16px,1.25vw,19px); cursor:pointer;
+  border:0; border-radius:999px;
   background:var(--n-surface); color:var(--n-ink);
-  transition:transform .15s var(--ease-spring), border-color .2s ease;
+  box-shadow:0 0 0 2.5px var(--n-edge), 4px 5px 0 var(--n-edge);
+  transition:transform .14s cubic-bezier(.2,.8,.2,1), box-shadow .14s cubic-bezier(.2,.8,.2,1);
 }
-.method.google { display:flex; align-items:center; justify-content:center; gap:.5em; }
 .g-logo { width:1.3em; height:1.3em; flex:none; }
-.method:active { transform:scale(.98); }
-.method:not(:disabled):hover { background:var(--n-surface-2); box-shadow:var(--n-e2); }
+.method:not(:disabled):hover { transform:translate(-2px,-2px); box-shadow:0 0 0 2.5px var(--n-edge), 6px 7px 0 var(--n-edge); }
+.method:not(:disabled):active { transform:translate(3px,4px); box-shadow:0 0 0 2.5px var(--n-edge), 1px 1px 0 var(--n-edge); }
+/* آبل معطّلة بسببٍ مكتوب في title: باهتةٌ بلا ظلّ، كي لا تُقرأ زرّاً حيّاً. */
 .method:disabled {
-  background:rgba(23,23,31,.05); color:var(--n-ink-3);
-  box-shadow:none; cursor:not-allowed;
+  background:transparent; color:var(--n-ink-3); cursor:not-allowed;
+  box-shadow:0 0 0 2px var(--n-line);
 }
-.method.go-now { background:var(--n-edge); color:var(--n-on-ink, #fff); box-shadow:var(--n-e2); }
-.method.go-now:not(:disabled):hover { background:#26262F; box-shadow:var(--n-e3); }
-.signin-note {
-  margin:0; color:var(--n-ink-3); font-weight:700;
-  font-size:clamp(11px,1.5vw,15px);
-}
-.signin-err {
-  margin:0; color:var(--n-bad); font-weight:700;
-  font-size:clamp(12px,1.6vw,16px);
-}
-
-/* صفحة الهبوط أطول من الشاشة: الاستقرار الإجباريّ على اللوحين يعيق تمريرها. */
-body .screen.intro.native { scroll-snap-type:none; }
-/* صفحتان لا لوحان: الهبوط وحده، أو الدخول وحده بعد الضغطة. */
-body .screen.intro.native:not(.signin-open) .intro-pane.signin { display:none; }
-.welcome-back {
-  height:40px; padding:0 18px; border:0; border-radius:999px; cursor:pointer;
-  font:inherit; font-weight:800; font-size:15px;
-  background:var(--n-bg, #F6F5F2); color:var(--n-ink, #22201C);
-}
-/* صفحة الدخول بهيئة صفحة التعريف (علي: «ضبّط صفحة تسجيل الدخول»):
-   الكتلة البيضاء نفسها بظلّها الأسود، تملأ ما تحت الرأس، والأزرار
-   في وسطها. */
-body .screen.intro.native .intro-pane.signin {
-  min-height:calc(100% - 32px);
-  margin:16px; padding:28px 18px;
-  background:var(--n-surface, #fff); border-radius:22px;
-  box-shadow:var(--n-e2, 0 0 0 2.5px #22201C, 5px 6px 0 #22201C); /* حدُّ حبرٍ كبطاقة «إنشاء حساب» */
-  justify-content:center; gap:14px;
-  /* لا ينكمش تحت محتواه — العلّة نفسها في الكتلة أدناه: overflow:hidden
-     (لرسوم الفئات) يُسقط حدّه الأدنى، فكان يُحشر في ارتفاع الشاشة
-     ويقصّ الشعار من أعلى و«أول مرة؟» و«رجوع» من أسفل بلا تمرير
-     (قِيس ٥ أكتوبر ٢٠٢٦ على 667×375 و844×390 و932×430). */
-  flex:none;
-}
-body .screen.intro.native .intro-pane.signin > :first-child,
-body .screen.intro.native .intro-pane.signin > :last-child { margin-block:0; }
-body .screen.intro.native .signin-logo { font-size:clamp(72px,22vw,96px); margin:0 auto 6px; }
-/* «تسجيل الدخول» والجملة تحتها سقطتا في التطبيق: الشعار والأزرار تكفي (علي ١ أكتوبر ٢٠٢٦). */
-body .screen.intro.native .signin-title,
-body .screen.intro.native .signin-sub { visibility:hidden; } /* مكانهما باقٍ: الشعار في موضعه كما كان (علي: «ارفع الشعار نفس ما كان») */
+.method.go-now { background:var(--n-brand); color:#fff; }
 .signin-first {
-  margin-top:4px; padding:6px; border:0; background:none; cursor:pointer;
-  font:inherit; font-weight:700; font-size:16px; color:var(--n-ink-2, #57524A);
+  margin-top:clamp(16px,2.6dvh,24px); padding:4px 0; border:0; background:none; cursor:pointer;
+  font:inherit; font-weight:700; font-size:clamp(15px,1.2vw,18px); color:var(--n-ink-2);
 }
-.signin-first u { color:var(--n-brand, #E8542F); text-underline-offset:4px; }
-body .screen.intro.native .signin .welcome-back { align-self:center; margin-top:8px; }
-body .screen.intro.native .signin-sub { font-size:16px; margin-bottom:10px; }
-body .screen.intro.native .signin-methods { gap:12px; }
-body .screen.intro.native .method { font-size:17px; padding:15px 18px; }
-
-/* لمسةٌ خفيفة جدّاً خلف الكتلة: رسوم الفئات شبكةً مائلة كافتتاحيّة فيديو
-   الشرح (علي ١ أكتوبر ٢٠٢٦: «مثل صور الفئات بس خفيييفة»). صورةٌ واحدة
-   مجمَّعة من assets/categories لا تسع عشرة. والمحتوى فوقها. */
-body .screen.intro.native .intro-pane.signin { position:relative; isolation:isolate; overflow:hidden; }
-/* وفي صفحة الدخول كذلك (علي ١ أكتوبر ٢٠٢٦: «سوّها في صفحة تسجيل الدخول»). */
-body .screen.intro.native .intro-pane.signin::before {
-  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none;
-  background:var(--welcome-cats) center / cover no-repeat;
-  opacity:var(--cats-alpha);
-}
-/* الجوال الأفقيّ قصير (ارتفاعه ٤٤٠px): الحشو والفجوات تنكمش. */
-@media (max-height:460px) {
-  .intro-pane { gap:clamp(6px,1.2dvh,12px); padding-block:clamp(8px,1.4dvh,14px); }
-}
-
-/* ─── العرض (الموقع والآيباد) ─── صفحة الدخول بمقاس الشاشة لا بأرقام الجوال
-   (علي ١ أكتوبر ٢٠٢٦: بمقاسات الجوال «صغيرة جدّاً»). وصفحة الهبوط بقواعدها في
-   IntroLanding.css. */
-@media (min-width:641px), (orientation: landscape) {
-  /* بوزن html[data-skin]: قاعدة «body .screen:not(.setup):not(.end)…» في
-     السمات تزن أربعة أصناف فتغلب ثلاثة. */
-  html[data-skin] body .screen.intro.native.signin-open { padding-top:clamp(14px,3.4dvh,40px); }
-
-  /* صفحة الدخول: كتلةٌ أضيق من التعريف (أزرارها عمودٌ واحد)، وتسع النافذة
-     كلّها بلا قصّ من أسفل (علي ٢ نوفمبر ٢٠٢٦: «ضبط صفحة تسجيل الدخول» —
-     كانت 627px على نافذته 510px). المقاسات تتبع الارتفاع (dvh) لا العرض. */
-  body .screen.intro.native .intro-pane.signin {
-    width:min(calc(100% - 48px), 760px); margin:auto;
-    min-height:0; gap:clamp(10px,1.8dvh,16px);
-    padding:clamp(24px,5dvh,64px) clamp(18px,6vw,72px);
-  }
-  /* العنوان والجملة المخفيّان كانا يحجزان مكانهما (visibility) فيتركان فراغاً
-     تحت الشعار — في العرض يُسقطان من التدفّق. */
-  body .screen.intro.native .signin-title,
-  body .screen.intro.native .signin-sub { display:none; }
-  body .screen.intro.native .signin-logo { font-size:clamp(72px,min(9vw,15dvh),140px); margin-bottom:clamp(8px,3dvh,28px); }
-  body .screen.intro.native .signin-methods { max-width:520px; gap:clamp(10px,1.6dvh,18px); }
-  body .screen.intro.native .method { font-size:clamp(16px,1.4vw,21px); padding:clamp(11px,1.9dvh,20px) 18px; }
-  .signin-first { font-size:clamp(16px,1.3vw,19px); }
-  .welcome-back { height:clamp(40px,3.4vw,48px); font-size:clamp(15px,1.2vw,18px); }
-}
-/* الجوال الأفقيّ: صفحة الدخول تسع الشاشة بلا تمرير. الشعار أصغر، والعنوان
-   والجملة المخفيّان (visibility) يُسقطان من التدفّق — كانا يحجزان
-   مكانهما فيدفعان «أول مرة؟» تحت الحافّة. */
-@media (max-height:460px) {
-  body .screen.intro.native .intro-pane.signin { padding:14px 18px; gap:8px; }
-  body .screen.intro.native .signin-logo { font-size:56px; margin-bottom:0; }
-  body .screen.intro.native .signin-title,
-  body .screen.intro.native .signin-sub { display:none; }
-  body .screen.intro.native .signin-methods { gap:8px; }
-  body .screen.intro.native .method { padding:9px 18px; font-size:16px; }
-  .signin-first { margin-top:0; padding:2px; font-size:15px; }
-  body .screen.intro.native .signin .welcome-back { margin-top:0; height:34px; }
-}
+.signin-first u { color:var(--n-brand); text-underline-offset:4px; }
+.signin-note,
+.signin-err { margin:12px 0 0; font-weight:700; font-size:clamp(13px,1.1vw,16px); }
+.signin-note { color:var(--n-ink-3); }
+.signin-err { color:var(--n-bad); }
