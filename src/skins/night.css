@@ -62,8 +62,7 @@ html[data-skin='blocks'][data-theme='night'] .s3-ready.team-0,
 html[data-skin='blocks'][data-theme='night'] .s3-ready.team-1,
 html[data-skin='blocks'][data-theme='night'] .s3-ready-rules span,
 html[data-skin='blocks'][data-theme='night'] .screen.setup .team-card,
-html[data-skin='blocks'][data-theme='night'] .w-stage-no,
-html[data-skin='blocks'][data-theme='night'] .w-stage-info {
+html[data-skin='blocks'][data-theme='night'] .lp-stage-top {
   --n-ink: #22201C;
   --n-ink-2: #57524A;
   --n-ink-3: #8A8578;
@@ -92,7 +91,3 @@ html[data-skin='blocks'][data-theme='night'] .action.coral { box-shadow: 4px 5px
 /* مسار المؤقّت */
 html[data-skin='blocks'][data-theme='night'] .timer-progress { background: var(--n-surface-2); }
 
-/* أرقام مراحل صفحة الترحيب: لونها موروثٌ من رأس البطاقة (فاتحٌ هنا) لا
-   من رمز — فيُعاد حبراً داكناً صريحاً. ‏:where تُبقي وزنها صفراً فتغلبها
-   حالة «مفتوح» في Intro.css. */
-html[data-theme='night'] :where(.w-stage-no, .w-stage-info) { color: var(--n-ink); }
