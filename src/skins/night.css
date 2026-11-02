@@ -61,8 +61,7 @@ html[data-skin='blocks'][data-theme='night'] body .screen .bh-owner,
 html[data-skin='blocks'][data-theme='night'] .s3-ready.team-0,
 html[data-skin='blocks'][data-theme='night'] .s3-ready.team-1,
 html[data-skin='blocks'][data-theme='night'] .s3-ready-rules span,
-html[data-skin='blocks'][data-theme='night'] .screen.setup .team-card,
-html[data-skin='blocks'][data-theme='night'] .lp-stage-top {
+html[data-skin='blocks'][data-theme='night'] .screen.setup .team-card {
   --n-ink: #22201C;
   --n-ink-2: #57524A;
   --n-ink-3: #8A8578;
