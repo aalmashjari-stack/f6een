@@ -19,7 +19,9 @@ import proverbsRiddles from '../../assets/categories/proverbs-riddles.jpg'
 import letters from '../../assets/categories/letters.jpg'
 import beauty from '../../assets/categories/beauty.jpg'
 import fashion from '../../assets/categories/fashion.jpg'
+import type { CSSProperties } from 'react'
 import { LETTERS_CATEGORY } from '../game/letters'
+import { groupOf } from './categoryGroups'
 
 /**
  * صورة كل تصنيف في لوحة التصنيفات — اختارها علي في ٥ أغسطس ٢٠٢٦.
@@ -138,4 +140,34 @@ export function setCategoryArt(map: Record<string, string>) {
 
 export function categoryArt(cat: string): string | undefined {
   return uploaded[cat] ?? CATEGORY_ART[cat]
+}
+
+/* ===================== لون الأشعّة من التصنيف ===================== */
+/**
+ * خلفيّة الرسمة («الأشعّة») بلون تصنيفها — علي ٣ نوفمبر ٢٠٢٦: «نبي نغير خلفيات
+ * صور الفئات على حسب تصنيفها»، واختار الألوان من عيّنات. فاتحةٌ كلّها: الرسمة
+ * فوقها هي البطلة.
+ *
+ * المفاتيح أسماء التصنيفات كما في القاعدة (`category_groups.name`). تصنيفٌ لا
+ * لون له هنا — جديدٌ من اللوحة أو أُعيدت تسميته — يبقى على السماويّ الأصليّ
+ * من blocks.css، فلا بطاقة بلا خلفيّة.
+ */
+const GROUP_RAY: Record<string, string> = {
+  'ثقافة عامة': '#DCEBFA',
+  'علوم وصحة': '#D5F2E6',
+  إسلاميات: '#F4E7CC',
+  'فنّ وترفيه': '#FCE0D2',
+  رياضة: '#E6F3CF',
+  منوعات: '#FFF2BF',
+  بنات: '#FBDDE7',
+  مسلسلات: '#E3EEEC',
+}
+
+/** متغيّرا البطاقة: الرسمة (`--art`) ولون أشعّتها (`--ray`) — لكلّ موضعٍ تُرسم فيه. */
+export function artStyle(cat: string): CSSProperties | undefined {
+  const art = categoryArt(cat)
+  const group = groupOf(cat)
+  const ray = group ? GROUP_RAY[group] : undefined
+  if (!art && !ray) return undefined
+  return { ...(art && { '--art': `url(${art})` }), ...(ray && { '--ray': ray }) } as CSSProperties
 }
