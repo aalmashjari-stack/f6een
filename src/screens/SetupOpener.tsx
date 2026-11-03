@@ -1,5 +1,7 @@
+import { useLayoutEffect, useRef } from 'react'
 import familyArt from '../../assets/backgrounds/setup-family.jpg'
 import css from './SetupOpener.css?inline'
+import { isNativeApp } from '../lib/platform'
 
 /**
  * افتتاحيّة الإعداد تحت البانر (علي ٢ نوفمبر ٢٠٢٦: «نفس الثيم… تحت البانر
@@ -50,9 +52,45 @@ const ICONS = [
 // صياغة علي حرفيّاً (٣ نوفمبر ٢٠٢٦)، والأرقام لاتينيّة كسائر الواجهة.
 const STEPS = ['ادخل بيانات الفريقين', 'اختر الفئات لكل فريق', 'استمتع']
 
+/* الافتتاحيّة تملأ الشاشة حتى حافّتها السفلى فلا يطلّ ما تحتها (علي ٣ نوفمبر ٢٠٢٦:
+   «البطاقة الي تحت لاتخليها تطلع بالشاشة»). تُقاس لا تُقدَّر: ارتفاع الرأس فوقها
+   يختلف بين الأجهزة، فتطول بقدر ما يلزم ليبدأ ما بعدها عند حافّة النافذة.
+   في الموقع على الشاشات الكبيرة وحدها (علي: «هذا بالموقع بس لاتغير شي في
+   الجوال»): لا في التطبيق، ولا في جوالٍ طوليّ أو أفقيّ (ارتفاعه دون 600). */
+const BIG = '(min-width: 641px) and (min-height: 600px)'
+
+function useFillViewport() {
+  const ref = useRef<HTMLElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const fit = () => {
+      el.style.minHeight = ''
+      if (isNativeApp || !matchMedia(BIG).matches) return
+      const next = el.nextElementSibling
+      if (!next) return
+      // هامشٌ صغير: ظلّ الكبسولة التالية وحدّها يطلّان فوق صندوقها.
+      const short = innerHeight + 12 - (next.getBoundingClientRect().top + scrollY)
+      if (short > 0) el.style.minHeight = `${el.offsetHeight + short}px`
+    }
+    const refit = () => fit()
+    fit()
+    // الصورة تغيّر الارتفاع حين تصل، والنافذة حين تتغيّر.
+    const img = el.querySelector('img')
+    img?.addEventListener('load', refit)
+    addEventListener('resize', refit)
+    return () => {
+      img?.removeEventListener('load', refit)
+      removeEventListener('resize', refit)
+    }
+  }, [])
+  return ref
+}
+
 export function SetupOpener({ onStart }: { onStart: () => void }) {
+  const ref = useFillViewport()
   return (
-    <section className="so">
+    <section className="so" ref={ref}>
       <div className="so-side">
         <ol className="so-steps">
           {STEPS.map((step, i) => (
