@@ -4,6 +4,17 @@
 */
 .so { display:none; }
 
+/* الجوال الطوليّ (علي ٣ نوفمبر ٢٠٢٦: «ضبط التطبيق بالجوال»): عمودٌ واحد —
+   الصورة وحدها، بلا الخطوات ولا «ابدأ» («شيل الخطوات في الجوال»، ثمّ «شيل ابدأ
+   بعد»): الفرق تحتها مباشرة فلا شيء ينزل إليه. */
+@media (max-width:640px) and (orientation: portrait) {
+  .so {
+    display:flex; justify-content:center; padding-block:4px 20px;
+  }
+  .so .so-family { width:min(100%, 420px); }
+  .so .so-side { display:none; }
+}
+
 @media (min-width:641px), (orientation: landscape) {
   .so {
     display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.35fr); align-items:center;
