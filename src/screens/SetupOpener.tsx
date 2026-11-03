@@ -59,6 +59,14 @@ const STEPS = ['ادخل بيانات الفريقين', 'اختر الفئات 
    الجوال»): لا في التطبيق، ولا في جوالٍ طوليّ أو أفقيّ (ارتفاعه دون 600). */
 const BIG = '(min-width: 641px) and (min-height: 600px)'
 
+/** أقرب سلفٍ يتمرّر — في الإعداد `.setup-scroll` لا النافذة. */
+function scrollParent(el: HTMLElement): HTMLElement | null {
+  for (let p = el.parentElement; p; p = p.parentElement) {
+    if (/auto|scroll/.test(getComputedStyle(p).overflowY)) return p
+  }
+  return null
+}
+
 function useFillViewport() {
   const ref = useRef<HTMLElement>(null)
   useLayoutEffect(() => {
@@ -69,19 +77,27 @@ function useFillViewport() {
       if (isNativeApp || !matchMedia(BIG).matches) return
       const next = el.nextElementSibling
       if (!next) return
+      /* المواضع كما لو كان كلّ شيءٍ في أعلاه: يُضاف ما تمرّر داخل الحاوية وفي
+         النافذة معاً، وإلّا كبرت الافتتاحيّة بقدر ما نزل اللاعب حين تتغيّر النافذة. */
+      const box = scrollParent(el)
+      const scrolled = scrollY + (box?.scrollTop ?? 0)
+      const bottom = box ? Math.min(innerHeight, box.getBoundingClientRect().bottom + scrollY) : innerHeight
       // هامشٌ صغير: ظلّ الكبسولة التالية وحدّها يطلّان فوق صندوقها.
-      const short = innerHeight + 12 - (next.getBoundingClientRect().top + scrollY)
+      const short = bottom + 12 - (next.getBoundingClientRect().top + scrolled)
       if (short > 0) el.style.minHeight = `${el.offsetHeight + short}px`
     }
-    const refit = () => fit()
     fit()
-    // الصورة تغيّر الارتفاع حين تصل، والنافذة حين تتغيّر.
+    /* الصورة تغيّر الارتفاع حين تصل، والخطوط حين تُستبدل (قد يطول الرأس فوقها
+       بعد القياس الأوّل)، والنافذة حين تتغيّر. */
+    let alive = true
+    void document.fonts?.ready.then(() => alive && fit())
     const img = el.querySelector('img')
-    img?.addEventListener('load', refit)
-    addEventListener('resize', refit)
+    img?.addEventListener('load', fit)
+    addEventListener('resize', fit)
     return () => {
-      img?.removeEventListener('load', refit)
-      removeEventListener('resize', refit)
+      alive = false
+      img?.removeEventListener('load', fit)
+      removeEventListener('resize', fit)
     }
   }, [])
   return ref

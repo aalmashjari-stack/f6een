@@ -524,10 +524,12 @@ html[data-skin='blocks'] body .screen :is(.bhead, .cc-img) {
     repeating-conic-gradient(from 0deg at 50% 50%, #FFFFFF 0deg 9deg, var(--ray, #F1F7FC) 9deg 18deg);
 }
 html[data-skin='blocks'] body .screen .bhead { background: var(--art) 77% center / contain no-repeat, var(--art-rays); }
-/* الرسمة داخل البطاقة بهامشٍ لا «cover» (علي ٣ نوفمبر ٢٠٢٦: «الألوان المائية طالعة برا»):
-   الرسوم المائيّة تملأ لوحتها إلى الحافّة، فالتغطية تقصّ لطخاتها عند حدّ البطاقة.
-   ٨٤٪ من العرض، ومركزها فوق الوسط قليلاً لتبقى فوق شريط الاسم. */
-html[data-skin='blocks'] body .screen .cc-img { background: var(--art) center 34% / 84% auto no-repeat, var(--art-rays); }
+/* الرسمة المائيّة الشفّافة داخل البطاقة بهامش (علي ٣ نوفمبر ٢٠٢٦: «الألوان المائية طالعة
+   برا»): `--art-size`/`--art-pos` من `artStyle` لها وحدها — ٨٤٪ من العرض فوق شريط الاسم.
+   والصورة المعتمة (الجيل الأوّل والمرفوعة) تبقى cover تملأ البطاقة. */
+html[data-skin='blocks'] body .screen .cc-img {
+  background: var(--art) var(--art-pos, center) / var(--art-size, cover) no-repeat, var(--art-rays);
+}
 
 /* ─── ٩ج. بلاطة الحروف (فئة «حروف») ──────────────────────────────────── */
 /* بلاطاتٌ مشبعة بحدّ حبرٍ وظلٍّ صلب — رسمةُ الفئة نفسها حيّةً على الشاشة:

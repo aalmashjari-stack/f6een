@@ -984,7 +984,7 @@ html[data-skin] body .screen.setup .tray-slot {
 }
 html[data-skin] body .screen.setup .tray-slot.filled {
   border:2px solid var(--n-edge, #22201C); cursor:pointer;
-  background:var(--art) center / 84% auto no-repeat, var(--ray, var(--n-surface-2, #FFF3E0));
+  background:var(--art) center / var(--art-tray-size, cover) no-repeat, var(--ray, var(--n-surface-2, #FFF3E0));
   animation:tray-pop .28s var(--ease-spring) both;
 }
 html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.92); }

@@ -163,11 +163,30 @@ const GROUP_RAY: Record<string, string> = {
   مسلسلات: '#E3EEEC',
 }
 
-/** متغيّرا البطاقة: الرسمة (`--art`) ولون أشعّتها (`--ray`) — لكلّ موضعٍ تُرسم فيه. */
+/** روابط الجيل الثاني — رسومٌ مائيّة شفّافة ٢:٣ تملأ لوحتها إلى الحافّة. */
+const V2_URLS = new Set(Object.values(V2))
+
+/**
+ * متغيّرات البطاقة لكلّ موضعٍ تُرسم فيه: الرسمة (`--art`)، ولون أشعّتها (`--ray`)،
+ * ومقاسها وموضعها حين تكون رسمةً مائيّة شفّافة من الحزمة (`--art-size`
+ * و`--art-pos` للبطاقة ٢:٣، و`--art-tray-size` لمربّع الصينيّة): تلك تُصغَّر داخل
+ * البطاقة بهامش لئلّا تُقصّ لطخاتها عند الحافّة (علي ٣ نوفمبر ٢٠٢٦: «طالعة برا»). أمّا
+ * الصورة المعتمة — الجيل الأوّل ٣:٢ والمرفوعة من اللوحة — فتبقى تملأ البطاقة،
+ * وإلّا صارت شريطاً صغيراً بحوافّ قاطعة فوق الأشعّة.
+ */
 export function artStyle(cat: string): CSSProperties | undefined {
   const art = categoryArt(cat)
   const group = groupOf(cat)
   const ray = group ? GROUP_RAY[group] : undefined
   if (!art && !ray) return undefined
-  return { ...(art && { '--art': `url(${art})` }), ...(ray && { '--ray': ray }) } as CSSProperties
+  return {
+    ...(art && { '--art': `url(${art})` }),
+    ...(art &&
+      V2_URLS.has(art) && {
+        '--art-size': '84% auto',
+        '--art-pos': 'center 34%',
+        '--art-tray-size': 'auto 84%',
+      }),
+    ...(ray && { '--ray': ray }),
+  } as CSSProperties
 }
