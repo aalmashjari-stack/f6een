@@ -3,7 +3,7 @@ import { STAGE1_LEVELS, STAGE1_LEVEL_POINTS, cellKey, stage1Owner } from '../gam
 import type { Action } from '../game/reducer'
 import { ScoreBar } from '../components/ScoreBar'
 import { displayName } from '../game/bank'
-import { categoryArt } from '../components/categoryArt'
+import { artStyle } from '../components/categoryArt'
 import { play } from '../audio/sfx'
 import stage1BoardCss from './Stage1Board.css?inline'
 
@@ -54,14 +54,7 @@ export function Stage1Board({ state, dispatch }: { state: GameState; dispatch: (
                تليها فيُقرأ لها، وستُّ وحدات متجاورة تصير شبكةً واحدة ملتبسة.
                ولا لون فريقٍ عليه: الفئات الستّ للّوح لا لأحد (٥ سبتمبر ٢٠٢٦). */
             <div key={cat.name} className="bunit">
-              <div
-                className="bhead"
-                style={
-                  categoryArt(cat.name)
-                    ? ({ '--art': `url(${categoryArt(cat.name)})` } as React.CSSProperties)
-                    : undefined
-                }
-              >
+              <div className="bhead" style={artStyle(cat.name)}>
                 {/* لوحةٌ داكنة تحت الاسم — شرط تشغيل لا زينة: رسمات الفئات فاتحة
                     متباينة، والاسمُ عليها بلا حجابٍ يضيع في نصفها (نفس علاج `.cat-name`). */}
                 <span className="bh-plate">

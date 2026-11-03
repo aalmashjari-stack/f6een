@@ -3,7 +3,7 @@ import type { SetupInput } from '../game/session'
 import { STAGE1_CATEGORIES, readScoped, writeScoped } from '../game/session'
 import type { TeamId } from '../game/types'
 import { displayName, playableCategories, subscribeBank } from '../game/bank'
-import { categoryArt } from '../components/categoryArt'
+import { artStyle } from '../components/categoryArt'
 import { categoryInfo } from '../components/categoryInfo'
 import { CategoryInfoPanel } from '../components/SitePanels'
 import { groupCategories } from '../components/categoryGroups'
@@ -597,14 +597,7 @@ export function Setup({
                         >
                           {/* الرسمة عنصرٌ مستقلّ لا خلفيّةُ الزرّ: الترميد يقع عليها
                       وحدها فيبقى الاسم مقروءاً فوقها — بناء `.cat` نفسه. */}
-                          <span
-                            className="cc-img"
-                            style={
-                              categoryArt(cat)
-                                ? ({ '--art': `url(${categoryArt(cat)})` } as React.CSSProperties)
-                                : undefined
-                            }
-                          />
+                          <span className="cc-img" style={artStyle(cat)} />
                           {/* علامةٌ في الزاوية لا حدٌّ رفيع: الاختيار فعلٌ يُرى من آخر
                       المجلس، والحدُّ وحده لا يُقرأ على بطاقةٍ فوقها رسمة. */}
                           <span className="cc-tick" aria-hidden="true">
@@ -657,11 +650,7 @@ export function Setup({
                     onClick={() => toggleCat(cat)}
                     aria-label={`أزل ${displayName(cat)}`}
                     title={displayName(cat)}
-                    style={
-                      categoryArt(cat)
-                        ? ({ '--art': `url(${categoryArt(cat)})` } as React.CSSProperties)
-                        : undefined
-                    }
+                    style={artStyle(cat)}
                   />
                 ) : (
                   <span key={'empty-' + i} className="tray-slot" aria-hidden="true" />
