@@ -10,6 +10,7 @@ import { groupCategories } from '../components/categoryGroups'
 import { isMuted, play, setMuted } from '../audio/sfx'
 import { isNight, setNight } from '../lib/theme'
 import { BrandLogo } from '../components/BrandLogo'
+import { SetupOpener } from './SetupOpener'
 import { authErrorText, signOut } from '../lib/auth'
 import setupCss from './Setup.css?inline'
 const MIN = 2
@@ -78,6 +79,8 @@ export function Setup({
   /* قائمة الرأس على الجوال الطوليّ (طلب علي ١٦ سبتمبر ٢٠٢٦): الكبسولات
      الأربع تختفي خلف زرّ ☰ فيصير الشريط صفّاً واحداً. تُغلق مع أيّ اختيار. */
   const [menuOpen, setMenuOpen] = useState(false)
+  /* «ابدأ» في الافتتاحيّة ينزل إلى الفرق (علي ٢ نوفمبر ٢٠٢٦). */
+  const teamsRef = useRef<HTMLElement>(null)
   /* الفئة المفتوحة نبذتُها من علامة (i) على بطاقتها — `null` = لا لوح. */
   const [infoCat, setInfoCat] = useState<string | null>(null)
   const [tossing, setTossing] = useState(false)
@@ -417,10 +420,14 @@ export function Setup({
             في التطبيق «ما يحتاج بطاقات ولا يحتاج فيديو»، ثمّ «انقل الإعداد بلا
             مراحل وفيديو للموقع»): هي في شاشة الدخول وفي «شرح اللعبة». */}
 
+          <SetupOpener
+            onStart={() => teamsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          />
+
           {/* حقول الفريقين. حُذف عنوان «بيانات الفريقين المتنافسين» في ٢١ أغسطس
             ٢٠٢٦: حقولٌ باسم فريق ولاعبين لا تحتاج عنواناً يسمّيها، وارتفاعه
             أنفع للحقول نفسها. */}
-          <section className="setup-block">
+          <section className="setup-block" ref={teamsRef}>
             {/* عنوانٌ يسمّي الكتلة (طلب علي ١٧ سبتمبر ٢٠٢٦) — كان قد حُذف في
               أغسطس لضيق الارتفاع، وعاد بصياغته. */}
             {/* العنوان كبسولةٌ بهيئة بطاقة المرحلة (علي ٣٠ سبتمبر ٢٠٢٦)، ككبسولة الفيديو. */}

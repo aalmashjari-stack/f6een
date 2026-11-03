@@ -1,0 +1,76 @@
+/*
+  أنماط افتتاحيّة الإعداد — تُحمَّل نصّاً (`?inline`) وتُحقن مع المكوّن.
+  لغة صفحة الهبوط: زرٌّ برتقاليّ بحدّ حبرٍ وظلٍّ صلب، وبطاقاتٌ مائلة.
+*/
+.so { display:none; }
+
+@media (min-width:641px), (orientation: landscape) {
+  .so {
+    display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.35fr); align-items:center;
+    gap:clamp(24px, 4vw, 64px);
+    padding-block:clamp(16px, 4dvh, 48px) clamp(24px, 5dvh, 60px);
+    color:var(--n-ink);
+  }
+}
+
+.so-cta {
+  display:inline-flex; align-items:center; justify-content:center; gap:14px; cursor:pointer;
+  min-height:clamp(58px, 4.6vw, 74px); padding:0 clamp(34px, 3.4vw, 54px);
+  font:inherit; font-weight:800; font-size:clamp(20px, 1.7vw, 26px);
+  border:0; border-radius:999px; background:var(--n-brand); color:#fff;
+  box-shadow:0 0 0 3px var(--n-edge), 6px 7px 0 var(--n-edge);
+  transition:transform .14s cubic-bezier(.2,.8,.2,1), box-shadow .14s cubic-bezier(.2,.8,.2,1);
+}
+.so-cta svg { width:1.15em; height:1.15em; transition:transform .2s cubic-bezier(.2,.8,.2,1); }
+.so-cta:hover { transform:translate(-2px,-2px); box-shadow:0 0 0 3px var(--n-edge), 8px 9px 0 var(--n-edge); }
+.so-cta:hover svg { transform:translateX(-4px); }
+.so-cta:active { transform:translate(4px,5px); box-shadow:0 0 0 3px var(--n-edge), 1px 1px 0 var(--n-edge); }
+.so-cta:focus-visible { outline:3px solid var(--n-brand); outline-offset:5px; }
+
+/* الصورة على أرضيّة الصفحة بلا إطار: قناعٌ إهليلجيّ يُذيب حوافّها البيضاء.
+   (multiply لا ينفع هنا: سياق تكديسٍ فوقها يعزلها عن الأرضيّة.) */
+.so-family {
+  display:block; width:100%; max-width:720px; height:auto; justify-self:center;
+  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 78%, transparent 100%);
+  mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 78%, transparent 100%);
+}
+
+/* يمين (أوّل عمودٍ في RTL): الخطوات درجٌ يُقرأ من أعلى — كلّ بطاقةٍ أبعد من سابقتها
+   حتى «استمتع» — ثمّ «ابدأ». بألوانٍ فاتحة خاصّة بالافتتاحيّة. */
+.so {
+  --so-1:#FFE9A8; --so-2:#BFEBD9; --so-3:#FFD3BA;
+}
+.so-side { display:flex; flex-direction:column; align-items:flex-start; gap:clamp(24px, 4.4dvh, 44px); }
+.so-steps {
+  list-style:none; margin:0; padding:0;
+  display:flex; flex-direction:column; align-items:flex-start; gap:clamp(12px, 2dvh, 18px);
+}
+.so-step {
+  display:flex; align-items:center; gap:clamp(12px, 1.2vw, 18px);
+  padding:clamp(8px, 1.2dvh, 12px) clamp(10px, 1vw, 14px);
+  padding-inline-end:clamp(20px, 2vw, 30px);
+  border-radius:clamp(16px, 1.5vw, 22px);
+  box-shadow:0 0 0 3px var(--n-edge), 5px 6px 0 var(--n-edge);
+  width:clamp(250px, 22vw, 340px); box-sizing:border-box;
+  font-weight:800; font-size:clamp(18px, 1.6vw, 26px); line-height:1.3; white-space:nowrap;
+  animation:so-up .5s cubic-bezier(.3,1.4,.5,1) both;
+}
+.so-step.s1 { margin-inline-start:0; }
+.so-step.s2 { margin-inline-start:clamp(32px, 3.4vw, 52px); animation-delay:.1s; }
+.so-step.s3 { margin-inline-start:clamp(64px, 6.8vw, 104px); animation-delay:.2s; }
+.so-no {
+  flex:none; display:grid; place-items:center; width:clamp(40px, 3.4vw, 52px); aspect-ratio:1;
+  border-radius:clamp(10px, 1vw, 14px); box-shadow:0 0 0 2.5px var(--n-edge);
+  font-family:'Baloo Bhaijaan 2', inherit; font-weight:800; font-size:clamp(22px, 2vw, 30px); line-height:1;
+}
+.so-step.s1 { background:var(--so-1); }
+.so-step.s2 { background:var(--so-2); }
+.so-step.s3 { background:var(--so-3); }
+.so-no { background:#fff; }
+.so-step.s1 .so-no { rotate:-6deg; }
+.so-step.s2 .so-no { rotate:5deg; }
+.so-step.s3 .so-no { rotate:-4deg; }
+@keyframes so-up { from { opacity:0; translate:0 14px; } }
+@media (prefers-reduced-motion: reduce) { .so-step { animation:none; } }
+/* «ابدأ» درجةٌ رابعة تُكمل الدرج. */
+.so-side .so-cta { margin-inline-start:clamp(96px, 10.2vw, 156px); }
