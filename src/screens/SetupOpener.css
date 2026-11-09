@@ -54,6 +54,8 @@
     min-height:100svh; align-items:start;
     padding-block:calc(var(--so-pull, 0px) + clamp(24px, 9dvh, 120px)) clamp(32px, 7dvh, 80px);
     padding-inline:max(clamp(28px, 4.4vw, 64px), calc((100vw - 1140px) / 2));
+    /* الكتابة أقرب إلى الحافّة اليمنى من عمود الصفحة (علي: «ودي الكتابة شوي يمين»). */
+    padding-inline-start:max(clamp(20px, 3vw, 44px), calc((100vw - 1140px) / 2 - 64px));
   }
   :root:not([data-native]) .so::after {
     content:''; position:absolute; inset:0 0 auto; height:calc(var(--so-pull, 0px) + 60px); z-index:-1; pointer-events:none;
