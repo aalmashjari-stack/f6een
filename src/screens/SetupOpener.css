@@ -72,7 +72,7 @@
 .so-steps {
   list-style:none; margin:0; padding:0;
   display:flex; flex-direction:column; align-items:stretch;
-  width:min(100%, 18em); font-size:clamp(19px, 1.7vw, 28px);
+  width:min(100%, 14.5em); font-size:clamp(19px, 1.7vw, 28px);
 }
 .so-step {
   display:flex; align-items:baseline; gap:clamp(14px, 1.2vw, 20px);
