@@ -39,6 +39,8 @@ const STEPS = ['ادخل بيانات الفريقين', 'اختر الفئات 
    في الموقع على الشاشات الكبيرة وحدها (علي: «هذا بالموقع بس لاتغير شي في
    الجوال»): لا في التطبيق، ولا في جوالٍ طوليّ أو أفقيّ (ارتفاعه دون 600). */
 const BIG = '(min-width: 641px) and (min-height: 600px)'
+/** حيث يظهر الهيرو (لا الجوال الطوليّ) — كشرط CSS في SetupOpener.css. */
+const WIDE = '(min-width: 641px), (orientation: landscape)'
 
 /** أقرب سلفٍ يتمرّر — في الإعداد `.setup-scroll` لا النافذة. */
 function scrollParent(el: HTMLElement): HTMLElement | null {
@@ -55,6 +57,16 @@ function useFillViewport() {
     if (!el) return
     const fit = () => {
       el.style.minHeight = ''
+      el.style.removeProperty('--so-pull')
+      /* الهيرو يبدأ من أعلى الصفحة والقائمة فوق صورته (علي ١٠ نوفمبر ٢٠٢٦: «خله ملئ
+         الشاشة… ودخل القائمة بالصورة»): يُسحب بقدر ما فوقه — الرأس والفسحة تحته —
+         ويُعاد هذا القدر حشوةً فلا تختفي الكتابة تحت القائمة. يُقاس لأنّ الفسحة
+         والرأس يختلفان بين الأجهزة. في الموقع وحده. */
+      if (!isNativeApp && matchMedia(WIDE).matches) {
+        const box = scrollParent(el)
+        const top = box ? box.getBoundingClientRect().top - box.scrollTop : -scrollY
+        el.style.setProperty('--so-pull', `${Math.max(0, el.getBoundingClientRect().top - top)}px`)
+      }
       if (isNativeApp || !matchMedia(BIG).matches) return
       const next = el.nextElementSibling
       if (!next) return
