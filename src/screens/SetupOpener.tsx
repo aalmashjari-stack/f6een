@@ -57,15 +57,22 @@ function useFillViewport() {
     if (!el) return
     const fit = () => {
       el.style.minHeight = ''
-      el.style.removeProperty('--so-pull')
-      /* الهيرو يبدأ من أعلى الصفحة والقائمة فوق صورته (علي ١٠ نوفمبر ٢٠٢٦: «خله ملئ
-         الشاشة… ودخل القائمة بالصورة»): يُسحب بقدر ما فوقه — الرأس والفسحة تحته —
-         ويُعاد هذا القدر حشوةً فلا تختفي الكتابة تحت القائمة. يُقاس لأنّ الفسحة
-         والرأس يختلفان بين الأجهزة. في الموقع وحده. */
-      if (!isNativeApp && matchMedia(WIDE).matches) {
+      for (const v of ['--so-pull', '--so-left', '--so-right']) el.style.removeProperty(v)
+      /* الهيرو يبدأ من أعلى الصفحة والقائمة فوق صورته، ويمتدّ بعرض الحاوية المتمرّرة
+         كلّه (علي ١٠ نوفمبر ٢٠٢٦: «خله ملئ الشاشة… ودخل القائمة بالصورة»، ثمّ في
+         التطبيق كالموقع): يُسحب بقدر ما فوقه وإلى جانبيه، ويُعاد قدرُ السحب العلويّ
+         حشوةً فلا تختفي الكتابة تحت القائمة. يُقاس لأنّ الرأس والفسحة وإزاحة حدود
+         الأمان تختلف بين الأجهزة، وقد تكون في جهةٍ واحدة (أذن الآيفون أفقيّاً). */
+      if (matchMedia(WIDE).matches) {
         const box = scrollParent(el)
-        const top = box ? box.getBoundingClientRect().top - box.scrollTop : -scrollY
-        el.style.setProperty('--so-pull', `${Math.max(0, el.getBoundingClientRect().top - top)}px`)
+        const r = el.getBoundingClientRect()
+        const b = box?.getBoundingClientRect()
+        const top = b && box ? b.top - box.scrollTop : -scrollY
+        const left = b && box ? b.left + box.clientLeft : 0
+        const right = b && box ? left + box.clientWidth : document.documentElement.clientWidth
+        el.style.setProperty('--so-pull', `${Math.max(0, r.top - top)}px`)
+        el.style.setProperty('--so-left', `${Math.max(0, r.left - left)}px`)
+        el.style.setProperty('--so-right', `${Math.max(0, right - r.right)}px`)
       }
       if (isNativeApp || !matchMedia(BIG).matches) return
       const next = el.nextElementSibling
