@@ -65,26 +65,28 @@
   }
 }
 
-/* الخطوات عنواناً (اختيار علي): كلُّ خطوةٍ سطرٌ بخطّ الموقع، ورقمها البرتقاليّ
-   قبلها (عيّنة «ج» التي اختارها قبلها بساعة)، بلا فواصل كعنوان المرجع. */
-.so-side { display:flex; flex-direction:column; align-items:flex-start; gap:clamp(26px, 5dvh, 48px); }
+/* الخطوات بهيئة عيّنة «ج» كما نُشرت في PR #344 (علي ١٠ نوفمبر ٢٠٢٦، بعد الهيرو:
+   «رجع الخط نفس ماكان بهذه الطريقة»): رقمٌ برتقاليّ كبير بجانب كلّ خطوة وخطٌّ
+   منقّط بينها، بحجمها هناك. */
+.so-side { display:flex; flex-direction:column; align-items:flex-start; gap:clamp(26px, 4.4dvh, 44px); }
 .so-steps {
   list-style:none; margin:0; padding:0;
-  display:flex; flex-direction:column; align-items:flex-start;
-  gap:clamp(4px, .9dvh, 12px);
-  font-size:clamp(20px, 2.2vw, 34px);
+  display:flex; flex-direction:column; align-items:stretch;
+  width:min(100%, 26em); font-size:clamp(19px, 1.7vw, 28px);
 }
 .so-step {
-  display:flex; align-items:baseline; gap:.4em;
-  font-weight:800; line-height:1.25; white-space:nowrap;
+  display:flex; align-items:baseline; gap:clamp(14px, 1.2vw, 20px);
+  padding-block:clamp(10px, 1.8dvh, 18px);
+  font-weight:800; line-height:1.3; white-space:nowrap;
   animation:so-up 1.1s cubic-bezier(.16,1,.3,1) backwards;
 }
+.so-step + .so-step { border-block-start:2px dashed color-mix(in srgb, var(--n-ink) 22%, transparent); }
 .so-step.s1 { animation-delay:.2s; }
 .so-step.s2 { animation-delay:.32s; }
 .so-step.s3 { animation-delay:.44s; }
 .so-no {
-  flex:none; min-width:.7em; text-align:center;
-  font-family:'Baloo Bhaijaan 2', inherit; font-weight:800; font-size:1.2em; line-height:1;
+  flex:none; min-width:.9em; text-align:center;
+  font-family:'Baloo Bhaijaan 2', inherit; font-weight:800; font-size:1.75em; line-height:1;
   color:var(--n-brand);
 }
 
