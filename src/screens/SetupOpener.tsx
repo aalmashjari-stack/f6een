@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import familyArt from '../../assets/backgrounds/setup-family.jpg'
+import heroArt from '../../assets/backgrounds/setup-hero.jpg'
 import css from './SetupOpener.css?inline'
 import { isNativeApp } from '../lib/platform'
 
@@ -98,15 +99,30 @@ export function SetupOpener({ onStart }: { onStart: () => void }) {
             </li>
           ))}
         </ol>
+        {/* زرٌّ بإطار يمتلئ بالبرتقاليّ من اليمين ويتدحرج اسمه إلى نسخته عند المرور
+            (علي ١٠ نوفمبر ٢٠٢٦: «نفس الهيرو هذا»). النسختان متطابقتان ليبدو الدحرجة متّصلة. */}
         <button className="so-cta" onClick={onStart}>
-          ابدأ
-          <Arrow />
+          <span className="so-cta-fill" aria-hidden="true" />
+          <span className="so-cta-roll">
+            <span className="so-cta-label">
+              ابدأ
+              <Arrow />
+            </span>
+            <span className="so-cta-label so-cta-dup" aria-hidden="true">
+              ابدأ
+              <Arrow />
+            </span>
+          </span>
         </button>
       </div>
       {/* عائلةٌ أمام التلفزيون وعليه لوح اللعبة الحقيقيّ (لقطةٌ مركَّبة في الشاشة)،
           بالأسلوب المائيّ لرسوم الفئات — علي ٣ نوفمبر ٢٠٢٦: «خلها منطقية والشاشة
           تحتوي على صورة من اللعبة». مولَّدة بـFigma AI. */}
       <img className="so-family" src={familyArt} alt="عائلة تلعب فطين في المجلس" />
+      {/* الهيرو في العرض (علي ١٠ نوفمبر ٢٠٢٦، على مرجعٍ أرسله): المشهد نفسه موسَّعاً
+          بـFigma AI يملأ أعلى الكونتينر من حافّته إلى حافّته، وجداره الفارغ يميناً
+          تحت الكتابة؛ وعلى شاشة التلفزيون لقطةٌ من اللوح مركَّبة. */}
+      <img className="so-bg" src={heroArt} alt="" aria-hidden="true" />
       <style>{css}</style>
     </section>
   )

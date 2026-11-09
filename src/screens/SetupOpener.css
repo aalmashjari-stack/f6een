@@ -1,8 +1,8 @@
 /*
   أنماط افتتاحيّة الإعداد — تُحمَّل نصّاً (`?inline`) وتُحقن مع المكوّن.
-  لغة صفحة الهبوط: زرٌّ برتقاليّ بحدّ حبرٍ وظلٍّ صلب، وبطاقاتٌ مائلة.
 */
 .so { display:none; }
+.so-bg { display:none; }
 
 /* الجوال الطوليّ (علي ٣ نوفمبر ٢٠٢٦: «ضبط التطبيق بالجوال»): عمودٌ واحد —
    الصورة وحدها، بلا الخطوات ولا «ابدأ» («شيل الخطوات في الجوال»، ثمّ «شيل ابدأ
@@ -15,59 +15,87 @@
   .so .so-side { display:none; }
 }
 
+/* الهيرو (علي ١٠ نوفمبر ٢٠٢٦: «نفس الهيرو هذا لكن بالصورة الموجودة عندنا»، على
+   مرجعٍ برسمةٍ تملأ العرض وكتابةٍ فوق سمائها الفارغة وزرٍّ بإطار): المشهد الموسَّع
+   يملأ بطاقةً بعرض العمود كلّه، بحدّ الحبر وظلّه كبطاقات الفرق تحتها، والخطوات
+   عنواناً يميناً على الجدار الفارغ، و«ابدأ» تحتها. */
 @media (min-width:641px), (orientation: landscape) {
   .so {
-    display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1.35fr); align-items:center;
-    gap:clamp(24px, 4vw, 64px);
-    padding-block:clamp(16px, 4dvh, 48px) clamp(24px, 5dvh, 60px);
+    position:relative; isolation:isolate; overflow:hidden;
+    display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); align-items:start;
+    border-radius:22px;
+    box-shadow:0 0 0 2.5px var(--n-edge), 5px 6px 0 var(--n-edge);
+    min-height:clamp(380px, 62dvh, 640px);
+    padding:clamp(36px, 8dvh, 96px) clamp(28px, 4.4vw, 64px);
     color:var(--n-ink);
+  }
+  .so .so-family { display:none; }
+  .so-bg {
+    display:block; position:absolute; inset:0; z-index:-2;
+    width:100%; height:100%; border-radius:inherit; object-fit:cover; object-position:22% 60%;
+  }
+  /* غشاوةٌ قشديّة خفيفة من اليمين تحت الكتابة: على العرض الأضيق يقترب
+     الجالسون من النصّ فيبقى مقروءاً. */
+  .so::before {
+    content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
+    background:linear-gradient(to left, rgba(255,251,244,.82) 0%, rgba(255,251,244,.55) 34%, rgba(255,251,244,0) 56%);
   }
 }
 
-.so-cta {
-  display:inline-flex; align-items:center; justify-content:center; gap:14px; cursor:pointer;
-  min-height:clamp(58px, 4.6vw, 74px); padding:0 clamp(34px, 3.4vw, 54px);
-  font:inherit; font-weight:800; font-size:clamp(20px, 1.7vw, 26px);
-  border:0; border-radius:999px; background:var(--n-brand); color:#fff;
-  box-shadow:0 0 0 3px var(--n-edge), 6px 7px 0 var(--n-edge);
-  transition:transform .14s cubic-bezier(.2,.8,.2,1), box-shadow .14s cubic-bezier(.2,.8,.2,1);
-}
-.so-cta svg { width:1.15em; height:1.15em; transition:transform .2s cubic-bezier(.2,.8,.2,1); }
-.so-cta:hover { transform:translate(-2px,-2px); box-shadow:0 0 0 3px var(--n-edge), 8px 9px 0 var(--n-edge); }
-.so-cta:hover svg { transform:translateX(-4px); }
-.so-cta:active { transform:translate(4px,5px); box-shadow:0 0 0 3px var(--n-edge), 1px 1px 0 var(--n-edge); }
-.so-cta:focus-visible { outline:3px solid var(--n-brand); outline-offset:5px; }
-
-/* الصورة على أرضيّة الصفحة بلا إطار: قناعٌ إهليلجيّ يُذيب حوافّها البيضاء.
-   (multiply لا ينفع هنا: سياق تكديسٍ فوقها يعزلها عن الأرضيّة.) */
-.so-family {
-  display:block; width:100%; max-width:720px; height:auto; justify-self:center;
-  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 78%, transparent 100%);
-  mask-image:radial-gradient(ellipse 50% 50% at 50% 50%, #000 78%, transparent 100%);
-}
-
-/* الخطوات يميناً والصورة يساراً (علي ٣ نوفمبر ٢٠٢٦). ١٠ نوفمبر ٢٠٢٦: البلاطات
-   الملوّنة سقطت («الكتابة… الشكل العام») واختار من ثلاث عيّنات «أرقام كبيرة
-   بلا بلاطات»: رقمٌ برتقاليّ كبير بجانب كلّ خطوة، وخطٌّ منقّط بين الخطوات. */
-.so-side { display:flex; flex-direction:column; align-items:flex-start; gap:clamp(26px, 4.4dvh, 44px); }
+/* الخطوات عنواناً (اختيار علي): كلُّ خطوةٍ سطرٌ بخطّ الموقع، ورقمها البرتقاليّ
+   قبلها (عيّنة «ج» التي اختارها قبلها بساعة)، بلا فواصل كعنوان المرجع. */
+.so-side { display:flex; flex-direction:column; align-items:flex-start; gap:clamp(26px, 5dvh, 48px); }
 .so-steps {
   list-style:none; margin:0; padding:0;
-  display:flex; flex-direction:column; align-items:stretch;
-  width:min(100%, 26em); font-size:clamp(19px, 1.7vw, 28px);
+  display:flex; flex-direction:column; align-items:flex-start;
+  gap:clamp(4px, .9dvh, 12px);
+  font-size:clamp(26px, 3.1vw, 46px);
 }
 .so-step {
-  display:flex; align-items:baseline; gap:clamp(14px, 1.2vw, 20px);
-  padding-block:clamp(10px, 1.8dvh, 18px);
-  font-weight:800; line-height:1.3; white-space:nowrap;
-  animation:so-up .5s cubic-bezier(.3,1.4,.5,1) both;
+  display:flex; align-items:baseline; gap:.4em;
+  font-weight:800; line-height:1.25; white-space:nowrap;
+  animation:so-up 1.1s cubic-bezier(.16,1,.3,1) backwards;
 }
-.so-step + .so-step { border-block-start:2px dashed color-mix(in srgb, var(--n-ink) 22%, transparent); }
-.so-step.s2 { animation-delay:.1s; }
-.so-step.s3 { animation-delay:.2s; }
+.so-step.s1 { animation-delay:.2s; }
+.so-step.s2 { animation-delay:.32s; }
+.so-step.s3 { animation-delay:.44s; }
 .so-no {
-  flex:none; min-width:.9em; text-align:center;
-  font-family:'Baloo Bhaijaan 2', inherit; font-weight:800; font-size:1.75em; line-height:1;
+  flex:none; min-width:.7em; text-align:center;
+  font-family:'Baloo Bhaijaan 2', inherit; font-weight:800; font-size:1.2em; line-height:1;
   color:var(--n-brand);
 }
-@keyframes so-up { from { opacity:0; translate:0 14px; } }
-@media (prefers-reduced-motion: reduce) { .so-step { animation:none; } }
+
+/* «ابدأ»: إطارٌ بلون الحبر، يمتلئ بالبرتقاليّ من اليمين (أوّل السطر العربيّ)
+   ويتدحرج الاسم إلى نسخته ويرتفع الزرّ قليلاً عند المرور. */
+.so-cta {
+  position:relative; overflow:hidden; isolation:isolate;
+  display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
+  min-height:clamp(52px, 4.2vw, 66px); padding:0 clamp(32px, 3vw, 48px);
+  font:inherit; font-weight:800; font-size:clamp(19px, 1.6vw, 24px);
+  border:2.5px solid var(--n-edge); border-radius:999px;
+  background:color-mix(in srgb, var(--n-bg, #FFFBF4) 70%, transparent); color:var(--n-ink);
+  transition:transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s cubic-bezier(.16,1,.3,1), color .5s cubic-bezier(.16,1,.3,1);
+  animation:so-up 1.1s cubic-bezier(.16,1,.3,1) .6s backwards;
+}
+.so-cta-fill {
+  position:absolute; inset:0; z-index:-1; border-radius:inherit;
+  background:var(--n-brand); transform:scaleX(0); transform-origin:right;
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.so-cta-roll { position:relative; display:block; overflow:hidden; }
+.so-cta-label {
+  display:flex; align-items:center; gap:12px;
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.so-cta-dup { position:absolute; inset:0; justify-content:center; transform:translateY(100%); }
+.so-cta svg { width:1.1em; height:1.1em; }
+.so-cta:hover { transform:translateY(-3px); color:#fff; box-shadow:0 10px 22px rgba(34,32,28,.22); }
+.so-cta:hover .so-cta-fill { transform:scaleX(1); }
+.so-cta:hover .so-cta-label { transform:translateY(-100%); }
+.so-cta:hover .so-cta-dup { transform:translateY(0); }
+.so-cta:active { transform:scale(.96); }
+.so-cta:focus-visible { outline:3px solid var(--n-brand); outline-offset:5px; }
+
+/* دخولٌ ناعم: من أسفل وضبابيّ إلى مكانه، متتابعاً. */
+@keyframes so-up { from { opacity:0; transform:translateY(40px) scale(.96); filter:blur(12px); } }
+@media (prefers-reduced-motion: reduce) { .so-step, .so-cta { animation:none; } }
