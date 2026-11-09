@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import familyArt from '../../assets/backgrounds/setup-family.jpg'
+import heroArt from '../../assets/backgrounds/setup-hero.jpg'
 import css from './SetupOpener.css?inline'
 import { isNativeApp } from '../lib/platform'
 
@@ -38,6 +39,8 @@ const STEPS = ['ادخل بيانات الفريقين', 'اختر الفئات 
    في الموقع على الشاشات الكبيرة وحدها (علي: «هذا بالموقع بس لاتغير شي في
    الجوال»): لا في التطبيق، ولا في جوالٍ طوليّ أو أفقيّ (ارتفاعه دون 600). */
 const BIG = '(min-width: 641px) and (min-height: 600px)'
+/** حيث يظهر الهيرو (لا الجوال الطوليّ) — كشرط CSS في SetupOpener.css. */
+const WIDE = '(min-width: 641px), (orientation: landscape)'
 
 /** أقرب سلفٍ يتمرّر — في الإعداد `.setup-scroll` لا النافذة. */
 function scrollParent(el: HTMLElement): HTMLElement | null {
@@ -54,6 +57,16 @@ function useFillViewport() {
     if (!el) return
     const fit = () => {
       el.style.minHeight = ''
+      el.style.removeProperty('--so-pull')
+      /* الهيرو يبدأ من أعلى الصفحة والقائمة فوق صورته (علي ١٠ نوفمبر ٢٠٢٦: «خله ملئ
+         الشاشة… ودخل القائمة بالصورة»): يُسحب بقدر ما فوقه — الرأس والفسحة تحته —
+         ويُعاد هذا القدر حشوةً فلا تختفي الكتابة تحت القائمة. يُقاس لأنّ الفسحة
+         والرأس يختلفان بين الأجهزة. في الموقع وحده. */
+      if (!isNativeApp && matchMedia(WIDE).matches) {
+        const box = scrollParent(el)
+        const top = box ? box.getBoundingClientRect().top - box.scrollTop : -scrollY
+        el.style.setProperty('--so-pull', `${Math.max(0, el.getBoundingClientRect().top - top)}px`)
+      }
       if (isNativeApp || !matchMedia(BIG).matches) return
       const next = el.nextElementSibling
       if (!next) return
@@ -98,15 +111,30 @@ export function SetupOpener({ onStart }: { onStart: () => void }) {
             </li>
           ))}
         </ol>
+        {/* زرٌّ بإطار يمتلئ بالبرتقاليّ من اليمين ويتدحرج اسمه إلى نسخته عند المرور
+            (علي ١٠ نوفمبر ٢٠٢٦: «نفس الهيرو هذا»). النسختان متطابقتان ليبدو الدحرجة متّصلة. */}
         <button className="so-cta" onClick={onStart}>
-          ابدأ
-          <Arrow />
+          <span className="so-cta-fill" aria-hidden="true" />
+          <span className="so-cta-roll">
+            <span className="so-cta-label">
+              ابدأ
+              <Arrow />
+            </span>
+            <span className="so-cta-label so-cta-dup" aria-hidden="true">
+              ابدأ
+              <Arrow />
+            </span>
+          </span>
         </button>
       </div>
       {/* عائلةٌ أمام التلفزيون وعليه لوح اللعبة الحقيقيّ (لقطةٌ مركَّبة في الشاشة)،
           بالأسلوب المائيّ لرسوم الفئات — علي ٣ نوفمبر ٢٠٢٦: «خلها منطقية والشاشة
           تحتوي على صورة من اللعبة». مولَّدة بـFigma AI. */}
       <img className="so-family" src={familyArt} alt="عائلة تلعب فطين في المجلس" />
+      {/* الهيرو في العرض (علي ١٠ نوفمبر ٢٠٢٦، على مرجعٍ أرسله): المشهد نفسه موسَّعاً
+          بـFigma AI يملأ أعلى الكونتينر من حافّته إلى حافّته، وجداره الفارغ يميناً
+          تحت الكتابة؛ وعلى شاشة التلفزيون لقطةٌ من اللوح مركَّبة. */}
+      <img className="so-bg" src={heroArt} alt="" aria-hidden="true" />
       <style>{css}</style>
     </section>
   )
