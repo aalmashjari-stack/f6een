@@ -46,23 +46,24 @@
    القائمة بالصورة»): الهيرو بعرض النافذة كلّه، يُسحب إلى أعلى الصفحة بـ--so-pull
    (يقيسه المكوّن) فيصير الرأس فوق صورته شفّافاً بلا خطّه، ويطول حتى حافّة النافذة
    السفلى. غشاوةٌ قشديّة أعلاه تحت القائمة كي تُقرأ أزرارها فوق الرسمة.
-   والتطبيق يبقى بطاقةً في العمود. */
+   والتطبيق مثله منذ اليوم نفسه («اوكي» على اقتراح «الشكل واحد»). */
 @media (min-width:641px), (orientation: landscape) {
-  :root:not([data-native]) .so {
-    margin-inline:calc(50% - 50vw); margin-top:calc(-1 * var(--so-pull, 0px));
+  .so {
+    margin:calc(-1 * var(--so-pull, 0px)) calc(-1 * var(--so-right, 0px)) 0 calc(-1 * var(--so-left, 0px));
     border-radius:0; box-shadow:none; border-bottom:2.5px solid var(--n-edge);
     min-height:100svh; align-items:start;
     padding-block:calc(var(--so-pull, 0px) + clamp(24px, 9dvh, 120px)) clamp(32px, 7dvh, 80px);
-    padding-inline:max(clamp(28px, 4.4vw, 64px), calc((100vw - 1140px) / 2));
-    /* الكتابة أقرب إلى الحافّة اليمنى من عمود الصفحة (علي: «ودي الكتابة شوي يمين»). */
-    padding-inline-start:max(clamp(20px, 3vw, 44px), calc((100vw - 1140px) / 2 - 64px));
+    /* المحتوى يبقى على حدّي عمود الصفحة (القدر نفسه الذي سُحب به الهيرو جانباً)،
+       والكتابة أقرب إلى اليمين بـ64px (علي: «ودي الكتابة شوي يمين»). */
+    padding-left:max(clamp(28px, 4.4vw, 64px), var(--so-left, 0px));
+    padding-right:max(clamp(20px, 3vw, 44px), calc(var(--so-right, 0px) - 64px));
   }
-  :root:not([data-native]) .so::after {
+  .so::after {
     content:''; position:absolute; inset:0 0 auto; height:calc(var(--so-pull, 0px) + 60px); z-index:-1; pointer-events:none;
     background:linear-gradient(to bottom, rgba(255,251,244,.92) 0%, rgba(255,251,244,.7) 55%, rgba(255,251,244,0) 100%);
   }
-  :root:not([data-native]) body .screen.setup:has(.so) .setup-scroll { overflow-x:hidden; }
-  :root:not([data-native]) body .screen.setup:has(.so) .setup-scroll > .hero {
+  body .screen.setup:has(.so) .setup-scroll { overflow-x:hidden; }
+  body .screen.setup:has(.so) .setup-scroll > .hero {
     position:relative; z-index:2; background:transparent; border-bottom-color:transparent; box-shadow:none;
   }
 }
@@ -90,6 +91,27 @@
   flex:none; min-width:.9em; text-align:center;
   font-family:'Baloo Bhaijaan 2', inherit; font-weight:800; font-size:1.75em; line-height:1;
   color:var(--n-brand);
+}
+
+/* الآيباد والشاشة الطوليّة الأعرض من الجوال: الجدار الفارغ يمين الرسمة لا يكفي
+   للكتابة فتقع على التلفزيون. فالكتابة أعلى على الأرضيّة، والرسمة أسفل بعرض الشاشة
+   مقصوصةً على العائلة (مربّعة) تذوب حافّتها العليا في الأرضيّة. */
+@media (min-width:641px) and (orientation: portrait) {
+  .so { grid-template-columns:minmax(0, 1fr); background:var(--n-bg, #FFFBF4); }
+  .so::before { display:none; }
+  .so-bg {
+    inset:auto 0 0; height:auto; aspect-ratio:1; border-radius:0; object-position:30% 100%;
+    -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 22%);
+    mask-image:linear-gradient(to bottom, transparent 0, #000 22%);
+  }
+}
+
+/* الشاشة القصيرة (الجوال أفقيّاً، 390 ارتفاعاً): بمسافات #344 كان «ابدأ» يقع تحت
+   الحافّة. تُضغط الفسحات وحدها، والحجم كما هو. */
+@media (orientation: landscape) and (max-height:480px) {
+  .so { padding-block:calc(var(--so-pull, 0px) + 8px) 20px; }
+  .so-side { gap:14px; }
+  .so-step { padding-block:5px; }
 }
 
 /* «ابدأ»: إطارٌ بلون الحبر، يمتلئ بالبرتقاليّ من اليمين (أوّل السطر العربيّ)
