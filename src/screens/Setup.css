@@ -949,7 +949,7 @@ html[data-skin] body .screen.setup .setup-body::after { background:color-mix(in 
 html[data-skin] body .screen.setup .cats-head { margin-top:8px; }
 html[data-skin] body .screen.setup .setup-block + .setup-block { margin-top:0; }
 /* الرفعة السالبة لكبسولة الفرق (للموقع) تُخرجها فوق حدّ الكونتينر هنا. */
-html[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-top:0; margin-bottom:6px; }
+html[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-top:0; margin-bottom:clamp(14px,2.4dvh,32px); }
 /* ─── الكونتينر في العرض (الموقع والآيباد) ───
    الحشوة والفسحة بمقاس الشاشة لا بأرقام الجوال، والفسحة الواسعة بين
    الأقسام (علي: «زد») تضيق داخل الكونتينر كما ضاقت في التطبيق. */
