@@ -13,6 +13,7 @@ argument-hint: "[اسم فرع لمعاينته — يُترك فارغاً لل
 |---|---|
 | آيفون علي «Bou 3azooz» | `8A2DA890-CB55-501A-866F-BCF1FFE6DE3B` |
 | المحاكي iPhone 17 Pro Max | `6C9ECD3D-499F-4E56-9916-B869A622CB6A` |
+| UDID الجوال (للبناء والبروفايل) | `00008120-00121C51212BC01E` |
 | فريق التوقيع | `8P4B62L4C6` (حساب مجّانيّ — البروفايل 7 أيّام) |
 
 `S` أدناه مجلّد الـscratchpad لهذه الجلسة (لا داخل المستودع: Documents مزامَن مع iCloud).
@@ -28,7 +29,8 @@ argument-hint: "[اسم فرع لمعاينته — يُترك فارغاً لل
 ```bash
 npm run sync        # build ثمّ cap sync؛ postbuild ينظّف نسخ iCloud المكرّرة («اسم 2.jpg»)
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
-  -destination 'generic/platform=iOS' -derivedDataPath "$S/dd" -allowProvisioningUpdates build
+  -destination 'id=00008120-00121C51212BC01E' -derivedDataPath "$S/dd" \
+  -allowProvisioningUpdates -allowProvisioningDeviceRegistration build
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug \
   -destination 'id=6C9ECD3D-499F-4E56-9916-B869A622CB6A' -derivedDataPath "$S/dd-sim" build
 ```
@@ -49,6 +51,7 @@ xcrun devicectl device process launch --device 8A2DA890-CB55-501A-866F-BCF1FFE6D
 - **`DeviceLocked`**: اطلب من علي فتح قفل الجوال **ثمّ** أعد المحاولة. لا تكرّرها قبل ذلك.
 - **`unavailable`**: الجوال بعيد أو مطفأ الشبكة/الكابل. قل ذلك وثبّت على المحاكي وحده.
 - **«invalid code signature… not explicitly trusted»** عند التشغيل: علي يفتح الإعدادات ← عام ← إدارة VPN والجهاز ← almashjari@live.com ← وثوق، ثمّ أعد `process launch`.
+- **الجوال لا يعرض «وثوق» أصلاً** (١٠ نوفمبر ٢٠٢٦): البروفايل لا يضمّ UDID الجوال. افحص `ProvisionedDevices` في `embedded.mobileprovision`. البناء بـ`generic/platform=iOS` لا يسجّل الجهاز، فلذلك يُبنى على معرّف الجوال مع `-allowProvisioningDeviceRegistration`.
 - **«التطبيق لا يعمل» بعد أيّام**: البروفايل انتهى (7 أيّام). تاريخه:
   `security cms -D -i "$S/dd/Build/Products/Release-iphoneos/App.app/embedded.mobileprovision" | plutil -extract ExpirationDate raw -`
   والعلاج إعادة هذه المهارة كلّها.
