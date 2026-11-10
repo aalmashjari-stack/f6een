@@ -439,13 +439,13 @@ body .screen.setup .stages {
   margin-inline:auto;
   gap:clamp(10px,1.5vw,40px);
 }
-body .screen.setup .teams-grid { gap:clamp(20px,2.6vw,48px); }
-body .screen.setup .team-card { gap:clamp(12px,1.6dvh,26px); padding:clamp(14px,2dvh,26px) clamp(14px,1.8vw,24px); }
+body .screen.setup .teams-grid { gap:clamp(28px,3.4vw,60px); }
+body .screen.setup .team-card { gap:clamp(18px,2.4dvh,34px); padding:clamp(22px,3dvh,38px) clamp(22px,2.6vw,38px); }
 body .screen.setup .stages .stage-card {
   gap:clamp(6px,1dvh,18px);
   padding:clamp(6px,1.1dvh,22px) clamp(9px,1.2vw,18px);
 }
-body .screen.setup .players { gap:clamp(10px,1.4dvh,18px); }
+body .screen.setup .players { gap:clamp(14px,2dvh,26px); }
 body .screen.setup .setup-actions { gap:clamp(12px,1.8vw,30px); }
 
 /* حتى الشاشات القصيرة تحتفظ بهواء واضح؛ التمرير يتكفّل بالباقي. */
