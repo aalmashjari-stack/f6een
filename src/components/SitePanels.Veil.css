@@ -41,6 +41,14 @@
 .sp-count { font-weight:800; font-size:clamp(14px,1.7vw,18px); color:var(--n-ink, #22201C); }
 .sp-price { font-weight:800; font-size:clamp(20px,2.6vw,28px); color:var(--n-brand, #E8542F); direction:ltr; }
 .sp-price small { font-size:.5em; font-weight:700; color:var(--n-ink-2, #57524A); }
+.sp-was { font-weight:700; font-size:clamp(12px,1.4vw,15px); color:var(--n-ink-2, #57524A); text-decoration-thickness:2px; text-decoration-color:var(--n-brand, #E8542F); direction:ltr; }
+.sp-off {
+  align-self:flex-start;
+  padding:4px 14px; border-radius:999px;
+  background:var(--n-brand, #E8542F); color:#fff;
+  box-shadow:0 0 0 2px var(--n-edge, #22201C);
+  font-weight:800; font-size:clamp(12px,1.4vw,15px);
+}
 .sp-per { font-size:clamp(10px,1.2vw,12px); font-weight:700; color:var(--n-ink-2, #57524A); }
 
 .sp-soon {

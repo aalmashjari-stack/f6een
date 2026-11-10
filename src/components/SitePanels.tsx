@@ -21,11 +21,15 @@ import sitePanelsRulesPanelCss from './SitePanels.RulesPanel.css?inline'
  * المرسِل يعلم. النموذج يكتب في القاعدة (`send_message`) ويؤكّد فوراً.
  */
 
+/* خصم 25٪ على كلّ الباقات (علي ١٠ نوفمبر ٢٠٢٦: «اللعبة الواحدة دينار ونص
+   وطبّق الباقي على جميع الأسعار»): was السعر قبل الخصم يُعرض مشطوباً. وسعر
+   اللعبة في الباقة مقرَّبٌ إلى الفلس. */
+const DISCOUNT = 25
 const PACKS = [
-  { games: 1, price: '2.000', per: null },
-  { games: 2, price: '3.500', per: '1.750' },
-  { games: 5, price: '7.500', per: '1.500' },
-  { games: 10, price: '13.500', per: '1.350' },
+  { games: 1, was: '2.000', price: '1.500', per: null },
+  { games: 2, was: '3.500', price: '2.625', per: '1.313' },
+  { games: 5, was: '7.500', price: '5.625', per: '1.125' },
+  { games: 10, was: '13.500', price: '10.125', per: '1.013' },
 ]
 
 function Veil({
@@ -136,12 +140,14 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
 export function ShopPanel({ onClose }: { onClose: () => void }) {
   return (
     <Veil onClose={onClose} label="شراء الألعاب">
+      <span className="sp-off">خصم {DISCOUNT}٪ على كلّ الباقات</span>
       <div className="sp-packs">
         {PACKS.map((p) => (
           <div key={p.games} className={'sp-pack' + (p.games === 5 ? ' hot' : '')}>
             <span className="sp-count">
               {p.games === 1 ? 'لعبة واحدة' : p.games === 2 ? 'لعبتان' : `${p.games} ألعاب`}
             </span>
+            <s className="sp-was">{p.was}</s>
             <span className="sp-price">
               {p.price} <small>د.ك</small>
             </span>
