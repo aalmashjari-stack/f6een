@@ -1026,6 +1026,8 @@ html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.9
   /* عنوان الفئات في اليمين كعنوان الفرق، والفسحة فوقه للخطّ الفاصل وحده. */
   :root[data-skin] body .screen.setup .cats-head { justify-content:flex-start; margin:0 0 clamp(36px,6dvh,60px); }
   :root[data-skin] body .screen.setup .cats-head .title-cap-wrap { margin:0; }
+  /* عنوان الفرق أقرب إلى بطاقتيهما (علي ١٠ نوفمبر ٢٠٢٦: «صغر المسافة»). */
+  :root[data-skin] body .screen.setup .setup-block > .title-cap-wrap { margin-bottom:clamp(10px,1.8dvh,24px); }
   /* وروابط القائمة أبعد عن بعضها («بعد»)؛ الأيقونات الثلاث تبقى متقاربة. */
   :root[data-skin] body .screen.setup .hero-nav { gap:clamp(12px,1.8vw,28px); }
   :root[data-skin] body .screen.setup .hero-nav .hnav-sound,
