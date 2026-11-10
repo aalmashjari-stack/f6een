@@ -49,7 +49,8 @@
    والتطبيق مثله منذ اليوم نفسه («اوكي» على اقتراح «الشكل واحد»). */
 @media (min-width:641px), (orientation: landscape) {
   .so {
-    margin:calc(-1 * var(--so-pull, 0px)) calc(-1 * var(--so-right, 0px)) 0 calc(-1 * var(--so-left, 0px));
+    /* هواءٌ تحت الصورة قبل عنوان الفرق (علي ١٠ نوفمبر ٢٠٢٦: «كبر المسافة»). */
+    margin:calc(-1 * var(--so-pull, 0px)) calc(-1 * var(--so-right, 0px)) clamp(32px, 6dvh, 80px) calc(-1 * var(--so-left, 0px));
     border-radius:0; box-shadow:none; border-bottom:2.5px solid var(--n-edge);
     min-height:100svh; align-items:start;
     padding-block:calc(var(--so-pull, 0px) + clamp(24px, 9dvh, 120px)) clamp(32px, 7dvh, 80px);
