@@ -1034,3 +1034,20 @@ html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.9
   :root[data-skin] body .screen.setup .hero-nav .hnav-logout { margin-inline-end:calc(5px - clamp(12px,1.8vw,28px)); }
   :root[data-skin] body .screen.setup .hero-nav .hnav-logout { margin-inline-end:0; }
 }
+
+/* كبسولتا العنوانين (علي ١٠ نوفمبر ٢٠٢٦: «نسّق الكبسولات بما تراه مناسباً»):
+   الجسم الأبيض كان يُقرأ خانةَ كتابةٍ بجانب خانات الأسماء تحته — فصار بلون
+   القسم الخفيف، والظلّ الصلب بلونه كتذاكر المراحل، والعنوان أكبر قليلاً
+   والهواء حوله أوسع. اللسان والأيقونة والنصّ كما هي. */
+:root[data-skin] body .screen.setup .title-cap-wrap .stage-card.video-cap {
+  border-radius:999px;
+  background:color-mix(in srgb, var(--tone) 26%, var(--n-surface, #fff));
+  box-shadow:0 0 0 2.5px var(--n-edge, #22201C), 5px 6px 0 var(--tone);
+}
+:root[data-skin] body .screen.setup .title-cap-wrap .video-cap .stage-no {
+  width:clamp(52px,5.4vw,64px); min-height:clamp(50px,6.4dvh,62px);
+  font-size:clamp(19px,1.8vw,23px); padding-inline-start:.2em;
+}
+:root[data-skin] body .screen.setup .title-cap-wrap .video-cap .stage-name {
+  font-size:clamp(18px,1.9vw,23px); padding-inline:clamp(20px,2.2vw,30px);
+}
