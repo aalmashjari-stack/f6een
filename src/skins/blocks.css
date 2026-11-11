@@ -530,6 +530,13 @@ html[data-skin='blocks'] body .screen .bhead { background: var(--art) 77% center
 html[data-skin='blocks'] body .screen .cc-img {
   background: var(--art) var(--art-pos, center) / var(--art-size, cover) no-repeat, var(--art-rays);
 }
+/* بطاقات الفئات في الإعداد على عاجيٍّ صافٍ بدل الأشعّة (علي ١١ نوفمبر ٢٠٢٦، من أربعة
+   ألوانٍ مشتقّةٍ من رسمة العائلة: «1 عاجيّ») — أفتح درجةً من أرضيّة الصفحة الرمليّة
+   ‎#F9F0E2‎ فتبرز البطاقة عنها، ووهجٌ أبيض خفيف خلف الرسمة. اللوح يبقى بأشعّته. */
+html[data-skin='blocks'] body .screen.setup :is(.cc-img, .tray-slot.filled) {
+  --art-rays: radial-gradient(circle at 50% 42%, #FDF9F1 0%, transparent 65%), #FBF4E8;
+  --ray: #FBF4E8 !important; /* يغلب `--ray` المكتوب على العنصر من artStyle */
+}
 
 /* ─── ٩ج. بلاطة الحروف (فئة «حروف») ──────────────────────────────────── */
 /* بلاطاتٌ مشبعة بحدّ حبرٍ وظلٍّ صلب — رسمةُ الفئة نفسها حيّةً على الشاشة:
