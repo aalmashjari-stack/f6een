@@ -38,7 +38,7 @@
      الجالسون من النصّ فيبقى مقروءاً. */
   .so::before {
     content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
-    background:linear-gradient(to left, rgba(255,251,244,.82) 0%, rgba(255,251,244,.55) 34%, rgba(255,251,244,0) 56%);
+    background:linear-gradient(to left, rgba(249,240,226,.82) 0%, rgba(249,240,226,.55) 34%, rgba(249,240,226,0) 56%);
   }
 }
 
@@ -51,7 +51,12 @@
   .so {
     /* هواءٌ تحت الصورة قبل عنوان الفرق (علي ١٠ نوفمبر ٢٠٢٦: «كبر المسافة»). */
     margin:calc(-1 * var(--so-pull, 0px)) calc(-1 * var(--so-right, 0px)) clamp(32px, 6dvh, 80px) calc(-1 * var(--so-left, 0px));
-    border-radius:0; box-shadow:none; border-bottom:2.5px solid var(--n-edge);
+    /* بلا حدٍّ أسود: الرسمة تذوب من أسفلها في لون الصفحة (علي ١١ نوفمبر ٢٠٢٦:
+       «شيل الحدود السوداء… درج لون الخلفية للون قريب»، على مرجعٍ يذوب أسفله). */
+    border-radius:0; box-shadow:none; border:0;
+    /* ثمّ «لا العكس، خلّ الخلفية لونها مشتقّ من الصورة»: الرسمة تذوب في رمليٍّ
+       مأخوذٍ من جدارها (#E8D1A9 ممزوجاً بالقشديّ) هو أرضيّة الصفحة كلّها (أدناه). */
+    background:var(--n-bg);
     min-height:100svh; align-items:start;
     padding-block:calc(var(--so-pull, 0px) + clamp(24px, 9dvh, 120px)) clamp(32px, 7dvh, 80px);
     /* المحتوى يبقى على حدّي عمود الصفحة (القدر نفسه الذي سُحب به الهيرو جانباً)،
@@ -61,9 +66,30 @@
   }
   .so::after {
     content:''; position:absolute; inset:0 0 auto; height:calc(var(--so-pull, 0px) + 60px); z-index:-1; pointer-events:none;
-    background:linear-gradient(to bottom, rgba(255,251,244,.92) 0%, rgba(255,251,244,.7) 55%, rgba(255,251,244,0) 100%);
+    background:linear-gradient(to bottom, rgba(249,240,226,.92) 0%, rgba(249,240,226,.7) 55%, rgba(249,240,226,0) 100%);
   }
+  .so-bg {
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+  }
+  /* «الصفحة كلّها» (علي ١١ نوفمبر ٢٠٢٦): أرضيّة صفحة الإعداد كلّها بالرمليّ نفسه،
+     في النهار وحده — الليل يبقى على أرضيّته. */
+  html[data-skin='blocks']:not([data-theme='night']):has(.screen.setup .so) { --n-bg:#F9F0E2; }
   body .screen.setup:has(.so) .setup-scroll { overflow-x:hidden; }
+  /* في التطبيق (علي ١١ نوفمبر ٢٠٢٦: «خلي الصورة ممتدة لنهاية الشاشة»): ‎#root‎
+     محشوٌّ بحدود الأمان (showtime.css) فتقف الرسمة دون الأذن وشريط المنزل
+     بشريطٍ قشديّ. هنا تُرفع الحشوة عن الجذر ويحملها الغلاف المتمرّر بدلاً
+     منه، فيبلغ الهيرو الحافّة الفيزيائيّة والمحتوى باقٍ داخل الأمان.
+     وعلى الويب ‎env()‎ أصفار فلا يتغيّر شيء. */
+  html:has(.screen.setup .so) #root { padding-left:0; padding-right:0; padding-bottom:0; }
+  /* وحشوة الشاشة السفلى (‎≈29px‎) تُرفع كذلك: الغلاف المتمرّر يبلغ الحافّة السفلى
+     فيبلغها الهيرو، وأسفل المحتوى يحمل حدّ الأمان. */
+  body .screen.setup:has(.so) { padding-bottom:0; }
+  body .screen.setup:has(.so) .setup-scroll {
+    padding-left:calc(var(--pad-x) + env(safe-area-inset-left));
+    padding-right:calc(var(--pad-x) + env(safe-area-inset-right));
+    padding-bottom:env(safe-area-inset-bottom);
+  }
   body .screen.setup:has(.so) .setup-scroll > .hero {
     position:relative; z-index:2; background:transparent; border-bottom-color:transparent; box-shadow:none;
   }
@@ -113,6 +139,11 @@
   .so { padding-block:calc(var(--so-pull, 0px) + 8px) 20px; }
   .so-side { gap:14px; }
   .so-step { padding-block:5px; }
+  /* الجوال أفقيّاً (علي ١١ نوفمبر ٢٠٢٦، على لقطة آيفونه): «نزل الشعار والقائمة
+     شوي، كثير مرتفعة، والصورة نزلها شوي» — الرأس يبتعد عن الحافّة العليا،
+     والرسمة تُظهر من أعلاها أكثر فينزل التلفزيون عن القائمة. */
+  body .screen.setup:has(.so) .setup-scroll > .hero { margin-top:14px; }
+  .so-bg { object-position:22% 38%; }
 }
 
 /* «ابدأ»: إطارٌ بلون الحبر، يمتلئ بالبرتقاليّ من اليمين (أوّل السطر العربيّ)
