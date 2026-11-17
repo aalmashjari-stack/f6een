@@ -35,10 +35,11 @@
     width:100%; height:100%; border-radius:inherit; object-fit:cover; object-position:22% 60%;
   }
   /* غشاوةٌ قشديّة خفيفة من اليمين تحت الكتابة: على العرض الأضيق يقترب
-     الجالسون من النصّ فيبقى مقروءاً. */
+     الجالسون من النصّ فيبقى مقروءاً. واللون من ‎--n-bg‎ لا مكتوباً: رمليٌّ
+     في النهار، وفي الليل أرضيّة الليل لا غشاوةٌ فاتحة فوق الرسمة. */
   .so::before {
     content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; border-radius:inherit;
-    background:linear-gradient(to left, rgba(249,240,226,.82) 0%, rgba(249,240,226,.55) 34%, rgba(249,240,226,0) 56%);
+    background:linear-gradient(to left, color-mix(in srgb, var(--n-bg) 82%, transparent) 0%, color-mix(in srgb, var(--n-bg) 55%, transparent) 34%, transparent 56%);
   }
 }
 
@@ -66,7 +67,7 @@
   }
   .so::after {
     content:''; position:absolute; inset:0 0 auto; height:calc(var(--so-pull, 0px) + 60px); z-index:-1; pointer-events:none;
-    background:linear-gradient(to bottom, rgba(249,240,226,.92) 0%, rgba(249,240,226,.7) 55%, rgba(249,240,226,0) 100%);
+    background:linear-gradient(to bottom, color-mix(in srgb, var(--n-bg) 92%, transparent) 0%, color-mix(in srgb, var(--n-bg) 70%, transparent) 55%, transparent 100%);
   }
   .so-bg {
     -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
