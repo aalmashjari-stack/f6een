@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { BrandLogo } from '../components/BrandLogo'
-import welcomeCats from '../../assets/backgrounds/welcome-cats.jpg'
 import splashBootHoldCss from './Splash.BootHold.css?inline'
 import splashCss from './Splash.css?inline'
 
@@ -35,8 +34,8 @@ export function BootHold() {
  * الموقع أصلاً: هناك تبدأ `splashDone` منتهيةً — انظر `isNativeApp` في `App`،
  * ومن ينتظر في المتصفّح يرى [BootHold] أعلاه بدلها.
  *
- * خلفيّتها سطحُ الهيرو: أبيض بغسلة الهيرو القطريّة (١٧ سبتمبر ٢٠٢٦) — من
- * رموز «نيو» لا من theme.css؛ الهويّة مثبّتة منذ ٢٧ أغسطس ٢٠٢٦.
+ * تصميمٌ عاديّ: الشعار وحده على أرضيّة التطبيق (علي ١٨ نوفمبر ٢٠٢٦: «تصميم
+ * عادي فيها الشعار و بس»، بعد أن صار التطبيق بالعرض فقُصّ كولاج الفئات الطوليّ).
  *
  * تنتقل وحدها بعد `SPLASH_MS`، وتنتقل فوراً بأي نقرة: من رآها مرّة لا يُجبَر
  * على انتظارها مرّة أخرى. والمؤقّت يُلغى عند التفكيك حتى لا ينادي `onDone`
@@ -50,7 +49,6 @@ export function Splash({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="screen splash" onClick={onDone} role="presentation">
-      <div className="splash-cats" aria-hidden="true" style={{ backgroundImage: `url(${welcomeCats})` }} />
       <BrandLogo className="splash-logo" />
 
       <style>{splashCss}</style>
