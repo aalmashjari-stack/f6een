@@ -101,12 +101,23 @@ export interface AdminPurchase {
   invoice_id: string | null
   created_at: string
   paid_at: string | null
+  /** رقم الإيصال المتسلسل (F6-000001)، ووقت إرساله، أو سبب فشله. */
+  receipt_no: number | null
+  receipt_sent_at: string | null
+  receipt_error: string | null
 }
 
 export async function listPurchases(limit = 300): Promise<AdminPurchase[]> {
   const { data, error } = await supabase.rpc('admin_purchases', { p_limit: limit })
   if (error) throw error
   return (data ?? []) as AdminPurchase[]
+}
+
+/** يرسل إيصال الشراء إلى بريد المشتري الآن (أوّلَ مرّة أو إعادةً). يُرجع 'sent' أو سبب الفشل. */
+export async function sendReceipt(id: string): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_send_receipt', { p_purchase: id })
+  if (error) throw error
+  return String(data)
 }
 
 /** يسأل ماي فاتورة الآن عن شراءٍ معلّق، ويضيف الرصيد إن دُفع. */

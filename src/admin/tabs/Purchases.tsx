@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { stamp } from '../../lib/date'
-import { type AdminPurchase, listPurchases, settlePurchase } from '../../lib/admin'
+import { type AdminPurchase, listPurchases, sendReceipt, settlePurchase } from '../../lib/admin'
 import { useLoad } from '../shared'
 
 /**
@@ -36,6 +36,26 @@ export function Purchases() {
       reload()
     } catch (e) {
       setNote(e instanceof Error ? e.message : 'تعذّر التحقّق')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  async function resend(id: string) {
+    setBusy(id)
+    setNote(null)
+    try {
+      const r = await sendReceipt(id)
+      setNote(
+        r === 'sent'
+          ? 'أُرسل الإيصال'
+          : r === 'not_configured'
+            ? 'الإيصال غير مُعَدّ بعد — مفتاح ZeptoMail ليس في Vault'
+            : 'تعذّر إرسال الإيصال: ' + r,
+      )
+      reload()
+    } catch (e) {
+      setNote(e instanceof Error ? e.message : 'تعذّر الإرسال')
     } finally {
       setBusy(null)
     }
@@ -83,6 +103,7 @@ export function Purchases() {
               <th>المبلغ</th>
               <th>الحالة</th>
               <th>الفاتورة</th>
+              <th>الإيصال</th>
               <th />
             </tr>
           </thead>
@@ -102,6 +123,24 @@ export function Purchases() {
                     <span className={'tag ' + cls}>{text}</span>
                   </td>
                   <td className="num">{p.invoice_id ?? '—'}</td>
+                  <td>
+                    {p.status !== 'paid' ? (
+                      <span className="muted">—</span>
+                    ) : p.receipt_sent_at ? (
+                      <span className="tag finished" title={stamp(p.receipt_sent_at)}>
+                        F6-{String(p.receipt_no).padStart(6, '0')}
+                      </span>
+                    ) : (
+                      <button
+                        className="a-btn"
+                        disabled={busy !== null}
+                        title={p.receipt_error ?? undefined}
+                        onClick={() => resend(p.id)}
+                      >
+                        {busy === p.id ? '…' : 'أرسل'}
+                      </button>
+                    )}
+                  </td>
                   <td>
                     {p.status === 'pending' && (
                       <button className="a-btn" disabled={busy !== null} onClick={() => settle(p.id)}>
