@@ -130,3 +130,11 @@ a.acct-act { text-decoration:none; text-align:center; }
   margin:0; font-size:12px; font-weight:800; line-height:1.6;
   color:var(--n-good, #2F9E63);
 }
+
+/* الشروط والخصوصيّة — سطرٌ هادئ في أسفل «حسابي»، بهيئة تذييل صفحة الهبوط. */
+.acct-legal {
+  margin:6px 0 0; display:flex; justify-content:center; flex-wrap:wrap; gap:4px 10px;
+  font-size:13px; font-weight:700; color:var(--n-ink-3);
+}
+.acct-legal a { color:var(--n-ink-2); text-decoration:none; }
+.acct-legal a:hover { color:var(--n-ink); text-decoration:underline; }

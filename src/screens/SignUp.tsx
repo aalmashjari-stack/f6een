@@ -292,11 +292,11 @@ export function SignUp({
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
               <span>
                 قرأت{' '}
-                <a href="/terms" target="_blank" rel="noopener">
+                <a href="https://f6een.com/terms" target="_blank" rel="noopener">
                   الشروط والأحكام
                 </a>{' '}
                 و
-                <a href="/privacy" target="_blank" rel="noopener">
+                <a href="https://f6een.com/privacy" target="_blank" rel="noopener">
                   سياسة الخصوصية
                 </a>{' '}
                 وأوافق عليهما

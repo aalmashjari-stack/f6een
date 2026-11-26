@@ -4,8 +4,8 @@ import { authErrorText, deleteAccount, signOut } from '../lib/auth'
 import { day } from '../lib/date'
 import { isAdmin } from '../lib/admin'
 import { isNativeApp } from '../lib/platform'
-import type { GameSummary, Profile } from '../lib/games'
-import { fetchMyGames, fetchProfile, gamesLabel, redeemGiftCode } from '../lib/games'
+import type { Profile } from '../lib/games'
+import { fetchProfile, gamesLabel, redeemGiftCode } from '../lib/games'
 import accountMenuCss from './AccountMenu.css?inline'
 
 /**
@@ -65,7 +65,6 @@ export function AccountMenu({
 
   const [profile, setProfile] = useState<Profile | null>(null)
   const [admin, setAdmin] = useState(false)
-  const [games, setGames] = useState<GameSummary[] | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
   /* «أعد المحاولة» تزيده فتُعاد القراءة نفسها (علي ٥ أكتوبر ٢٠٢٦، من تدقيق
      التجربة): كان الخطأ يُقال تحت «ألعابي» وحدها، و«عضو منذ» يبقى «…» إلى
@@ -85,11 +84,11 @@ export function AccountMenu({
     if (!open) return
     let alive = true
     setLoadErr(null)
-    Promise.all([fetchProfile(), fetchMyGames()])
-      .then(([p, g]) => {
+    /* «ألعابي» حُذفت من الصفحة (طلب علي ٢٦ نوفمبر ٢٠٢٦)، فلا تُقرأ الجلسات هنا. */
+    fetchProfile()
+      .then((p) => {
         if (!alive) return
         setProfile(p)
-        setGames(g)
         /* الرصيد المقروء هنا يُصعَّد إلى التطبيق: هو أحدث ممّا قرأه عند الإقلاع. */
         if (onBalance) onBalance(p.balance)
       })
@@ -219,22 +218,6 @@ export function AccountMenu({
                 </form>
                 {gift && <p className={gift.ok ? 'acct-ok' : 'acct-err'}>{gift.msg}</p>}
               </section>
-
-              <section className="acct-sec">
-                <h3 className="acct-h3">ألعابي{games && games.length > 0 ? ` · ${games.length}` : ''}</h3>
-                {loadErr && games === null && <p className="acct-note">—</p>}
-                {!loadErr && games === null && <p className="acct-note">…</p>}
-                {!loadErr && games !== null && games.length === 0 && (
-                  <p className="acct-note">لا ألعاب بعد — أوّل لعبة تظهر هنا.</p>
-                )}
-                {games !== null && games.length > 0 && (
-                  <ul className="acct-games">
-                    {games.map((g) => (
-                      <GameRow key={g.id} game={g} />
-                    ))}
-                  </ul>
-                )}
-              </section>
             </div>
 
             <footer className="acct-foot">
@@ -274,6 +257,20 @@ export function AccountMenu({
                 <p className="acct-warn">يُحذف الحساب ورصيده وسجلّ الأسئلة التي ظهرت لك وألعابك. لا رجوع.</p>
               )}
               {err && <p className="acct-err">{err}</p>}
+
+              {/* الشروط والخصوصيّة في أسفل «حسابي» (علي ٢٦ نوفمبر ٢٠٢٦) — بجوار حذف
+                  الحساب حيث يُبحث عنهما، لا في القائمة. والعنوان مطلق: في التطبيق
+                  الأصليّ يحوّل Capacitor الهدفَ الجديد إلى سفاري، وسفاري لا يعرف
+                  `capacitor://localhost/terms` (انظر لوحة الإدارة أعلاه). */}
+              <p className="acct-legal">
+                <a href="https://f6een.com/terms" target="_blank" rel="noopener">
+                  الشروط والأحكام
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="https://f6een.com/privacy" target="_blank" rel="noopener">
+                  سياسة الخصوصية
+                </a>
+              </p>
             </footer>
           </div>
         </div>
@@ -300,53 +297,6 @@ function Row({
       <dt className="acct-k">{label}</dt>
       <dd className={'acct-v' + (ltr ? ' ltr' : '') + (strong ? ' strong' : '')}>{value}</dd>
     </>
-  )
-}
-
-const STATUS: Record<GameSummary['status'], string> = {
-  open: 'لم تكتمل بعد',
-  finished: 'مكتملة',
-  abandoned: 'منسحبة',
-}
-
-function GameRow({ game }: { game: GameSummary }) {
-  const teams = game.teams
-  const top =
-    teams && teams.length === 2 && teams[0].score !== teams[1].score
-      ? teams[0].score > teams[1].score
-        ? 0
-        : 1
-      : -1
-
-  /* التعادل يُقال صراحةً: غياب اللون على الفريقين يحتمل «تعادلا» ويحتمل
-     «لم تُنقَّط»، والصفّ يُقرأ بلمحة فلا يُترك للاستنتاج. */
-  const tie = game.status === 'finished' && teams?.length === 2 && teams[0].score === teams[1].score
-
-  return (
-    <li className="g-row">
-      <div className="g-top">
-        <span className="g-date">{day(game.createdAt)}</span>
-        <span className={'g-tag' + (game.status === 'open' ? ' open' : '')}>
-          {STATUS[game.status]}
-          {tie ? ' · تعادل' : ''}
-        </span>
-      </div>
-      {teams && teams.length === 2 ? (
-        <div className="g-teams">
-          {teams.map((t, i) => (
-            <span key={i} className="g-pair">
-              {i > 0 && <span className="g-sep">·</span>}
-              <span className={'g-team' + (i === top ? ' win' : '')}>
-                <span className="g-name">{t.name}</span>
-                <span className="g-score">{t.score}</span>
-              </span>
-            </span>
-          ))}
-        </div>
-      ) : (
-        <span className="g-none">بلا تفاصيل</span>
-      )}
-    </li>
   )
 }
 
