@@ -1,0 +1,25 @@
+/*
+  «تراجع» بعد التنقيط — في الزاوية السفلى المقابلة لـ«إنهاء» (QuitGame.css)، خارج
+  مناطق النظام بالطريقة نفسها. وشريطُ الوقت تحته يقول إنّه سيختفي.
+*/
+.undo-score {
+  position:fixed;
+  inset-block-end:calc(env(safe-area-inset-bottom) + clamp(6px,1.2dvh,14px));
+  inset-inline-end:calc(env(safe-area-inset-left) + clamp(6px,1.2vw,16px));
+  z-index:50;
+}
+.undo-score button {
+  position:relative; overflow:hidden;
+  font:inherit; font-weight:800; font-size:clamp(14px,1.6vw,18px);
+  min-height:44px; padding:0 clamp(16px,2vw,24px);
+  border:0; border-radius:999px; cursor:pointer;
+  background:var(--n-ink, #22201C); color:var(--n-on-ink, #fff);
+  box-shadow:0 0 0 2px var(--n-edge, #22201C), 3px 4px 0 var(--n-edge, #22201C);
+}
+.undo-score button::after {
+  content:''; position:absolute; inset-inline:0; inset-block-end:0; height:3px;
+  background:var(--n-brand, #E8542F); transform-origin:left;
+  animation:undo-shrink 4s linear forwards;
+}
+@keyframes undo-shrink { from { transform:scaleX(1); } to { transform:scaleX(0); } }
+@media (prefers-reduced-motion:reduce) { .undo-score button::after { animation:none; } }

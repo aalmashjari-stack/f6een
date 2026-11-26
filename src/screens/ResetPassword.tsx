@@ -107,7 +107,11 @@ export function ResetPassword({ onDone, failed = false }: { onDone: () => void; 
           autoComplete="new-password"
         />
 
-        {err && <p className="su-err">{err}</p>}
+        {err && (
+          <p className="su-err" role="alert">
+            {err}
+          </p>
+        )}
 
         <button className="su-submit" type="submit" disabled={busy}>
           {busy ? '…' : 'احفظ'}

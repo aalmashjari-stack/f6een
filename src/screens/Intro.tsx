@@ -20,21 +20,24 @@ import introCss from './Intro.css?inline'
  * شرح المراحل في صفحة الهبوط (IntroLanding) مصدره `game/stages.ts` نفسه الذي يغذّي الإعداد، فأرقام التنقيط تتبع
  * ثوابت المحرّك ولا تُكتب هنا بيد.
  *
- * **غوغل يعمل فعلاً** عبر Supabase. وApple والبريد معطّلان بسببين مختلفين:
+ * **غوغل يعمل فعلاً** عبر Supabase. وApple والبريد كانا معطّلَين بسببين مختلفين:
  * آبل تحتاج حساب مطوّر مدفوعاً لم يُسجَّل بعد، والبريد يحتاج شاشة إدخال
  * ورمز تحقّق. والبريد صار يفتح شاشة `SignUp` (طلب علي ٢٧ أغسطس ٢٠٢٦)،
- * وبقيت آبل معطّلةً بسبب مكتوب — زرٌّ معطّل بسبب خيرٌ من زرٍّ يعد بما لا يفي.
+ * وبقيت آبل معطّلةً بسبب مكتوب — ثمّ أُخفيت (تدقيق ٥ أكتوبر M1): السبب كان في title
+ * لا يراه من يلمس، فقُرئ الزرّ عطلاً.
  *
  * ولم يعد هنا طريق إلى اللعبة بلا حساب: هذا ما يشترطه SPEC القسم ٩
  * (التسجيل إجباريّ)، وما قرّره علي بحذف زرّ «ابدأ».
  */
-export function Intro({ onDone }: { onDone?: () => void }) {
+export function Intro({ onDone, emailSignin = false }: { onDone?: () => void; emailSignin?: boolean }) {
   /* قبل أيّ رجوعٍ مبكّر: خطّافٌ بعد `if (email) return` يُسقط الشاشة كلّها. */
   /* رجوعٌ فاشل من غوغل يفتح صفحة الدخول نفسها: سببه مكتوبٌ فيها. */
   const [signinPage, setSigninPage] = useState(
     () => typeof window !== 'undefined' && /[?&#]error=/.test(window.location.search + window.location.hash),
   )
-  const [email, setEmail] = useState<false | 'signup' | 'signin'>(false)
+  /* `emailSignin`: جاء من رابط استعادةٍ ميّت — يُفتح على دخول البريد وفيه «نسيت كلمة
+     المرور» مباشرةً، لا على التعريف وأربع خطوات (تدقيق ٥ أكتوبر L2). */
+  const [email, setEmail] = useState<false | 'signup' | 'signin'>(emailSignin ? 'signin' : false)
   const [busy, setBusy] = useState(false)
   /* رجوعٌ فاشل من غوغل يحمل سببه في العنوان. بدون قراءته يجد اللاعب نفسه
      في شاشة التعريف ثانيةً بلا كلمة تفسّر — فيظنّ الزرّ معطّلاً. */
@@ -96,10 +99,10 @@ export function Intro({ onDone }: { onDone?: () => void }) {
             </div>
           ) : (
             <div className="signin-methods">
-              <button className="method apple" disabled title="يحتاج حساب مطوّر آبل — لم يُسجَّل بعد">
-                {/* «سجل دخولك عبر…» (علي ١ أكتوبر ٢٠٢٦). */}
-                سجل دخولك عبر Apple
-              </button>
+              {/* زرّ آبل مخفيّ حتى يعمل (تدقيق ٥ أكتوبر M1، ٢٦ نوفمبر ٢٠٢٦): كان أوّلَ زرٍّ
+                  في البطاقة رماديّاً لا يُضغط، وسببُه في title لا يراه من يلمس —
+                  «المعطّل يُقرأ معطوباً». يعود حين يُسجَّل حساب مطوّر آبل،
+                  بنصّه «سجل دخولك عبر Apple» (علي ١ أكتوبر ٢٠٢٦). */}
 
               <button className="method google" onClick={google} disabled={busy}>
                 {/* الشعار لا الكلمة (طلب علي ٢٧ سبتمبر ٢٠٢٦): حرف G بألوانه

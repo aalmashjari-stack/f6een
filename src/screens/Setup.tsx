@@ -52,6 +52,13 @@ function loadLastTeams(): { names: [string, string]; players: [string[], string[
  * و`balance` قد تكون `null` — «لم يُقرأ» لا «صفر»، فلا تمنع البدء: القاعدة
  * هي التي تمنع، ومنعُ من رصيده سليم لأنّ الشبكة تأخّرت خطأٌ في الاتّجاه الأسوأ.
  */
+/**
+ * أطول اسمٍ لفريقٍ أو لاعب (تدقيق ٥ أكتوبر L3، ٢٦ نوفمبر ٢٠٢٦). الاسم يُرسم في
+ * شريط النتيجة في كلّ شاشة لعب، وبلا حدٍّ يضغطه اسمٌ طويل. عشرون حرفاً تتّسع
+ * لـ«عيال أبو عبدالله» وأمثالها.
+ */
+const NAME_MAX = 20
+
 /** علامة «لا رصيد» في `err` — تُرسم بـ`ZeroBalance` لا نصّاً. */
 const NO_BALANCE = 'no_balance'
 
@@ -251,6 +258,30 @@ export function Setup({
       }
     }, 110)
     tossTimer.current = iv
+  }
+
+  /**
+   * «ابدأ اللعبة» يُضغط دائماً ويجيب بما ينقص (تدقيق ٥ أكتوبر M4، ٢٦ نوفمبر
+   * ٢٠٢٦) — كان رماديّاً بلا سطرٍ يقول لماذا، والضغطةُ الأولى التي يجرّبها الناس
+   * هي «ابدأ». والأجوبة هي القائمة نفسها بلا نصٍّ جديد: الرصيد الصفريّ يفتح
+   * الشراء على الموقع، والنقصُ يُحمّر رسالتَه (قاعدة علي ٥ سبتمبر: الرسالة جوابُ
+   * ضغطة)، والقرعةُ إن لم تُجرَ تجري.
+   */
+  function startOrExplain() {
+    if (busy || tossing) return
+    if (noBalance) {
+      if (!isNativeApp && onNav) onNav('buy')
+      return
+    }
+    if (!namesReady || !catsReady) {
+      setNudge(true)
+      return
+    }
+    if (starter === null) {
+      toss()
+      return
+    }
+    void start()
   }
 
   async function start() {
@@ -505,6 +536,8 @@ export function Setup({
                     <input
                       className="team-name"
                       value={names[team]}
+                      maxLength={NAME_MAX}
+                      aria-label={team === 0 ? 'اسم الفريق الأول' : 'اسم الفريق الثاني'}
                       placeholder="اكتب اسم فريقك"
                       onChange={(e) =>
                         setNames((n) => (team === 0 ? [e.target.value, n[1]] : [n[0], e.target.value]))
@@ -516,6 +549,8 @@ export function Setup({
                           key={i}
                           className="player"
                           value={p}
+                          maxLength={NAME_MAX}
+                          aria-label={`اسم اللاعب ${i + 1}`}
                           placeholder={`اسم اللاعب ${i + 1}`}
                           onChange={(e) => setPlayer(team, i, e.target.value)}
                         />
@@ -700,11 +735,15 @@ export function Setup({
                  علي ٥ سبتمبر ٢٠٢٦): سطرٌ دائمٌ تحت الزرّ يصير جزءاً من
                  الأثاث فلا يُقرأ، وظهورُه جواباً على ضغطةٍ يُقرأ. */
                 nudge ? (
-                  <div className="toss-result missing alert">اكتب أسماء الفريقين واللاعبين</div>
+                  <div className="toss-result missing alert" role="alert">
+                    اكتب أسماء الفريقين واللاعبين
+                  </div>
                 ) : null
               ) : !catsReady ? (
                 nudge ? (
-                  <div className="toss-result missing alert">اختر {STAGE1_CATEGORIES} فئات للّوح</div>
+                  <div className="toss-result missing alert" role="alert">
+                    اختر {STAGE1_CATEGORIES} فئات للّوح
+                  </div>
                 ) : null
               ) : starter !== null ? (
                 <div className="toss-result">
@@ -721,8 +760,9 @@ export function Setup({
               </button>
               <button
                 className="action"
-                disabled={starter === null || !namesReady || !catsReady || busy || noBalance}
-                onClick={start}
+                disabled={busy}
+                aria-disabled={starter === null || !namesReady || !catsReady || noBalance}
+                onClick={startOrExplain}
               >
                 {busy ? 'لحظة…' : 'ابدأ اللعبة'}
               </button>
