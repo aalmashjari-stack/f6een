@@ -15,7 +15,7 @@ import {
   storageOwner,
   writeScoped,
 } from './game/session'
-import { reducer } from './game/reducer'
+import { reducer, type Action } from './game/reducer'
 import { useEmailConfirm, useRecoveryMode, useSession } from './lib/auth'
 import {
   closeSessionDurably,
@@ -43,6 +43,7 @@ import { lockOrientation } from './lib/orientation'
 import { Intro } from './screens/Intro'
 import { ConfirmEmail } from './screens/ConfirmEmail'
 import { ResetPassword } from './screens/ResetPassword'
+import { UndoScore } from './components/UndoScore'
 import { Setup } from './screens/Setup'
 import { Stage1Board } from './screens/Stage1Board'
 import { Stage1Letter } from './screens/Stage1Letter'
@@ -193,6 +194,8 @@ export default function App() {
   /* رابطُ الاستعادة: يُفحص نفعُه لا وجودُه — انظر `useRecoveryMode`. */
   const recovery = useRecoveryMode()
   const [recoveryDone, setRecoveryDone] = useState(false)
+  /* رابطُ استعادةٍ ميّت يُكمل إلى دخول البريد لا إلى البداية (تدقيق ٥ أكتوبر L2). */
+  const [deadRecoveryLink, setDeadRecoveryLink] = useState(false)
   /* رابطُ التأكيد: نجاحُه يدخل اللاعب بلا شاشة، وفشلُه وحده يُعرض. */
   const confirm = useEmailConfirm()
   const [confirmDone, setConfirmDone] = useState(false)
@@ -301,6 +304,16 @@ export default function App() {
      لعبةً بدأها اللاعب في الأثناء. */
   const stateRef = useRef(state)
   stateRef.current = state
+
+  /* «تراجع» بعد تنقيط الجولة الجماعية (تدقيق ٥ أكتوبر M7): لقطةُ ما قبل
+     `S1_SCORE`، تُعاد بـ`RESUME` إن ضُغط خلال أربع ثوانٍ (`UndoScore`). وأيُّ فعلٍ
+     آخر يُسقطها — بعده لا تعود اللقطةُ «ما قبل الخطأ» بل ما قبل فعلٍ صحيح. */
+  const [undoSnap, setUndoSnap] = useState<GameState | null>(null)
+  const dispatchGame = useCallback((a: Action) => {
+    setUndoSnap(a.t === 'S1_SCORE' ? stateRef.current : null)
+    dispatch(a)
+  }, [])
+  const dropUndo = useCallback(() => setUndoSnap(null), [])
 
   /* الشاشة تبقى مستيقظة ما دامت لعبةٌ قائمة — من الإعداد إلى الختام. وستّون
      ثانية تشاورٍ بلا لمسةٍ واحدة هي بالضبط ما يُطفئ الشاشة أمام المجلس. */
@@ -580,6 +593,7 @@ export default function App() {
         failed={recovery === 'failed'}
         onDone={() => {
           setRecoveryDone(true)
+          if (recovery === 'failed') setDeadRecoveryLink(true)
           /* المعامل يُمسح من العنوان فلا تعود الشاشة بإعادة تحميل. ومن جاء
              برابطٍ ميّت يقع بعدها على شاشة الدخول، وفيها «نسيت كلمة المرور». */
           window.history.replaceState(null, '', window.location.pathname)
@@ -598,7 +612,9 @@ export default function App() {
   /* التعريف يُعرض لمن لا جلسة له. وحين يكون الدخول موقوفاً يمرّ منه بزرّ
      «ابدأ» بدل المزوّدين — انظر REQUIRE_LOGIN أعلاه. */
   if (!session && !introDone) {
-    return <Intro onDone={REQUIRE_LOGIN ? undefined : () => setIntroDone(true)} />
+    return (
+      <Intro onDone={REQUIRE_LOGIN ? undefined : () => setIntroDone(true)} emailSignin={deadRecoveryLink} />
+    )
   }
 
   if (!state) {
@@ -640,29 +656,29 @@ export default function App() {
   const screen = (() => {
     switch (state.phase) {
       case 'stage1-board':
-        return <Stage1Board state={state} dispatch={dispatch} />
+        return <Stage1Board state={state} dispatch={dispatchGame} />
       case 'stage1-letter':
-        return <Stage1Letter state={state} dispatch={dispatch} />
+        return <Stage1Letter state={state} dispatch={dispatchGame} />
       case 'stage1-charade':
-        return <Stage1Charade state={state} dispatch={dispatch} />
+        return <Stage1Charade state={state} dispatch={dispatchGame} />
       case 'stage1-question':
-        return <Stage1Question state={state} dispatch={dispatch} />
+        return <Stage1Question state={state} dispatch={dispatchGame} />
       case 'stage1-reveal':
-        return <Stage1Reveal state={state} dispatch={dispatch} />
+        return <Stage1Reveal state={state} dispatch={dispatchGame} />
       case 'interval':
-        return <Interval state={state} dispatch={dispatch} />
+        return <Interval state={state} dispatch={dispatchGame} />
       case 'stage2-selection':
-        return <Stage2Selection state={state} dispatch={dispatch} />
+        return <Stage2Selection state={state} dispatch={dispatchGame} />
       case 'stage2-question':
-        return <Stage2Question state={state} dispatch={dispatch} />
+        return <Stage2Question state={state} dispatch={dispatchGame} />
       case 'stage2-reveal':
-        return <Stage2Reveal state={state} dispatch={dispatch} />
+        return <Stage2Reveal state={state} dispatch={dispatchGame} />
       case 'stage3-play':
-        return <Stage3 state={state} dispatch={dispatch} />
+        return <Stage3 state={state} dispatch={dispatchGame} />
       case 'tiebreak':
-        return <Tiebreak state={state} dispatch={dispatch} />
+        return <Tiebreak state={state} dispatch={dispatchGame} />
       case 'endgame':
-        return <Endgame state={state} dispatch={dispatch} balance={balance} />
+        return <Endgame state={state} dispatch={dispatchGame} balance={balance} />
       default:
         return <Setup onStart={begin} balance={balance} />
     }
@@ -676,6 +692,15 @@ export default function App() {
       </CrashScreen>
       {/* الختام فيه «لعبة جديدة» أصلاً، فلا يُزاحَم بزرٍّ ثانٍ يفعل الشيء نفسه. */}
       {state.phase !== 'endgame' && <QuitGame onQuit={quit} charged={sessionId !== null} />}
+      {undoSnap && (
+        <UndoScore
+          onUndo={() => {
+            dispatch({ t: 'RESUME', state: undoSnap })
+            setUndoSnap(null)
+          }}
+          onExpire={dropUndo}
+        />
+      )}
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { isNativeApp } from '../lib/platform'
 import { createPayment, paymentErrorText, type PayStatus } from '../lib/payments'
 import { sendMessage } from '../lib/messages'
@@ -44,9 +44,32 @@ function Veil({
   label: string
   children: React.ReactNode
 }) {
+  /* إمكانيّة الوصول (تدقيق ٥ أكتوبر L6، ٢٦ نوفمبر ٢٠٢٦): Esc يُغلق، والتركيز
+     ينتقل إلى اللوح حين يُفتح فيقرؤه قارئ الشاشة ولا يبقى خلفه. */
+  const panel = useRef<HTMLDivElement>(null)
+  /* `onClose` دالّةٌ جديدة في كلّ رسم من الأب — في التبعيّات كانت تعيد الأثر
+     فتسحب التركيز من خانة «تواصل معنا» مع كلّ حرف. فتُقرأ من مرجع. */
+  const close = useRef(onClose)
+  close.current = onClose
+  useEffect(() => {
+    panel.current?.focus()
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close.current()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
   return (
     <div className="sp-veil" onClick={onClose}>
-      <div className="sp-panel" role="dialog" aria-label={label} onClick={(e) => e.stopPropagation()}>
+      <div
+        ref={panel}
+        tabIndex={-1}
+        className="sp-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
+        onClick={(e) => e.stopPropagation()}
+      >
         <header className="sp-head">
           <h2 className="sp-title">{label}</h2>
           <button className="sp-x" onClick={onClose} aria-label="إغلاق">
@@ -339,7 +362,11 @@ export function ContactPanel({ onClose, email }: { onClose: () => void; email?: 
           />
         </label>
 
-        {err && <p className="sp-err">{err}</p>}
+        {err && (
+          <p className="sp-err" role="alert">
+            {err}
+          </p>
+        )}
 
         <button className="sp-send" type="submit" disabled={busy || !body.trim()}>
           {busy ? 'يُرسل…' : 'أرسل'}

@@ -305,7 +305,11 @@ export function SignUp({
           </>
         )}
 
-        {err && <p className="su-err">{err}</p>}
+        {err && (
+          <p className="su-err" role="alert">
+            {err}
+          </p>
+        )}
         {note && <p className="su-note">{note}</p>}
 
         <button className="su-submit" type="submit" disabled={busy}>

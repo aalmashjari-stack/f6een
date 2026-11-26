@@ -131,3 +131,4 @@
   .sp-note { line-height:1.5; }
   .sp-send { padding:8px 30px; }
 }
+.sp-panel:focus { outline:none; }
