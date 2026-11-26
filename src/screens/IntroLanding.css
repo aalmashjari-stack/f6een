@@ -156,6 +156,17 @@
 @keyframes lp-pop { from { opacity:0; scale:.4; } }
 
 /* ─── الضيّق ─── */
+/* ─── التذييل ─── */
+.lp-foot {
+  width:var(--col); margin-inline:auto;
+  display:flex; flex-wrap:wrap; justify-content:center; gap:8px clamp(18px, 2.4vw, 32px);
+  padding-block:18px calc(22px + env(safe-area-inset-bottom));
+  border-top:1.5px solid var(--n-line);
+  font-weight:700; font-size:clamp(13px, 1vw, 15px);
+}
+.lp-foot a { color:var(--n-ink-2); text-decoration:none; }
+.lp-foot a:hover { color:var(--n-ink); text-decoration:underline; }
+
 @media (max-width:960px) {
   .lp-hero { grid-template-columns:1fr; text-align:center; }
   .lp-hero-copy { align-items:center; }

@@ -96,7 +96,7 @@ export function SignUp({
       if (age === null || age < 0 || age > 120) return 'تاريخ الميلاد غير صحيح'
     }
     if (password.length < MIN_PASSWORD) return `كلمة المرور ${MIN_PASSWORD} أحرف على الأقل`
-    if (!agreed) return 'وافق على سياسة الخصوصية'
+    if (!agreed) return 'وافق على الشروط وسياسة الخصوصية'
     return null
   }
 
@@ -287,16 +287,19 @@ export function SignUp({
 
         {signup && (
           <>
-            {/* لا ذكر لـ«الشروط والأحكام»: لا وجود لها بعد، والإشارة إلى صفحة
-                غائبة وعدٌ لا يُوفى. تُضاف حين تُكتب. */}
+            {/* «الشروط والأحكام» كُتبت ٢٦ نوفمبر ٢٠٢٦ مع فتح الدفع — فدخلت الموافقة. */}
             <label className="su-terms">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
               <span>
                 قرأت{' '}
-                <a href="/privacy.html" target="_blank" rel="noopener">
+                <a href="/terms" target="_blank" rel="noopener">
+                  الشروط والأحكام
+                </a>{' '}
+                و
+                <a href="/privacy" target="_blank" rel="noopener">
                   سياسة الخصوصية
                 </a>{' '}
-                وأوافق عليها
+                وأوافق عليهما
               </span>
             </label>
           </>

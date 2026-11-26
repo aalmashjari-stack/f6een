@@ -94,6 +94,7 @@
 }
 .sp-note { margin:0; text-align:center; font-size:clamp(12px,1.5vw,14px); font-weight:700; color:var(--n-ink-2, #57524A); line-height:1.8; }
 .sp-note b { color:var(--n-ink, #22201C); }
+.sp-note a { color:inherit; text-decoration:underline; }
 
 .sp-form { display:flex; flex-direction:column; gap:clamp(8px,1.6dvh,14px); }
 .sp-field { display:flex; flex-direction:column; gap:5px; }
