@@ -264,6 +264,8 @@ html[data-skin] body .screen.setup .video-cap .stage-no { font-size:clamp(16px,1
 .toss-result b { color:var(--gold); }
 .toss-result.missing { color:var(--text-2); font-weight:700; }
 .toss-result.missing.alert { color:var(--coral); font-weight:900; }
+/* «اشترِ ألعاباً» عند الرصيد الصفريّ على الموقع — رابطٌ بلون الهويّة في السطر نفسه. */
+.toss-buy { font:inherit; font-weight:900; color:var(--coral); background:none; border:0; padding:0; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
 .toss-note { color:var(--text-2); font-weight:700; font-size:.72em; }
 
 /* الزرّان في صفّ على الشاشة العريضة — «ابدأ اللعبة» يأخذ الثلثين

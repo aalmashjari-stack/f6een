@@ -12,6 +12,7 @@ import { isNight, setNight } from '../lib/theme'
 import { BrandLogo } from '../components/BrandLogo'
 import { SetupOpener } from './SetupOpener'
 import { authErrorText, signOut } from '../lib/auth'
+import { isNativeApp } from '../lib/platform'
 import setupCss from './Setup.css?inline'
 const MIN = 2
 const MAX = 6
@@ -51,6 +52,30 @@ function loadLastTeams(): { names: [string, string]; players: [string[], string[
  * و`balance` قد تكون `null` — «لم يُقرأ» لا «صفر»، فلا تمنع البدء: القاعدة
  * هي التي تمنع، ومنعُ من رصيده سليم لأنّ الشبكة تأخّرت خطأٌ في الاتّجاه الأسوأ.
  */
+/** علامة «لا رصيد» في `err` — تُرسم بـ`ZeroBalance` لا نصّاً. */
+const NO_BALANCE = 'no_balance'
+
+/**
+ * الرصيد الصفريّ (تدقيق ٥ أكتوبر H4، بطلب علي ٢٦ نوفمبر ٢٠٢٦ بعد فتح الدفع).
+ *
+ * على الموقع يُباع الآن، فالسطر زرٌّ إلى «شراء الألعاب» — كان يدلّ على كود
+ * الهدية وحده، فيدور اللاعب في أعلى لحظات نيّة الشراء بين النوافذ. وفي
+ * التطبيق الأصليّ لا دفع بعد (SPEC §١٣ بند ٢)، فيبقى على كود الهدية.
+ */
+function ZeroBalance({ onBuy }: { onBuy?: () => void }) {
+  if (isNativeApp || !onBuy) {
+    return <div className="toss-result missing">انتهى رصيدك — أضف كود هدية من «حسابي»</div>
+  }
+  return (
+    <div className="toss-result missing">
+      انتهى رصيدك —{' '}
+      <button type="button" className="toss-buy" onClick={onBuy}>
+        اشترِ ألعاباً
+      </button>
+    </div>
+  )
+}
+
 export function Setup({
   onStart,
   balance,
@@ -259,7 +284,7 @@ export function Setup({
          بالرسالة العامّة لا خاماً بالإنجليزيّة أمام المجلس. */
       const msg =
         e instanceof Error && e.message === 'no_balance'
-          ? 'انتهى رصيدك — أضف كود هدية من «حسابي»'
+          ? NO_BALANCE
           : e instanceof Error && /[؀-ۿ]/.test(e.message)
             ? e.message
             : 'تعذّر بدء اللعبة، تحقّق من اتصالك'
@@ -663,11 +688,11 @@ export function Setup({
             لا سطران يطفوان في الفراغ. */}
           <div className="setup-foot">
             <div className="toss">
-              {err ? (
-                <div className="toss-result missing">{err}</div>
-              ) : noBalance ? (
+              {err === NO_BALANCE || (!err && noBalance) ? (
                 /* الرصيد أسبق من نقص الأسماء: إكمالها لن يفتح الزرّ. */
-                <div className="toss-result missing">انتهى رصيدك — أضف كود هدية من «حسابي»</div>
+                <ZeroBalance onBuy={onNav && (() => onNav('buy'))} />
+              ) : err ? (
+                <div className="toss-result missing">{err}</div>
               ) : tossing ? (
                 <div className="toss-result fade">القرعة… {teamLabel(tossFace)}</div>
               ) : !namesReady ? (
