@@ -247,11 +247,11 @@ export async function signInWithEmail(email: string, password: string) {
 export const MIN_PASSWORD = 8
 
 const AUTH_ERRORS: [RegExp, string][] = [
-  [/invalid_credentials|invalid login credentials/i, 'البريد أو كلمة السرّ غير صحيحة'],
+  [/invalid_credentials|invalid login credentials/i, 'البريد أو كلمة المرور غير صحيحة'],
   [/email_not_confirmed|email not confirmed/i, 'أكّد بريدك أوّلاً من الرسالة التي وصلتك'],
   [/user_already_exists|already registered|already been registered/i, 'هذا البريد مسجَّل من قبل — ادخل به'],
   [/weak_password|password should be/i, `كلمة المرور ${MIN_PASSWORD} أحرف على الأقل`],
-  [/same_password/i, 'كلمة السرّ الجديدة هي نفسها القديمة'],
+  [/same_password/i, 'كلمة المرور الجديدة هي نفسها القديمة'],
   [/email_address_invalid|invalid email|unable to validate email/i, 'البريد غير صالح'],
   [
     /rate_limit|rate limit|too many requests|for security purposes/i,

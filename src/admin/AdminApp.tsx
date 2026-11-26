@@ -89,7 +89,7 @@ function Gate() {
           type="password"
           value={pass}
           onChange={(e) => setPass(e.target.value)}
-          placeholder="كلمة السرّ"
+          placeholder="كلمة المرور"
           autoComplete="current-password"
         />
         <button className="a-btn go" type="submit" disabled={busy || !email || !pass}>

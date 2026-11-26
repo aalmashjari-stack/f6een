@@ -205,7 +205,10 @@ export function Endgame({
         {balance !== null && balance !== undefined && (
           <>
             <span className="foot-sep">·</span>
-            <span className="foot-balance">لديك {gamesLabel(balance)}</span>
+            {/* «رصيدك فارغ» عند الصفر — صياغة علي ٢٦ نوفمبر ٢٠٢٦ (تدقيق ٥ أكتوبر L5)؛ كانت «لديك لا شيء». */}
+            <span className="foot-balance">
+              {balance === 0 ? 'رصيدك فارغ' : `لديك ${gamesLabel(balance)}`}
+            </span>
           </>
         )}
       </div>
@@ -251,7 +254,8 @@ function ReportPanel({
           </button>
         </header>
 
-        <p className="rp-sub">اختر السؤال المعطوب — يُحجز فوراً فلا يُسحب حتى تُراجعه الإدارة.</p>
+        {/* صياغة علي ٢٦ نوفمبر ٢٠٢٦ (تدقيق ٥ أكتوبر M9): الحجب على جهاز المبلِّغ وحده منذ ٢٥ سبتمبر. */}
+        <p className="rp-sub">اختر السؤال المعطوب — ما يطلع لك مرّة ثانية، ونراجعه.</p>
 
         {asked.length === 0 ? (
           <p className="rp-sub">لا أسئلة في هذه الجلسة.</p>
