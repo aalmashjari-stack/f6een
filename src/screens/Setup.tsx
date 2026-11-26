@@ -360,7 +360,7 @@ export function Setup({
                 onNav('buy')
               }}
             >
-              رصيد العابي <b>{balance}</b>
+              رصيد ألعابي <b>{balance}</b>
             </button>
           )}
           {/* ضغطةٌ خارج اللوح تغلقه — ستارٌ شفّاف تحته يلتقطها. */}
