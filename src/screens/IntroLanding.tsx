@@ -169,6 +169,13 @@ export function IntroLanding(props: Props) {
           copy={props.onBack ? props.children : <LandingCopy onSignin={props.onSignin} />}
         />
       </main>
+      {/* روابط الصفحات القانونيّة والتواصل — تحت الافتتاحيّة لا فوقها، كعادة
+          المواقع. بوّاباتُ الدفع والمتاجر تطلبها ظاهرةً من الصفحة الأولى (٢٦ نوفمبر ٢٠٢٦). */}
+      <footer className="lp-foot">
+        <a href="/terms">الشروط والأحكام</a>
+        <a href="/privacy">سياسة الخصوصية</a>
+        <a href="mailto:support@f6een.com">تواصل معنا</a>
+      </footer>
       <style>{css}</style>
     </div>
   )
