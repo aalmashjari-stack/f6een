@@ -156,7 +156,13 @@ body::after {
    يُضغط بالفأرة ولا يُضغط بالإبهام، واللعبة تُدار من جوّالٍ يُبثّ إلى
    التلفزيون. والصفُّ يأخذ عرضاً من الكبسولة (وهي `flex: 1` فتحتمله) ويُبقي
    الارتفاع كما هو — فقاعدةُ الشاشة الواحدة لا تُمسّ. */
-.scorebar .pts-adj { display: flex; gap: 6px; }
+.scorebar .pts-adj { display: flex; gap: 8px; }
+/* مساحةُ اللمس أكبر من الزرّ المرسوم (تدقيق ٥ أكتوبر M6، ٢٦ نوفمبر ٢٠٢٦): المرسوم
+   ٢٨–٣٨ بكسلاً والمعيار ٤٤ — وتكبيرُه يضغط الشريط في الشاشات القصيرة (قاعدة
+   الشاشة الواحدة). فيمتدّ اللمس رأسيّاً ٨ بكسلات بلا تغيّرٍ في الشكل، وأفقيّاً
+   أقلّ من نصف الفجوة كي لا يتداخل الزرّان. */
+.scorebar .pts-adj button { position: relative; }
+.scorebar .pts-adj button::before { content: ''; position: absolute; inset: -8px -3px; }
 .scorebar .pts-adj button {
   font: inherit; line-height: 1; cursor: pointer;
   width: clamp(30px, 4dvh, 38px); height: clamp(30px, 4dvh, 38px);
