@@ -90,6 +90,32 @@ export async function listSessions(limit = 200): Promise<AdminSession[]> {
   return (data ?? []) as AdminSession[]
 }
 
+/** شراءٌ على الموقع (ماي فاتورة) — `admin_purchases`، للمدير العامّ وحده. */
+export interface AdminPurchase {
+  id: string
+  email: string | null
+  games: number
+  /** بالدينار، نصّاً بثلاث خانات كما تعيده القاعدة (numeric) — لا يُقرّب. */
+  amount: string | number
+  status: 'pending' | 'paid' | 'canceled'
+  invoice_id: string | null
+  created_at: string
+  paid_at: string | null
+}
+
+export async function listPurchases(limit = 300): Promise<AdminPurchase[]> {
+  const { data, error } = await supabase.rpc('admin_purchases', { p_limit: limit })
+  if (error) throw error
+  return (data ?? []) as AdminPurchase[]
+}
+
+/** يسأل ماي فاتورة الآن عن شراءٍ معلّق، ويضيف الرصيد إن دُفع. */
+export async function settlePurchase(id: string): Promise<AdminPurchase['status']> {
+  const { data, error } = await supabase.rpc('admin_pay_settle', { p_purchase: id })
+  if (error) throw error
+  return data as AdminPurchase['status']
+}
+
 export interface AdminCode {
   code: string
   games: number
