@@ -31,7 +31,8 @@ import { pushUsedIds, syncUsedIds, touchUsedIds } from './lib/usedQuestions'
 import { applyCachedBlocked, flushPendingReports, reportQuestion, syncBlocked } from './lib/questionFlags'
 import { applyCachedCategories, applyCachedOverlay, syncCategories, syncOverlay } from './lib/questionOverlay'
 import { AccountMenu } from './components/AccountMenu'
-import { ContactPanel, RulesPanel, ShopPanel } from './components/SitePanels'
+import { ContactPanel, RulesPanel, ShopPanel, type PayReturn } from './components/SitePanels'
+import { reconcilePayments, takeReturnedPayment, verifyPayment } from './lib/payments'
 import { QuitGame } from './components/QuitGame'
 import { CrashScreen } from './components/CrashScreen'
 import { useWakeLock } from './components/useWakeLock'
@@ -368,6 +369,38 @@ export default function App() {
     refreshBalance()
   }, [uid, refreshBalance])
 
+  /* الرجوع من صفحة ماي فاتورة: `?pay=<شراء>` يُقرأ ويُمحى من العنوان أوّلَ
+     إقلاع، وتُفتح صفحة الشراء بحالته. والتحقّق ينتظر الحساب — الجلسة تُستعاد
+     من التخزين بعد الإقلاع بلحظة. */
+  const [payId] = useState(() => (isNativeApp ? null : takeReturnedPayment()))
+  const [payReturn, setPayReturn] = useState<PayReturn | null>(payId ? 'checking' : null)
+  useEffect(() => {
+    if (payId) setNavPage('buy')
+  }, [payId])
+  useEffect(() => {
+    if (!payId || !uid) return
+    let alive = true
+    verifyPayment(payId)
+      .then((r) => {
+        if (!alive) return
+        setPayReturn(r)
+        if (r.status === 'paid') refreshBalance()
+      })
+      .catch(() => alive && setPayReturn('failed'))
+    return () => {
+      alive = false
+    }
+  }, [payId, uid, refreshBalance])
+
+  /* شراءٌ دُفع وأُغلقت صفحته قبل الرجوع يُسوّى عند الدخول — على الموقع
+     والتطبيق معاً، فمن اشترى من المتصفّح يجد رصيده في الجوال. */
+  useEffect(() => {
+    if (!uid) return
+    reconcilePayments().then((n) => {
+      if (n > 0) refreshBalance()
+    })
+  }, [uid, refreshBalance])
+
   /* استئناف جلسة مفتوحة من الخادم — للجهاز الذي لا لقطة محلّية عنده.
      الحفظ المحلّي أسبق لأنّه أحدث دائماً (يُكتب مع كل ضغطة، والخادم مؤجَّل). */
   useEffect(() => {
@@ -583,7 +616,17 @@ export default function App() {
             onClose={() => setNavPage(null)}
           />
         )}
-        {navPage === 'buy' && <ShopPanel onClose={() => setNavPage(null)} />}
+        {navPage === 'buy' && (
+          <ShopPanel
+            onClose={() => {
+              setNavPage(null)
+              setPayReturn(null)
+            }}
+            signedIn={!!uid}
+            onSignIn={() => setNavPage('account')}
+            returned={payReturn}
+          />
+        )}
         {navPage === 'rules' && <RulesPanel onClose={() => setNavPage(null)} />}
         {navPage === 'contact' && (
           <ContactPanel onClose={() => setNavPage(null)} email={session?.user.email ?? undefined} />
