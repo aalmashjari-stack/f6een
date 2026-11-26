@@ -65,6 +65,26 @@
 .sp-packs { padding-top:8px; }
 .sp-per { font-size:clamp(10px,1.2vw,12px); font-weight:700; color:var(--n-ink-2, #57524A); }
 
+/* على الموقع البطاقة زرٌّ كاملة — شريطُ «اشترِ» في أسفلها يقول إنّها تُضغط. */
+.sp-buy { font:inherit; border:0; cursor:pointer; transition:transform .12s ease; }
+.sp-buy .sp-per { margin-bottom:6px; }
+.sp-buy .sp-price + .sp-cta { margin-top:auto; }
+.sp-buy:hover:not(:disabled) { transform:translateY(-2px); }
+.sp-buy:active:not(:disabled) { transform:translateY(1px); }
+.sp-buy:disabled { cursor:default; opacity:.7; }
+.sp-buy:focus-visible { outline:3px solid var(--n-brand, #E8542F); outline-offset:3px; }
+.sp-cta {
+  margin-top:auto; padding:4px 18px; border-radius:999px;
+  background:var(--n-ink, #22201C); color:var(--n-on-ink, #fff);
+  font-weight:800; font-size:clamp(12px,1.5vw,15px);
+}
+.sp-return {
+  margin:0; padding:10px 14px; border-radius:12px; text-align:center;
+  background:var(--n-bg, #FFF8EE); box-shadow:0 0 0 2px var(--n-edge, #22201C);
+  font-weight:800; font-size:clamp(13px,1.6vw,16px); color:var(--n-ink, #22201C);
+}
+.sp-return.ok { background:var(--n-good-tint, #D8F3DC); }
+
 .sp-soon {
   align-self:center;
   padding:6px 18px; border-radius:999px;

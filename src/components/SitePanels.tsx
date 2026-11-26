@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { isNativeApp } from '../lib/platform'
+import { createPayment, paymentErrorText, type PayStatus } from '../lib/payments'
 import { sendMessage } from '../lib/messages'
 import { STAGES } from '../game/stages'
 import { ExplainerInline } from './ExplainerVideo'
@@ -10,11 +12,10 @@ import sitePanelsRulesPanelCss from './SitePanels.RulesPanel.css?inline'
 /**
  * صفحات القائمة خارج اللعب: «شراء الألعاب» و«شرح اللعبة» و«تواصل معنا».
  *
- * الشراء **عرضٌ لا بيع** بعد: الأسعار محسومة (SPEC §٩) لكنّ مسار الدفع —
- * متجرا آبل وغوغل أم الويب — بندٌ مفتوح في §١٣. فالبطاقات تعرض الحزم
- * بأسعارها المعتمدة وزرّها موقوف بـ«قريباً»، والسطر الأخير يدلّ على الطريق
- * القائم فعلاً: كود الهدية من «حسابي». حين يُحسم المسار يستبدل الزرُّ
- * الموقوف نداءَ الدفع ولا يتغيّر سواه.
+ * الشراء: **على الموقع يُدفع، وفي التطبيق عرضٌ لا بيع** (SPEC §١٣ بند ٢،
+ * علي ٢٦ نوفمبر ٢٠٢٦). على الموقع كلُّ باقةٍ زرٌّ يفتح صفحة ماي فاتورة؛ وفي
+ * التطبيق الأصليّ تبقى البطاقات معروضةً وزرّها «قريباً» — آبل تشترط شراءها
+ * للمحتوى الرقميّ داخل التطبيق، وقرارُ ذلك لم يُحسم.
  *
  * والتواصل **نموذجٌ** لا رابط بريد: `mailto:` يفتح تطبيق بريد الجهاز،
  * وأكثر اللاعبين على الجوال بلا حسابٍ مضبوط فيه — فلا الرسالة تصل ولا
@@ -23,9 +24,11 @@ import sitePanelsRulesPanelCss from './SitePanels.RulesPanel.css?inline'
 
 /* الخصم (علي ١٠ نوفمبر ٢٠٢٦): اللعبة الواحدة «دينار وربع»، والباقات بأرقامٍ
    مدوّرة قريبة من نسبتها نفسها (37.5٪) — 35.7٪ إلى 37.5٪، فالوسم «يصل إلى».
-   was السعر قبل الخصم يُعرض مشطوباً. */
+   was السعر قبل الخصم يُعرض مشطوباً.
+   **price هو ما يُعرض، والمحاسَبُ عليه في `purchase_packs` في القاعدة** —
+   `payments.test.ts` يقارن الاثنين، و`pay_create` يرفض إن اختلفا. */
 const DISCOUNT = 37
-const PACKS = [
+export const PACKS = [
   { games: 1, was: '2.000', price: '1.250', per: null },
   { games: 2, was: '3.500', price: '2.250', per: '1.125' },
   { games: 5, was: '7.500', price: '4.750', per: '0.950' },
@@ -137,31 +140,117 @@ export function RulesPanel({ onClose }: { onClose: () => void }) {
   )
 }
 
-export function ShopPanel({ onClose }: { onClose: () => void }) {
+/** نتيجة الرجوع من صفحة الدفع، تُعرض في رأس الصفحة. */
+export type PayReturn = 'checking' | 'failed' | { status: PayStatus; games: number }
+
+function returnText(r: PayReturn): string {
+  if (r === 'checking') return 'نتحقّق من الدفع…'
+  if (r === 'failed') return 'تعذّر التحقّق من الدفع الآن — سيُضاف رصيدك تلقائياً إن تمّ'
+  if (r.status === 'paid')
+    return `تمّ الدفع — أُضيفت ${r.games === 1 ? 'لعبة واحدة' : r.games === 2 ? 'لعبتان' : `${r.games} ألعاب`} إلى رصيدك`
+  if (r.status === 'canceled') return 'لم يكتمل الدفع، ولم يُخصم شيء'
+  return 'الدفع قيد المعالجة — سيُضاف رصيدك تلقائياً حين يكتمل'
+}
+
+export function ShopPanel({
+  onClose,
+  signedIn,
+  onSignIn,
+  returned,
+}: {
+  onClose: () => void
+  signedIn: boolean
+  onSignIn: () => void
+  returned?: PayReturn | null
+}) {
+  const [busy, setBusy] = useState<number | null>(null)
+  const [err, setErr] = useState<string | null>(null)
+  const canPay = !isNativeApp
+
+  async function buy(games: number, amount: string) {
+    if (busy !== null) return
+    if (!signedIn) {
+      onSignIn()
+      return
+    }
+    setBusy(games)
+    setErr(null)
+    try {
+      location.assign(await createPayment(games, amount))
+    } catch (e) {
+      setErr(paymentErrorText(e instanceof Error ? e.message : ''))
+      setBusy(null)
+    }
+  }
+
   return (
     <Veil onClose={onClose} label="شراء الألعاب">
+      {returned && (
+        <p
+          className={'sp-return' + (typeof returned === 'object' && returned.status === 'paid' ? ' ok' : '')}
+          role="status"
+        >
+          {returnText(returned)}
+        </p>
+      )}
       <span className="sp-off">خصم يصل إلى {DISCOUNT}٪</span>
       <div className="sp-packs">
-        {PACKS.map((p) => (
-          <div key={p.games} className={'sp-pack' + (p.games === 5 ? ' hot' : '')}>
-            <span className="sp-count">
-              {p.games === 1 ? 'لعبة واحدة' : p.games === 2 ? 'لعبتان' : `${p.games} ألعاب`}
-            </span>
-            <span className="sp-pct">−{Math.floor((1 - +p.price / +p.was) * 100)}٪</span>
-            <s className="sp-was">{p.was}</s>
-            <span className="sp-price">
-              {p.price} <small>د.ك</small>
-            </span>
-            {p.per && <span className="sp-per">اللعبة بـ {p.per}</span>}
-          </div>
-        ))}
+        {PACKS.map((p) => {
+          const body = (
+            <>
+              <span className="sp-count">
+                {p.games === 1 ? 'لعبة واحدة' : p.games === 2 ? 'لعبتان' : `${p.games} ألعاب`}
+              </span>
+              <span className="sp-pct">−{Math.floor((1 - +p.price / +p.was) * 100)}٪</span>
+              <s className="sp-was">{p.was}</s>
+              <span className="sp-price">
+                {p.price} <small>د.ك</small>
+              </span>
+              {p.per && <span className="sp-per">اللعبة بـ {p.per}</span>}
+            </>
+          )
+          const cls = 'sp-pack' + (p.games === 5 ? ' hot' : '')
+          return canPay ? (
+            <button
+              key={p.games}
+              type="button"
+              className={cls + ' sp-buy'}
+              disabled={busy !== null}
+              onClick={() => buy(p.games, p.price)}
+            >
+              {body}
+              <span className="sp-cta">{busy === p.games ? 'لحظة…' : 'اشترِ'}</span>
+            </button>
+          ) : (
+            <div key={p.games} className={cls}>
+              {body}
+            </div>
+          )
+        })}
       </div>
-      <span className="sp-soon">الدفع يُفتح قريباً</span>
-      <p className="sp-note">
-        اللعبة جلسة كاملة بمراحلها الثلاث، وتُخصم عند بدئها.
-        <br />
-        حالياً تُضاف الألعاب بـ<b>كود هدية</b> من صفحة «حسابي».
-      </p>
+      {err && (
+        <p className="sp-err" role="alert">
+          {err}
+        </p>
+      )}
+      {canPay ? (
+        <p className="sp-note">
+          اللعبة جلسة كاملة بمراحلها الثلاث، وتُخصم عند بدئها.
+          <br />
+          {signedIn
+            ? 'الدفع عبر ماي فاتورة: كي نت والبطاقات وApple Pay.'
+            : 'سجّل دخولك أولاً ليُضاف الرصيد إلى حسابك.'}
+        </p>
+      ) : (
+        <>
+          <span className="sp-soon">الدفع يُفتح قريباً</span>
+          <p className="sp-note">
+            اللعبة جلسة كاملة بمراحلها الثلاث، وتُخصم عند بدئها.
+            <br />
+            حالياً تُضاف الألعاب بـ<b>كود هدية</b> من صفحة «حسابي».
+          </p>
+        </>
+      )}
     </Veil>
   )
 }
