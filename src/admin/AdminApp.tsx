@@ -6,6 +6,7 @@ import { Insights } from './tabs/Insights'
 import { Backups } from './tabs/Backups'
 import { Audit } from './tabs/Audit'
 import { Users } from './tabs/Users'
+import { Purchases } from './tabs/Purchases'
 import { Sessions } from './tabs/Sessions'
 import { Codes } from './tabs/Codes'
 import { Reports } from './tabs/Reports'
@@ -125,6 +126,7 @@ function NotAdmin({ email }: { email: string }) {
 
 type Tab =
   | 'users'
+  | 'purchases'
   | 'sessions'
   | 'codes'
   | 'reports'
@@ -158,6 +160,8 @@ const TABS: [Tab, string, boolean][] = [
   /* للمدير العامّ: فيها حساباتٌ وبريدُ أكثرهم لعباً (`admin_insights` تردّ غيرَه). */
   ['insights', 'الإحصائيات', true],
   ['users', 'الحسابات', true],
+  /* الدفع على الموقع عبر ماي فاتورة (٢٦ نوفمبر ٢٠٢٦) — مالٌ، فللمدير العامّ. */
+  ['purchases', 'المشتريات', true],
   ['sessions', 'الجلسات', true],
   ['codes', 'أكواد الهدية', true],
   ['messages', 'الرسائل', true],
@@ -234,6 +238,7 @@ function Dashboard({ session, superAdmin }: { session: Session; superAdmin: bool
       </nav>
 
       {tab === 'users' && <Users onChanged={reloadStats} me={session.user.id} />}
+      {tab === 'purchases' && <Purchases />}
       {tab === 'sessions' && <Sessions />}
       {tab === 'codes' && <Codes onChanged={reloadStats} />}
       {tab === 'reports' && <Reports />}
