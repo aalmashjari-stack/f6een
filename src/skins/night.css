@@ -64,7 +64,7 @@ html[data-skin='blocks'][data-theme='night'] .s3-ready-rules span,
 html[data-skin='blocks'][data-theme='night'] .screen.setup .team-card {
   --n-ink: #22201C;
   --n-ink-2: #57524A;
-  --n-ink-3: #8A8578;
+  --n-ink-3: #6E695E; /* كان #8A8578 — ٣٫٤ تباين على الكريميّ، والحدّ ٤٫٥ (تدقيق ٥ أكتوبر M11) */
   --n-a: #9A6B00;
   --n-b: #147370;
   --n-surface: #FFFFFF;
