@@ -274,6 +274,20 @@ export function AccountMenu({
                 <p className="acct-warn">يُحذف الحساب ورصيده وسجلّ الأسئلة التي ظهرت لك وألعابك. لا رجوع.</p>
               )}
               {err && <p className="acct-err">{err}</p>}
+
+              {/* الشروط والخصوصيّة في أسفل «حسابي» (علي ٢٦ نوفمبر ٢٠٢٦) — بجوار حذف
+                  الحساب حيث يُبحث عنهما، لا في القائمة. والعنوان مطلق: في التطبيق
+                  الأصليّ يحوّل Capacitor الهدفَ الجديد إلى سفاري، وسفاري لا يعرف
+                  `capacitor://localhost/terms` (انظر لوحة الإدارة أعلاه). */}
+              <p className="acct-legal">
+                <a href="https://f6een.com/terms" target="_blank" rel="noopener">
+                  الشروط والأحكام
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="https://f6een.com/privacy" target="_blank" rel="noopener">
+                  سياسة الخصوصية
+                </a>
+              </p>
             </footer>
           </div>
         </div>
