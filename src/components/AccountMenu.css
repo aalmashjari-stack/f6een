@@ -144,16 +144,16 @@ a.acct-act { text-decoration:none; text-align:center; }
 /* ─── الشاشة القصيرة: الجوال بالعرض (علي ٢٧ نوفمبر ٢٠٢٦) ───
    على ارتفاع ٤٣٠ كانت الأزرار الثلاثة فوق بعضها تأخذ أغلب الصفحة، فلا يبقى
    للبيانات إلّا سطران (الاسم والبريد) والرصيدُ وكودُ الهديّة تحت التمرير.
-   فالأزرار صفٌّ واحد، والصفحة أعرض، والبيانات عمودان — كلّها في نظرة. */
+   فالأزرار صفٌّ واحد — والبيانات عمودٌ واحد في صفحةٍ أطول وأضيق (٥٠٠)، كما طلب
+   علي بعد أن رآها بعرض ٨٦٠ ثمّ ٦٠٠ بعمودين: «عريض»، «خله أطول وصغّر عرضه». */
 @media (max-height:560px) {
-  .acct-panel { width:min(860px, 100%); max-height:96dvh; }
+  .acct-panel { width:min(500px, 100%); max-height:96dvh; }
   .acct-head { padding:8px 14px 6px; }
-  .acct-body { padding:10px 14px; gap:10px; }
+  .acct-body { padding:8px 14px; gap:8px; }
+  .acct-sec { gap:6px; }
+  .acct-data { gap:3px 12px; }
   .acct-foot { flex-direction:row; flex-wrap:wrap; gap:8px; padding:8px 14px 10px; }
   .acct-foot > .acct-act { flex:1 1 0; min-width:0; padding:7px 10px; }
   .acct-foot > .acct-warn, .acct-foot > .acct-err, .acct-foot > .acct-legal { flex-basis:100%; }
   .acct-legal { margin:0; }
-}
-@media (max-height:560px) and (min-width:640px) {
-  .acct-data { grid-template-columns:auto 1fr auto 1fr; gap:6px 14px; }
 }
