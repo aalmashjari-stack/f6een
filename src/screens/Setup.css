@@ -1019,7 +1019,9 @@ html[data-skin] body .screen.setup .tray-slot.filled:active { transform:scale(.9
   :root[data-skin] body .screen.setup .setup-block + .setup-block,
   :root[data-skin] body .screen.setup .setup-foot {
     margin-top:clamp(56px,9.5dvh,108px); padding-top:clamp(56px,9.5dvh,108px);
-    border-top:1.5px solid rgba(34,32,28,.14);
+    /* بلا خطٍّ فاصل (علي ٢٧ نوفمبر ٢٠٢٦: «شيل الخطوط الي بين كل تصنيف»): الفسحة
+       وحدها تفصل الأقسام فوق خلفيّة المجلس. */
+    border-top:0;
   }
   :root[data-skin] body .screen.setup .setup-block > .title-cap-wrap,
   :root[data-skin] body .screen.setup .cats-head .title-cap-wrap {
