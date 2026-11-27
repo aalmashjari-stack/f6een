@@ -83,8 +83,8 @@
   html:not([data-theme='night']) .so-room {
     display:block; position:fixed; inset:0; z-index:-1; pointer-events:none;
     width:100%; height:100%; object-fit:cover; object-position:50% 40%;
-    /* «خفف الخلفية» (علي ٢٧ نوفمبر ٢٠٢٦): تذوب نصفها في الرمليّ تحتها. */
-    opacity:.5;
+    /* «خفف الخلفية» ثمّ «خففها درجة» (علي ٢٧ نوفمبر ٢٠٢٦). */
+    opacity:.38;
   }
   html:not([data-theme='night']) body .screen.setup:has(.so-room) { background:transparent; }
   /* والهيرو بلا أرضيّةٍ سادة: أسفل رسمته يذوب في المجلس الفارغ لا في حدٍّ قشديّ. */
