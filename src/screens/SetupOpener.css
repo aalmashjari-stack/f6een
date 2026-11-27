@@ -3,6 +3,7 @@
 */
 .so { display:none; }
 .so-bg { display:none; }
+.so-room { display:none; }
 
 /* الجوال الطوليّ (علي ٣ نوفمبر ٢٠٢٦: «ضبط التطبيق بالجوال»): عمودٌ واحد —
    الصورة وحدها، بلا الخطوات ولا «ابدأ» («شيل الخطوات في الجوال»، ثمّ «شيل ابدأ
@@ -77,6 +78,19 @@
      في النهار وحده — الليل يبقى على أرضيّته. */
   html[data-skin='blocks']:not([data-theme='night']):has(.screen.setup .so) { --n-bg:#F9F0E2; }
   body .screen.setup:has(.so) .setup-scroll { overflow-x:hidden; }
+  /* المجلس فارغاً خلف الصفحة كلّها بدل الرمليّ السادة (علي ٢٧ نوفمبر ٢٠٢٦)،
+     في النهار وحده: ثابتٌ بملء النافذة، وما فوقه شفّاف ليظهر. */
+  html:not([data-theme='night']) .so-room {
+    display:block; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    width:100%; height:100%; object-fit:cover; object-position:50% 40%;
+  }
+  html:not([data-theme='night']) body .screen.setup:has(.so-room) { background:transparent; }
+  /* والهيرو بلا أرضيّةٍ سادة: أسفل رسمته يذوب في المجلس الفارغ لا في حدٍّ قشديّ. */
+  html:not([data-theme='night']) .so-room + .so { background:transparent; }
+  html:not([data-theme='night']) .so-room + .so::before {
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+    mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+  }
   /* في التطبيق (علي ١١ نوفمبر ٢٠٢٦: «خلي الصورة ممتدة لنهاية الشاشة»): ‎#root‎
      محشوٌّ بحدود الأمان (showtime.css) فتقف الرسمة دون الأذن وشريط المنزل
      بشريطٍ قشديّ. هنا تُرفع الحشوة عن الجذر ويحملها الغلاف المتمرّر بدلاً

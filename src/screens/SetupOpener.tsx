@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import familyArt from '../../assets/backgrounds/setup-family.jpg'
 import heroArt from '../../assets/backgrounds/setup-hero.jpg'
+import roomArt from '../../assets/backgrounds/setup-room.jpg'
 import css from './SetupOpener.css?inline'
 import { isNativeApp } from '../lib/platform'
 
@@ -106,43 +107,50 @@ function useFillViewport() {
 export function SetupOpener({ onStart }: { onStart: () => void }) {
   const ref = useFillViewport()
   return (
-    <section className="so" ref={ref}>
-      <div className="so-side">
-        <ol className="so-steps">
-          {STEPS.map((step, i) => (
-            <li key={step} className={`so-step s${i + 1}`}>
-              <span className="so-no" aria-hidden="true">
-                {i + 1}
-              </span>
-              <span className="so-text">{step}</span>
-            </li>
-          ))}
-        </ol>
-        {/* زرٌّ بإطار يمتلئ بالبرتقاليّ من اليمين ويتدحرج اسمه إلى نسخته عند المرور
+    <>
+      {/* خلفيّة الإعداد بدل الرمليّ السادة (علي ٢٧ نوفمبر ٢٠٢٦: «ضع الصورة الاولى
+          كخلفية بدال الخلفية السادة»، في الإعداد وحده): المجلس نفسه فارغاً بلا
+          الجلسة، مولَّداً بـFigma AI، وعليه ترخيم الهيرو مطبوعاً. ثابتٌ خلف الصفحة
+          والهيرو فوقه؛ في النهار والعرض وحدهما. */}
+      <img className="so-room" src={roomArt} alt="" aria-hidden="true" />
+      <section className="so" ref={ref}>
+        <div className="so-side">
+          <ol className="so-steps">
+            {STEPS.map((step, i) => (
+              <li key={step} className={`so-step s${i + 1}`}>
+                <span className="so-no" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <span className="so-text">{step}</span>
+              </li>
+            ))}
+          </ol>
+          {/* زرٌّ بإطار يمتلئ بالبرتقاليّ من اليمين ويتدحرج اسمه إلى نسخته عند المرور
             (علي ١٠ نوفمبر ٢٠٢٦: «نفس الهيرو هذا»). النسختان متطابقتان ليبدو الدحرجة متّصلة. */}
-        <button className="so-cta" onClick={onStart}>
-          <span className="so-cta-fill" aria-hidden="true" />
-          <span className="so-cta-roll">
-            <span className="so-cta-label">
-              ابدأ
-              <Arrow />
+          <button className="so-cta" onClick={onStart}>
+            <span className="so-cta-fill" aria-hidden="true" />
+            <span className="so-cta-roll">
+              <span className="so-cta-label">
+                ابدأ
+                <Arrow />
+              </span>
+              <span className="so-cta-label so-cta-dup" aria-hidden="true">
+                ابدأ
+                <Arrow />
+              </span>
             </span>
-            <span className="so-cta-label so-cta-dup" aria-hidden="true">
-              ابدأ
-              <Arrow />
-            </span>
-          </span>
-        </button>
-      </div>
-      {/* عائلةٌ أمام التلفزيون وعليه لوح اللعبة الحقيقيّ (لقطةٌ مركَّبة في الشاشة)،
+          </button>
+        </div>
+        {/* عائلةٌ أمام التلفزيون وعليه لوح اللعبة الحقيقيّ (لقطةٌ مركَّبة في الشاشة)،
           بالأسلوب المائيّ لرسوم الفئات — علي ٣ نوفمبر ٢٠٢٦: «خلها منطقية والشاشة
           تحتوي على صورة من اللعبة». مولَّدة بـFigma AI. */}
-      <img className="so-family" src={familyArt} alt="عائلة تلعب فطين في المجلس" />
-      {/* الهيرو في العرض (علي ١٠ نوفمبر ٢٠٢٦، على مرجعٍ أرسله): المشهد نفسه موسَّعاً
+        <img className="so-family" src={familyArt} alt="عائلة تلعب فطين في المجلس" />
+        {/* الهيرو في العرض (علي ١٠ نوفمبر ٢٠٢٦، على مرجعٍ أرسله): المشهد نفسه موسَّعاً
           بـFigma AI يملأ أعلى الكونتينر من حافّته إلى حافّته، وجداره الفارغ يميناً
           تحت الكتابة؛ وعلى شاشة التلفزيون لقطةٌ من اللوح مركَّبة. */}
-      <img className="so-bg" src={heroArt} alt="" aria-hidden="true" />
-      <style>{css}</style>
-    </section>
+        <img className="so-bg" src={heroArt} alt="" aria-hidden="true" />
+        <style>{css}</style>
+      </section>
+    </>
   )
 }
